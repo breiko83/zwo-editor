@@ -1,16 +1,49 @@
 .editor {
+  display: block;
+  position: relative;
+  width: 100%;
+  overflow: scroll;
+  border: 1px dotted gray;
+  white-space: nowrap;
+
+  padding: 10px;
+}
+
+.canvas {
   display: flex;
   flex-wrap: nowrap;
   justify-content: flex-start;
   align-items: flex-end;  
-  width: 100%;
-  border: 1px dotted gray;
+  
+  
   height: 80vh;
-
-  overflow-x: scroll;
 }
 
 .btn {
   width: 50px;
   height: 50px;
+}
+
+.timeline {  
+  border-top: 1px solid gray;
+}
+
+.timeline > span{
+  position: relative;
+  display: inline-block;
+  width: 180px;
+  margin-top: 20px;
+  padding: 0;
+  
+}
+
+.timeline > span::before{
+  content: '';
+  position: absolute;
+  width: 1px;
+  height: 10px;
+  top: -20px;
+  left: 0;
+  background-color: gray;
+  
 }
