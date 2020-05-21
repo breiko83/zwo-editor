@@ -4,11 +4,11 @@ import Bar from './bar'
 
 const Editor = () => {
 
-  function addBar(){
+  function addBar(zone){
     setBars([...bars,{
-      id: bars.length+1,
-      text: 'New',
-      time: 300
+      id: bars.length+1,      
+      time: 300,
+      power: zone
     }
     ])
   }
@@ -16,13 +16,11 @@ const Editor = () => {
   const [bars, setBars] = useState([
     {
       id: 1,
-      text: 'Write a cool JS library',
       time: 300,
       power: 200
     },
     {
       id: 2,
-      text: 'Make it generic enough',
       time: 300,
       power: 200
     }
@@ -31,8 +29,7 @@ const Editor = () => {
   const renderBar = (bar, index) => {
     return (
       <Bar
-        key={bar.id}
-        text={bar.text}
+        key={bar.id}        
         time={bar.time}
         power={bar.power}
       />
@@ -44,7 +41,8 @@ const Editor = () => {
       <div className="editor">
         {bars.map((bar, i) => renderBar(bar, i))}
       </div>
-      <button onClick={addBar}>+</button>
+      <button className="btn" onClick={() => addBar(50)} style={{backgroundColor: '#807F80'}}>+</button>
+      <button className="btn" onClick={() => addBar(150)} style={{backgroundColor: '#0E90D4'}}>+</button>
     </div> 
   );
 }
