@@ -1,5 +1,5 @@
 import React, {useState} from 'react'
-import './bar.css'
+import './Bar.css'
 import { Resizable } from 're-resizable'
 
 const Bar = ({ text, time, power }) => {
@@ -12,8 +12,6 @@ const Bar = ({ text, time, power }) => {
   const handleResizeStop = ({e, direction, ref, d}) => {    
     setWidth(width+d.width)
     setHeight(height+d.height)   
-       
-     
   }
 
   const handleResize = ({e, direction, ref, d}) => {    

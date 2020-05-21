@@ -1,6 +1,6 @@
 import React from 'react';
 import './App.css';
-import Editor from './components/editor';
+import Editor from './components/Editor';
 
 function App() {
   return (

@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from 'react'
-import './editor.css'
-import Bar from './bar'
+import './Editor.css'
+import Bar from './Bar'
 
 const Editor = () => {
 
