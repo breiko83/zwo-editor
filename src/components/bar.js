@@ -1,5 +1,6 @@
 import React, {useState} from 'react'
 import './Bar.css'
+import { Colors } from './Constants'
 import { Resizable } from 're-resizable'
 
 const Bar = ({ text, time, power }) => {
@@ -23,22 +24,22 @@ const Bar = ({ text, time, power }) => {
     
     if (zone >= 0 && zone < 100) {
       // Z1 gray
-      return {backgroundColor: '#807F80'}
+      return {backgroundColor: Colors.GRAY}
     } else if (zone >= 100 && zone < 200) {
       // Z2 blue
-      return {backgroundColor: '#0E90D4'}
+      return {backgroundColor: Colors.BLUE}
     } else if (zone >= 200 && zone < 300) {
       // Z3 green
-      return {backgroundColor: '#00C46A'}
+      return {backgroundColor: Colors.GREEN}
     } else if (zone >= 300 && zone < 400) {
       // Z4 yellow
-      return {backgroundColor: '#FFCB00'}
+      return {backgroundColor: Colors.YELLOW}
     } else if (zone >= 400 && zone < 500) {
       // Z5 orange
-      return {backgroundColor: '#FF6430'}
+      return {backgroundColor: Colors.ORANGE}
     } else {
       // Z6 red
-      return {backgroundColor: '#E90000'}
+      return {backgroundColor: Colors.RED}
     }
   }
 
@@ -52,8 +53,10 @@ const Bar = ({ text, time, power }) => {
         minWidth={10}
         minHeight={50}
         maxHeight={600} 
+        enable={{top: true, right: true}}
         onResizeStop={(e, direction, ref, d) => handleResizeStop({e, direction, ref, d})}   
         onResize={(e, direction, ref, d) => handleResize({e, direction, ref, d})}    
+        onClick={()=>{alert('click')}}
         style={style}       
       >
         <div>

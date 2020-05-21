@@ -4,7 +4,7 @@ import Editor from './components/Editor';
 
 function App() {
   return (
-    <div className="editor">      
+    <div className="container">      
       <Editor />
     </div>
   );

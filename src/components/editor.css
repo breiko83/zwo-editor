@@ -2,11 +2,12 @@
   display: flex;
   flex-wrap: nowrap;
   justify-content: flex-start;
-  align-items: flex-end;
-  background-color: lightcoral;
+  align-items: flex-end;  
   width: 100%;
+  border: 1px dotted gray;
+  height: 80vh;
 
-  height: 100vh;
+  overflow-x: scroll;
 }
 
 .btn {
