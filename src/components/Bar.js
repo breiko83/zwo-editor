@@ -5,8 +5,7 @@ import { Resizable } from 're-resizable'
 import moment from 'moment'
 import 'moment-duration-format'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faBolt } from '@fortawesome/free-solid-svg-icons'
-import { faClock } from '@fortawesome/free-solid-svg-icons'
+import { faBolt, faClock } from '@fortawesome/free-solid-svg-icons'
 
 const Bar = ({ id, time, power, onChange, onClick }) => {
 
@@ -59,7 +58,7 @@ const Bar = ({ id, time, power, onChange, onClick }) => {
     }
   }
 
-  return (
+  return (    
     <div className='segment'>
       <div className='label'>
       <FontAwesomeIcon icon={faClock} fixedWidth /> {durationLabel} mm:ss

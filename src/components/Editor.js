@@ -2,7 +2,9 @@ import React, { useState, useCallback } from 'react'
 import './Editor.css'
 import { Colors } from './Constants'
 import Bar from './Bar'
-import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuidv4 } from 'uuid'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faTrash, faArrowRight, faArrowLeft } from '@fortawesome/free-solid-svg-icons'
 
 const Editor = () => {
 
@@ -27,18 +29,14 @@ const Editor = () => {
     setBars(updatedArray)
   }
 
-  function handleOnClick(key) {
+  function handleOnClick(id) {  
 
-    console.log(key);
-    
-    
-    if(key === actionId) {
+    if(id === actionId) {
       setShowActions(!showActions)
     }else{
-      setActionId(key)
+      setActionId(id)
       setShowActions(true)
     }
-
   }
 
   function addBar(zone) {
@@ -90,7 +88,7 @@ const Editor = () => {
         time={bar.time}
         power={bar.power}
         onChange={handleOnChange}
-        onClick={handleOnClick}
+        onClick={handleOnClick}        
       />
     )
   }
@@ -100,9 +98,9 @@ const Editor = () => {
       <div className='editor'>
         {showActions &&
           <div className='actions'>
-            <button onClick={() => moveLeft(actionId)}>Move Left</button>
-            <button onClick={() => moveRight(actionId)}>Move Right</button>
-            <button onClick={() => removeBar(actionId)}>Delete</button>
+            <button onClick={() => moveLeft(actionId)} title='Move Left'><FontAwesomeIcon icon={faArrowLeft} size="lg" fixedWidth /></button>
+            <button onClick={() => moveRight(actionId)} title='Move Right'><FontAwesomeIcon icon={faArrowRight} size="lg" fixedWidth /></button>
+            <button onClick={() => removeBar(actionId)} title='Delete'><FontAwesomeIcon icon={faTrash} size="lg" fixedWidth /></button>
           </div>
         }
         <div className='canvas'>
@@ -118,6 +116,14 @@ const Editor = () => {
           <span>1:30</span>
           <span>1:45</span>
           <span>2:00</span>
+        </div>
+        <div className='zones'>
+          <div>Z6</div>
+          <div>Z5</div>
+          <div>Z4</div>
+          <div>Z3</div>
+          <div>Z2</div>
+          <div>Z1</div>
         </div>
       </div>
       <div className='cta'>
