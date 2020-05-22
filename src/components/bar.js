@@ -19,7 +19,7 @@ const Bar = ({ id, time, power, onChange, onClick }) => {
   const handleResizeStop = ({ e, direction, ref, d }) => {
     setWidth(width + d.width)
     setHeight(height + d.height)  
-    onChange(id,{time: width + d.width,power: height + d.height})  
+    onChange(id,{id: id, time: width + d.width,power: height + d.height})  
   }
 
   const handleResize = ({ e, direction, ref, d }) => {

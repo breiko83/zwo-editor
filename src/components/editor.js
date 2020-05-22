@@ -6,6 +6,9 @@ import { v4 as uuidv4 } from 'uuid';
 
 const Editor = () => {
 
+  console.log('render');
+  
+
   const [bars, setBars] = useState(JSON.parse(localStorage.getItem('currentWorkout')) || [])
   const [showActions,setShowActions] = useState(false)
   const [actionId,setActionId] = useState()
@@ -17,10 +20,10 @@ const Editor = () => {
   }, [bars]);
 
   function handleOnChange(id, values) {
-    console.log(id, values);
+    const index = bars.findIndex(bar => bar.id === id)
 
     const updatedArray = [...bars]
-    updatedArray[id] = values
+    updatedArray[index] = values
     setBars(updatedArray)
   }
 
@@ -50,6 +53,7 @@ const Editor = () => {
   function removeBar(id) {    
     const updatedArray = [...bars]
     setBars(updatedArray.filter(item => item.id !== id))
+    setShowActions(false)
   }
 
   function moveLeft(id) {
@@ -61,6 +65,7 @@ const Editor = () => {
       updatedArray.splice(index, 1)
       updatedArray.splice(index-1, 0, element)
       setBars(updatedArray)  
+      setShowActions(false)
     }
   }
 
@@ -72,7 +77,8 @@ const Editor = () => {
       const element = [...bars][index]
       updatedArray.splice(index, 1)
       updatedArray.splice(index+1, 0, element)
-      setBars(updatedArray)           
+      setBars(updatedArray) 
+      setShowActions(false)          
     }
   }
 
