@@ -11,7 +11,7 @@ const Editor = () => {
   const [bars, setBars] = useState(JSON.parse(localStorage.getItem('currentWorkout')) || [])
   const [showActions,setShowActions] = useState(false)
   const [actionId,setActionId] = useState()
-  const [ftp, setFtp] = useState(parseInt(localStorage.getItem('ftp')))
+  const [ftp, setFtp] = useState(parseInt(localStorage.getItem('ftp')) || 200)
 
   React.useEffect(() => {
     localStorage.setItem('currentWorkout', JSON.stringify(bars));
