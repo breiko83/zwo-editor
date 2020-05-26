@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from 'react'
 import './Editor.css'
-import { Colors } from './Constants'
+import { Colors, Zones } from './Constants'
 import Bar from './Bar'
 import { v4 as uuidv4 } from 'uuid'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -8,18 +8,16 @@ import { faTrash, faArrowRight, faArrowLeft } from '@fortawesome/free-solid-svg-
 
 const Editor = () => {
 
-  console.log('render');
-  
-
   const [bars, setBars] = useState(JSON.parse(localStorage.getItem('currentWorkout')) || [])
   const [showActions,setShowActions] = useState(false)
   const [actionId,setActionId] = useState()
+  const [ftp, setFtp] = useState(parseInt(localStorage.getItem('ftp')))
 
   React.useEffect(() => {
     localStorage.setItem('currentWorkout', JSON.stringify(bars));
-    console.log('saved');
+    localStorage.setItem('ftp',ftp)
 
-  }, [bars]);
+  }, [bars,ftp]);
 
   function handleOnChange(id, values) {
     const index = bars.findIndex(bar => bar.id === id)
@@ -87,6 +85,7 @@ const Editor = () => {
         id={bar.id}
         time={bar.time}
         power={bar.power}
+        ftp={ftp}
         onChange={handleOnChange}
         onClick={handleOnClick}        
       />
@@ -104,7 +103,7 @@ const Editor = () => {
           </div>
         }
         <div className='canvas'>
-          {bars.map((bar) => renderBar(bar))}
+          {bars.map((bar) => renderBar(bar,ftp))}
         </div>
         <div className='timeline'>
           <span>0:00</span>
@@ -118,21 +117,22 @@ const Editor = () => {
           <span>2:00</span>
         </div>
         <div className='zones'>
-          <div>Z6</div>
-          <div>Z5</div>
-          <div>Z4</div>
-          <div>Z3</div>
-          <div>Z2</div>
-          <div>Z1</div>
+          <div style={{height:250*Zones.Z6.max}}>Z6</div>
+          <div style={{height:250*Zones.Z5.max}}>Z5</div>
+          <div style={{height:250*Zones.Z4.max}}>Z4</div>
+          <div style={{height:250*Zones.Z3.max}}>Z3</div>
+          <div style={{height:250*Zones.Z2.max}}>Z2</div>
+          <div style={{height:250*Zones.Z1.max}}>Z1</div>
         </div>
       </div>
       <div className='cta'>
-        <button className="btn" onClick={() => addBar(50)} style={{ backgroundColor: Colors.GRAY }}>Z1</button>
-        <button className="btn" onClick={() => addBar(150)} style={{ backgroundColor: Colors.BLUE }}>Z2</button>
-        <button className="btn" onClick={() => addBar(250)} style={{ backgroundColor: Colors.GREEN }}>Z3</button>
-        <button className="btn" onClick={() => addBar(350)} style={{ backgroundColor: Colors.YELLOW }}>Z4</button>
-        <button className="btn" onClick={() => addBar(450)} style={{ backgroundColor: Colors.ORANGE }}>Z5</button>
-        <button className="btn" onClick={() => addBar(550)} style={{ backgroundColor: Colors.RED }}>Z6</button>
+        <button className="btn" onClick={() => addBar(Zones.Z1.min)} style={{ backgroundColor: Colors.GRAY }}>Z1</button>
+        <button className="btn" onClick={() => addBar(Zones.Z2.min)} style={{ backgroundColor: Colors.BLUE }}>Z2</button>
+        <button className="btn" onClick={() => addBar(Zones.Z3.min)} style={{ backgroundColor: Colors.GREEN }}>Z3</button>
+        <button className="btn" onClick={() => addBar(Zones.Z4.min)} style={{ backgroundColor: Colors.YELLOW }}>Z4</button>
+        <button className="btn" onClick={() => addBar(Zones.Z5.min)} style={{ backgroundColor: Colors.ORANGE }}>Z5</button>
+        <button className="btn" onClick={() => addBar(Zones.Z6.min)} style={{ backgroundColor: Colors.RED }}>Z6</button>
+        <input className="textInput" type="number" name="ftp" value={ftp} onChange={(e) => setFtp(e.target.value)} />
       </div>
     </div>
 

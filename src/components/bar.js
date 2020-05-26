@@ -1,33 +1,33 @@
 import React, { useState } from 'react'
 import './Bar.css'
-import { Colors } from './Constants'
+import { Colors, Zones } from './Constants'
 import { Resizable } from 're-resizable'
 import moment from 'moment'
 import 'moment-duration-format'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faBolt, faClock } from '@fortawesome/free-solid-svg-icons'
 
-const Bar = ({ id, time, power, onChange, onClick }) => {
+const Bar = ({ id, time, power, ftp, onChange, onClick }) => {
+
+  const multiplier = 250
+
+  const powerLabel = Math.round(power*ftp)
+  const durationLabel = getDuration(time)
+  const style = zwiftStyle(power)
 
   const [width, setWidth] = useState(time)
-  const [height, setHeight] = useState(power)
-  const [durationLabel, setDurationLabel] = useState(getDuration(time))
-  const [powerLabel, setPowerLabel] = useState(power)
-  const [style, setStyle] = useState(zwiftStyle(power))
+  const [height, setHeight] = useState(power*multiplier)
+
+  
 
   const handleResizeStop = ({ e, direction, ref, d }) => {
     setWidth(width + d.width)
     setHeight(height + d.height)  
-    onChange(id,{id: id, time: width + d.width,power: height + d.height})  
+    onChange(id,{time: width + d.width,power: (height + d.height)/multiplier, id: id})  
   }
 
-  const handleResize = ({ e, direction, ref, d }) => {
-    // 1 pixel equals 5 seconds   
-    const duration = getDuration(width + d.width)
-
-    setPowerLabel((`${height + d.height}`))
-    setDurationLabel(`${duration}`)
-    setStyle(zwiftStyle(height + d.height))
+  const handleResize = ({ e, direction, ref, d }) => {    
+    onChange(id,{time: width + d.width,power: (height + d.height)/multiplier,id: id})  
   }
 
   function getDuration(seconds) {
@@ -35,25 +35,25 @@ const Bar = ({ id, time, power, onChange, onClick }) => {
     return moment.duration(seconds * 5, "seconds").format("mm:ss", { trim: false })
   }
 
-  function zwiftStyle(zone) {
+  function zwiftStyle(zone) { 
 
-    if (zone >= 0 && zone < 100) {
+    if (zone >=  0 && zone <  Zones.Z1.max) {
       // Z1 gray
       return { backgroundColor: Colors.GRAY }
-    } else if (zone >= 100 && zone < 200) {
+    } else if (zone >=  Zones.Z2.min && zone < Zones.Z2.max) {
       // Z2 blue
       return { backgroundColor: Colors.BLUE }
-    } else if (zone >= 200 && zone < 300) {
+    } else if (zone >=  Zones.Z3.min  && zone < Zones.Z3.max) {
       // Z3 green
       return { backgroundColor: Colors.GREEN }
-    } else if (zone >= 300 && zone < 400) {
+    } else if (zone >=  Zones.Z4.min  && zone < Zones.Z4.max) {
       // Z4 yellow
       return { backgroundColor: Colors.YELLOW }
-    } else if (zone >= 400 && zone < 500) {
-      // Z5 orange
+    } else if (zone >=  Zones.Z5.min && zone < Zones.Z5.max) {
+      // Z5 orange      
       return { backgroundColor: Colors.ORANGE }
     } else {
-      // Z6 red
+      // Z6 red          
       return { backgroundColor: Colors.RED }
     }
   }
@@ -61,12 +61,9 @@ const Bar = ({ id, time, power, onChange, onClick }) => {
   return (    
     <div className='segment'>
       <div className='label'>
-      <FontAwesomeIcon icon={faClock} fixedWidth /> {durationLabel} mm:ss
+      <FontAwesomeIcon icon={faClock} fixedWidth /> {durationLabel}
       <br/>
-      <FontAwesomeIcon icon={faBolt} fixedWidth /> {powerLabel} W
-      </div>
-      <div className='label'>
-      
+      <FontAwesomeIcon icon={faBolt} fixedWidth /> {powerLabel}W
       </div>
       <Resizable
         className='bar'
@@ -75,8 +72,8 @@ const Bar = ({ id, time, power, onChange, onClick }) => {
           height: height,
         }}
         minWidth={3}
-        minHeight={50}
-        maxHeight={600}
+        minHeight={multiplier*Zones.Z1.min}
+        maxHeight={multiplier*Zones.Z6.max}
         enable={{ top: true, right: true }}
         grid={[1, 1]}
         onResizeStop={(e, direction, ref, d) => handleResizeStop({ e, direction, ref, d })}

@@ -24,6 +24,12 @@
   height: 50px;
 }
 
+.textInput {
+  height: 40px;
+  width: 100px;
+  font-size: 20px;
+}
+
 .actions {
   position: absolute;
   top: 0;
@@ -75,9 +81,10 @@
 }
 
 .zones > div {
-  height: 98px;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+}
+.zones > div:not(:first-child){
   border-top: 1px solid black;
-  
-  display: flex;
-  align-items: center;
 }
