@@ -1,7 +1,8 @@
-import React, { useState, useCallback } from 'react'
+import React, { useState } from 'react'
 import './Editor.css'
 import { Colors, Zones } from './Constants'
 import Bar from './Bar'
+import Trapeze from './Trapeze'
 import { v4 as uuidv4 } from 'uuid'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTrash, faArrowRight, faArrowLeft, faFile, faSave } from '@fortawesome/free-solid-svg-icons'
@@ -41,6 +42,18 @@ const Editor = () => {
     setBars([...bars, {
       time: 60,
       power: zone,
+      type: 'bar',
+      id: uuidv4()
+    }
+    ])
+  }
+
+  function addTrapeze(zone1,zone2){
+    setBars([...bars, {
+      time: 60,
+      startPower: zone1,
+      endPower: zone2,
+      type: 'trapeze',
       id: uuidv4()
     }
     ])
@@ -92,6 +105,21 @@ const Editor = () => {
     )
   }
 
+  const renderTrapeze = (bar) => {
+    return (
+      <Trapeze
+        key={bar.id}
+        id={bar.id}
+        time={bar.time}
+        startPower={bar.startPower}
+        endPower={bar.endPower}
+        ftp={ftp}
+        onChange={handleOnChange}
+        onClick={handleOnClick}        
+      />
+    )
+  }
+
   return (
     <div>
       <div className='editor'>
@@ -103,7 +131,15 @@ const Editor = () => {
           </div>
         }
         <div className='canvas'>
-          {bars.map((bar) => renderBar(bar,ftp))}
+          {bars.map((bar) => {
+            if (bar.type === 'bar'){
+              return (renderBar(bar))
+            }              
+            else {
+              return (renderTrapeze(bar))              
+            }
+              
+          })}
         </div>
         <div className='timeline'>
           <span>0:00</span>
@@ -132,6 +168,7 @@ const Editor = () => {
         <button className="btn" onClick={() => addBar(Zones.Z4.min)} style={{ backgroundColor: Colors.YELLOW }}>Z4</button>
         <button className="btn" onClick={() => addBar(Zones.Z5.min)} style={{ backgroundColor: Colors.ORANGE }}>Z5</button>
         <button className="btn" onClick={() => addBar(Zones.Z6.min)} style={{ backgroundColor: Colors.RED }}>Z6</button>
+        <button className="btn" onClick={() => addTrapeze(Zones.Z1.min,Zones.Z2.min)} style={{ backgroundColor: Colors.RED }}>Wormup</button>
         <input className="textInput" type="number" name="ftp" value={ftp} onChange={(e) => setFtp(e.target.value)} />
         <button className="btn" onClick={() => {if (window.confirm('Are you sure you want to create a new workout?')) setBars([])}}><FontAwesomeIcon icon={faFile} size="lg" fixedWidth /> New</button>
         <button className="btn"><FontAwesomeIcon icon={faSave} size="lg" fixedWidth /> Save</button>

@@ -23,11 +23,11 @@ const Bar = ({ id, time, power, ftp, onChange, onClick }) => {
   const handleResizeStop = ({ e, direction, ref, d }) => {
     setWidth(width + d.width)
     setHeight(height + d.height)  
-    onChange(id,{time: width + d.width,power: (height + d.height)/multiplier, id: id})  
+    onChange(id,{time: width + d.width,power: (height + d.height)/multiplier, type: 'bar', id: id})  
   }
 
   const handleResize = ({ e, direction, ref, d }) => {    
-    onChange(id,{time: width + d.width,power: (height + d.height)/multiplier,id: id})  
+    onChange(id,{time: width + d.width,power: (height + d.height)/multiplier, type: 'bar', id: id})  
   }
 
   function getDuration(seconds) {
