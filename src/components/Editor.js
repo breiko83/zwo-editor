@@ -4,7 +4,7 @@ import { Colors, Zones } from './Constants'
 import Bar from './Bar'
 import { v4 as uuidv4 } from 'uuid'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faTrash, faArrowRight, faArrowLeft } from '@fortawesome/free-solid-svg-icons'
+import { faTrash, faArrowRight, faArrowLeft, faFile, faSave } from '@fortawesome/free-solid-svg-icons'
 
 const Editor = () => {
 
@@ -133,6 +133,8 @@ const Editor = () => {
         <button className="btn" onClick={() => addBar(Zones.Z5.min)} style={{ backgroundColor: Colors.ORANGE }}>Z5</button>
         <button className="btn" onClick={() => addBar(Zones.Z6.min)} style={{ backgroundColor: Colors.RED }}>Z6</button>
         <input className="textInput" type="number" name="ftp" value={ftp} onChange={(e) => setFtp(e.target.value)} />
+        <button className="btn" onClick={() => {if (window.confirm('Are you sure you want to create a new workout?')) setBars([])}}><FontAwesomeIcon icon={faFile} size="lg" fixedWidth /> New</button>
+        <button className="btn"><FontAwesomeIcon icon={faSave} size="lg" fixedWidth /> Save</button>
       </div>
     </div>
 
