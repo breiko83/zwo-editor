@@ -7,7 +7,6 @@ export const Colors = {
   RED: '#E90000'
 }
 
-
 export const Zones = {
   Z1: {
     min: 0.1,
@@ -34,3 +33,12 @@ export const Zones = {
     max: 2.0
   }
 }
+
+export const ZonesArray = [
+  [Zones.Z1.min,Zones.Z1.max],
+  [Zones.Z2.min,Zones.Z2.max],
+  [Zones.Z3.min,Zones.Z3.max],
+  [Zones.Z4.min,Zones.Z4.max],
+  [Zones.Z5.min,Zones.Z5.max],
+  [Zones.Z6.min,Zones.Z6.max],
+]

@@ -2,3 +2,46 @@
   display: flex;
   align-items: flex-end;
 }
+
+.trapeze-component {  
+  border-top: 1px dotted gray;
+  z-index: 5;
+}
+
+.trapeze-background {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 0;
+  height: 0;
+  background-color: blue;
+}
+
+.trapeze-colors {
+  position: absolute;
+  bottom: 0px;
+  left: 0;
+  width: 100%;
+  display: flex;
+}
+
+.color:first-child{
+  border-bottom-left-radius: 5px;
+}
+
+.color:last-child{
+  border-bottom-right-radius: 5px;
+}
+
+.trapeze-svg-container {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+}
+.trapeze-svg {
+  fill:transparent;
+}
+.trapeze-svg-off {
+  fill:white;
+  display: hidden;
+}

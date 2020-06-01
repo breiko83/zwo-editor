@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import './Trapeze.css'
-import { Colors, Zones } from './Constants'
+import { Colors, Zones, ZonesArray } from './Constants'
 import { Resizable } from 're-resizable'
 import moment from 'moment'
 import 'moment-duration-format'
@@ -11,20 +11,24 @@ const Trapeze = ({ id, time, startPower, endPower, ftp, onChange, onClick }) => 
 
   const multiplier = 250
 
-  const powerLabel = Math.round(endPower * ftp)
-  const durationLabel = getDuration(time)
+  const powerLabelStart = Math.round(startPower * ftp)
+  const powerLabelEnd = Math.round(endPower * ftp)
+  const durationLabel = getDuration(time * 3)
   const style = zwiftStyle(startPower)
 
   const [width, setWidth] = useState(time)
 
   const [height1, setHeight1] = useState(startPower * multiplier)
-  const [height2, setHeight2] = useState((endPower - startPower / 2) * multiplier)
+  const [height2, setHeight2] = useState(((endPower + startPower) * multiplier) / 2)
   const [height3, setHeight3] = useState(endPower * multiplier)
+
+  var bars = calculateColors(startPower,endPower)
 
   const handleResizeStop1 = ({ e, direction, ref, d }) => {
     //setWidth(width + d.width)
     setHeight1(height1 + d.height)
     setHeight2((height3 + d.height + height1) / 2)
+    onChange(id, { time: width + d.width, startPower: (height1 + d.height) / multiplier, endPower: height3 / multiplier, type: 'trapeze', id: id })
     //onChange(id, { time: width + d.width, power: (height + d.height) / multiplier, type: 'trapeze', id: id })
   }
   const handleResizeStop2 = ({ e, direction, ref, d }) => {
@@ -32,23 +36,49 @@ const Trapeze = ({ id, time, startPower, endPower, ftp, onChange, onClick }) => 
     setHeight2(height2 + d.height)
     setHeight1(height1 + d.height)
     setHeight3(height3 + d.height)
+    onChange(id, { time: width + d.width, startPower: (height1 + d.height) / multiplier, endPower: height3 / multiplier, type: 'trapeze', id: id })
     //onChange(id, { time: width + d.width, power: (height + d.height) / multiplier, type: 'trapeze', id: id })
   }
   const handleResizeStop3 = ({ e, direction, ref, d }) => {
-    //setWidth(width + d.width)
+    setWidth(width + d.width / 3)
     setHeight3(height3 + d.height)
     setHeight2((height3 + d.height + height1) / 2)
+
+    calculateColors(height1 / multiplier, (height3 + d.height) / multiplier)
+
+    onChange(id, { time: width + d.width / 3, startPower: height1 / multiplier, endPower: (height3 + d.height) / multiplier, type: 'trapeze', id: id })
     //onChange(id, { time: width + d.width, power: (height + d.height) / multiplier, type: 'trapeze', id: id })
   }
 
   const handleResize1 = ({ e, direction, ref, d }) => {
-    onChange(id, { time: width + d.width, startPower: (height1 + d.height) / multiplier, endPower: (height3 + d.height) / multiplier, type: 'trapeze', id: id })
+    //onChange(id, { time: width + d.width, startPower: (height1 + d.height) / multiplier, endPower: (height3 + d.height) / multiplier, type: 'trapeze', id: id })
   }
   const handleResize2 = ({ e, direction, ref, d }) => {
-    onChange(id, { time: width + d.width, power: (height2 + d.height) / multiplier, type: 'trapeze', id: id })
+    //onChange(id, { time: width + d.width, startPower: (height1 + d.height) / multiplier, endPower:  height3 / multiplier, type: 'trapeze', id: id })
   }
   const handleResize3 = ({ e, direction, ref, d }) => {
-    onChange(id, { time: width + d.width, startPower: (height1 + d.height) / multiplier, endPower: (height3 + d.height) / multiplier, type: 'trapeze', id: id })
+    //onChange(id, { time: width + d.width, startPower: (height1 + d.height) / multiplier, endPower: (height3 + d.height) / multiplier, type: 'trapeze', id: id })
+  }
+
+  function calculateColors(start, end) {
+
+    const bars = []
+
+    ZonesArray.forEach((zone, index) => {
+      if (start >= zone[0] && start < zone[1]) {
+        bars['Z' + (index + 1)] = zone[1] - start
+      }
+      else if (end >= zone[0] && end < zone[1]) {
+        bars['Z' + (index + 1)] = end - zone[0]
+      }
+      else if (end >= zone[1] && start < zone[0]) {
+        bars['Z' + (index + 1)] = zone[1] - zone[0]
+      } else {
+        bars['Z' + (index + 1)] = 0
+      }
+    })
+
+    return bars
   }
 
   function getDuration(seconds) {
@@ -84,11 +114,12 @@ const Trapeze = ({ id, time, startPower, endPower, ftp, onChange, onClick }) => 
       <div className='label'>
         <FontAwesomeIcon icon={faClock} fixedWidth /> {durationLabel}
         <br />
-        <FontAwesomeIcon icon={faBolt} fixedWidth /> {powerLabel}W
+        <FontAwesomeIcon icon={faBolt} fixedWidth /> {powerLabelStart}W - {powerLabelEnd}W
+
       </div>
       <div className='trapeze'>
         <Resizable
-          className='bar'
+          className='trapeze-component'
           size={{
             width: width,
             height: height1,
@@ -96,16 +127,15 @@ const Trapeze = ({ id, time, startPower, endPower, ftp, onChange, onClick }) => 
           minWidth={3}
           minHeight={multiplier * Zones.Z1.min}
           maxHeight={multiplier * Zones.Z6.max}
-          enable={{ top: true }}
+          enable={{ top: true, right: true }}
           grid={[1, 1]}
           onResizeStop={(e, direction, ref, d) => handleResizeStop1({ e, direction, ref, d })}
           onResize={(e, direction, ref, d) => handleResize1({ e, direction, ref, d })}
           onClick={() => onClick(id)}
-          style={style}
         >
         </Resizable>
         <Resizable
-          className='bar'
+          className='trapeze-component'
           size={{
             width: width,
             height: height2,
@@ -118,11 +148,10 @@ const Trapeze = ({ id, time, startPower, endPower, ftp, onChange, onClick }) => 
           onResizeStop={(e, direction, ref, d) => handleResizeStop2({ e, direction, ref, d })}
           onResize={(e, direction, ref, d) => handleResize2({ e, direction, ref, d })}
           onClick={() => onClick(id)}
-          style={style}
         >
         </Resizable>
         <Resizable
-          className='bar'
+          className='trapeze-component'
           size={{
             width: width,
             height: height3,
@@ -135,10 +164,22 @@ const Trapeze = ({ id, time, startPower, endPower, ftp, onChange, onClick }) => 
           onResizeStop={(e, direction, ref, d) => handleResizeStop3({ e, direction, ref, d })}
           onResize={(e, direction, ref, d) => handleResize3({ e, direction, ref, d })}
           onClick={() => onClick(id)}
-          style={style}
         >
         </Resizable>
       </div>
+      <div className='trapeze-colors' style={{ height: height3 }}>
+        <div className='color' style={{ backgroundColor: Colors.GRAY, width: `${(bars['Z1'] * 100 / (endPower - startPower))}%` }}></div>
+        <div className='color' style={{ backgroundColor: Colors.BLUE, width: `${(bars['Z2'] * 100 / (endPower - startPower))}%` }}></div>
+        <div className='color' style={{ backgroundColor: Colors.GREEN, width: `${(bars['Z3'] * 100 / (endPower - startPower))}%` }}></div>
+        <div className='color' style={{ backgroundColor: Colors.YELLOW, width: `${(bars['Z4'] * 100 / (endPower - startPower))}%` }}></div>
+        <div className='color' style={{ backgroundColor: Colors.ORANGE, width: `${(bars['Z5'] * 100 / (endPower - startPower))}%` }}></div>
+        <div className='color' style={{ backgroundColor: Colors.RED, width: `${(bars['Z6'] * 100 / (endPower - startPower))}%` }}></div>
+      </div>
+      <svg height={`${height3}`} width={`${width * 3}`} className='trapeze-svg-container'>
+        <polygon points={`0,${height3 - height1} 0,${height3} ${width * 3},${height3} ${width * 3},0`} className='trapeze-svg' />
+        <polygon points={`0,0 0,${height3 - height1} ${width * 3},0`} className='trapeze-svg-off' />
+        Sorry, your browser does not support inline SVG.
+      </svg>
     </div>
 
   );
