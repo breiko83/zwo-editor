@@ -14,7 +14,6 @@ const Trapeze = ({ id, time, startPower, endPower, ftp, onChange, onClick }) => 
   const powerLabelStart = Math.round(startPower * ftp)
   const powerLabelEnd = Math.round(endPower * ftp)
   const durationLabel = getDuration(time * 3)
-  const style = zwiftStyle(startPower)
 
   const [width, setWidth] = useState(time)
 
@@ -22,7 +21,15 @@ const Trapeze = ({ id, time, startPower, endPower, ftp, onChange, onClick }) => 
   const [height2, setHeight2] = useState(((endPower + startPower) * multiplier) / 2)
   const [height3, setHeight3] = useState(endPower * multiplier)
 
-  var bars = calculateColors(startPower,endPower)
+  const trapezeHeight = height3 > height1 ? height3 : height1
+  const trapezeTop = height3 > height1 ? (height3 - height1) : (height1 - height3)
+
+  const vertexB = height3 > height1 ? 0 : (width * 3)
+  const vertexA = height3 > height1 ? trapezeTop : 0
+  const vertexD = height3 > height1 ? 0 : trapezeTop
+
+  var bars = height3 > height1 ? calculateColors(startPower, endPower) : calculateColors(endPower, startPower)
+  const flexDirection = height3 > height1 ? 'row' : 'row-reverse'
 
   const handleResizeStop1 = ({ e, direction, ref, d }) => {
     //setWidth(width + d.width)
@@ -44,7 +51,6 @@ const Trapeze = ({ id, time, startPower, endPower, ftp, onChange, onClick }) => 
     setHeight3(height3 + d.height)
     setHeight2((height3 + d.height + height1) / 2)
 
-    calculateColors(height1 / multiplier, (height3 + d.height) / multiplier)
 
     onChange(id, { time: width + d.width / 3, startPower: height1 / multiplier, endPower: (height3 + d.height) / multiplier, type: 'trapeze', id: id })
     //onChange(id, { time: width + d.width, power: (height + d.height) / multiplier, type: 'trapeze', id: id })
@@ -78,35 +84,15 @@ const Trapeze = ({ id, time, startPower, endPower, ftp, onChange, onClick }) => 
       }
     })
 
+    console.log(bars);
+
+
     return bars
   }
 
   function getDuration(seconds) {
     // 1 pixel equals 5 seconds 
     return moment.duration(seconds * 5, "seconds").format("mm:ss", { trim: false })
-  }
-
-  function zwiftStyle(zone) {
-
-    if (zone >= 0 && zone < Zones.Z1.max) {
-      // Z1 gray
-      return { backgroundColor: Colors.GRAY }
-    } else if (zone >= Zones.Z2.min && zone < Zones.Z2.max) {
-      // Z2 blue
-      return { backgroundColor: Colors.BLUE }
-    } else if (zone >= Zones.Z3.min && zone < Zones.Z3.max) {
-      // Z3 green
-      return { backgroundColor: Colors.GREEN }
-    } else if (zone >= Zones.Z4.min && zone < Zones.Z4.max) {
-      // Z4 yellow
-      return { backgroundColor: Colors.YELLOW }
-    } else if (zone >= Zones.Z5.min && zone < Zones.Z5.max) {
-      // Z5 orange      
-      return { backgroundColor: Colors.ORANGE }
-    } else {
-      // Z6 red          
-      return { backgroundColor: Colors.RED }
-    }
   }
 
   return (
@@ -167,17 +153,18 @@ const Trapeze = ({ id, time, startPower, endPower, ftp, onChange, onClick }) => 
         >
         </Resizable>
       </div>
-      <div className='trapeze-colors' style={{ height: height3 }}>
-        <div className='color' style={{ backgroundColor: Colors.GRAY, width: `${(bars['Z1'] * 100 / (endPower - startPower))}%` }}></div>
-        <div className='color' style={{ backgroundColor: Colors.BLUE, width: `${(bars['Z2'] * 100 / (endPower - startPower))}%` }}></div>
-        <div className='color' style={{ backgroundColor: Colors.GREEN, width: `${(bars['Z3'] * 100 / (endPower - startPower))}%` }}></div>
-        <div className='color' style={{ backgroundColor: Colors.YELLOW, width: `${(bars['Z4'] * 100 / (endPower - startPower))}%` }}></div>
-        <div className='color' style={{ backgroundColor: Colors.ORANGE, width: `${(bars['Z5'] * 100 / (endPower - startPower))}%` }}></div>
-        <div className='color' style={{ backgroundColor: Colors.RED, width: `${(bars['Z6'] * 100 / (endPower - startPower))}%` }}></div>
+      <div className='trapeze-colors' style={{ height: trapezeHeight, flexDirection: flexDirection }}>
+        <div className='color' style={{ backgroundColor: Colors.GRAY, width: `${(bars['Z1'] * 100 / Math.abs(endPower - startPower))}%` }}></div>
+        <div className='color' style={{ backgroundColor: Colors.BLUE, width: `${(bars['Z2'] * 100 / Math.abs(endPower - startPower))}%` }}></div>
+        <div className='color' style={{ backgroundColor: Colors.GREEN, width: `${(bars['Z3'] * 100 / Math.abs(endPower - startPower))}%` }}></div>
+        <div className='color' style={{ backgroundColor: Colors.YELLOW, width: `${(bars['Z4'] * 100 / Math.abs(endPower - startPower))}%` }}></div>
+        <div className='color' style={{ backgroundColor: Colors.ORANGE, width: `${(bars['Z5'] * 100 / Math.abs(endPower - startPower))}%` }}></div>        
+        <div className='color' style={{ backgroundColor: Colors.RED, width: `${(bars['Z6'] * 100 / Math.abs(endPower - startPower))}%` }}></div>      
       </div>
-      <svg height={`${height3}`} width={`${width * 3}`} className='trapeze-svg-container'>
-        <polygon points={`0,${height3 - height1} 0,${height3} ${width * 3},${height3} ${width * 3},0`} className='trapeze-svg' />
-        <polygon points={`0,0 0,${height3 - height1} ${width * 3},0`} className='trapeze-svg-off' />
+      <svg height={`${trapezeHeight}`} width={`${width * 3}`} className='trapeze-svg-container'>
+        <polygon points={`0,${vertexA} 0,${trapezeHeight} ${width * 3},${trapezeHeight} ${width * 3},${vertexD}`} className='trapeze-svg' />
+        <polygon points={`0,0 ${vertexB},${trapezeTop} ${width * 3},0`} className='trapeze-svg-off' />
+
         Sorry, your browser does not support inline SVG.
       </svg>
     </div>
