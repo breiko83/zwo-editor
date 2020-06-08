@@ -5,20 +5,23 @@ import Bar from './Bar'
 import Trapeze from './Trapeze'
 import { v4 as uuidv4 } from 'uuid'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faTrash, faArrowRight, faArrowLeft, faFile, faSave } from '@fortawesome/free-solid-svg-icons'
+import { faTrash, faArrowRight, faArrowLeft, faFile, faSave, faUpload } from '@fortawesome/free-solid-svg-icons'
+import { ReactComponent as WarmdownLogo } from '../warmdown.svg'
+import { ReactComponent as WarmupLogo } from '../warmup.svg'
+import Builder from 'xmlbuilder'
 
 const Editor = () => {
 
   const [bars, setBars] = useState(JSON.parse(localStorage.getItem('currentWorkout')) || [])
-  const [showActions,setShowActions] = useState(false)
-  const [actionId,setActionId] = useState()
+  const [showActions, setShowActions] = useState(false)
+  const [actionId, setActionId] = useState()
   const [ftp, setFtp] = useState(parseInt(localStorage.getItem('ftp')) || 200)
 
   React.useEffect(() => {
     localStorage.setItem('currentWorkout', JSON.stringify(bars));
-    localStorage.setItem('ftp',ftp)
+    localStorage.setItem('ftp', ftp)
 
-  }, [bars,ftp]);
+  }, [bars, ftp]);
 
   function handleOnChange(id, values) {
     const index = bars.findIndex(bar => bar.id === id)
@@ -28,11 +31,11 @@ const Editor = () => {
     setBars(updatedArray)
   }
 
-  function handleOnClick(id) {  
+  function handleOnClick(id) {
 
-    if(id === actionId) {
+    if (id === actionId) {
       setShowActions(!showActions)
-    }else{
+    } else {
       setActionId(id)
       setShowActions(true)
     }
@@ -40,7 +43,7 @@ const Editor = () => {
 
   function addBar(zone) {
     setBars([...bars, {
-      time: 60,
+      time: 300,
       power: zone,
       type: 'bar',
       id: uuidv4()
@@ -48,9 +51,9 @@ const Editor = () => {
     ])
   }
 
-  function addTrapeze(zone1,zone2){
+  function addTrapeze(zone1, zone2) {
     setBars([...bars, {
-      time: 60,
+      time: 300,
       startPower: zone1,
       endPower: zone2,
       type: 'trapeze',
@@ -59,7 +62,7 @@ const Editor = () => {
     ])
   }
 
-  function removeBar(id) {    
+  function removeBar(id) {
     const updatedArray = [...bars]
     setBars(updatedArray.filter(item => item.id !== id))
     setShowActions(false)
@@ -68,12 +71,12 @@ const Editor = () => {
   function moveLeft(id) {
     const index = bars.findIndex(bar => bar.id === id)
     // not first position of array
-    if(index > 0) {
+    if (index > 0) {
       const updatedArray = [...bars]
       const element = [...bars][index]
       updatedArray.splice(index, 1)
-      updatedArray.splice(index-1, 0, element)
-      setBars(updatedArray)  
+      updatedArray.splice(index - 1, 0, element)
+      setBars(updatedArray)
       setShowActions(false)
     }
   }
@@ -81,14 +84,57 @@ const Editor = () => {
   function moveRight(id) {
     const index = bars.findIndex(bar => bar.id === id)
     // not first position of array
-    if(index < bars.length-1) {
+    if (index < bars.length - 1) {
       const updatedArray = [...bars]
       const element = [...bars][index]
       updatedArray.splice(index, 1)
-      updatedArray.splice(index+1, 0, element)
-      setBars(updatedArray) 
-      setShowActions(false)          
+      updatedArray.splice(index + 1, 0, element)
+      setBars(updatedArray)
+      setShowActions(false)
     }
+  }
+
+  function saveWorkout() {
+
+    const xml = Builder.create('workout_file')
+      .ele('author', 'author name').up()
+      .ele('name', 'workout name').up()
+      .ele('description', 'workout description').up()
+      .ele('sportType', 'bike').up()
+      .ele('tags', {}).up()
+      .ele('workout')
+
+
+    bars.map(bar => {
+
+      var segment
+
+      if (bar.type === 'bar') {
+        segment = Builder.create('SteadyState')
+          .att('Duration', bar.time)
+          .att('PowerLow', bar.power)
+          .att('PowerHigh', bar.power)
+      } else {
+
+        if (bar.startPower < bar.endPower) {
+          // warmup
+          segment = Builder.create('Warmup')
+            .att('Duration', bar.time)
+            .att('PowerLow', bar.startPower)
+            .att('PowerHigh', bar.endPower)
+        } else {
+          // warmdown
+          segment = Builder.create('Cooldown')
+            .att('Duration', bar.time)
+            .att('PowerLow', bar.endPower)
+            .att('PowerHigh', bar.startPower)
+        }
+      }
+      xml.importDocument(segment)
+    })
+
+    console.log(xml.end({ pretty: true }));
+
   }
 
   const renderBar = (bar) => {
@@ -100,7 +146,7 @@ const Editor = () => {
         power={bar.power}
         ftp={ftp}
         onChange={handleOnChange}
-        onClick={handleOnClick}        
+        onClick={handleOnClick}
       />
     )
   }
@@ -115,7 +161,7 @@ const Editor = () => {
         endPower={bar.endPower}
         ftp={ftp}
         onChange={handleOnChange}
-        onClick={handleOnClick}        
+        onClick={handleOnClick}
       />
     )
   }
@@ -132,13 +178,13 @@ const Editor = () => {
         }
         <div className='canvas'>
           {bars.map((bar) => {
-            if (bar.type === 'bar'){
+            if (bar.type === 'bar') {
               return (renderBar(bar))
-            }              
-            else {
-              return (renderTrapeze(bar))              
             }
-              
+            else {
+              return (renderTrapeze(bar))
+            }
+
           })}
         </div>
         <div className='timeline'>
@@ -153,12 +199,12 @@ const Editor = () => {
           <span>2:00</span>
         </div>
         <div className='zones'>
-          <div style={{height:250*Zones.Z6.max}}>Z6</div>
-          <div style={{height:250*Zones.Z5.max}}>Z5</div>
-          <div style={{height:250*Zones.Z4.max}}>Z4</div>
-          <div style={{height:250*Zones.Z3.max}}>Z3</div>
-          <div style={{height:250*Zones.Z2.max}}>Z2</div>
-          <div style={{height:250*Zones.Z1.max}}>Z1</div>
+          <div style={{ height: 250 * Zones.Z6.max }}>Z6</div>
+          <div style={{ height: 250 * Zones.Z5.max }}>Z5</div>
+          <div style={{ height: 250 * Zones.Z4.max }}>Z4</div>
+          <div style={{ height: 250 * Zones.Z3.max }}>Z3</div>
+          <div style={{ height: 250 * Zones.Z2.max }}>Z2</div>
+          <div style={{ height: 250 * Zones.Z1.max }}>Z1</div>
         </div>
       </div>
       <div className='cta'>
@@ -168,10 +214,12 @@ const Editor = () => {
         <button className="btn" onClick={() => addBar(Zones.Z4.min)} style={{ backgroundColor: Colors.YELLOW }}>Z4</button>
         <button className="btn" onClick={() => addBar(Zones.Z5.min)} style={{ backgroundColor: Colors.ORANGE }}>Z5</button>
         <button className="btn" onClick={() => addBar(Zones.Z6.min)} style={{ backgroundColor: Colors.RED }}>Z6</button>
-        <button className="btn" onClick={() => addTrapeze(Zones.Z1.min,Zones.Z2.min)} style={{ backgroundColor: Colors.RED }}>Wormup</button>
+        <button className="btn" onClick={() => addTrapeze(Zones.Z1.min, Zones.Z4.min)} style={{ backgroundColor: Colors.WHITE }}><WarmupLogo /></button>
+        <button className="btn" onClick={() => addTrapeze(Zones.Z4.min, Zones.Z1.min)} style={{ backgroundColor: Colors.WHITE }}><WarmdownLogo /></button>
         <input className="textInput" type="number" name="ftp" value={ftp} onChange={(e) => setFtp(e.target.value)} />
-        <button className="btn" onClick={() => {if (window.confirm('Are you sure you want to create a new workout?')) setBars([])}}><FontAwesomeIcon icon={faFile} size="lg" fixedWidth /> New</button>
-        <button className="btn"><FontAwesomeIcon icon={faSave} size="lg" fixedWidth /> Save</button>
+        <button className="btn" onClick={() => { if (window.confirm('Are you sure you want to create a new workout?')) setBars([]) }}><FontAwesomeIcon icon={faFile} size="lg" fixedWidth /> New</button>
+        <button className="btn" onClick={() => saveWorkout()}><FontAwesomeIcon icon={faSave} size="lg" fixedWidth /> Save</button>
+        <button className="btn" onClick={()=>{}}><FontAwesomeIcon icon={faUpload} size="lg" fixedWidth /> Upload</button>
       </div>
     </div>
 

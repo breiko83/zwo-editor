@@ -4,7 +4,8 @@ export const Colors = {
   GREEN: '#00C46A',
   YELLOW: '#FFCB00',
   ORANGE: '#FF6430',
-  RED: '#E90000'
+  RED: '#E90000',
+  WHITE: '#FFFFFF'
 }
 
 export const Zones = {

@@ -6,16 +6,18 @@ import moment from 'moment'
 import 'moment-duration-format'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faBolt, faClock } from '@fortawesome/free-solid-svg-icons'
+import Label from './Label'
 
 const Trapeze = ({ id, time, startPower, endPower, ftp, onChange, onClick }) => {
 
   const multiplier = 250
+  const timeMultiplier = 5
 
   const powerLabelStart = Math.round(startPower * ftp)
   const powerLabelEnd = Math.round(endPower * ftp)
-  const durationLabel = getDuration(time * 3)
+  const durationLabel = getDuration(time / timeMultiplier)
 
-  const [width, setWidth] = useState(time)
+  const [width, setWidth] = useState(Math.round(time / timeMultiplier / 3))
 
   const [height1, setHeight1] = useState(startPower * multiplier)
   const [height2, setHeight2] = useState(((endPower + startPower) * multiplier) / 2)
@@ -35,7 +37,7 @@ const Trapeze = ({ id, time, startPower, endPower, ftp, onChange, onClick }) => 
     //setWidth(width + d.width)
     setHeight1(height1 + d.height)
     setHeight2((height3 + d.height + height1) / 2)
-    onChange(id, { time: width + d.width, startPower: (height1 + d.height) / multiplier, endPower: height3 / multiplier, type: 'trapeze', id: id })
+    onChange(id, { time: Math.round(width * timeMultiplier * 3), startPower: (height1 + d.height) / multiplier, endPower: height3 / multiplier, type: 'trapeze', id: id })
     //onChange(id, { time: width + d.width, power: (height + d.height) / multiplier, type: 'trapeze', id: id })
   }
   const handleResizeStop2 = ({ e, direction, ref, d }) => {
@@ -43,16 +45,15 @@ const Trapeze = ({ id, time, startPower, endPower, ftp, onChange, onClick }) => 
     setHeight2(height2 + d.height)
     setHeight1(height1 + d.height)
     setHeight3(height3 + d.height)
-    onChange(id, { time: width + d.width, startPower: (height1 + d.height) / multiplier, endPower: height3 / multiplier, type: 'trapeze', id: id })
+    onChange(id, { time: Math.round(width * timeMultiplier * 3), startPower: (height1 + d.height) / multiplier, endPower: (height3 + d.height) / multiplier, type: 'trapeze', id: id })
     //onChange(id, { time: width + d.width, power: (height + d.height) / multiplier, type: 'trapeze', id: id })
   }
   const handleResizeStop3 = ({ e, direction, ref, d }) => {
-    setWidth(width + d.width / 3)
+    setWidth(width + (d.width / 3))
     setHeight3(height3 + d.height)
     setHeight2((height3 + d.height + height1) / 2)
 
-
-    onChange(id, { time: width + d.width / 3, startPower: height1 / multiplier, endPower: (height3 + d.height) / multiplier, type: 'trapeze', id: id })
+    //onChange(id, { time: (width * timeMultiplier * 3) + (d.width * timeMultiplier), startPower: height1 / multiplier, endPower: (height3 + d.height) / multiplier, type: 'trapeze', id: id })
     //onChange(id, { time: width + d.width, power: (height + d.height) / multiplier, type: 'trapeze', id: id })
   }
 
@@ -64,6 +65,7 @@ const Trapeze = ({ id, time, startPower, endPower, ftp, onChange, onClick }) => 
   }
   const handleResize3 = ({ e, direction, ref, d }) => {
     //onChange(id, { time: width + d.width, startPower: (height1 + d.height) / multiplier, endPower: (height3 + d.height) / multiplier, type: 'trapeze', id: id })
+    onChange(id, { time: Math.round((width * timeMultiplier * 3) + (d.width * timeMultiplier)), startPower: height1 / multiplier, endPower: (height3 + d.height) / multiplier, type: 'trapeze', id: id })
   }
 
   function calculateColors(start, end) {
@@ -83,10 +85,6 @@ const Trapeze = ({ id, time, startPower, endPower, ftp, onChange, onClick }) => 
         bars['Z' + (index + 1)] = 0
       }
     })
-
-    console.log(bars);
-
-
     return bars
   }
 
@@ -97,12 +95,7 @@ const Trapeze = ({ id, time, startPower, endPower, ftp, onChange, onClick }) => 
 
   return (
     <div className='segment'>
-      <div className='label'>
-        <FontAwesomeIcon icon={faClock} fixedWidth /> {durationLabel}
-        <br />
-        <FontAwesomeIcon icon={faBolt} fixedWidth /> {powerLabelStart}W - {powerLabelEnd}W
-
-      </div>
+      <Label duration={durationLabel} powerStart={powerLabelStart} powerEnd={powerLabelEnd} />
       <div className='trapeze'>
         <Resizable
           className='trapeze-component'
@@ -158,8 +151,8 @@ const Trapeze = ({ id, time, startPower, endPower, ftp, onChange, onClick }) => 
         <div className='color' style={{ backgroundColor: Colors.BLUE, width: `${(bars['Z2'] * 100 / Math.abs(endPower - startPower))}%` }}></div>
         <div className='color' style={{ backgroundColor: Colors.GREEN, width: `${(bars['Z3'] * 100 / Math.abs(endPower - startPower))}%` }}></div>
         <div className='color' style={{ backgroundColor: Colors.YELLOW, width: `${(bars['Z4'] * 100 / Math.abs(endPower - startPower))}%` }}></div>
-        <div className='color' style={{ backgroundColor: Colors.ORANGE, width: `${(bars['Z5'] * 100 / Math.abs(endPower - startPower))}%` }}></div>        
-        <div className='color' style={{ backgroundColor: Colors.RED, width: `${(bars['Z6'] * 100 / Math.abs(endPower - startPower))}%` }}></div>      
+        <div className='color' style={{ backgroundColor: Colors.ORANGE, width: `${(bars['Z5'] * 100 / Math.abs(endPower - startPower))}%` }}></div>
+        <div className='color' style={{ backgroundColor: Colors.RED, width: `${(bars['Z6'] * 100 / Math.abs(endPower - startPower))}%` }}></div>
       </div>
       <svg height={`${trapezeHeight}`} width={`${width * 3}`} className='trapeze-svg-container'>
         <polygon points={`0,${vertexA} 0,${trapezeHeight} ${width * 3},${trapezeHeight} ${width * 3},${vertexD}`} className='trapeze-svg' />
