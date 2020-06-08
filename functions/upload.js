@@ -3,7 +3,8 @@ const { MY_AWS_ACCESS_KEY_ID, MY_AWS_SECRET_ACCESS_KEY, S3_BUCKET_NAME } = proce
 
 const s3 = new AWS.S3({
   signatureVersion: 'v4',
-  credentials: new AWS.Credentials(MY_AWS_ACCESS_KEY_ID, MY_AWS_SECRET_ACCESS_KEY)
+  credentials: new AWS.Credentials(MY_AWS_ACCESS_KEY_ID, MY_AWS_SECRET_ACCESS_KEY),
+  region: 'eu-west-1',
 })
 
 exports.handler = function (event, context, callback) {
@@ -27,6 +28,7 @@ exports.handler = function (event, context, callback) {
     Bucket: S3_BUCKET_NAME,
     Key: fileName,
     ContentType: fileType,
+    
     ACL: 'public-read', /* Note: change if files are NOT public */
     /* Optionally add additional data
     Metadata: {
