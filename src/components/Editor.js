@@ -32,6 +32,7 @@ const Editor = () => {
   function newWorkout(){
     setBars([])
     setId(generateId())
+    window.history.replaceState('', '', `/${id}`);
   }
 
   function handleOnChange(id, values) {
