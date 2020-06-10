@@ -12,6 +12,7 @@ import Builder from 'xmlbuilder'
 
 const Editor = () => {
 
+  const [id, setId] = useState(localStorage.getItem('id') || generateId())
   const [bars, setBars] = useState(JSON.parse(localStorage.getItem('currentWorkout')) || [])
   const [showActions, setShowActions] = useState(false)
   const [actionId, setActionId] = useState()
@@ -20,8 +21,18 @@ const Editor = () => {
   React.useEffect(() => {
     localStorage.setItem('currentWorkout', JSON.stringify(bars));
     localStorage.setItem('ftp', ftp)
+    localStorage.setItem('id', id)
 
-  }, [bars, ftp]);
+  }, [bars, ftp, id])
+
+  function generateId(){
+    return Math.random().toString(36).substr(2,16)
+  }
+
+  function newWorkout(){
+    setBars([])
+    setId(generateId())
+  }
 
   function handleOnChange(id, values) {
     const index = bars.findIndex(bar => bar.id === id)
@@ -105,34 +116,47 @@ const Editor = () => {
       .ele('workout')
 
 
-    bars.map(bar => {
+    bars.map((bar,index) => {
 
       var segment
+      var ramp
 
       if (bar.type === 'bar') {
         segment = Builder.create('SteadyState')
           .att('Duration', bar.time)
           .att('PowerLow', bar.power)
           .att('PowerHigh', bar.power)
-      } else {
+      } else if (bar.type === 'trapeze') {
+
+        // index 0 is warmup
+        // last index is cooldown
+        // everything else is ramp
+
+        ramp = 'Ramp'
+        if (index == 0) ramp = 'Wamup' 
+        if (index == bars.length-1) ramp = 'Cooldown'
 
         if (bar.startPower < bar.endPower) {
           // warmup
-          segment = Builder.create('Warmup')
+          segment = Builder.create(ramp)
             .att('Duration', bar.time)
             .att('PowerLow', bar.startPower)
             .att('PowerHigh', bar.endPower)
         } else {
           // warmdown
-          segment = Builder.create('Cooldown')
+          segment = Builder.create(ramp)
             .att('Duration', bar.time)
             .att('PowerLow', bar.endPower)
             .att('PowerHigh', bar.startPower)
         }
+      }else {
+        // free ride
+
       }
       xml.importDocument(segment)
     })
 
+    // save this to cloud?
     console.log(xml.end({ pretty: true }));
 
   }
@@ -154,9 +178,6 @@ const Editor = () => {
       .then(function (data) {
         const signedUrl = data.uploadURL
 
-        console.log(signedUrl);
-        
-
         // upload to S3
         fetch(signedUrl, {
           method: 'PUT',
@@ -167,14 +188,14 @@ const Editor = () => {
         })
           .then(response => response.text())
           .then(data => {
-            console.log('File uploaded')           
+            console.log('File uploaded')
+
+            //now parse file
           })
           .catch(error => {
             console.error(error)
           })
-
       })
-
   }
 
   const renderBar = (bar) => {
@@ -257,7 +278,7 @@ const Editor = () => {
         <button className="btn" onClick={() => addTrapeze(Zones.Z1.min, Zones.Z4.min)} style={{ backgroundColor: Colors.WHITE }}><WarmupLogo /></button>
         <button className="btn" onClick={() => addTrapeze(Zones.Z4.min, Zones.Z1.min)} style={{ backgroundColor: Colors.WHITE }}><WarmdownLogo /></button>
         <input className="textInput" type="number" name="ftp" value={ftp} onChange={(e) => setFtp(e.target.value)} />
-        <button className="btn" onClick={() => { if (window.confirm('Are you sure you want to create a new workout?')) setBars([]) }}><FontAwesomeIcon icon={faFile} size="lg" fixedWidth /> New</button>
+        <button className="btn" onClick={() => { if (window.confirm('Are you sure you want to create a new workout?')) newWorkout() }}><FontAwesomeIcon icon={faFile} size="lg" fixedWidth /> New</button>
         <button className="btn" onClick={() => saveWorkout()}><FontAwesomeIcon icon={faSave} size="lg" fixedWidth /> Save</button>
         <input
           accept=".xml,.zwo"
