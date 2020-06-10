@@ -137,6 +137,46 @@ const Editor = () => {
 
   }
 
+  function handleUpload(e) {
+    const file = e.target.files[0]
+    const fileName = file.name
+    const fileType = file.name.split('.')[1]
+
+    fetch('/.netlify/functions/upload', {
+      method: 'POST',
+      body: JSON.stringify(
+        {
+          fileType: fileType,
+          fileName: fileName
+        })
+    })
+      .then(res => res.json())
+      .then(function (data) {
+        const signedUrl = data.uploadURL
+
+        console.log(signedUrl);
+        
+
+        // upload to S3
+        fetch(signedUrl, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': fileType
+          },
+          body: file
+        })
+          .then(response => response.text())
+          .then(data => {
+            console.log('File uploaded')           
+          })
+          .catch(error => {
+            console.error(error)
+          })
+
+      })
+
+  }
+
   const renderBar = (bar) => {
     return (
       <Bar
@@ -219,7 +259,17 @@ const Editor = () => {
         <input className="textInput" type="number" name="ftp" value={ftp} onChange={(e) => setFtp(e.target.value)} />
         <button className="btn" onClick={() => { if (window.confirm('Are you sure you want to create a new workout?')) setBars([]) }}><FontAwesomeIcon icon={faFile} size="lg" fixedWidth /> New</button>
         <button className="btn" onClick={() => saveWorkout()}><FontAwesomeIcon icon={faSave} size="lg" fixedWidth /> Save</button>
-        <button className="btn" onClick={()=>{}}><FontAwesomeIcon icon={faUpload} size="lg" fixedWidth /> Upload</button>
+        <input
+          accept=".xml,.zwo"
+          id="contained-button-file"
+          type="file"
+          style={{ display: 'none' }}
+          onChange={handleUpload}
+        />
+        <label htmlFor="contained-button-file">
+          <div className="btn"><FontAwesomeIcon icon={faUpload} size="lg" fixedWidth /> Upload</div>
+        </label>
+
       </div>
     </div>
 
