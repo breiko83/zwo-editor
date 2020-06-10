@@ -9,8 +9,11 @@ import { faTrash, faArrowRight, faArrowLeft, faFile, faSave, faUpload } from '@f
 import { ReactComponent as WarmdownLogo } from '../warmdown.svg'
 import { ReactComponent as WarmupLogo } from '../warmup.svg'
 import Builder from 'xmlbuilder'
+import Converter from 'xml-js'
 
 const Editor = () => {
+
+  const S3_URL = 'https://zwift-workout.s3-eu-west-1.amazonaws.com'
 
   const [id, setId] = useState(localStorage.getItem('id') || generateId())
   const [bars, setBars] = useState(JSON.parse(localStorage.getItem('currentWorkout')) || [])
@@ -18,21 +21,25 @@ const Editor = () => {
   const [actionId, setActionId] = useState()
   const [ftp, setFtp] = useState(parseInt(localStorage.getItem('ftp')) || 200)
 
+  const [name, setName] = useState('New workout')
+  const [description, setDescription] = useState('')
+  const [author, setAuthor] = useState('')
+
   React.useEffect(() => {
     localStorage.setItem('currentWorkout', JSON.stringify(bars));
     localStorage.setItem('ftp', ftp)
     localStorage.setItem('id', id)
+    window.history.replaceState('', '', `/${id}`);
 
   }, [bars, ftp, id])
 
-  function generateId(){
-    return Math.random().toString(36).substr(2,16)
+  function generateId() {
+    return Math.random().toString(36).substr(2, 16)
   }
 
-  function newWorkout(){
+  function newWorkout() {
     setBars([])
     setId(generateId())
-    window.history.replaceState('', '', `/${id}`);
   }
 
   function handleOnChange(id, values) {
@@ -117,7 +124,7 @@ const Editor = () => {
       .ele('workout')
 
 
-    bars.map((bar,index) => {
+    bars.map((bar, index) => {
 
       var segment
       var ramp
@@ -134,8 +141,8 @@ const Editor = () => {
         // everything else is ramp
 
         ramp = 'Ramp'
-        if (index == 0) ramp = 'Wamup' 
-        if (index == bars.length-1) ramp = 'Cooldown'
+        if (index == 0) ramp = 'Wamup'
+        if (index == bars.length - 1) ramp = 'Cooldown'
 
         if (bar.startPower < bar.endPower) {
           // warmup
@@ -150,7 +157,7 @@ const Editor = () => {
             .att('PowerLow', bar.endPower)
             .att('PowerHigh', bar.startPower)
         }
-      }else {
+      } else {
         // free ride
 
       }
@@ -163,16 +170,23 @@ const Editor = () => {
   }
 
   function handleUpload(e) {
+
+    // ask user if they want to overwrite current workout first
+    newWorkout()
+
     const file = e.target.files[0]
     const fileName = file.name
     const fileType = file.name.split('.')[1]
+
+    // check if file type is zwo or xml
+
 
     fetch('/.netlify/functions/upload', {
       method: 'POST',
       body: JSON.stringify(
         {
-          fileType: fileType,
-          fileName: fileName
+          fileType: 'zwo',
+          fileName: `${id}.zwo`
         })
     })
       .then(res => res.json())
@@ -183,7 +197,7 @@ const Editor = () => {
         fetch(signedUrl, {
           method: 'PUT',
           headers: {
-            'Content-Type': fileType
+            'Content-Type': 'zwo'
           },
           body: file
         })
@@ -192,10 +206,42 @@ const Editor = () => {
             console.log('File uploaded')
 
             //now parse file
+            fetchAndParse(id)
           })
           .catch(error => {
             console.error(error)
           })
+      })
+  }
+
+  function fetchAndParse(id) {
+    fetch(`${S3_URL}/${id}.zwo`)
+      .then(response => response.text())
+      .then(data => {
+        console.log(data)
+
+        //now parse file  
+        const workout = Converter.xml2js(data)      
+        const workout_file = workout.elements[0]
+        
+        if(workout_file.name === 'workout_file'){
+          // file is valid
+          const authorIndex = workout_file.elements.findIndex(element => element.name === 'author')
+          setAuthor(workout_file.elements[authorIndex].elements[0].text)
+
+          const nameIndex = workout_file.elements.findIndex(element => element.name === 'name')
+          setName(workout_file.elements[nameIndex].elements[0].text)
+
+          const descriptionIndex = workout_file.elements.findIndex(element => element.name === 'description')
+          setDescription(workout_file.elements[descriptionIndex].elements[0].text)
+
+        }
+        
+        
+        
+      })
+      .catch(error => {
+        console.error(error)
       })
   }
 
