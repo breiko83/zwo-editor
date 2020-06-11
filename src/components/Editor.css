@@ -93,3 +93,11 @@
 .zones > div:not(:first-child){
   border-top: 1px solid black;
 }
+
+.slider {  
+  position: absolute;
+  width: 100%;
+  top: 50px;
+  left: 0;
+  z-index: 100;
+}

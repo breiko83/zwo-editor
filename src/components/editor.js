@@ -3,6 +3,7 @@ import './Editor.css'
 import { Colors, Zones } from './Constants'
 import Bar from './Bar'
 import Trapeze from './Trapeze'
+import FreeRide from './FreeRide'
 import { v4 as uuidv4 } from 'uuid'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTrash, faArrowRight, faArrowLeft, faFile, faSave, faUpload } from '@fortawesome/free-solid-svg-icons'
@@ -10,6 +11,8 @@ import { ReactComponent as WarmdownLogo } from '../warmdown.svg'
 import { ReactComponent as WarmupLogo } from '../warmup.svg'
 import Builder from 'xmlbuilder'
 import Converter from 'xml-js'
+import Range from 'rc-slider/lib/Range'
+import 'rc-slider/assets/index.css';
 
 const Editor = () => {
 
@@ -38,6 +41,8 @@ const Editor = () => {
   }
 
   function newWorkout() {
+    console.log('New workout');
+
     setBars([])
     setId(generateId())
   }
@@ -60,9 +65,9 @@ const Editor = () => {
     }
   }
 
-  function addBar(zone) {
-    setBars([...bars, {
-      time: 300,
+  function addBar(zone, duration = 300) {
+    setBars(bars => [...bars, {
+      time: duration,
       power: zone,
       type: 'bar',
       id: uuidv4()
@@ -70,12 +75,21 @@ const Editor = () => {
     ])
   }
 
-  function addTrapeze(zone1, zone2) {
-    setBars([...bars, {
-      time: 300,
+  function addTrapeze(zone1, zone2, duration = 300) {
+    setBars(bars => [...bars, {
+      time: duration,
       startPower: zone1,
       endPower: zone2,
       type: 'trapeze',
+      id: uuidv4()
+    }
+    ])
+  }
+
+  function addFreeRide(duration = 600) {
+    setBars(bars => [...bars, {
+      time: duration,
+      type: 'freeRide',
       id: uuidv4()
     }
     ])
@@ -116,9 +130,9 @@ const Editor = () => {
   function saveWorkout() {
 
     const xml = Builder.create('workout_file')
-      .ele('author', 'author name').up()
-      .ele('name', 'workout name').up()
-      .ele('description', 'workout description').up()
+      .ele('author', author).up()
+      .ele('name', name).up()
+      .ele('description', description).up()
       .ele('sportType', 'bike').up()
       .ele('tags', {}).up()
       .ele('workout')
@@ -141,8 +155,8 @@ const Editor = () => {
         // everything else is ramp
 
         ramp = 'Ramp'
-        if (index == 0) ramp = 'Wamup'
-        if (index == bars.length - 1) ramp = 'Cooldown'
+        if (index === 0) ramp = 'Wamup'
+        if (index === bars.length - 1) ramp = 'Cooldown'
 
         if (bar.startPower < bar.endPower) {
           // warmup
@@ -221,10 +235,10 @@ const Editor = () => {
         console.log(data)
 
         //now parse file  
-        const workout = Converter.xml2js(data)      
+        const workout = Converter.xml2js(data)
         const workout_file = workout.elements[0]
-        
-        if(workout_file.name === 'workout_file'){
+
+        if (workout_file.name === 'workout_file') {
           // file is valid
           const authorIndex = workout_file.elements.findIndex(element => element.name === 'author')
           setAuthor(workout_file.elements[authorIndex].elements[0].text)
@@ -235,10 +249,21 @@ const Editor = () => {
           const descriptionIndex = workout_file.elements.findIndex(element => element.name === 'description')
           setDescription(workout_file.elements[descriptionIndex].elements[0].text)
 
+          const workoutIndex = workout_file.elements.findIndex(element => element.name === 'workout')
+
+          workout_file.elements[workoutIndex].elements.map(w => {
+            console.log(w);
+
+            if (w.name === 'SteadyState')
+              addBar(parseFloat(w.attributes.Power || w.attributes.PowerLow), parseFloat(w.attributes.Duration))
+
+            if (w.name === 'Ramp' || w.name === 'Warmup' || w.name === 'Cooldown')
+              addTrapeze(parseFloat(w.attributes.PowerLow), parseFloat(w.attributes.PowerHigh), parseFloat(w.attributes.Duration))
+
+            if (w.name === 'FreeRide')
+              addFreeRide(parseFloat(w.attributes.Duration))
+          })
         }
-        
-        
-        
       })
       .catch(error => {
         console.error(error)
@@ -274,6 +299,18 @@ const Editor = () => {
     )
   }
 
+  const renderFreeRide = (bar) => {
+    return (
+      <FreeRide
+        key={bar.id}
+        id={bar.id}
+        time={bar.time}
+        onChange={handleOnChange}
+        onClick={handleOnClick}
+      />
+    )
+  }
+
   return (
     <div>
       <div className='editor'>
@@ -284,13 +321,20 @@ const Editor = () => {
             <button onClick={() => removeBar(actionId)} title='Delete'><FontAwesomeIcon icon={faTrash} size="lg" fixedWidth /></button>
           </div>
         }
+        <div className='slider'>
+          <Range count={5} />
+        </div>
+
         <div className='canvas'>
           {bars.map((bar) => {
             if (bar.type === 'bar') {
               return (renderBar(bar))
             }
-            else {
+            else if (bar.type == 'trapeze') {
               return (renderTrapeze(bar))
+            }
+            else if (bar.type == 'freeRide') {
+              return (renderFreeRide(bar))
             }
 
           })}
@@ -324,6 +368,8 @@ const Editor = () => {
         <button className="btn" onClick={() => addBar(Zones.Z6.min)} style={{ backgroundColor: Colors.RED }}>Z6</button>
         <button className="btn" onClick={() => addTrapeze(Zones.Z1.min, Zones.Z4.min)} style={{ backgroundColor: Colors.WHITE }}><WarmupLogo /></button>
         <button className="btn" onClick={() => addTrapeze(Zones.Z4.min, Zones.Z1.min)} style={{ backgroundColor: Colors.WHITE }}><WarmdownLogo /></button>
+        <button className="btn" onClick={() => addFreeRide()} style={{ backgroundColor: Colors.WHITE }}>Free Ride</button>
+
         <input className="textInput" type="number" name="ftp" value={ftp} onChange={(e) => setFtp(e.target.value)} />
         <button className="btn" onClick={() => { if (window.confirm('Are you sure you want to create a new workout?')) newWorkout() }}><FontAwesomeIcon icon={faFile} size="lg" fixedWidth /> New</button>
         <button className="btn" onClick={() => saveWorkout()}><FontAwesomeIcon icon={faSave} size="lg" fixedWidth /> Save</button>

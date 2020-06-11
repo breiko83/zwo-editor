@@ -13,6 +13,7 @@
     "immutability-helper": "^3.0.2",
     "moment": "^2.26.0",
     "moment-duration-format": "^2.3.2",
+    "rc-slider": "^9.3.0",
     "re-resizable": "^6.4.0",
     "react": "^16.13.1",
     "react-dnd": "^10.0.2",

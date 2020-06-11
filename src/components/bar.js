@@ -5,7 +5,7 @@ import { Resizable } from 're-resizable'
 import moment from 'moment'
 import 'moment-duration-format'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faBolt, faClock, faCommentDots } from '@fortawesome/free-solid-svg-icons'
+import { faCommentDots } from '@fortawesome/free-solid-svg-icons'
 import Label from './Label'
 
 const Bar = ({ id, time, power, ftp, onChange, onClick }) => {
@@ -20,14 +20,16 @@ const Bar = ({ id, time, power, ftp, onChange, onClick }) => {
   const [width, setWidth] = useState(time / timeMultiplier)
   const [height, setHeight] = useState(power * multiplier)
 
+  const [showLabel, setShowLabel] = useState(false)
+
   const handleResizeStop = ({ e, direction, ref, d }) => {
     setWidth(width + d.width)
     setHeight(height + d.height)
-    onChange(id, { time: (width + d.width)*timeMultiplier, power: (height + d.height) / multiplier, type: 'bar', id: id })
+    onChange(id, { time: (width + d.width) * timeMultiplier, power: (height + d.height) / multiplier, type: 'bar', id: id })
   }
 
-  const handleResize = ({ e, direction, ref, d }) => {    
-    onChange(id, { time: (width + d.width)*timeMultiplier, power: (height + d.height) / multiplier, type: 'bar', id: id })
+  const handleResize = ({ e, direction, ref, d }) => {
+    onChange(id, { time: (width + d.width) * timeMultiplier, power: (height + d.height) / multiplier, type: 'bar', id: id })
   }
 
   function getDuration(seconds) {
@@ -59,9 +61,13 @@ const Bar = ({ id, time, power, ftp, onChange, onClick }) => {
   }
 
   return (
-    <div className='segment'>
-      <Label duration={durationLabel} power={powerLabel} />
-      <div className='comment'><FontAwesomeIcon icon={faCommentDots} size="lg" fixedWidth /></div>
+    <div className='segment'
+      onMouseEnter={() => setShowLabel(true)}
+      onMouseLeave={() => setShowLabel(false)}
+    >
+      {showLabel &&
+        <Label duration={durationLabel} power={powerLabel} />
+      }      
       <Resizable
         className='bar'
         size={{

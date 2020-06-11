@@ -1,0 +1,8 @@
+.segment {
+  position: relative;
+}
+.freeRide {    
+  border-radius: 0px;
+  border: 1px solid white;
+  background-image: url('../freeride.svg');
+}

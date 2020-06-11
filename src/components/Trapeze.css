@@ -25,6 +25,10 @@
   display: flex;
 }
 
+.color {
+  
+}
+
 .color:first-child{
   border-bottom-left-radius: 5px;
 }
