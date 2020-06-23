@@ -4,6 +4,7 @@ import { Colors, Zones } from './Constants'
 import Bar from './Bar'
 import Trapeze from './Trapeze'
 import FreeRide from './FreeRide'
+import Comment from './Comment'
 import { v4 as uuidv4 } from 'uuid'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTrash, faArrowRight, faArrowLeft, faFile, faSave, faUpload } from '@fortawesome/free-solid-svg-icons'
@@ -11,8 +12,6 @@ import { ReactComponent as WarmdownLogo } from '../warmdown.svg'
 import { ReactComponent as WarmupLogo } from '../warmup.svg'
 import Builder from 'xmlbuilder'
 import Converter from 'xml-js'
-import Range from 'rc-slider/lib/Range'
-import 'rc-slider/assets/index.css';
 
 const Editor = () => {
 
@@ -23,6 +22,7 @@ const Editor = () => {
   const [showActions, setShowActions] = useState(false)
   const [actionId, setActionId] = useState()
   const [ftp, setFtp] = useState(parseInt(localStorage.getItem('ftp')) || 200)
+  const [instructions, setInstructions] = useState(JSON.parse(localStorage.getItem('instructions')) || [])
 
   const [name, setName] = useState('New workout')
   const [description, setDescription] = useState('')
@@ -32,9 +32,11 @@ const Editor = () => {
     localStorage.setItem('currentWorkout', JSON.stringify(bars));
     localStorage.setItem('ftp', ftp)
     localStorage.setItem('id', id)
+    localStorage.setItem('instructions', JSON.stringify(instructions))
+
     window.history.replaceState('', '', `/${id}`);
 
-  }, [bars, ftp, id])
+  }, [instructions, bars, ftp, id])
 
   function generateId() {
     return Math.random().toString(36).substr(2, 16)
@@ -93,6 +95,24 @@ const Editor = () => {
       id: uuidv4()
     }
     ])
+  }
+
+  function addInstruction() {
+    setInstructions(instructions => [...instructions, {
+      text: 'Default text',
+      time: 0,
+      id: uuidv4()
+    }])
+  }
+
+  function changeInstruction(id, values) {
+    
+    const index = instructions.findIndex(instructions => instructions.id === id)
+
+    const updatedArray = [...instructions]
+    updatedArray[index] = values
+    setInstructions(updatedArray)
+    
   }
 
   function removeBar(id) {
@@ -322,8 +342,10 @@ const Editor = () => {
           </div>
         }
         <div className='slider'>
-          <Range count={5} />
-        </div>
+          {instructions.map((instruction) => {
+            return(<Comment key={instruction.id} instruction={instruction} onChange={(id, values) => changeInstruction(id, values)} />)
+          })}
+        </div>        
 
         <div className='canvas'>
           {bars.map((bar) => {
@@ -369,6 +391,7 @@ const Editor = () => {
         <button className="btn" onClick={() => addTrapeze(Zones.Z1.min, Zones.Z4.min)} style={{ backgroundColor: Colors.WHITE }}><WarmupLogo /></button>
         <button className="btn" onClick={() => addTrapeze(Zones.Z4.min, Zones.Z1.min)} style={{ backgroundColor: Colors.WHITE }}><WarmdownLogo /></button>
         <button className="btn" onClick={() => addFreeRide()} style={{ backgroundColor: Colors.WHITE }}>Free Ride</button>
+        <button className="btn" onClick={() => addInstruction()} style={{ backgroundColor: Colors.WHITE }}>Comment</button>
 
         <input className="textInput" type="number" name="ftp" value={ftp} onChange={(e) => setFtp(e.target.value)} />
         <button className="btn" onClick={() => { if (window.confirm('Are you sure you want to create a new workout?')) newWorkout() }}><FontAwesomeIcon icon={faFile} size="lg" fixedWidth /> New</button>
