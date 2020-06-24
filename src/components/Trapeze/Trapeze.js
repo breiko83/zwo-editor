@@ -1,12 +1,10 @@
 import React, { useState } from 'react'
 import './Trapeze.css'
-import { Colors, Zones, ZonesArray } from './Constants'
+import { Colors, Zones, ZonesArray } from '../Constants'
 import { Resizable } from 're-resizable'
 import moment from 'moment'
 import 'moment-duration-format'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faBolt, faClock } from '@fortawesome/free-solid-svg-icons'
-import Label from './Label'
+import Label from '../Label/Label'
 
 const Trapeze = ({ id, time, startPower, endPower, ftp, onChange, onClick }) => {
 
