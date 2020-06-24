@@ -359,11 +359,11 @@ const Editor = () => {
           </div>
         }
         <div className='slider'>
-          {instructions.foreach((instruction) => renderComment(instruction))}
+          {instructions.map((instruction) => renderComment(instruction))}
         </div>
 
         <div className='canvas'>
-          {bars.foreach((bar) => {
+          {bars.map((bar) => {
             if (bar.type === 'bar') {
               return (renderBar(bar))
             }
@@ -372,8 +372,9 @@ const Editor = () => {
             }
             else if (bar.type === 'freeRide') {
               return (renderFreeRide(bar))
+            }else {
+              return false;
             }
-
           })}
         </div>
         <div className='timeline'>
