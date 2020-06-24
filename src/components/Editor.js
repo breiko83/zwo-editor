@@ -12,6 +12,7 @@ import { ReactComponent as WarmdownLogo } from '../warmdown.svg'
 import { ReactComponent as WarmupLogo } from '../warmup.svg'
 import Builder from 'xmlbuilder'
 import Converter from 'xml-js'
+import helpers from './helpers'
 
 const Editor = () => {
 
@@ -99,20 +100,25 @@ const Editor = () => {
 
   function addInstruction() {
     setInstructions(instructions => [...instructions, {
-      text: 'Default text',
+      text: '',
       time: 0,
       id: uuidv4()
     }])
   }
 
   function changeInstruction(id, values) {
-    
+
     const index = instructions.findIndex(instructions => instructions.id === id)
 
     const updatedArray = [...instructions]
     updatedArray[index] = values
     setInstructions(updatedArray)
-    
+
+  }
+
+  function deleteInstruction(id) {
+    const updatedArray = [...instructions]
+    setInstructions(updatedArray.filter(item => item.id !== id))    
   }
 
   function removeBar(id) {
@@ -331,6 +337,17 @@ const Editor = () => {
     )
   }
 
+  const renderComment = (instruction) => {
+    return (
+      <Comment
+        key={instruction.id} 
+        instruction={instruction} 
+        onChange={(id, values) => changeInstruction(id, values)} 
+        onDelete={(id) => deleteInstruction(id)} 
+      />
+    )
+  }
+
   return (
     <div>
       <div className='editor'>
@@ -342,10 +359,8 @@ const Editor = () => {
           </div>
         }
         <div className='slider'>
-          {instructions.map((instruction) => {
-            return(<Comment key={instruction.id} instruction={instruction} onChange={(id, values) => changeInstruction(id, values)} />)
-          })}
-        </div>        
+          {instructions.map((instruction) => renderComment(instruction))}
+        </div>
 
         <div className='canvas'>
           {bars.map((bar) => {
@@ -406,6 +421,9 @@ const Editor = () => {
         <label htmlFor="contained-button-file">
           <div className="btn"><FontAwesomeIcon icon={faUpload} size="lg" fixedWidth /> Upload</div>
         </label>
+        <div className="workoutLength">
+          Total Workout: <span>{helpers.getWorkoutLength(bars)}</span>
+        </div>
 
       </div>
     </div>

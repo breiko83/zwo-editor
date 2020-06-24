@@ -1,0 +1,12 @@
+.comment-block {
+  position: relative;
+}
+.line {
+  position: absolute;
+  top: 20px;
+  left: 10px;
+  right: 0;
+  height: 80vh;
+  width: 1px;
+  border-left: 1px dotted gray;  
+}

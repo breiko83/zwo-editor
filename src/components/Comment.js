@@ -1,17 +1,17 @@
 import React, { useState } from 'react'
 import Draggable from 'react-draggable'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faComment } from '@fortawesome/free-solid-svg-icons'
+import { faComment, faTrashAlt } from '@fortawesome/free-solid-svg-icons'
+import './Comment.css'
+import moment from 'moment'
+import 'moment-duration-format'
 
-const Comment = ({ instruction, onChange }) => {
+const Comment = ({ instruction, onChange, onDelete }) => {
 
   const [text, setText] = useState(instruction.text)
   const [time, setTime] = useState(instruction.time)
 
   function handleTouch({ e, data }) {
-
-    setTime(data.x)
-
     onChange(
       instruction.id,
       {
@@ -38,17 +38,23 @@ const Comment = ({ instruction, onChange }) => {
   return (
     <Draggable
       axis='x'
+      handle=".handle"
       defaultPosition={{ x: time, y: 0 }}
       position={null}
       bounds={{ left: 0, right: 1000 }}
       scale={1}
-      onStop={(e, data) => handleTouch({ e, data })}
+      onStop={(e, data) => handleTouch({ e, data })}      
+      onDrag={(e, data) => setTime(data.x)}
     >
-      <div>
-        <FontAwesomeIcon icon={faComment} size="lg" fixedWidth />
-        <input name="comment" type="text" value={text} onChange={e => handleInputChange(e)} />
+      <div className='comment-block'>
+        <FontAwesomeIcon icon={faComment} size="lg" fixedWidth className="handle" />
+        <span>{moment.duration(time * 5, "seconds").format("mm:ss", { trim: false })}</span>
+        <input name="comment" type="text" value={text} onChange={e => handleInputChange(e)} />    
+        <FontAwesomeIcon icon={faTrashAlt} fixedWidth className="delete" style={{color:'gray'}} onClick={() => { if (window.confirm('Are you sure you want to delete this comment?')) onDelete(instruction.id) }} />
+        <div className="line"></div>
       </div>
     </Draggable>
+
   )
 }
 
