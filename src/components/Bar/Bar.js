@@ -4,8 +4,6 @@ import { Colors, Zones } from '../Constants'
 import { Resizable } from 're-resizable'
 import moment from 'moment'
 import 'moment-duration-format'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCommentDots } from '@fortawesome/free-solid-svg-icons'
 import Label from '../Label/Label'
 
 const Bar = ({ id, time, power, ftp, onChange, onClick }) => {

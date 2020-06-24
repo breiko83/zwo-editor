@@ -164,7 +164,7 @@ const Editor = () => {
       .ele('workout')
 
 
-    bars.map((bar, index) => {
+    bars.foreach((bar, index) => {
 
       var segment
       var ramp
@@ -215,8 +215,8 @@ const Editor = () => {
     newWorkout()
 
     const file = e.target.files[0]
-    const fileName = file.name
-    const fileType = file.name.split('.')[1]
+    //const fileName = file.name
+    //const fileType = file.name.split('.')[1]
 
     // check if file type is zwo or xml
 
@@ -277,7 +277,7 @@ const Editor = () => {
 
           const workoutIndex = workout_file.elements.findIndex(element => element.name === 'workout')
 
-          workout_file.elements[workoutIndex].elements.map(w => {
+          workout_file.elements[workoutIndex].elements.foreach(w => {
             console.log(w);
 
             if (w.name === 'SteadyState')
@@ -359,18 +359,18 @@ const Editor = () => {
           </div>
         }
         <div className='slider'>
-          {instructions.map((instruction) => renderComment(instruction))}
+          {instructions.foreach((instruction) => renderComment(instruction))}
         </div>
 
         <div className='canvas'>
-          {bars.map((bar) => {
+          {bars.foreach((bar) => {
             if (bar.type === 'bar') {
               return (renderBar(bar))
             }
-            else if (bar.type == 'trapeze') {
+            else if (bar.type === 'trapeze') {
               return (renderTrapeze(bar))
             }
-            else if (bar.type == 'freeRide') {
+            else if (bar.type === 'freeRide') {
               return (renderFreeRide(bar))
             }
 

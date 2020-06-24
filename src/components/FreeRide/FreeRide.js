@@ -15,7 +15,7 @@ const FreeRide = ({ id, time, onChange, onClick }) => {
   const [width, setWidth] = useState(time / timeMultiplier)
 
   // standard height
-  const [height, setHeight] = useState(100)
+  const height = 100
 
   const handleResizeStop = ({ e, direction, ref, d }) => {
     setWidth(width + d.width)    
