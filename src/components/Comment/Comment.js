@@ -8,8 +8,10 @@ import 'moment-duration-format'
 
 const Comment = ({ instruction, onChange, onDelete }) => {
 
+  const timeMultiplier = 5
+
   const [text, setText] = useState(instruction.text)
-  const [time, setTime] = useState(instruction.time)
+  const [time, setTime] = useState(instruction.time / timeMultiplier)  
 
   function handleTouch({ e, data }) {
     onChange(
@@ -17,7 +19,7 @@ const Comment = ({ instruction, onChange, onDelete }) => {
       {
         id: instruction.id,
         text: text,
-        time: data.x
+        time: data.x * timeMultiplier
       })
   }
 
@@ -30,7 +32,7 @@ const Comment = ({ instruction, onChange, onDelete }) => {
       {
         id: instruction.id,
         text: e.target.value,
-        time: time
+        time: time * timeMultiplier
       })
   }
 
@@ -48,7 +50,7 @@ const Comment = ({ instruction, onChange, onDelete }) => {
     >
       <div className='comment-block'>
         <FontAwesomeIcon icon={faComment} size="lg" fixedWidth className="handle" />
-        <span>{moment.duration(time * 5, "seconds").format("mm:ss", { trim: false })}</span>
+        <span data-testid='time'>{moment.duration(time * timeMultiplier, "seconds").format("mm:ss", { trim: false })}</span>
         <input name="comment" type="text" value={text} onChange={e => handleInputChange(e)} />    
         <FontAwesomeIcon icon={faTrashAlt} fixedWidth className="delete" style={{color:'gray'}} onClick={() => { if (window.confirm('Are you sure you want to delete this comment?')) onDelete(instruction.id) }} />
         <div className="line"></div>
