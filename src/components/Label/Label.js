@@ -1,6 +1,6 @@
 import React from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faBolt, faClock, faCommentDots } from '@fortawesome/free-solid-svg-icons'
+import { faBolt, faClock } from '@fortawesome/free-solid-svg-icons'
 
 const Label = ({ duration, power, powerStart, powerEnd }) => {
 

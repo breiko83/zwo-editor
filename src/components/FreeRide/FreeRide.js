@@ -3,7 +3,7 @@ import './FreeRide.css'
 import { Resizable } from 're-resizable'
 import moment from 'moment'
 import 'moment-duration-format'
-import Label from './Label'
+import Label from '../Label/Label'
 
 const FreeRide = ({ id, time, onChange, onClick }) => {
 
