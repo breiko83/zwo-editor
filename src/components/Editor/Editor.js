@@ -47,6 +47,7 @@ const Editor = () => {
     console.log('New workout');
 
     setBars([])
+    setInstructions([])
     setId(generateId())
   }
 
@@ -98,10 +99,10 @@ const Editor = () => {
     ])
   }
 
-  function addInstruction() {
+  function addInstruction(text = '', time = 0) {
     setInstructions(instructions => [...instructions, {
-      text: '',
-      time: 0,
+      text: text,
+      time: time,
       id: uuidv4()
     }])
   }
@@ -164,7 +165,7 @@ const Editor = () => {
       .ele('workout')
 
 
-    bars.foreach((bar, index) => {
+    bars.map((bar, index) => {
 
       var segment
       var ramp
@@ -201,7 +202,9 @@ const Editor = () => {
         // free ride
 
       }
-      xml.importDocument(segment)
+      xml.importDocument(segment)    
+      
+      return false;
     })
 
     // save this to cloud?
@@ -212,6 +215,12 @@ const Editor = () => {
   function handleUpload(e) {
 
     // ask user if they want to overwrite current workout first
+    if (bars.length > 0) {
+      if (!window.confirm('Are you sure you want to create a new workout?')) {
+        return false;
+      }
+    }
+    
     newWorkout()
 
     const file = e.target.files[0]
@@ -277,9 +286,11 @@ const Editor = () => {
 
           const workoutIndex = workout_file.elements.findIndex(element => element.name === 'workout')
 
-          workout_file.elements[workoutIndex].elements.foreach(w => {
-            console.log(w);
+          var totalTime = 0
 
+          workout_file.elements[workoutIndex].elements.map(w => {                                           
+            
+            
             if (w.name === 'SteadyState')
               addBar(parseFloat(w.attributes.Power || w.attributes.PowerLow), parseFloat(w.attributes.Duration))
 
@@ -288,6 +299,22 @@ const Editor = () => {
 
             if (w.name === 'FreeRide')
               addFreeRide(parseFloat(w.attributes.Duration))
+
+            // check for instructions
+            const textElements = w.elements
+            if (textElements && textElements.length > 0){
+
+              textElements.map(t => {
+
+                if (t.name === 'textevent')
+                  addInstruction(t.attributes.message,totalTime + parseFloat(t.attributes.timeoffset))
+              })
+
+            }
+
+            totalTime = totalTime + parseFloat(w.attributes.Duration)
+            // map functions expect return value
+            return false;
           })
         }
       })
