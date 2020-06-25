@@ -119,7 +119,7 @@ const Editor = () => {
 
   function deleteInstruction(id) {
     const updatedArray = [...instructions]
-    setInstructions(updatedArray.filter(item => item.id !== id))    
+    setInstructions(updatedArray.filter(item => item.id !== id))
   }
 
   function removeBar(id) {
@@ -156,6 +156,8 @@ const Editor = () => {
 
   function saveWorkout() {
 
+    var totalTime = 0
+
     const xml = Builder.create('workout_file')
       .ele('author', author).up()
       .ele('name', name).up()
@@ -173,8 +175,8 @@ const Editor = () => {
       if (bar.type === 'bar') {
         segment = Builder.create('SteadyState')
           .att('Duration', bar.time)
-          .att('PowerLow', bar.power)
-          .att('PowerHigh', bar.power)
+          .att('Power', bar.power)
+          .att('pace', 0) // is this cadence?
       } else if (bar.type === 'trapeze') {
 
         // index 0 is warmup
@@ -191,25 +193,36 @@ const Editor = () => {
             .att('Duration', bar.time)
             .att('PowerLow', bar.startPower)
             .att('PowerHigh', bar.endPower)
+            .att('pace', 0) // is this cadence?
         } else {
           // warmdown
           segment = Builder.create(ramp)
             .att('Duration', bar.time)
             .att('PowerLow', bar.endPower)
             .att('PowerHigh', bar.startPower)
+            .att('pace', 0) // is this cadence?
         }
       } else {
         // free ride
-
+        segment = Builder.create('FreeRide')
+          .att('Duration', bar.time)
+          .att('Cadence', 85) // add control for this?
       }
-      xml.importDocument(segment)    
-      
+
+      // add instructions if present
+      instructions.filter((instruction) => (instruction.time > totalTime && instruction.time <= (totalTime + bar.time))).map((i) => {        
+        return segment.ele('textevent',{timeoffset: (i.time - totalTime), message: i.text})              
+      })
+
+      xml.importDocument(segment)
+
+      totalTime = totalTime + bar.time
+
       return false;
     })
 
     // save this to cloud?
     console.log(xml.end({ pretty: true }));
-
   }
 
   function handleUpload(e) {
@@ -220,7 +233,7 @@ const Editor = () => {
         return false;
       }
     }
-    
+
     newWorkout()
 
     const file = e.target.files[0]
@@ -288,9 +301,9 @@ const Editor = () => {
 
           var totalTime = 0
 
-          workout_file.elements[workoutIndex].elements.map(w => {                                           
-            
-            
+          workout_file.elements[workoutIndex].elements.map(w => {
+
+
             if (w.name === 'SteadyState')
               addBar(parseFloat(w.attributes.Power || w.attributes.PowerLow), parseFloat(w.attributes.Duration))
 
@@ -302,12 +315,14 @@ const Editor = () => {
 
             // check for instructions
             const textElements = w.elements
-            if (textElements && textElements.length > 0){
+            if (textElements && textElements.length > 0) {
 
               textElements.map(t => {
 
                 if (t.name === 'textevent')
-                  addInstruction(t.attributes.message,totalTime + parseFloat(t.attributes.timeoffset))
+                  addInstruction(t.attributes.message, totalTime + parseFloat(t.attributes.timeoffset))
+                
+                return false
               })
 
             }
@@ -367,10 +382,10 @@ const Editor = () => {
   const renderComment = (instruction) => {
     return (
       <Comment
-        key={instruction.id} 
-        instruction={instruction} 
-        onChange={(id, values) => changeInstruction(id, values)} 
-        onDelete={(id) => deleteInstruction(id)} 
+        key={instruction.id}
+        instruction={instruction}
+        onChange={(id, values) => changeInstruction(id, values)}
+        onDelete={(id) => deleteInstruction(id)}
       />
     )
   }
@@ -399,7 +414,7 @@ const Editor = () => {
             }
             else if (bar.type === 'freeRide') {
               return (renderFreeRide(bar))
-            }else {
+            } else {
               return false;
             }
           })}
