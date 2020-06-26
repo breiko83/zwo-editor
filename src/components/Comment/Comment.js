@@ -36,7 +36,6 @@ const Comment = ({ instruction, onChange, onDelete }) => {
       })
   }
 
-
   return (
     <Draggable
       axis='x'
@@ -59,6 +58,5 @@ const Comment = ({ instruction, onChange, onDelete }) => {
 
   )
 }
-
 
 export default Comment

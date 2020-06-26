@@ -2,7 +2,7 @@
 
 exports[`Comment renders correctly 1`] = `
 <div
-  className="comment-block react-draggable"
+  className="commentBlock react-draggable"
   onMouseDown={[Function]}
   onMouseUp={[Function]}
   onTouchEnd={[Function]}

@@ -7,7 +7,7 @@ import FreeRide from '../FreeRide/FreeRide'
 import Comment from '../Comment/Comment'
 import { v4 as uuidv4 } from 'uuid'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faTrash, faArrowRight, faArrowLeft, faFile, faSave, faUpload } from '@fortawesome/free-solid-svg-icons'
+import { faTrash, faArrowRight, faArrowLeft, faFile, faSave, faUpload, faDownload } from '@fortawesome/free-solid-svg-icons'
 import { ReactComponent as WarmdownLogo } from '../../assets/warmdown.svg'
 import { ReactComponent as WarmupLogo } from '../../assets/warmup.svg'
 import Builder from 'xmlbuilder'
@@ -184,7 +184,7 @@ const Editor = () => {
         // everything else is ramp
 
         ramp = 'Ramp'
-        if (index === 0) ramp = 'Wamup'
+        if (index === 0) ramp = 'Warmup'
         if (index === bars.length - 1) ramp = 'Cooldown'
 
         if (bar.startPower < bar.endPower) {
@@ -210,8 +210,8 @@ const Editor = () => {
       }
 
       // add instructions if present
-      instructions.filter((instruction) => (instruction.time > totalTime && instruction.time <= (totalTime + bar.time))).map((i) => {        
-        return segment.ele('textevent',{timeoffset: (i.time - totalTime), message: i.text})              
+      instructions.filter((instruction) => (instruction.time > totalTime && instruction.time <= (totalTime + bar.time))).map((i) => {
+        return segment.ele('textevent', { timeoffset: (i.time - totalTime), message: i.text })
       })
 
       xml.importDocument(segment)
@@ -221,8 +221,15 @@ const Editor = () => {
       return false;
     })
 
-    // save this to cloud?
+    // save this to cloud?    
     console.log(xml.end({ pretty: true }));
+
+    const file = new Blob([xml.end({ pretty: true })], { type: 'application/xml' })
+    const file_id = upload(file)
+    if (file_id) {
+      console.log('file uploaded: ' + file_id);
+    }
+
   }
 
   function handleUpload(e) {
@@ -237,12 +244,16 @@ const Editor = () => {
     newWorkout()
 
     const file = e.target.files[0]
+    const file_id = upload(file)
+
+    fetchAndParse(file_id)
     //const fileName = file.name
     //const fileType = file.name.split('.')[1]
 
     // check if file type is zwo or xml
+  }
 
-
+  function upload(file) {
     fetch('/.netlify/functions/upload', {
       method: 'POST',
       body: JSON.stringify(
@@ -266,9 +277,7 @@ const Editor = () => {
           .then(response => response.text())
           .then(data => {
             console.log('File uploaded')
-
-            //now parse file
-            fetchAndParse(id)
+            return ('1')
           })
           .catch(error => {
             console.error(error)
@@ -321,7 +330,7 @@ const Editor = () => {
 
                 if (t.name === 'textevent')
                   addInstruction(t.attributes.message, totalTime + parseFloat(t.attributes.timeoffset))
-                
+
                 return false
               })
 
@@ -454,6 +463,7 @@ const Editor = () => {
         <input className="textInput" type="number" name="ftp" value={ftp} onChange={(e) => setFtp(e.target.value)} />
         <button className="btn" onClick={() => { if (window.confirm('Are you sure you want to create a new workout?')) newWorkout() }}><FontAwesomeIcon icon={faFile} size="lg" fixedWidth /> New</button>
         <button className="btn" onClick={() => saveWorkout()}><FontAwesomeIcon icon={faSave} size="lg" fixedWidth /> Save</button>
+        <a className="btn" href={`${S3_URL}/${id}.zwo`} download={`${id}.zwo`}><FontAwesomeIcon icon={faDownload} size="lg" fixedWidth /> Download</a>
         <input
           accept=".xml,.zwo"
           id="contained-button-file"
