@@ -32,12 +32,12 @@ const Editor = () => {
   const [file, setFile] = useState()
 
   React.useEffect(() => {
-    localStorage.setItem('currentWorkout', JSON.stringify(bars));
+    localStorage.setItem('currentWorkout', JSON.stringify(bars))
     localStorage.setItem('ftp', ftp)
     localStorage.setItem('id', id)
     localStorage.setItem('instructions', JSON.stringify(instructions))
 
-    window.history.replaceState('', '', `/${id}`);
+    window.history.replaceState('', '', `/${id}`)
 
   }, [instructions, bars, ftp, id])
 
@@ -46,7 +46,7 @@ const Editor = () => {
   }
 
   function newWorkout() {
-    console.log('New workout');
+    console.log('New workout')
 
     setBars([])
     setInstructions([])
@@ -221,7 +221,7 @@ const Editor = () => {
 
       totalTime = totalTime + bar.time
 
-      return false;
+      return false
     })
 
     const file = new Blob([xml.end({ pretty: true })], { type: 'application/xml' })        
@@ -229,23 +229,23 @@ const Editor = () => {
     // save this to cloud
     const file_id = upload(file)
     if (file_id) {
-      console.log('file uploaded: ' + file_id);
+      console.log('file uploaded: ' + file_id)
     }
 
-    return file;
+    return file
   }
 
   function downloadWorkout () {
 
     const tempFile = saveWorkout()
 
-    var a = document.createElement("a");
-    document.body.appendChild(a);
-    a.style = "display: none";
-    a.href = window.URL.createObjectURL(tempFile);
-    a.download = `${id}.zwo`;
-    a.click();  
-    window.URL.revokeObjectURL(tempFile);
+    var a = document.createElement("a")
+    document.body.appendChild(a)
+    a.style = "display: none"
+    a.href = window.URL.createObjectURL(tempFile)
+    a.download = `${id}.zwo`
+    a.click()
+    window.URL.revokeObjectURL(tempFile)
   }
 
   function handleUpload(e) {
@@ -253,7 +253,7 @@ const Editor = () => {
     // ask user if they want to overwrite current workout first
     if (bars.length > 0) {
       if (!window.confirm('Are you sure you want to create a new workout?')) {
-        return false;
+        return false
       }
     }
 
@@ -354,7 +354,7 @@ const Editor = () => {
 
             totalTime = totalTime + parseFloat(w.attributes.Duration)
             // map functions expect return value
-            return false;
+            return false
           })
         }
       })
@@ -440,7 +440,7 @@ const Editor = () => {
             else if (bar.type === 'freeRide') {
               return (renderFreeRide(bar))
             } else {
-              return false;
+              return false
             }
           })}
         </div>
