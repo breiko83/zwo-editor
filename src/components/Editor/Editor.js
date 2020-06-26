@@ -26,8 +26,8 @@ const Editor = () => {
   const [instructions, setInstructions] = useState(JSON.parse(localStorage.getItem('instructions')) || [])
 
   const [name, setName] = useState('New workout')
-  const [description, setDescription] = useState('')
-  const [author, setAuthor] = useState('')
+  const [description, setDescription] = useState('Workout description')
+  const [author, setAuthor] = useState('Anonymous')
 
   React.useEffect(() => {
     localStorage.setItem('currentWorkout', JSON.stringify(bars))
