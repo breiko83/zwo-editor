@@ -11,26 +11,26 @@ export const Colors = {
 export const Zones = {
   Z1: {
     min: 0.1,
-    max: 0.6
+    max: 0.605
   },
   Z2: {
-    min: 0.6,
-    max: 0.76
+    min: 0.605,
+    max: 0.763
   },
   Z3: {
-    min: 0.76,
-    max: 0.9
+    min: 0.763,
+    max: 0.901
   },
   Z4: {
-    min: 0.9,
-    max: 1.05
+    min: 0.901,
+    max: 1.053
   },
   Z5: {
-    min: 1.05,
-    max: 1.19
+    min: 1.053,
+    max: 1.194
   },
   Z6: {
-    min: 1.19,
+    min: 1.194,
     max: 2.0
   }
 }
