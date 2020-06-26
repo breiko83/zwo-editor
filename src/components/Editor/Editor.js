@@ -29,8 +29,6 @@ const Editor = () => {
   const [description, setDescription] = useState('')
   const [author, setAuthor] = useState('')
 
-  const [file, setFile] = useState()
-
   React.useEffect(() => {
     localStorage.setItem('currentWorkout', JSON.stringify(bars))
     localStorage.setItem('ftp', ftp)
