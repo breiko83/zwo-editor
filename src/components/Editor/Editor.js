@@ -29,6 +29,8 @@ const Editor = () => {
   const [description, setDescription] = useState('')
   const [author, setAuthor] = useState('')
 
+  const [file, setFile] = useState()
+
   React.useEffect(() => {
     localStorage.setItem('currentWorkout', JSON.stringify(bars));
     localStorage.setItem('ftp', ftp)
@@ -158,7 +160,8 @@ const Editor = () => {
 
     var totalTime = 0
 
-    const xml = Builder.create('workout_file')
+    const xml = Builder.begin()
+      .ele('workout_file')
       .ele('author', author).up()
       .ele('name', name).up()
       .ele('description', description).up()
@@ -221,15 +224,28 @@ const Editor = () => {
       return false;
     })
 
-    // save this to cloud?    
-    console.log(xml.end({ pretty: true }));
+    const file = new Blob([xml.end({ pretty: true })], { type: 'application/xml' })        
 
-    const file = new Blob([xml.end({ pretty: true })], { type: 'application/xml' })
+    // save this to cloud
     const file_id = upload(file)
     if (file_id) {
       console.log('file uploaded: ' + file_id);
     }
 
+    return file;
+  }
+
+  function downloadWorkout () {
+
+    const tempFile = saveWorkout()
+
+    var a = document.createElement("a");
+    document.body.appendChild(a);
+    a.style = "display: none";
+    a.href = window.URL.createObjectURL(tempFile);
+    a.download = `${id}.zwo`;
+    a.click();  
+    window.URL.revokeObjectURL(tempFile);
   }
 
   function handleUpload(e) {
@@ -463,7 +479,7 @@ const Editor = () => {
         <input className="textInput" type="number" name="ftp" value={ftp} onChange={(e) => setFtp(e.target.value)} />
         <button className="btn" onClick={() => { if (window.confirm('Are you sure you want to create a new workout?')) newWorkout() }}><FontAwesomeIcon icon={faFile} size="lg" fixedWidth /> New</button>
         <button className="btn" onClick={() => saveWorkout()}><FontAwesomeIcon icon={faSave} size="lg" fixedWidth /> Save</button>
-        <a className="btn" href={`${S3_URL}/${id}.zwo`} download={`${id}.zwo`}><FontAwesomeIcon icon={faDownload} size="lg" fixedWidth /> Download</a>
+        <button className="btn" onClick={() => downloadWorkout()} ><FontAwesomeIcon icon={faDownload} size="lg" fixedWidth /> Download</button>
         <input
           accept=".xml,.zwo"
           id="contained-button-file"
