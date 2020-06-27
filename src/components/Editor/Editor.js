@@ -23,6 +23,7 @@ const Editor = () => {
   const [showActions, setShowActions] = useState(false)
   const [actionId, setActionId] = useState()
   const [ftp, setFtp] = useState(parseInt(localStorage.getItem('ftp')) || 200)
+  const [weight, setWeight] = useState(parseInt(localStorage.getItem('weight')) || 75)
   const [instructions, setInstructions] = useState(JSON.parse(localStorage.getItem('instructions')) || [])
 
   const [name, setName] = useState('New workout')
@@ -34,10 +35,11 @@ const Editor = () => {
     localStorage.setItem('ftp', ftp)
     localStorage.setItem('id', id)
     localStorage.setItem('instructions', JSON.stringify(instructions))
+    localStorage.setItem('weight', weight)
 
     window.history.replaceState('', '', `/${id}`)
 
-  }, [instructions, bars, ftp, id])
+  }, [instructions, bars, ftp, weight, id])
 
   function generateId() {
     return Math.random().toString(36).substr(2, 16)
@@ -369,8 +371,9 @@ const Editor = () => {
         time={bar.time}
         power={bar.power}
         ftp={ftp}
-        onChange={handleOnChange}
-        onClick={handleOnClick}
+        weight={weight}
+        onChange={(id, value) => handleOnChange(id, value)}
+        onClick={(id) => handleOnClick(id)}
       />
     )
   }
@@ -475,6 +478,7 @@ const Editor = () => {
         <button className="btn" onClick={() => addInstruction()} style={{ backgroundColor: Colors.WHITE }}>Comment</button>
 
         <input className="textInput" type="number" name="ftp" value={ftp} onChange={(e) => setFtp(e.target.value)} />
+        <input className="textInput" type="number" name="weight" value={weight} onChange={(e) => setWeight(e.target.value)} />
         <button className="btn" onClick={() => { if (window.confirm('Are you sure you want to create a new workout?')) newWorkout() }}><FontAwesomeIcon icon={faFile} size="lg" fixedWidth /> New</button>
         <button className="btn" onClick={() => saveWorkout()}><FontAwesomeIcon icon={faSave} size="lg" fixedWidth /> Save</button>
         <button className="btn" onClick={() => downloadWorkout()} ><FontAwesomeIcon icon={faDownload} size="lg" fixedWidth /> Download</button>

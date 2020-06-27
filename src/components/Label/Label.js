@@ -1,8 +1,9 @@
 import React from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faBolt, faClock } from '@fortawesome/free-solid-svg-icons'
+import { faBolt, faClock, faBalanceScale} from '@fortawesome/free-solid-svg-icons'
+import './Label.css'
 
-const Label = ({ duration, power, powerStart, powerEnd }) => {
+const Label = ({ duration, power, powerStart, powerEnd, weight }) => {
 
   return (
     <div className='label'>
@@ -19,6 +20,11 @@ const Label = ({ duration, power, powerStart, powerEnd }) => {
       {powerStart && powerEnd &&
         <div>
           <FontAwesomeIcon icon={faBolt} fixedWidth /> {powerStart}W - {powerEnd}W
+        </div>
+      }
+      {weight && power &&
+        <div>         
+          <FontAwesomeIcon icon={faBalanceScale} fixedWidth /> {(power/weight).toFixed(1)}W/Kg
         </div>
       }
     </div>

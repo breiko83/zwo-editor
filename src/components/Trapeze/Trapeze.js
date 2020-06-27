@@ -32,38 +32,28 @@ const Trapeze = ({ id, time, startPower, endPower, ftp, onChange, onClick }) => 
   var bars = height3 > height1 ? calculateColors(startPower, endPower) : calculateColors(endPower, startPower)
   const flexDirection = height3 > height1 ? 'row' : 'row-reverse'
 
-  const handleResizeStop1 = ({ e, direction, ref, d }) => {
-    //setWidth(width + d.width)
+  const handleResizeStop1 = ({ e, direction, ref, d }) => {    
     setHeight1(height1 + d.height)
     setHeight2((height3 + d.height + height1) / 2)
-    onChange(id, { time: Math.round(width * timeMultiplier * 3), startPower: (height1 + d.height) / multiplier, endPower: height3 / multiplier, type: 'trapeze', id: id })
-    //onChange(id, { time: width + d.width, power: (height + d.height) / multiplier, type: 'trapeze', id: id })
   }
   const handleResizeStop2 = ({ e, direction, ref, d }) => {
-    //setWidth(width + d.width)
     setHeight2(height2 + d.height)
     setHeight1(height1 + d.height)
-    setHeight3(height3 + d.height)
-    onChange(id, { time: Math.round(width * timeMultiplier * 3), startPower: (height1 + d.height) / multiplier, endPower: (height3 + d.height) / multiplier, type: 'trapeze', id: id })
-    //onChange(id, { time: width + d.width, power: (height + d.height) / multiplier, type: 'trapeze', id: id })
+    setHeight3(height3 + d.height)    
   }
   const handleResizeStop3 = ({ e, direction, ref, d }) => {
     setWidth(width + (d.width / 3))
     setHeight3(height3 + d.height)
     setHeight2((height3 + d.height + height1) / 2)
-
-    //onChange(id, { time: (width * timeMultiplier * 3) + (d.width * timeMultiplier), startPower: height1 / multiplier, endPower: (height3 + d.height) / multiplier, type: 'trapeze', id: id })
-    //onChange(id, { time: width + d.width, power: (height + d.height) / multiplier, type: 'trapeze', id: id })
   }
 
   const handleResize1 = ({ e, direction, ref, d }) => {
-    //onChange(id, { time: width + d.width, startPower: (height1 + d.height) / multiplier, endPower: (height3 + d.height) / multiplier, type: 'trapeze', id: id })
+    onChange(id, { time: Math.round(width * timeMultiplier * 3), startPower: (height1 + d.height) / multiplier, endPower: height3 / multiplier, type: 'trapeze', id: id })
   }
-  const handleResize2 = ({ e, direction, ref, d }) => {
-    //onChange(id, { time: width + d.width, startPower: (height1 + d.height) / multiplier, endPower:  height3 / multiplier, type: 'trapeze', id: id })
+  const handleResize2 = ({ e, direction, ref, d }) => {    
+    onChange(id, { time: Math.round(width * timeMultiplier * 3), startPower: (height1 + d.height) / multiplier, endPower: (height3 + d.height) / multiplier, type: 'trapeze', id: id })
   }
   const handleResize3 = ({ e, direction, ref, d }) => {
-    //onChange(id, { time: width + d.width, startPower: (height1 + d.height) / multiplier, endPower: (height3 + d.height) / multiplier, type: 'trapeze', id: id })
     onChange(id, { time: Math.round((width * timeMultiplier * 3) + (d.width * timeMultiplier)), startPower: height1 / multiplier, endPower: (height3 + d.height) / multiplier, type: 'trapeze', id: id })
   }
 

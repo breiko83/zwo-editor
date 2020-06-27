@@ -1,0 +1,64 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Bar renders correctly 1`] = `
+<div
+  className="segment"
+  onMouseEnter={[Function]}
+  onMouseLeave={[Function]}
+>
+  <div
+    className="bar"
+    onClick={[Function]}
+    style={
+      Object {
+        "backgroundColor": "#00C46A",
+        "boxSizing": "border-box",
+        "flexShrink": 0,
+        "height": "190.75px",
+        "maxHeight": 500,
+        "maxWidth": undefined,
+        "minHeight": 25,
+        "minWidth": 3,
+        "position": "relative",
+        "userSelect": "auto",
+        "width": "10px",
+      }
+    }
+  >
+    <span>
+      <div
+        className=""
+        onMouseDown={[Function]}
+        onTouchStart={[Function]}
+        style={
+          Object {
+            "cursor": "row-resize",
+            "height": "10px",
+            "left": "0px",
+            "position": "absolute",
+            "top": "-5px",
+            "userSelect": "none",
+            "width": "100%",
+          }
+        }
+      />
+      <div
+        className=""
+        onMouseDown={[Function]}
+        onTouchStart={[Function]}
+        style={
+          Object {
+            "cursor": "col-resize",
+            "height": "100%",
+            "position": "absolute",
+            "right": "-5px",
+            "top": "0px",
+            "userSelect": "none",
+            "width": "10px",
+          }
+        }
+      />
+    </span>
+  </div>
+</div>
+`;

@@ -6,7 +6,7 @@ import moment from 'moment'
 import 'moment-duration-format'
 import Label from '../Label/Label'
 
-const Bar = ({ id, time, power, ftp, onChange, onClick }) => {
+const Bar = ({ id, time, power, ftp, weight, onChange, onClick }) => {
 
   const multiplier = 250
   const timeMultiplier = 5
@@ -64,7 +64,7 @@ const Bar = ({ id, time, power, ftp, onChange, onClick }) => {
       onMouseLeave={() => setShowLabel(false)}
     >
       {showLabel &&
-        <Label duration={durationLabel} power={powerLabel} />
+        <Label duration={durationLabel} power={powerLabel} weight={weight} />
       }      
       <Resizable
         className='bar'
