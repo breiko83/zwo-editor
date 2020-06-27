@@ -387,8 +387,8 @@ const Editor = () => {
         startPower={bar.startPower}
         endPower={bar.endPower}
         ftp={ftp}
-        onChange={handleOnChange}
-        onClick={handleOnClick}
+        onChange={(id, value) => handleOnChange(id, value)}
+        onClick={(id) => handleOnClick(id)}
       />
     )
   }

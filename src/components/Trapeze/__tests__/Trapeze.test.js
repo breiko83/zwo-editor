@@ -1,16 +1,17 @@
 import React from 'react';
-import Bar from '../../Bar/Bar';
+import Trapeze from '../../Trapeze/Trapeze';
 import { Zones } from '../../Constants'
 import renderer from 'react-test-renderer';
 import { v4 as uuidv4 } from 'uuid'
 import '@testing-library/jest-dom/extend-expect'
 
 
-test('Bar renders correctly', () => {
+test('Trapeze renders correctly', () => {
 
   const bar = {
     time: 50,
-    power: Zones.Z3.min,
+    startPower: Zones.Z2.min,
+    endPower: Zones.Z4.min,
     type: 'bar',
     id: uuidv4()
   }
@@ -18,11 +19,12 @@ test('Bar renders correctly', () => {
   const ftp = 250
 
   const component = renderer.create(    
-      <Bar
+    <Trapeze
         key={bar.id}
         id={bar.id}
         time={bar.time}
-        power={bar.power}
+        startPower={bar.startPower}
+        endPower={bar.endPower}
         ftp={ftp}
         onChange={() => handleOnChange}
         onClick={() => handleOnClick}

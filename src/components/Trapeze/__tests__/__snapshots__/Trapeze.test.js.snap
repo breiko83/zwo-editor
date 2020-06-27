@@ -1,0 +1,237 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Trapeze renders correctly 1`] = `
+<div
+  className="segment"
+  onMouseEnter={[Function]}
+  onMouseLeave={[Function]}
+>
+  <div
+    className="trapeze"
+  >
+    <div
+      className="trapeze-component"
+      onClick={[Function]}
+      style={
+        Object {
+          "boxSizing": "border-box",
+          "flexShrink": 0,
+          "height": "151.25px",
+          "maxHeight": 500,
+          "maxWidth": undefined,
+          "minHeight": 25,
+          "minWidth": 3,
+          "position": "relative",
+          "userSelect": "auto",
+          "width": "3px",
+        }
+      }
+    >
+      <span>
+        <div
+          className=""
+          onMouseDown={[Function]}
+          onTouchStart={[Function]}
+          style={
+            Object {
+              "cursor": "row-resize",
+              "height": "10px",
+              "left": "0px",
+              "position": "absolute",
+              "top": "-5px",
+              "userSelect": "none",
+              "width": "100%",
+            }
+          }
+        />
+        <div
+          className=""
+          onMouseDown={[Function]}
+          onTouchStart={[Function]}
+          style={
+            Object {
+              "cursor": "col-resize",
+              "height": "100%",
+              "position": "absolute",
+              "right": "-5px",
+              "top": "0px",
+              "userSelect": "none",
+              "width": "10px",
+            }
+          }
+        />
+      </span>
+    </div>
+    <div
+      className="trapeze-component"
+      onClick={[Function]}
+      style={
+        Object {
+          "boxSizing": "border-box",
+          "flexShrink": 0,
+          "height": "188.25px",
+          "maxHeight": 500,
+          "maxWidth": undefined,
+          "minHeight": 25,
+          "minWidth": 3,
+          "position": "relative",
+          "userSelect": "auto",
+          "width": "3px",
+        }
+      }
+    >
+      <span>
+        <div
+          className=""
+          onMouseDown={[Function]}
+          onTouchStart={[Function]}
+          style={
+            Object {
+              "cursor": "row-resize",
+              "height": "10px",
+              "left": "0px",
+              "position": "absolute",
+              "top": "-5px",
+              "userSelect": "none",
+              "width": "100%",
+            }
+          }
+        />
+      </span>
+    </div>
+    <div
+      className="trapeze-component"
+      onClick={[Function]}
+      style={
+        Object {
+          "boxSizing": "border-box",
+          "flexShrink": 0,
+          "height": "225.25px",
+          "maxHeight": 500,
+          "maxWidth": undefined,
+          "minHeight": 25,
+          "minWidth": 3,
+          "position": "relative",
+          "userSelect": "auto",
+          "width": "3px",
+        }
+      }
+    >
+      <span>
+        <div
+          className=""
+          onMouseDown={[Function]}
+          onTouchStart={[Function]}
+          style={
+            Object {
+              "cursor": "row-resize",
+              "height": "10px",
+              "left": "0px",
+              "position": "absolute",
+              "top": "-5px",
+              "userSelect": "none",
+              "width": "100%",
+            }
+          }
+        />
+        <div
+          className=""
+          onMouseDown={[Function]}
+          onTouchStart={[Function]}
+          style={
+            Object {
+              "cursor": "col-resize",
+              "height": "100%",
+              "position": "absolute",
+              "right": "-5px",
+              "top": "0px",
+              "userSelect": "none",
+              "width": "10px",
+            }
+          }
+        />
+      </span>
+    </div>
+  </div>
+  <div
+    className="trapeze-colors"
+    style={
+      Object {
+        "backgroundColor": "#0E90D4",
+        "flexDirection": "row",
+        "height": 225.25,
+      }
+    }
+  >
+    <div
+      className="color"
+      style={
+        Object {
+          "backgroundColor": "#807F80",
+          "width": "0%",
+        }
+      }
+    />
+    <div
+      className="color"
+      style={
+        Object {
+          "backgroundColor": "#0E90D4",
+          "width": "53.37837837837838%",
+        }
+      }
+    />
+    <div
+      className="color"
+      style={
+        Object {
+          "backgroundColor": "#00C46A",
+          "width": "46.62162162162162%",
+        }
+      }
+    />
+    <div
+      className="color"
+      style={
+        Object {
+          "backgroundColor": "#FFCB00",
+          "width": "0%",
+        }
+      }
+    />
+    <div
+      className="color"
+      style={
+        Object {
+          "backgroundColor": "#FF6430",
+          "width": "0%",
+        }
+      }
+    />
+    <div
+      className="color"
+      style={
+        Object {
+          "backgroundColor": "#E90000",
+          "width": "0%",
+        }
+      }
+    />
+  </div>
+  <svg
+    className="trapeze-svg-container"
+    height="225.25"
+    width="9"
+  >
+    <polygon
+      className="trapeze-svg"
+      points="0,74 0,225.25 9,225.25 9,0"
+    />
+    <polygon
+      className="trapeze-svg-off"
+      points="0,0 0,74 9,0"
+    />
+    Sorry, your browser does not support inline SVG.
+  </svg>
+</div>
+`;
