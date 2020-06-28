@@ -5,6 +5,7 @@ import Bar from '../Bar/Bar'
 import Trapeze from '../Trapeze/Trapeze'
 import FreeRide from '../FreeRide/FreeRide'
 import Comment from '../Comment/Comment'
+import Popup from '../Popup/Popup'
 import { v4 as uuidv4 } from 'uuid'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTrash, faArrowRight, faArrowLeft, faFile, faSave, faUpload, faDownload } from '@fortawesome/free-solid-svg-icons'
@@ -26,9 +27,9 @@ const Editor = () => {
   const [weight, setWeight] = useState(parseInt(localStorage.getItem('weight')) || 75)
   const [instructions, setInstructions] = useState(JSON.parse(localStorage.getItem('instructions')) || [])
 
-  const [name, setName] = useState('New workout')
-  const [description, setDescription] = useState('Workout description')
-  const [author, setAuthor] = useState('Anonymous')
+  const [name, setName] = useState(localStorage.getItem('name') || '')
+  const [description, setDescription] = useState(localStorage.getItem('description') || '')
+  const [author, setAuthor] = useState(localStorage.getItem('author') || '')
 
   React.useEffect(() => {
     localStorage.setItem('currentWorkout', JSON.stringify(bars))
@@ -37,9 +38,13 @@ const Editor = () => {
     localStorage.setItem('instructions', JSON.stringify(instructions))
     localStorage.setItem('weight', weight)
 
+    localStorage.setItem('name', name)
+    localStorage.setItem('description', description)
+    localStorage.setItem('author', author)
+
     window.history.replaceState('', '', `/${id}`)
 
-  }, [instructions, bars, ftp, weight, id])
+  }, [instructions, bars, ftp, weight, id, name, author, description])
 
   function generateId() {
     return Math.random().toString(36).substr(2, 16)
@@ -224,7 +229,7 @@ const Editor = () => {
       return false
     })
 
-    const file = new Blob([xml.end({ pretty: true })], { type: 'application/xml' })        
+    const file = new Blob([xml.end({ pretty: true })], { type: 'application/xml' })
 
     // save this to cloud
     const file_id = upload(file)
@@ -235,7 +240,7 @@ const Editor = () => {
     return file
   }
 
-  function downloadWorkout () {
+  function downloadWorkout() {
 
     const tempFile = saveWorkout()
 
@@ -399,8 +404,8 @@ const Editor = () => {
         key={bar.id}
         id={bar.id}
         time={bar.time}
-        onChange={handleOnChange}
-        onClick={handleOnClick}
+        onChange={(id, value) => handleOnChange(id, value)}
+        onClick={(id) => handleOnClick(id)}
       />
     )
   }
@@ -418,6 +423,20 @@ const Editor = () => {
 
   return (
     <div>
+      <Popup title="Save Workout">
+        <div className="form-control">
+          <label for="name">Workout Title</label>
+          <input type="text" name="name" placeholder="Workout title" value={name} onChange={(e) => setName(e.target.value)} />
+        </div>
+        <div className="form-control">
+          <label for="description">Workout description</label>
+          <textarea name="description" placeholder="Workout description" onChange={(e) => setDescription(e.target.value)}>{description}</textarea>
+        </div>
+        <div className="form-control">
+          <label for="author">Workout Author</label>
+          <input type="text" name="author" placeholder="Workout Author" value={author} onChange={(e) => setAuthor(e.target.value)} />
+        </div>
+      </Popup>
       <div className='editor'>
         {showActions &&
           <div className='actions'>

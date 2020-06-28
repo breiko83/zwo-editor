@@ -13,17 +13,18 @@ const FreeRide = ({ id, time, onChange, onClick }) => {
 
 
   const [width, setWidth] = useState(time / timeMultiplier)
+  const [showLabel, setShowLabel] = useState(false)
 
   // standard height
   const height = 100
 
   const handleResizeStop = ({ e, direction, ref, d }) => {
-    setWidth(width + d.width)    
-    onChange(id, { time: (width + d.width)*timeMultiplier, type: 'freeRide', id: id })
+    setWidth(width + d.width)
+    onChange(id, { time: (width + d.width) * timeMultiplier, type: 'freeRide', id: id })
   }
 
-  const handleResize = ({ e, direction, ref, d }) => {    
-    onChange(id, { time: (width + d.width)*timeMultiplier, type: 'freeRide', id: id })
+  const handleResize = ({ e, direction, ref, d }) => {
+    onChange(id, { time: (width + d.width) * timeMultiplier, type: 'freeRide', id: id })
   }
 
   function getDuration(seconds) {
@@ -32,8 +33,13 @@ const FreeRide = ({ id, time, onChange, onClick }) => {
   }
 
   return (
-    <div className='segment'>
-      <Label duration={durationLabel} />
+    <div className='segment'
+      onMouseEnter={() => setShowLabel(true)}
+      onMouseLeave={() => setShowLabel(false)}
+    >
+      {showLabel &&
+        <Label duration={durationLabel} />
+      }
       <Resizable
         className='freeRide'
         size={{
@@ -47,7 +53,7 @@ const FreeRide = ({ id, time, onChange, onClick }) => {
         grid={[1, 1]}
         onResizeStop={(e, direction, ref, d) => handleResizeStop({ e, direction, ref, d })}
         onResize={(e, direction, ref, d) => handleResize({ e, direction, ref, d })}
-        onClick={() => onClick(id)}        
+        onClick={() => onClick(id)}
       >
       </Resizable>
     </div>
