@@ -31,6 +31,8 @@ const Editor = () => {
   const [description, setDescription] = useState(localStorage.getItem('description') || '')
   const [author, setAuthor] = useState(localStorage.getItem('author') || '')
 
+  const [popupIsVisile, setPopupVisibility] = useState(false)
+
   React.useEffect(() => {
     localStorage.setItem('currentWorkout', JSON.stringify(bars))
     localStorage.setItem('ftp', ftp)
@@ -162,6 +164,8 @@ const Editor = () => {
   }
 
   function saveWorkout() {
+
+    setPopupVisibility(true)
 
     var totalTime = 0
 
@@ -423,20 +427,25 @@ const Editor = () => {
 
   return (
     <div>
-      <Popup title="Save Workout">
-        <div className="form-control">
-          <label for="name">Workout Title</label>
-          <input type="text" name="name" placeholder="Workout title" value={name} onChange={(e) => setName(e.target.value)} />
-        </div>
-        <div className="form-control">
-          <label for="description">Workout description</label>
-          <textarea name="description" placeholder="Workout description" onChange={(e) => setDescription(e.target.value)}>{description}</textarea>
-        </div>
-        <div className="form-control">
-          <label for="author">Workout Author</label>
-          <input type="text" name="author" placeholder="Workout Author" value={author} onChange={(e) => setAuthor(e.target.value)} />
-        </div>
-      </Popup>
+      {popupIsVisile &&
+        <Popup title="Save Workout">
+          <div className="form-control">
+            <label for="name">Workout Title</label>
+            <input type="text" name="name" placeholder="Workout title" value={name} onChange={(e) => setName(e.target.value)} />
+          </div>
+          <div className="form-control">
+            <label for="description">Workout description</label>
+            <textarea name="description" placeholder="Workout description" onChange={(e) => setDescription(e.target.value)}>{description}</textarea>
+          </div>
+          <div className="form-control">
+            <label for="author">Workout Author</label>
+            <input type="text" name="author" placeholder="Workout Author" value={author} onChange={(e) => setAuthor(e.target.value)} />
+          </div>
+          <div className="form-control">
+            <button className="btn" onClick={() => setPopupVisibility(false)}>Dismiss</button>
+          </div>
+        </Popup>
+      }
       <div className='editor'>
         {showActions &&
           <div className='actions'>
