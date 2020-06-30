@@ -31,8 +31,18 @@
   background-color: white;
   border: 1px solid lightgray;
   text-align: center;
-  font-size: 14px;
+  font-size: 13px;
   border-radius: 5px;
+}
+
+.btn > svg {
+  display: block;
+  margin: 0 auto;
+}
+
+.btn-icon {
+  width: 30px;
+  margin: 0 auto;
 }
 
 .btn-primary {
@@ -45,10 +55,22 @@
   color: white;
 }
 
+.form-input {
+  display: flex;
+  flex-direction: column;
+}
+
 .textInput {
-  height: 40px;
-  width: 100px;
+  max-width: 100px;
   font-size: 20px;
+  border: 1px solid lightgray;
+  flex: 1;
+  text-align: center;
+}
+
+label {
+  font-size: 11px;
+  text-align: center;
 }
 
 .actions {

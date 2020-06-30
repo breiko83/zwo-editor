@@ -8,7 +8,7 @@ import Comment from '../Comment/Comment'
 import Popup from '../Popup/Popup'
 import { v4 as uuidv4 } from 'uuid'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faTrash, faArrowRight, faArrowLeft, faFile, faSave, faUpload, faDownload } from '@fortawesome/free-solid-svg-icons'
+import { faTrash, faArrowRight, faArrowLeft, faFile, faSave, faUpload, faDownload, faComment, faBicycle } from '@fortawesome/free-solid-svg-icons'
 import { ReactComponent as WarmdownLogo } from '../../assets/warmdown.svg'
 import { ReactComponent as WarmupLogo } from '../../assets/warmup.svg'
 import Builder from 'xmlbuilder'
@@ -501,13 +501,22 @@ const Editor = () => {
         <button className="btn btn-square" onClick={() => addBar(Zones.Z4.min)} style={{ backgroundColor: Colors.YELLOW }}>Z4</button>
         <button className="btn btn-square" onClick={() => addBar(Zones.Z5.min)} style={{ backgroundColor: Colors.ORANGE }}>Z5</button>
         <button className="btn btn-square" onClick={() => addBar(Zones.Z6.min)} style={{ backgroundColor: Colors.RED }}>Z6</button>
-        <button className="btn" onClick={() => addTrapeze(Zones.Z1.min, Zones.Z4.min)} style={{ backgroundColor: Colors.WHITE }}><WarmupLogo /></button>
-        <button className="btn" onClick={() => addTrapeze(Zones.Z4.min, Zones.Z1.min)} style={{ backgroundColor: Colors.WHITE }}><WarmdownLogo /></button>
-        <button className="btn" onClick={() => addFreeRide()} style={{ backgroundColor: Colors.WHITE }}>Free Ride</button>
-        <button className="btn" onClick={() => addInstruction()} style={{ backgroundColor: Colors.WHITE }}>Comment</button>
+        <button className="btn" onClick={() => addTrapeze(Zones.Z1.max / 2, Zones.Z4.min)} style={{ backgroundColor: Colors.WHITE }}><WarmupLogo className="btn-icon" /> Warm up</button>
+        <button className="btn" onClick={() => addTrapeze(Zones.Z4.min, Zones.Z1.max / 2)} style={{ backgroundColor: Colors.WHITE }}><WarmdownLogo className="btn-icon" /> Cool down</button>
+        <button className="btn" onClick={() => addFreeRide()} style={{ backgroundColor: Colors.WHITE }}><FontAwesomeIcon icon={faBicycle} size="lg" fixedWidth /> Free Ride</button>
+        <button className="btn" onClick={() => addInstruction()} style={{ backgroundColor: Colors.WHITE }}><FontAwesomeIcon icon={faComment} size="lg" fixedWidth /> Text Event</button>
 
-        <input className="textInput" type="number" name="ftp" value={ftp} onChange={(e) => setFtp(e.target.value)} />
+        <div className="form-input">
+          <label for="ftp">FTP (W)</label>
+          <input className="textInput" type="number" name="ftp" value={ftp} onChange={(e) => setFtp(e.target.value)} />
+        </div>
+
+        <div className="form-input">
+        <label for="weight">Body Weight (Kg)</label>
         <input className="textInput" type="number" name="weight" value={weight} onChange={(e) => setWeight(e.target.value)} />
+        </div>
+        
+        
         <button className="btn" onClick={() => { if (window.confirm('Are you sure you want to create a new workout?')) newWorkout() }}><FontAwesomeIcon icon={faFile} size="lg" fixedWidth /> New</button>
         <button className="btn" onClick={() => saveWorkout()}><FontAwesomeIcon icon={faSave} size="lg" fixedWidth /> Save</button>
         <button className="btn" onClick={() => downloadWorkout()} ><FontAwesomeIcon icon={faDownload} size="lg" fixedWidth /> Download</button>
@@ -519,8 +528,9 @@ const Editor = () => {
           onChange={handleUpload}
         />        
         <button className="btn" onClick={()=> document.getElementById("contained-button-file").click()}><FontAwesomeIcon icon={faUpload} size="lg" fixedWidth /> Upload</button>        
-        <div className="workoutLength">
-          Total Workout: <span>{helpers.getWorkoutLength(bars)}</span>
+        <div className="form-input">
+          <label>Workout Time</label>
+          <input className="textInput" value={helpers.getWorkoutLength(bars)} disabled />
         </div>
 
       </div>

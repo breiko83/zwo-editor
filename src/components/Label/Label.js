@@ -1,6 +1,6 @@
 import React from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faBolt, faClock, faBalanceScale} from '@fortawesome/free-solid-svg-icons'
+import { faBolt, faClock} from '@fortawesome/free-solid-svg-icons'
 import './Label.css'
 
 const Label = ({ duration, power, powerStart, powerEnd, weight }) => {
@@ -24,7 +24,7 @@ const Label = ({ duration, power, powerStart, powerEnd, weight }) => {
       }
       {weight && power &&
         <div>         
-          <FontAwesomeIcon icon={faBalanceScale} fixedWidth /> {(power/weight).toFixed(1)}W/Kg
+          {(power/weight).toFixed(1)}W/Kg
         </div>
       }
     </div>
