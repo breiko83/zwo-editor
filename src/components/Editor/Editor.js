@@ -269,13 +269,7 @@ const Editor = () => {
     newWorkout()
 
     const file = e.target.files[0]
-    const file_id = upload(file)
-
-    fetchAndParse(file_id)
-    //const fileName = file.name
-    //const fileType = file.name.split('.')[1]
-
-    // check if file type is zwo or xml
+    upload(file)
   }
 
   function upload(file) {
@@ -302,7 +296,9 @@ const Editor = () => {
           .then(response => response.text())
           .then(data => {
             console.log('File uploaded')
-            return ('1')
+            
+            // can parse now
+            fetchAndParse(id)
           })
           .catch(error => {
             console.error(error)
@@ -507,12 +503,12 @@ const Editor = () => {
         <button className="btn" onClick={() => addInstruction()} style={{ backgroundColor: Colors.WHITE }}><FontAwesomeIcon icon={faComment} size="lg" fixedWidth /> Text Event</button>
 
         <div className="form-input">
-          <label for="ftp">FTP (W)</label>
+          <label htmlFor="ftp">FTP (W)</label>
           <input className="textInput" type="number" name="ftp" value={ftp} onChange={(e) => setFtp(e.target.value)} />
         </div>
 
         <div className="form-input">
-        <label for="weight">Body Weight (Kg)</label>
+        <label htmlFor="weight">Body Weight (Kg)</label>
         <input className="textInput" type="number" name="weight" value={weight} onChange={(e) => setWeight(e.target.value)} />
         </div>
         
