@@ -36,6 +36,14 @@ const Comment = ({ instruction, onChange, onDelete }) => {
       })
   }
 
+  function handleDelete() {
+
+    if (text === "" || window.confirm('Are you sure you want to delete this comment?')) {
+      onDelete(instruction.id) 
+    }
+      
+  }
+
   return (
     <Draggable
       axis='x'
@@ -51,7 +59,7 @@ const Comment = ({ instruction, onChange, onDelete }) => {
         <FontAwesomeIcon icon={faComment} size="lg" fixedWidth className="handle" />
         <span data-testid='time'>{moment.duration(time * timeMultiplier, "seconds").format("mm:ss", { trim: false })}</span>
         <input name="comment" type="text" value={text} onChange={e => handleInputChange(e)} />
-        <FontAwesomeIcon icon={faTrashAlt} fixedWidth className="delete" style={{ color: 'gray' }} onClick={() => { if (window.confirm('Are you sure you want to delete this comment?')) onDelete(instruction.id) }} />
+        <FontAwesomeIcon icon={faTrashAlt} fixedWidth className="delete" style={{ color: 'gray' }} onClick={() => handleDelete()} />
         <div className="line"></div>
       </div>
     </Draggable>
