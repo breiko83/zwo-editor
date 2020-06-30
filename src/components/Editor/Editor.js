@@ -442,6 +442,7 @@ const Editor = () => {
             <input type="text" name="author" placeholder="Workout Author" value={author} onChange={(e) => setAuthor(e.target.value)} />
           </div>
           <div className="form-control">
+            <button className="btn btn-primary" onClick={() => setPopupVisibility(false)}>Save</button>
             <button className="btn" onClick={() => setPopupVisibility(false)}>Dismiss</button>
           </div>
         </Popup>
@@ -494,12 +495,12 @@ const Editor = () => {
         </div>
       </div>
       <div className='cta'>
-        <button className="btn" onClick={() => addBar(Zones.Z1.min)} style={{ backgroundColor: Colors.GRAY }}>Z1</button>
-        <button className="btn" onClick={() => addBar(Zones.Z2.min)} style={{ backgroundColor: Colors.BLUE }}>Z2</button>
-        <button className="btn" onClick={() => addBar(Zones.Z3.min)} style={{ backgroundColor: Colors.GREEN }}>Z3</button>
-        <button className="btn" onClick={() => addBar(Zones.Z4.min)} style={{ backgroundColor: Colors.YELLOW }}>Z4</button>
-        <button className="btn" onClick={() => addBar(Zones.Z5.min)} style={{ backgroundColor: Colors.ORANGE }}>Z5</button>
-        <button className="btn" onClick={() => addBar(Zones.Z6.min)} style={{ backgroundColor: Colors.RED }}>Z6</button>
+        <button className="btn btn-square" onClick={() => addBar(Zones.Z1.min)} style={{ backgroundColor: Colors.GRAY }}>Z1</button>
+        <button className="btn btn-square" onClick={() => addBar(Zones.Z2.min)} style={{ backgroundColor: Colors.BLUE }}>Z2</button>
+        <button className="btn btn-square" onClick={() => addBar(Zones.Z3.min)} style={{ backgroundColor: Colors.GREEN }}>Z3</button>
+        <button className="btn btn-square" onClick={() => addBar(Zones.Z4.min)} style={{ backgroundColor: Colors.YELLOW }}>Z4</button>
+        <button className="btn btn-square" onClick={() => addBar(Zones.Z5.min)} style={{ backgroundColor: Colors.ORANGE }}>Z5</button>
+        <button className="btn btn-square" onClick={() => addBar(Zones.Z6.min)} style={{ backgroundColor: Colors.RED }}>Z6</button>
         <button className="btn" onClick={() => addTrapeze(Zones.Z1.min, Zones.Z4.min)} style={{ backgroundColor: Colors.WHITE }}><WarmupLogo /></button>
         <button className="btn" onClick={() => addTrapeze(Zones.Z4.min, Zones.Z1.min)} style={{ backgroundColor: Colors.WHITE }}><WarmdownLogo /></button>
         <button className="btn" onClick={() => addFreeRide()} style={{ backgroundColor: Colors.WHITE }}>Free Ride</button>
@@ -516,10 +517,8 @@ const Editor = () => {
           type="file"
           style={{ display: 'none' }}
           onChange={handleUpload}
-        />
-        <label htmlFor="contained-button-file">
-          <div className="btn"><FontAwesomeIcon icon={faUpload} size="lg" fixedWidth /> Upload</div>
-        </label>
+        />        
+        <button className="btn" onClick={()=> document.getElementById("contained-button-file").click()}><FontAwesomeIcon icon={faUpload} size="lg" fixedWidth /> Upload</button>        
         <div className="workoutLength">
           Total Workout: <span>{helpers.getWorkoutLength(bars)}</span>
         </div>

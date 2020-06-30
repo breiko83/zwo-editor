@@ -2,7 +2,8 @@
   display: block;
   position: relative;
   
-  overflow: scroll;
+  overflow-x: scroll;
+  overflow-y: hidden;
   border: 1px dotted gray;
   white-space: nowrap;
 
@@ -19,14 +20,29 @@
   height: 80vh;
 }
 
+.cta {
+  display: flex;
+}
+
 .btn {
   display: inline-block;
   min-width: 50px;
   height: 50px;
   background-color: white;
-  border: 1px solid gray;
+  border: 1px solid lightgray;
   text-align: center;
   font-size: 14px;
+  border-radius: 5px;
+}
+
+.btn-primary {
+  background-color: #00C46A;
+  color: white;
+  padding: 5px 20px;
+}
+
+.btn-square {
+  color: white;
 }
 
 .textInput {
