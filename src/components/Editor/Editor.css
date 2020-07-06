@@ -26,8 +26,6 @@
 
 .btn {
   display: inline-block;
-  min-width: 50px;
-  height: 50px;
   background-color: white;
   border: 1px solid lightgray;
   text-align: center;
@@ -51,8 +49,14 @@
   padding: 5px 20px;
 }
 
+.btn-primary:hover {
+  background-color: #27ae60;
+}
+
 .btn-square {
   color: white;
+  width: 50px;
+  height: 50px;
 }
 
 .form-input {

@@ -44,7 +44,7 @@ const Editor = () => {
     localStorage.setItem('description', description)
     localStorage.setItem('author', author)
 
-    window.history.replaceState('', '', `/${id}`)
+    window.history.replaceState('', '', `/editor/${id}`)
 
   }, [instructions, bars, ftp, weight, id, name, author, description])
 
@@ -421,7 +421,7 @@ const Editor = () => {
     )
   }
 
-  return (
+  return (    
     <div>
       {popupIsVisile &&
         <Popup title="Save Workout">

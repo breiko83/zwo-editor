@@ -1,0 +1,42 @@
+.home {  
+  
+}
+
+.hero {
+  background-color: #eaeaea;
+  text-align: center;
+  padding: 50px;
+}
+
+h2 {
+  font-size: 34px;
+  font-weight: 200;
+  margin-bottom: 0;
+  text-transform: uppercase;
+}
+
+a {
+  text-decoration: none;
+}
+
+.btn-xl {
+  font-size: 20px;
+  padding: 20px 60px;
+}
+
+.about {
+  text-align: center;
+}
+
+.perks {
+  display: flex;
+  flex-wrap: wrap;
+}
+.perks > div{
+  width: 50%;  
+  height: 120px;  
+}
+.perks > div > p{
+  max-width: 250px;
+  margin: 0 auto;
+}
