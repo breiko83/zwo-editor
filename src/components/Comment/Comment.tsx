@@ -6,32 +6,38 @@ import './Comment.css'
 import moment from 'moment'
 import 'moment-duration-format'
 
-const Comment = ({ instruction, onChange, onDelete }) => {
+interface Instruction {
+  id: string,
+  text: string,
+  time: number
+}
+
+const Comment = (props: { instruction: Instruction, onChange: Function, onDelete: Function }) => {
 
   const timeMultiplier = 5
 
-  const [text, setText] = useState(instruction.text)
-  const [time, setTime] = useState(instruction.time / timeMultiplier)
+  const [text, setText] = useState(props.instruction.text)
+  const [time, setTime] = useState(props.instruction.time / timeMultiplier)
 
-  function handleTouch({ e, data }) {
-    onChange(
-      instruction.id,
+  function handleTouch(position: number) {
+    props.onChange(
+      props.instruction.id,
       {
-        id: instruction.id,
+        id: props.instruction.id,
         text: text,
-        time: data.x * timeMultiplier
+        time: position * timeMultiplier
       })
   }
 
-  function handleInputChange(e) {
+  function handleInputChange(value: string) {
 
-    setText(e.target.value)
+    setText(value)
 
-    onChange(
-      instruction.id,
+    props.onChange(
+      props.instruction.id,
       {
-        id: instruction.id,
-        text: e.target.value,
+        id: props.instruction.id,
+        text: value,
         time: time * timeMultiplier
       })
   }
@@ -39,7 +45,7 @@ const Comment = ({ instruction, onChange, onDelete }) => {
   function handleDelete() {
 
     if (text === "" || window.confirm('Are you sure you want to delete this comment?')) {
-      onDelete(instruction.id) 
+      props.onDelete(props.instruction.id) 
     }
       
   }
@@ -48,17 +54,16 @@ const Comment = ({ instruction, onChange, onDelete }) => {
     <Draggable
       axis='x'
       handle=".handle"
-      defaultPosition={{ x: time, y: 0 }}
-      position={null}
+      defaultPosition={{ x: time, y: 0 }}      
       bounds={{ left: 0, right: 1000 }}
       scale={1}
-      onStop={(e, data) => handleTouch({ e, data })}
+      onStop={(e, data) => handleTouch(data.x)}
       onDrag={(e, data) => setTime(data.x)}
     >
       <div className='commentBlock'>
         <FontAwesomeIcon icon={faComment} size="lg" fixedWidth className="handle" />
         <span data-testid='time'>{moment.duration(time * timeMultiplier, "seconds").format("mm:ss", { trim: false })}</span>
-        <input name="comment" type="text" value={text} onChange={e => handleInputChange(e)} />
+        <input name="comment" type="text" value={text} onChange={e => handleInputChange(e.target.value)} />
         <FontAwesomeIcon icon={faTrashAlt} fixedWidth className="delete" style={{ color: 'gray' }} onClick={() => handleDelete()} />
         <div className="line"></div>
       </div>
