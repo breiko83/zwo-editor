@@ -8,7 +8,7 @@ import Comment from '../Comment/Comment'
 import Popup from '../Popup/Popup'
 import { v4 as uuidv4 } from 'uuid'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faTrash, faArrowRight, faArrowLeft, faFile, faSave, faUpload, faDownload, faComment, faBicycle } from '@fortawesome/free-solid-svg-icons'
+import { faTrash, faArrowRight, faArrowLeft, faFile, faSave, faUpload, faDownload, faComment, faBicycle, faCopy } from '@fortawesome/free-solid-svg-icons'
 import { ReactComponent as WarmdownLogo } from '../../assets/warmdown.svg'
 import { ReactComponent as WarmupLogo } from '../../assets/warmup.svg'
 import Builder from 'xmlbuilder'
@@ -135,6 +135,15 @@ const Editor = () => {
     const updatedArray = [...bars]
     setBars(updatedArray.filter(item => item.id !== id))
     setShowActions(false)
+  }
+
+  function duplicateBar(id) {
+    const index = bars.findIndex(bar => bar.id === id)
+    const element = [...bars][index]
+    
+    if(element.type === 'bar') addBar(element.power, element.time)    
+    if(element.type === 'freeRide') addFreeRide(element.time) 
+    if(element.type === 'trapeze') addTrapeze(element.startPower, element.endPower, element.time) 
   }
 
   function moveLeft(id) {
@@ -449,6 +458,7 @@ const Editor = () => {
             <button onClick={() => moveLeft(actionId)} title='Move Left'><FontAwesomeIcon icon={faArrowLeft} size="lg" fixedWidth /></button>
             <button onClick={() => moveRight(actionId)} title='Move Right'><FontAwesomeIcon icon={faArrowRight} size="lg" fixedWidth /></button>
             <button onClick={() => removeBar(actionId)} title='Delete'><FontAwesomeIcon icon={faTrash} size="lg" fixedWidth /></button>
+            <button onClick={() => duplicateBar(actionId)} title='Duplicate'><FontAwesomeIcon icon={faCopy} size="lg" fixedWidth /></button>
           </div>
         }
         <div className='slider'>
