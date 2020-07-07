@@ -216,11 +216,11 @@ const Editor = () => {
             .att('PowerHigh', bar.endPower)
             .att('pace', 0) // is this cadence?
         } else {
-          // warmdown
+          // cooldown
           segment = Builder.create(ramp)
             .att('Duration', bar.time)
-            .att('PowerLow', bar.endPower)
-            .att('PowerHigh', bar.startPower)
+            .att('PowerLow', bar.startPower) // these 2 values are inverted
+            .att('PowerHigh', bar.endPower) // looks like a bug on zwift editor
             .att('pace', 0) // is this cadence?
         }
       } else {
@@ -245,10 +245,7 @@ const Editor = () => {
     const file = new Blob([xml.end({ pretty: true })], { type: 'application/xml' })
 
     // save this to cloud
-    const file_id = upload(file)
-    if (file_id) {
-      console.log('file uploaded: ' + file_id)
-    }
+    upload(file, false)
 
     return file
   }
@@ -278,10 +275,11 @@ const Editor = () => {
     newWorkout()
 
     const file = e.target.files[0]
-    upload(file)
+    upload(file, true)
+
   }
 
-  function upload(file) {
+  function upload(file, parse = false) {
     fetch('/.netlify/functions/upload', {
       method: 'POST',
       body: JSON.stringify(
@@ -307,7 +305,8 @@ const Editor = () => {
             console.log('File uploaded')
             
             // can parse now
-            fetchAndParse(id)
+            
+            if(parse) fetchAndParse(id)
           })
           .catch(error => {
             console.error(error)
@@ -316,6 +315,11 @@ const Editor = () => {
   }
 
   function fetchAndParse(id) {
+
+    // remove previous workout
+    setBars([])
+    setInstructions([])
+
     fetch(`${S3_URL}/${id}.zwo`)
       .then(response => response.text())
       .then(data => {
