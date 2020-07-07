@@ -6,36 +6,38 @@ import moment from 'moment'
 import 'moment-duration-format'
 import Label from '../Label/Label'
 
-const Bar = ({ id, time, power, ftp, weight, onChange, onClick }) => {
+
+
+const Bar = (props: { id: string, time: number, power: number, ftp: number, weight: number, onChange: Function, onClick: Function }) => {
 
   const multiplier = 250
   const timeMultiplier = 5
 
-  const powerLabel = Math.round(power * ftp)
-  const durationLabel = getDuration(time)
-  const style = zwiftStyle(power)
+  const powerLabel = Math.round(props.power * props.ftp)
+  const durationLabel = getDuration(props.time)
+  const style = zwiftStyle(props.power)
 
-  const [width, setWidth] = useState(time / timeMultiplier)
-  const [height, setHeight] = useState(power * multiplier)
+  const [width, setWidth] = useState(props.time / timeMultiplier)
+  const [height, setHeight] = useState(props.power * multiplier)
 
   const [showLabel, setShowLabel] = useState(false)
 
-  const handleResizeStop = ({ e, direction, ref, d }) => {
-    setWidth(width + d.width)
-    setHeight(height + d.height)
-    onChange(id, { time: (width + d.width) * timeMultiplier, power: (height + d.height) / multiplier, type: 'bar', id: id })
+  const handleResizeStop = (dWidth: number, dHeight: number) => {
+    setWidth(width + dWidth)
+    setHeight(height + dHeight)
+    props.onChange(props.id, { time: (width + dWidth) * timeMultiplier, power: (height + dHeight) / multiplier, type: 'bar', id: props.id })
   }
 
-  const handleResize = ({ e, direction, ref, d }) => {
-    onChange(id, { time: (width + d.width) * timeMultiplier, power: (height + d.height) / multiplier, type: 'bar', id: id })
+  const handleResize = (dWidth: number, dHeight: number) => {
+    props.onChange(props.id, { time: (width + dWidth) * timeMultiplier, power: (height + dHeight) / multiplier, type: 'bar', id: props.id })
   }
 
-  function getDuration(seconds) {
+  function getDuration(seconds: number) {
     // 1 pixel equals 5 seconds 
     return moment.duration(seconds, "seconds").format("mm:ss", { trim: false })
   }
 
-  function zwiftStyle(zone) {
+  function zwiftStyle(zone: number) {
 
     if (zone >= 0 && zone < Zones.Z1.max) {
       // Z1 gray
@@ -62,9 +64,10 @@ const Bar = ({ id, time, power, ftp, weight, onChange, onClick }) => {
     <div className='segment'
       onMouseEnter={() => setShowLabel(true)}
       onMouseLeave={() => setShowLabel(false)}
+      onClick={() => props.onClick(props.id)}
     >
       {showLabel &&
-        <Label duration={durationLabel} power={powerLabel} weight={weight} />
+        <Label duration={durationLabel} power={powerLabel} weight={props.weight} />
       }      
       <Resizable
         className='bar'
@@ -77,9 +80,8 @@ const Bar = ({ id, time, power, ftp, weight, onChange, onClick }) => {
         maxHeight={multiplier * Zones.Z6.max}
         enable={{ top: true, right: true }}
         grid={[1, 1]}
-        onResizeStop={(e, direction, ref, d) => handleResizeStop({ e, direction, ref, d })}
-        onResize={(e, direction, ref, d) => handleResize({ e, direction, ref, d })}
-        onClick={() => onClick(id)}
+        onResizeStop={(e, direction, ref, d) => handleResizeStop(d.width,d.height)}
+        onResize={(e, direction, ref, d) => handleResize(d.width,d.height)}        
         style={style}
       >
       </Resizable>
