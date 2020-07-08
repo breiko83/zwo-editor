@@ -140,10 +140,10 @@ const Editor = () => {
   function duplicateBar(id) {
     const index = bars.findIndex(bar => bar.id === id)
     const element = [...bars][index]
-    
-    if(element.type === 'bar') addBar(element.power, element.time)    
-    if(element.type === 'freeRide') addFreeRide(element.time) 
-    if(element.type === 'trapeze') addTrapeze(element.startPower, element.endPower, element.time) 
+
+    if (element.type === 'bar') addBar(element.power, element.time)
+    if (element.type === 'freeRide') addFreeRide(element.time)
+    if (element.type === 'trapeze') addTrapeze(element.startPower, element.endPower, element.time)
   }
 
   function moveLeft(id) {
@@ -303,10 +303,10 @@ const Editor = () => {
           .then(response => response.text())
           .then(data => {
             console.log('File uploaded')
-            
+
             // can parse now
-            
-            if(parse) fetchAndParse(id)
+
+            if (parse) fetchAndParse(id)
           })
           .catch(error => {
             console.error(error)
@@ -434,7 +434,7 @@ const Editor = () => {
     )
   }
 
-  return (    
+  return (
     <div>
       {popupIsVisile &&
         <Popup title="Save Workout">
@@ -456,7 +456,7 @@ const Editor = () => {
           </div>
         </Popup>
       }
-      <div className='editor'>
+      <div className='editor' onClick={() => setShowActions(false)}>
         {showActions &&
           <div className='actions'>
             <button onClick={() => moveLeft(actionId)} title='Move Left'><FontAwesomeIcon icon={faArrowLeft} size="lg" fixedWidth /></button>
@@ -522,11 +522,11 @@ const Editor = () => {
         </div>
 
         <div className="form-input">
-        <label htmlFor="weight">Body Weight (Kg)</label>
-        <input className="textInput" type="number" name="weight" value={weight} onChange={(e) => setWeight(e.target.value)} />
+          <label htmlFor="weight">Body Weight (Kg)</label>
+          <input className="textInput" type="number" name="weight" value={weight} onChange={(e) => setWeight(e.target.value)} />
         </div>
-        
-        
+
+
         <button className="btn" onClick={() => { if (window.confirm('Are you sure you want to create a new workout?')) newWorkout() }}><FontAwesomeIcon icon={faFile} size="lg" fixedWidth /> New</button>
         <button className="btn" onClick={() => saveWorkout()}><FontAwesomeIcon icon={faSave} size="lg" fixedWidth /> Save</button>
         <button className="btn" onClick={() => downloadWorkout()} ><FontAwesomeIcon icon={faDownload} size="lg" fixedWidth /> Download</button>
@@ -536,11 +536,15 @@ const Editor = () => {
           type="file"
           style={{ display: 'none' }}
           onChange={handleUpload}
-        />        
-        <button className="btn" onClick={()=> document.getElementById("contained-button-file").click()}><FontAwesomeIcon icon={faUpload} size="lg" fixedWidth /> Upload</button>        
+        />
+        <button className="btn" onClick={() => document.getElementById("contained-button-file").click()}><FontAwesomeIcon icon={faUpload} size="lg" fixedWidth /> Upload</button>
         <div className="form-input">
           <label>Workout Time</label>
           <input className="textInput" value={helpers.getWorkoutLength(bars)} disabled />
+        </div>
+        <div className="form-input">
+          <label>TSS</label>
+          <input className="textInput" value={helpers.getStressScore(bars, ftp)} disabled />
         </div>
 
       </div>
