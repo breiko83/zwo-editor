@@ -155,7 +155,7 @@ const Editor = () => {
       updatedArray.splice(index, 1)
       updatedArray.splice(index - 1, 0, element)
       setBars(updatedArray)
-      setShowActions(false)
+      //setShowActions(false)
     }
   }
 
@@ -168,7 +168,7 @@ const Editor = () => {
       updatedArray.splice(index, 1)
       updatedArray.splice(index + 1, 0, element)
       setBars(updatedArray)
-      setShowActions(false)
+      //setShowActions(false)
     }
   }
 
