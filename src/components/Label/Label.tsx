@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faBolt, faClock } from '@fortawesome/free-solid-svg-icons'
 import './Label.css'
 
-const Label = (props: { duration: string, power: number, powerStart?: number, powerEnd?: number, weight: number, ftp: number }) => {
+const Label = (props: { duration: string, power?: number, powerStart?: number, powerEnd?: number, weight?: number, ftp?: number }) => {
 
   return (
     <div className='label'>

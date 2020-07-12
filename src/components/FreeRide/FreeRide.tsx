@@ -5,29 +5,29 @@ import moment from 'moment'
 import 'moment-duration-format'
 import Label from '../Label/Label'
 
-const FreeRide = ({ id, time, onChange, onClick, selected }) => {
+const FreeRide = (props: { id: string, time: number, onChange: Function, onClick: Function, selected: boolean }) => {
 
   const timeMultiplier = 5
 
-  const durationLabel = getDuration(time)
+  const durationLabel = getDuration(props.time)
 
 
-  const [width, setWidth] = useState(time / timeMultiplier)
+  const [width, setWidth] = useState(props.time / timeMultiplier)
   const [showLabel, setShowLabel] = useState(false)
 
   // standard height
   const height = 100
 
-  const handleResizeStop = ({ e, direction, ref, d }) => {
-    setWidth(width + d.width)
-    onChange(id, { time: (width + d.width) * timeMultiplier, type: 'freeRide', id: id })
+  const handleResizeStop = (dWidth: number) => {
+    setWidth(width + dWidth)
+    props.onChange(props.id, { time: (width + dWidth) * timeMultiplier, type: 'freeRide', id: props.id })
   }
 
-  const handleResize = ({ e, direction, ref, d }) => {
-    onChange(id, { time: (width + d.width) * timeMultiplier, type: 'freeRide', id: id })
+  const handleResize = (dWidth: number) => {
+    props.onChange(props.id, { time: (width + dWidth) * timeMultiplier, type: 'freeRide', id: props.id })
   }
 
-  function getDuration(seconds) {
+  function getDuration(seconds: number) {
     // 1 pixel equals 5 seconds 
     return moment.duration(seconds, "seconds").format("mm:ss", { trim: false })
   }
@@ -36,7 +36,8 @@ const FreeRide = ({ id, time, onChange, onClick, selected }) => {
     <div className='segment'
       onMouseEnter={() => setShowLabel(true)}
       onMouseLeave={() => setShowLabel(false)}
-      style={selected ? {zIndex:1}: {}}
+      style={props.selected ? {zIndex:1}: {}}
+      onClick={() => props.onClick(props.id)}
     >
       {showLabel &&
         <Label duration={durationLabel} />
@@ -52,9 +53,8 @@ const FreeRide = ({ id, time, onChange, onClick, selected }) => {
         maxHeight={height}
         enable={{ right: true }}
         grid={[1, 1]}
-        onResizeStop={(e, direction, ref, d) => handleResizeStop({ e, direction, ref, d })}
-        onResize={(e, direction, ref, d) => handleResize({ e, direction, ref, d })}
-        onClick={() => onClick(id)}
+        onResizeStop={(e, direction, ref, d) => handleResizeStop(d.width)}
+        onResize={(e, direction, ref, d) => handleResize(d.width)}        
       >
       </Resizable>
     </div>

@@ -26,8 +26,8 @@ const helpers = {
         const iff = (bar.startPower + bar.endPower) / 2
         
         tss += (((bar.time * np * iff) / (ftp * 3600)) * 100)
-      } 
-
+      }
+      return false;
     })
 
 
