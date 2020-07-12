@@ -15,10 +15,10 @@ import Converter from 'xml-js'
 import helpers from '../helpers'
 
 interface Bar {
-  id: string,  
+  id: string,
   time: number,
   type: string,
-  power?: number,  
+  power?: number,
   startPower?: number,
   endPower?: number
 }
@@ -269,7 +269,7 @@ const Editor = () => {
 
     var a = document.createElement("a")
     document.body.appendChild(a)
-    a.style.display = "none"    
+    a.style.display = "none"
     a.href = url
     a.download = `${id}.zwo`
     a.click()
@@ -391,50 +391,44 @@ const Editor = () => {
       })
   }
 
-  const renderBar = (bar: Bar) => {
-    return (
-      <Bar
-        key={bar.id}
-        id={bar.id}
-        time={bar.time}
-        power={bar.power || 100}
-        ftp={ftp}
-        weight={weight}
-        onChange={(id: string, value: any) => handleOnChange(id, value)}
-        onClick={(id: string) => handleOnClick(id)}
-        selected={bar.id === actionId}
-      />
-    )
-  }
+  const renderBar = (bar: Bar) => (
+    <Bar
+      key={bar.id}
+      id={bar.id}
+      time={bar.time}
+      power={bar.power || 100}
+      ftp={ftp}
+      weight={weight}
+      onChange={(id: string, value: any) => handleOnChange(id, value)} // Change any to Interface Bar?
+      onClick={(id: string) => handleOnClick(id)}
+      selected={bar.id === actionId}
+    />
+  )
 
-  const renderTrapeze = (bar: Bar) => {
-    return (
-      <Trapeze
-        key={bar.id}
-        id={bar.id}
-        time={bar.time}
-        startPower={bar.startPower || 80}
-        endPower={bar.endPower || 160}
-        ftp={ftp}
-        onChange={(id: string, value: any) => handleOnChange(id, value)}
-        onClick={(id: string) => handleOnClick(id)}
-        selected={bar.id === actionId}
-      />
-    )
-  }
+  const renderTrapeze = (bar: Bar) => (
+    <Trapeze
+      key={bar.id}
+      id={bar.id}
+      time={bar.time}
+      startPower={bar.startPower || 80}
+      endPower={bar.endPower || 160}
+      ftp={ftp}
+      onChange={(id: string, value: any) => handleOnChange(id, value)} // Change any to Interface Bar?
+      onClick={(id: string) => handleOnClick(id)}
+      selected={bar.id === actionId}
+    />
+  )
 
-  const renderFreeRide = (bar: Bar) => {
-    return (
-      <FreeRide
-        key={bar.id}
-        id={bar.id}
-        time={bar.time}
-        onChange={(id: string, value: any) => handleOnChange(id, value)}
-        onClick={(id: string) => handleOnClick(id)}
-        selected={bar.id === actionId}
-      />
-    )
-  }
+  const renderFreeRide = (bar: Bar) => (
+    <FreeRide
+      key={bar.id}
+      id={bar.id}
+      time={bar.time}
+      onChange={(id: string, value: any) => handleOnChange(id, value)} // Change any to Interface Bar?
+      onClick={(id: string) => handleOnClick(id)}
+      selected={bar.id === actionId}
+    />
+  )
 
   const renderComment = (instruction: Instruction) => (
     <Comment
