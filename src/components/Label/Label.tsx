@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faBolt, faClock } from '@fortawesome/free-solid-svg-icons'
 import './Label.css'
 
-const Label = (props: { duration: string, power: number, powerStart?: number, powerEnd?: number, weight: number }) => {
+const Label = (props: { duration: string, power: number, powerStart?: number, powerEnd?: number, weight: number, ftp: number }) => {
 
   return (
     <div className='label'>
@@ -22,9 +22,9 @@ const Label = (props: { duration: string, power: number, powerStart?: number, po
           <FontAwesomeIcon icon={faBolt} fixedWidth /> {props.powerStart}W - {props.powerEnd}W
         </div>
       }
-      {props.weight && props.power &&
+      {props.weight && props.power && props.ftp &&
         <div>
-          {(props.power / props.weight).toFixed(1)}W/Kg
+          {(props.power / props.weight).toFixed(1)}W/Kg &middot; {(props.power / props.ftp * 100).toFixed(0)}% FTP
         </div>
       }
     </div>

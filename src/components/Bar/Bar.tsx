@@ -65,11 +65,11 @@ const Bar = (props: { id: string, time: number, power: number, ftp: number, weig
       onMouseEnter={() => setShowLabel(true)}
       onMouseLeave={() => setShowLabel(false)}
       onClick={() => props.onClick(props.id)}
-      style={props.selected ? {zIndex:1}: {zIndex:0}}
+      style={props.selected ? { zIndex: 10 } : {}}
     >
       {showLabel &&
-        <Label duration={durationLabel} power={powerLabel} weight={props.weight} />
-      }      
+        <Label duration={durationLabel} power={powerLabel} weight={props.weight} ftp={props.ftp} />
+      }
       <Resizable
         className='bar'
         size={{
@@ -81,8 +81,8 @@ const Bar = (props: { id: string, time: number, power: number, ftp: number, weig
         maxHeight={multiplier * Zones.Z6.max}
         enable={{ top: true, right: true }}
         grid={[1, 1]}
-        onResizeStop={(e, direction, ref, d) => handleResizeStop(d.width,d.height)}
-        onResize={(e, direction, ref, d) => handleResize(d.width,d.height)}        
+        onResizeStop={(e, direction, ref, d) => handleResizeStop(d.width, d.height)}
+        onResize={(e, direction, ref, d) => handleResize(d.width, d.height)}
         style={style}
       >
       </Resizable>

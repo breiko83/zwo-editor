@@ -36,7 +36,7 @@ const FreeRide = ({ id, time, onChange, onClick, selected }) => {
     <div className='segment'
       onMouseEnter={() => setShowLabel(true)}
       onMouseLeave={() => setShowLabel(false)}
-      style={selected ? {zIndex:1}: {zIndex:0}}
+      style={selected ? {zIndex:1}: {}}
     >
       {showLabel &&
         <Label duration={durationLabel} />
