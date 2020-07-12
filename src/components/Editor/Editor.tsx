@@ -202,7 +202,7 @@ const Editor = () => {
 
     bars.map((bar, index) => {
 
-      var segment = Builder.create('')
+      var segment: Builder.XMLNode
       var ramp
 
       if (bar.type === 'bar') {
