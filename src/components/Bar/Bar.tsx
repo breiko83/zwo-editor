@@ -8,7 +8,7 @@ import Label from '../Label/Label'
 
 
 
-const Bar = (props: { id: string, time: number, power: number, ftp: number, weight: number, onChange: Function, onClick: Function }) => {
+const Bar = (props: { id: string, time: number, power: number, ftp: number, weight: number, onChange: Function, onClick: Function, selected: boolean }) => {
 
   const multiplier = 250
   const timeMultiplier = 5
@@ -65,6 +65,7 @@ const Bar = (props: { id: string, time: number, power: number, ftp: number, weig
       onMouseEnter={() => setShowLabel(true)}
       onMouseLeave={() => setShowLabel(false)}
       onClick={() => props.onClick(props.id)}
+      style={props.selected ? {zIndex:1}: {zIndex:0}}
     >
       {showLabel &&
         <Label duration={durationLabel} power={powerLabel} weight={props.weight} />

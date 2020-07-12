@@ -5,7 +5,7 @@ import moment from 'moment'
 import 'moment-duration-format'
 import Label from '../Label/Label'
 
-const FreeRide = ({ id, time, onChange, onClick }) => {
+const FreeRide = ({ id, time, onChange, onClick, selected }) => {
 
   const timeMultiplier = 5
 
@@ -36,6 +36,7 @@ const FreeRide = ({ id, time, onChange, onClick }) => {
     <div className='segment'
       onMouseEnter={() => setShowLabel(true)}
       onMouseLeave={() => setShowLabel(false)}
+      style={selected ? {zIndex:1}: {zIndex:0}}
     >
       {showLabel &&
         <Label duration={durationLabel} />

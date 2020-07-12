@@ -6,7 +6,7 @@ import moment from 'moment'
 import 'moment-duration-format'
 import Label from '../Label/Label'
 
-const Trapeze = ({ id, time, startPower, endPower, ftp, onChange, onClick }) => {
+const Trapeze = ({ id, time, startPower, endPower, ftp, onChange, onClick, selected }) => {
 
   const multiplier = 250
   const timeMultiplier = 5
@@ -109,6 +109,7 @@ const Trapeze = ({ id, time, startPower, endPower, ftp, onChange, onClick }) => 
     <div className='segment'
       onMouseEnter={() => setShowLabel(true)}
       onMouseLeave={() => setShowLabel(false)}
+      style={selected ? {zIndex:1}: {zIndex:0}}
     >
       {showLabel &&
         <Label duration={durationLabel} powerStart={powerLabelStart} powerEnd={powerLabelEnd} />

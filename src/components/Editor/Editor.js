@@ -21,7 +21,6 @@ const Editor = () => {
 
   const [id, setId] = useState(localStorage.getItem('id') || generateId())
   const [bars, setBars] = useState(JSON.parse(localStorage.getItem('currentWorkout')) || [])
-  const [showActions, setShowActions] = useState(false)
   const [actionId, setActionId] = useState()
   const [ftp, setFtp] = useState(parseInt(localStorage.getItem('ftp')) || 200)
   const [weight, setWeight] = useState(parseInt(localStorage.getItem('weight')) || 75)
@@ -71,10 +70,9 @@ const Editor = () => {
   function handleOnClick(id) {
 
     if (id === actionId) {
-      setShowActions(!showActions)
+      setActionId(null)
     } else {
       setActionId(id)
-      setShowActions(true)
     }
   }
 
@@ -134,7 +132,7 @@ const Editor = () => {
   function removeBar(id) {
     const updatedArray = [...bars]
     setBars(updatedArray.filter(item => item.id !== id))
-    setShowActions(false)
+    setActionId(null)
   }
 
   function duplicateBar(id) {
@@ -155,7 +153,6 @@ const Editor = () => {
       updatedArray.splice(index, 1)
       updatedArray.splice(index - 1, 0, element)
       setBars(updatedArray)
-      //setShowActions(false)
     }
   }
 
@@ -168,7 +165,6 @@ const Editor = () => {
       updatedArray.splice(index, 1)
       updatedArray.splice(index + 1, 0, element)
       setBars(updatedArray)
-      //setShowActions(false)
     }
   }
 
@@ -392,6 +388,7 @@ const Editor = () => {
         weight={weight}
         onChange={(id, value) => handleOnChange(id, value)}
         onClick={(id) => handleOnClick(id)}
+        selected={bar.id === actionId}
       />
     )
   }
@@ -407,6 +404,7 @@ const Editor = () => {
         ftp={ftp}
         onChange={(id, value) => handleOnChange(id, value)}
         onClick={(id) => handleOnClick(id)}
+        selected={bar.id === actionId}
       />
     )
   }
@@ -419,6 +417,7 @@ const Editor = () => {
         time={bar.time}
         onChange={(id, value) => handleOnChange(id, value)}
         onClick={(id) => handleOnClick(id)}
+        selected={bar.id === actionId}
       />
     )
   }
@@ -456,8 +455,8 @@ const Editor = () => {
           </div>
         </Popup>
       }
-      <div className='editor' onClick={() => setShowActions(false)}>
-        {showActions &&
+      <div className='editor'>
+        {actionId &&
           <div className='actions'>
             <button onClick={() => moveLeft(actionId)} title='Move Left'><FontAwesomeIcon icon={faArrowLeft} size="lg" fixedWidth /></button>
             <button onClick={() => moveRight(actionId)} title='Move Right'><FontAwesomeIcon icon={faArrowRight} size="lg" fixedWidth /></button>
@@ -470,6 +469,9 @@ const Editor = () => {
         </div>
 
         <div className='canvas'>
+          {actionId &&
+            <div className='fader' onClick={() => setActionId(null)}></div>
+          }
           {bars.map((bar) => {
             if (bar.type === 'bar') {
               return (renderBar(bar))
