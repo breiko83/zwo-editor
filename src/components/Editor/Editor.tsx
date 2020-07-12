@@ -6,7 +6,6 @@ import Trapeze from '../Trapeze/Trapeze'
 import FreeRide from '../FreeRide/FreeRide'
 import Comment from '../Comment/Comment'
 import Popup from '../Popup/Popup'
-import { v4 as uuidv4 } from 'uuid'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTrash, faArrowRight, faArrowLeft, faFile, faSave, faUpload, faDownload, faComment, faBicycle, faCopy } from '@fortawesome/free-solid-svg-icons'
 import { ReactComponent as WarmdownLogo } from '../../assets/warmdown.svg'
@@ -15,16 +14,33 @@ import Builder from 'xmlbuilder'
 import Converter from 'xml-js'
 import helpers from '../helpers'
 
+interface Bar {
+  id: string,  
+  time: number,
+  type: string,
+  power?: number,  
+  startPower?: number,
+  endPower?: number
+}
+
+interface Instruction {
+  id: string,
+  text: string,
+  time: number
+}
+
 const Editor = () => {
+
+  const { v4: uuidv4 } = require('uuid');
 
   const S3_URL = 'https://zwift-workout.s3-eu-west-1.amazonaws.com'
 
   const [id, setId] = useState(localStorage.getItem('id') || generateId())
-  const [bars, setBars] = useState(JSON.parse(localStorage.getItem('currentWorkout')) || [])
-  const [actionId, setActionId] = useState()
-  const [ftp, setFtp] = useState(parseInt(localStorage.getItem('ftp')) || 200)
-  const [weight, setWeight] = useState(parseInt(localStorage.getItem('weight')) || 75)
-  const [instructions, setInstructions] = useState(JSON.parse(localStorage.getItem('instructions')) || [])
+  const [bars, setBars] = useState<Array<Bar>>(JSON.parse(localStorage.getItem('currentWorkout') || '[]'))
+  const [actionId, setActionId] = useState<string | undefined>(undefined)
+  const [ftp, setFtp] = useState(parseInt(localStorage.getItem('ftp') || '200'))
+  const [weight, setWeight] = useState(parseInt(localStorage.getItem('weight') || '75'))
+  const [instructions, setInstructions] = useState<Array<Instruction>>(JSON.parse(localStorage.getItem('instructions') || '[]'))
 
   const [name, setName] = useState(localStorage.getItem('name') || '')
   const [description, setDescription] = useState(localStorage.getItem('description') || '')
@@ -34,10 +50,10 @@ const Editor = () => {
 
   React.useEffect(() => {
     localStorage.setItem('currentWorkout', JSON.stringify(bars))
-    localStorage.setItem('ftp', ftp)
+    localStorage.setItem('ftp', ftp.toString())
     localStorage.setItem('id', id)
     localStorage.setItem('instructions', JSON.stringify(instructions))
-    localStorage.setItem('weight', weight)
+    localStorage.setItem('weight', weight.toString())
 
     localStorage.setItem('name', name)
     localStorage.setItem('description', description)
@@ -59,7 +75,7 @@ const Editor = () => {
     setId(generateId())
   }
 
-  function handleOnChange(id, values) {
+  function handleOnChange(id: string, values: any) {
     const index = bars.findIndex(bar => bar.id === id)
 
     const updatedArray = [...bars]
@@ -67,16 +83,16 @@ const Editor = () => {
     setBars(updatedArray)
   }
 
-  function handleOnClick(id) {
+  function handleOnClick(id: string) {
 
     if (id === actionId) {
-      setActionId(null)
+      setActionId(undefined)
     } else {
       setActionId(id)
     }
   }
 
-  function addBar(zone, duration = 300) {
+  function addBar(zone: number, duration: number = 300) {
     setBars(bars => [...bars, {
       time: duration,
       power: zone,
@@ -86,7 +102,7 @@ const Editor = () => {
     ])
   }
 
-  function addTrapeze(zone1, zone2, duration = 300) {
+  function addTrapeze(zone1: number, zone2: number, duration: number = 300) {
     setBars(bars => [...bars, {
       time: duration,
       startPower: zone1,
@@ -114,7 +130,7 @@ const Editor = () => {
     }])
   }
 
-  function changeInstruction(id, values) {
+  function changeInstruction(id: string, values: Instruction) {
 
     const index = instructions.findIndex(instructions => instructions.id === id)
 
@@ -124,27 +140,27 @@ const Editor = () => {
 
   }
 
-  function deleteInstruction(id) {
+  function deleteInstruction(id: string) {
     const updatedArray = [...instructions]
     setInstructions(updatedArray.filter(item => item.id !== id))
   }
 
-  function removeBar(id) {
+  function removeBar(id: string) {
     const updatedArray = [...bars]
     setBars(updatedArray.filter(item => item.id !== id))
-    setActionId(null)
+    setActionId(undefined)
   }
 
-  function duplicateBar(id) {
+  function duplicateBar(id: string) {
     const index = bars.findIndex(bar => bar.id === id)
     const element = [...bars][index]
 
-    if (element.type === 'bar') addBar(element.power, element.time)
+    if (element.type === 'bar') addBar(element.power || 80, element.time)
     if (element.type === 'freeRide') addFreeRide(element.time)
-    if (element.type === 'trapeze') addTrapeze(element.startPower, element.endPower, element.time)
+    if (element.type === 'trapeze') addTrapeze(element.startPower || 80, element.endPower || 160, element.time)
   }
 
-  function moveLeft(id) {
+  function moveLeft(id: string) {
     const index = bars.findIndex(bar => bar.id === id)
     // not first position of array
     if (index > 0) {
@@ -156,7 +172,7 @@ const Editor = () => {
     }
   }
 
-  function moveRight(id) {
+  function moveRight(id: string) {
     const index = bars.findIndex(bar => bar.id === id)
     // not first position of array
     if (index < bars.length - 1) {
@@ -186,7 +202,7 @@ const Editor = () => {
 
     bars.map((bar, index) => {
 
-      var segment
+      var segment = Builder.create('')
       var ramp
 
       if (bar.type === 'bar') {
@@ -194,7 +210,7 @@ const Editor = () => {
           .att('Duration', bar.time)
           .att('Power', bar.power)
           .att('pace', 0) // is this cadence?
-      } else if (bar.type === 'trapeze') {
+      } else if (bar.type === 'trapeze' && bar.startPower && bar.endPower) {
 
         // index 0 is warmup
         // last index is cooldown
@@ -249,17 +265,18 @@ const Editor = () => {
   function downloadWorkout() {
 
     const tempFile = saveWorkout()
+    const url = window.URL.createObjectURL(tempFile)
 
     var a = document.createElement("a")
     document.body.appendChild(a)
-    a.style = "display: none"
-    a.href = window.URL.createObjectURL(tempFile)
+    a.style.display = "none"    
+    a.href = url
     a.download = `${id}.zwo`
     a.click()
-    window.URL.revokeObjectURL(tempFile)
+    window.URL.revokeObjectURL(url)
   }
 
-  function handleUpload(e) {
+  function handleUpload(file: Blob) {
 
     // ask user if they want to overwrite current workout first
     if (bars.length > 0) {
@@ -269,13 +286,10 @@ const Editor = () => {
     }
 
     newWorkout()
-
-    const file = e.target.files[0]
     upload(file, true)
-
   }
 
-  function upload(file, parse = false) {
+  function upload(file: Blob, parse = false) {
     fetch('/.netlify/functions/upload', {
       method: 'POST',
       body: JSON.stringify(
@@ -310,7 +324,7 @@ const Editor = () => {
       })
   }
 
-  function fetchAndParse(id) {
+  function fetchAndParse(id: string) {
 
     // remove previous workout
     setBars([])
@@ -327,20 +341,20 @@ const Editor = () => {
 
         if (workout_file.name === 'workout_file') {
           // file is valid
-          const authorIndex = workout_file.elements.findIndex(element => element.name === 'author')
+          const authorIndex = workout_file.elements.findIndex((element: { name: string }) => element.name === 'author')
           setAuthor(workout_file.elements[authorIndex].elements[0].text)
 
-          const nameIndex = workout_file.elements.findIndex(element => element.name === 'name')
+          const nameIndex = workout_file.elements.findIndex((element: { name: string }) => element.name === 'name')
           setName(workout_file.elements[nameIndex].elements[0].text)
 
-          const descriptionIndex = workout_file.elements.findIndex(element => element.name === 'description')
+          const descriptionIndex = workout_file.elements.findIndex((element: { name: string }) => element.name === 'description')
           setDescription(workout_file.elements[descriptionIndex].elements[0].text)
 
-          const workoutIndex = workout_file.elements.findIndex(element => element.name === 'workout')
+          const workoutIndex = workout_file.elements.findIndex((element: { name: string }) => element.name === 'workout')
 
           var totalTime = 0
 
-          workout_file.elements[workoutIndex].elements.map(w => {
+          workout_file.elements[workoutIndex].elements.map((w: { name: string; attributes: { Power: any; PowerLow: string; Duration: string; PowerHigh: string }; elements: any }) => {
 
 
             if (w.name === 'SteadyState')
@@ -356,7 +370,7 @@ const Editor = () => {
             const textElements = w.elements
             if (textElements && textElements.length > 0) {
 
-              textElements.map(t => {
+              textElements.map((t: { name: string; attributes: { message: string | undefined; timeoffset: string } }) => {
 
                 if (t.name === 'textevent')
                   addInstruction(t.attributes.message, totalTime + parseFloat(t.attributes.timeoffset))
@@ -377,76 +391,73 @@ const Editor = () => {
       })
   }
 
-  const renderBar = (bar) => {
+  const renderBar = (bar: Bar) => {
     return (
       <Bar
         key={bar.id}
         id={bar.id}
         time={bar.time}
-        power={bar.power}
+        power={bar.power || 100}
         ftp={ftp}
         weight={weight}
-        onChange={(id, value) => handleOnChange(id, value)}
-        onClick={(id) => handleOnClick(id)}
+        onChange={(id: string, value: any) => handleOnChange(id, value)}
+        onClick={(id: string) => handleOnClick(id)}
         selected={bar.id === actionId}
       />
     )
   }
 
-  const renderTrapeze = (bar) => {
+  const renderTrapeze = (bar: Bar) => {
     return (
       <Trapeze
         key={bar.id}
         id={bar.id}
         time={bar.time}
-        startPower={bar.startPower}
-        endPower={bar.endPower}
+        startPower={bar.startPower || 80}
+        endPower={bar.endPower || 160}
         ftp={ftp}
-        onChange={(id, value) => handleOnChange(id, value)}
-        onClick={(id) => handleOnClick(id)}
+        onChange={(id: string, value: any) => handleOnChange(id, value)}
+        onClick={(id: string) => handleOnClick(id)}
         selected={bar.id === actionId}
       />
     )
   }
 
-  const renderFreeRide = (bar) => {
+  const renderFreeRide = (bar: Bar) => {
     return (
       <FreeRide
         key={bar.id}
         id={bar.id}
         time={bar.time}
-        onChange={(id, value) => handleOnChange(id, value)}
-        onClick={(id) => handleOnClick(id)}
+        onChange={(id: string, value: any) => handleOnChange(id, value)}
+        onClick={(id: string) => handleOnClick(id)}
         selected={bar.id === actionId}
       />
     )
   }
 
-  const renderComment = (instruction) => {
-    return (
-      <Comment
-        key={instruction.id}
-        instruction={instruction}
-        onChange={(id, values) => changeInstruction(id, values)}
-        onDelete={(id) => deleteInstruction(id)}
-      />
-    )
-  }
+  const renderComment = (instruction: Instruction) => (
+    <Comment
+      key={instruction.id}
+      instruction={instruction}
+      onChange={(id: string, values: Instruction) => changeInstruction(id, values)}
+      onDelete={(id: string) => deleteInstruction(id)} />
+  )
 
   return (
     <div>
       {popupIsVisile &&
         <Popup title="Save Workout">
           <div className="form-control">
-            <label for="name">Workout Title</label>
+            <label htmlFor="name">Workout Title</label>
             <input type="text" name="name" placeholder="Workout title" value={name} onChange={(e) => setName(e.target.value)} />
           </div>
           <div className="form-control">
-            <label for="description">Workout description</label>
+            <label htmlFor="description">Workout description</label>
             <textarea name="description" placeholder="Workout description" onChange={(e) => setDescription(e.target.value)}>{description}</textarea>
           </div>
           <div className="form-control">
-            <label for="author">Workout Author</label>
+            <label htmlFor="author">Workout Author</label>
             <input type="text" name="author" placeholder="Workout Author" value={author} onChange={(e) => setAuthor(e.target.value)} />
           </div>
           <div className="form-control">
@@ -470,7 +481,7 @@ const Editor = () => {
 
         <div className='canvas'>
           {actionId &&
-            <div className='fader' onClick={() => setActionId(null)}></div>
+            <div className='fader' onClick={() => setActionId(undefined)}></div>
           }
           {bars.map((bar) => {
             if (bar.type === 'bar') {
@@ -520,12 +531,12 @@ const Editor = () => {
 
         <div className="form-input">
           <label htmlFor="ftp">FTP (W)</label>
-          <input className="textInput" type="number" name="ftp" value={ftp} onChange={(e) => setFtp(e.target.value)} />
+          <input className="textInput" type="number" name="ftp" value={ftp} onChange={(e) => setFtp(parseInt(e.target.value))} />
         </div>
 
         <div className="form-input">
           <label htmlFor="weight">Body Weight (Kg)</label>
-          <input className="textInput" type="number" name="weight" value={weight} onChange={(e) => setWeight(e.target.value)} />
+          <input className="textInput" type="number" name="weight" value={weight} onChange={(e) => setWeight(parseInt(e.target.value))} />
         </div>
 
 
@@ -537,9 +548,9 @@ const Editor = () => {
           id="contained-button-file"
           type="file"
           style={{ display: 'none' }}
-          onChange={handleUpload}
+          onChange={(e) => handleUpload(e.target.files![0])}
         />
-        <button className="btn" onClick={() => document.getElementById("contained-button-file").click()}><FontAwesomeIcon icon={faUpload} size="lg" fixedWidth /> Upload</button>
+        <button className="btn" onClick={() => document.getElementById("contained-button-file")!.click()}><FontAwesomeIcon icon={faUpload} size="lg" fixedWidth /> Upload</button>
         <div className="form-input">
           <label>Workout Time</label>
           <input className="textInput" value={helpers.getWorkoutLength(bars)} disabled />
