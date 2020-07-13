@@ -7,7 +7,7 @@ import FreeRide from '../FreeRide/FreeRide'
 import Comment from '../Comment/Comment'
 import Popup from '../Popup/Popup'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faTrash, faArrowRight, faArrowLeft, faFile, faSave, faUpload, faDownload, faComment, faBicycle, faCopy } from '@fortawesome/free-solid-svg-icons'
+import { faTrash, faArrowRight, faArrowLeft, faFile, faSave, faUpload, faDownload, faComment, faBicycle, faCopy, faClock } from '@fortawesome/free-solid-svg-icons'
 import { ReactComponent as WarmdownLogo } from '../../assets/warmdown.svg'
 import { ReactComponent as WarmupLogo } from '../../assets/warmup.svg'
 import Builder from 'xmlbuilder'
@@ -20,7 +20,8 @@ interface Bar {
   type: string,
   power?: number,
   startPower?: number,
-  endPower?: number
+  endPower?: number,
+  cadence: number
 }
 
 interface Instruction {
@@ -41,6 +42,8 @@ const Editor = () => {
   const [ftp, setFtp] = useState(parseInt(localStorage.getItem('ftp') || '200'))
   const [weight, setWeight] = useState(parseInt(localStorage.getItem('weight') || '75'))
   const [instructions, setInstructions] = useState<Array<Instruction>>(JSON.parse(localStorage.getItem('instructions') || '[]'))
+  const [cadence, setCadence] = useState(0)
+  const [showCadenceInput, setShowCadenceInput] = useState(false)
 
   const [name, setName] = useState(localStorage.getItem('name') || '')
   const [description, setDescription] = useState(localStorage.getItem('description') || '')
@@ -75,7 +78,7 @@ const Editor = () => {
     setId(generateId())
   }
 
-  function handleOnChange(id: string, values: any) {
+  function handleOnChange(id: string, values: Bar) {
     const index = bars.findIndex(bar => bar.id === id)
 
     const updatedArray = [...bars]
@@ -89,13 +92,19 @@ const Editor = () => {
       setActionId(undefined)
     } else {
       setActionId(id)
+
+      const index = bars.findIndex(bar => bar.id === id)
+      const element = [...bars][index]      
+      
+      setCadence(element.cadence)
     }
   }
 
-  function addBar(zone: number, duration: number = 300) {
+  function addBar(zone: number, duration: number = 300, cadence: number = 0) {
     setBars(bars => [...bars, {
       time: duration,
       power: zone,
+      cadence: cadence,
       type: 'bar',
       id: uuidv4()
     }
@@ -107,6 +116,7 @@ const Editor = () => {
       time: duration,
       startPower: zone1,
       endPower: zone2,
+      cadence: 0,
       type: 'trapeze',
       id: uuidv4()
     }
@@ -116,6 +126,7 @@ const Editor = () => {
   function addFreeRide(duration = 600) {
     setBars(bars => [...bars, {
       time: duration,
+      cadence: 0,
       type: 'freeRide',
       id: uuidv4()
     }
@@ -184,6 +195,19 @@ const Editor = () => {
     }
   }
 
+  function saveCadence(id: string, cadence: number){
+    setCadence(cadence)
+
+    const updatedArray = [...bars]
+
+    const index = updatedArray.findIndex(bar => bar.id === id)
+    const element = [...updatedArray][index]
+
+    element.cadence = cadence
+    setBars(updatedArray)
+
+  }
+
   function saveWorkout() {
 
     setPopupVisibility(true)
@@ -209,7 +233,8 @@ const Editor = () => {
         segment = Builder.create('SteadyState')
           .att('Duration', bar.time)
           .att('Power', bar.power)
-          .att('pace', 0) // is this cadence?
+          .att('Cadence', bar.cadence)
+          .att('pace', 0)
       } else if (bar.type === 'trapeze' && bar.startPower && bar.endPower) {
 
         // index 0 is warmup
@@ -232,7 +257,7 @@ const Editor = () => {
           segment = Builder.create(ramp)
             .att('Duration', bar.time)
             .att('PowerLow', bar.startPower) // these 2 values are inverted
-            .att('PowerHigh', bar.endPower) // looks like a bug on zwift editor
+            .att('PowerHigh', bar.endPower) // looks like a bug on zwift editor            
             .att('pace', 0) // is this cadence?
         }
       } else {
@@ -354,11 +379,11 @@ const Editor = () => {
 
           var totalTime = 0
 
-          workout_file.elements[workoutIndex].elements.map((w: { name: string; attributes: { Power: any; PowerLow: string; Duration: string; PowerHigh: string }; elements: any }) => {
+          workout_file.elements[workoutIndex].elements.map((w: { name: string; attributes: { Power: any; PowerLow: string; Duration: string; PowerHigh: string; Cadence: string }; elements: any }) => {
 
 
             if (w.name === 'SteadyState')
-              addBar(parseFloat(w.attributes.Power || w.attributes.PowerLow), parseFloat(w.attributes.Duration))
+              addBar(parseFloat(w.attributes.Power || w.attributes.PowerLow), parseFloat(w.attributes.Duration), parseFloat(w.attributes.Cadence))
 
             if (w.name === 'Ramp' || w.name === 'Warmup' || w.name === 'Cooldown')
               addTrapeze(parseFloat(w.attributes.PowerLow), parseFloat(w.attributes.PowerHigh), parseFloat(w.attributes.Duration))
@@ -397,6 +422,7 @@ const Editor = () => {
       id={bar.id}
       time={bar.time}
       power={bar.power || 100}
+      cadence={bar.cadence}
       ftp={ftp}
       weight={weight}
       onChange={(id: string, value: any) => handleOnChange(id, value)} // Change any to Interface Bar?
@@ -467,6 +493,10 @@ const Editor = () => {
             <button onClick={() => moveRight(actionId)} title='Move Right'><FontAwesomeIcon icon={faArrowRight} size="lg" fixedWidth /></button>
             <button onClick={() => removeBar(actionId)} title='Delete'><FontAwesomeIcon icon={faTrash} size="lg" fixedWidth /></button>
             <button onClick={() => duplicateBar(actionId)} title='Duplicate'><FontAwesomeIcon icon={faCopy} size="lg" fixedWidth /></button>
+            <button onClick={() => setShowCadenceInput(!showCadenceInput)} title='Cadence'><FontAwesomeIcon icon={faClock} size="lg" fixedWidth /></button>
+            {showCadenceInput || cadence !==0 &&
+              <input className="textInput" type="number" min="40" max="150" name="cadence" value={cadence} onChange={(e) => saveCadence(actionId, parseInt(e.target.value))} />
+            }
           </div>
         }
         <div className='slider'>

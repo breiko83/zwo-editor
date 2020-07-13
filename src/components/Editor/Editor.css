@@ -101,7 +101,7 @@ label {
   z-index: 10;
 }
 
-.actions > button {
+.actions > button{
   padding: 20px;
   margin: 0 5px;
   background-color: rgba(0, 0, 0, 0.7);
@@ -109,6 +109,7 @@ label {
   border: 0;
   border-radius: 50%;
 }
+
 
 .timeline {  
   border-top: 1px solid gray;

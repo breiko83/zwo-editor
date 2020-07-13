@@ -8,7 +8,7 @@ import Label from '../Label/Label'
 
 
 
-const Bar = (props: { id: string, time: number, power: number, ftp: number, weight: number, onChange: Function, onClick: Function, selected: boolean }) => {
+const Bar = (props: { id: string, time: number, power: number, cadence: number, ftp: number, weight: number, onChange: Function, onClick: Function, selected: boolean }) => {
 
   const multiplier = 250
   const timeMultiplier = 5
@@ -25,11 +25,11 @@ const Bar = (props: { id: string, time: number, power: number, ftp: number, weig
   const handleResizeStop = (dWidth: number, dHeight: number) => {
     setWidth(width + dWidth)
     setHeight(height + dHeight)
-    props.onChange(props.id, { time: (width + dWidth) * timeMultiplier, power: (height + dHeight) / multiplier, type: 'bar', id: props.id })
+    props.onChange(props.id, { time: (width + dWidth) * timeMultiplier, power: (height + dHeight) / multiplier, cadence: props.cadence, type: 'bar', id: props.id })
   }
 
   const handleResize = (dWidth: number, dHeight: number) => {
-    props.onChange(props.id, { time: (width + dWidth) * timeMultiplier, power: (height + dHeight) / multiplier, type: 'bar', id: props.id })
+    props.onChange(props.id, { time: (width + dWidth) * timeMultiplier, power: (height + dHeight) / multiplier, cadence: props.cadence, type: 'bar', id: props.id })
   }
 
   function getDuration(seconds: number) {
