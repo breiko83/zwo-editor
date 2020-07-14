@@ -213,9 +213,13 @@ const Editor = () => {
 
   }
 
-  function saveWorkout() {
-
+  function saveWorkout(){
     setPopupVisibility(true)
+  }
+
+  function save() {
+
+    
 
     var totalTime = 0
 
@@ -294,7 +298,7 @@ const Editor = () => {
 
   function downloadWorkout() {
 
-    const tempFile = saveWorkout()
+    const tempFile = save()
     const url = window.URL.createObjectURL(tempFile)
 
     var a = document.createElement("a")
@@ -486,7 +490,10 @@ const Editor = () => {
             <input type="text" name="author" placeholder="Workout Author" value={author} onChange={(e) => setAuthor(e.target.value)} />
           </div>
           <div className="form-control">
-            <button className="btn btn-primary" onClick={() => setPopupVisibility(false)}>Save</button>
+            <button className="btn btn-primary" onClick={() => {
+              save()
+              setPopupVisibility(false)
+            }}>Save</button>
             <button className="btn" onClick={() => setPopupVisibility(false)}>Dismiss</button>
           </div>
         </Popup>
