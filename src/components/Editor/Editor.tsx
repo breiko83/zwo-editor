@@ -76,6 +76,9 @@ const Editor = () => {
     setBars([])
     setInstructions([])
     setId(generateId())
+    setName('')
+    setDescription('')
+    setAuthor('')
   }
 
   function handleOnChange(id: string, values: Bar) {
@@ -169,6 +172,8 @@ const Editor = () => {
     if (element.type === 'bar') addBar(element.power || 80, element.time)
     if (element.type === 'freeRide') addFreeRide(element.time)
     if (element.type === 'trapeze') addTrapeze(element.startPower || 80, element.endPower || 160, element.time)
+
+    setActionId(undefined)
   }
 
   function moveLeft(id: string) {
@@ -494,7 +499,7 @@ const Editor = () => {
             <button onClick={() => removeBar(actionId)} title='Delete'><FontAwesomeIcon icon={faTrash} size="lg" fixedWidth /></button>
             <button onClick={() => duplicateBar(actionId)} title='Duplicate'><FontAwesomeIcon icon={faCopy} size="lg" fixedWidth /></button>
             <button onClick={() => setShowCadenceInput(!showCadenceInput)} title='Cadence'><FontAwesomeIcon icon={faClock} size="lg" fixedWidth /></button>
-            {showCadenceInput || cadence !==0 &&
+            {(showCadenceInput || cadence !==0) &&
               <input className="textInput" type="number" min="40" max="150" name="cadence" value={cadence} onChange={(e) => saveCadence(actionId, parseInt(e.target.value))} />
             }
           </div>
