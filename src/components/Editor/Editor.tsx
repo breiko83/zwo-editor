@@ -97,8 +97,8 @@ const Editor = () => {
       setActionId(id)
 
       const index = bars.findIndex(bar => bar.id === id)
-      const element = [...bars][index]      
-      
+      const element = [...bars][index]
+
       setCadence(element.cadence)
     }
   }
@@ -200,7 +200,7 @@ const Editor = () => {
     }
   }
 
-  function saveCadence(id: string, cadence: number){
+  function saveCadence(id: string, cadence: number) {
     setCadence(cadence)
 
     const updatedArray = [...bars]
@@ -213,13 +213,13 @@ const Editor = () => {
 
   }
 
-  function saveWorkout(){
+  function saveWorkout() {
     setPopupVisibility(true)
   }
 
   function save() {
 
-    
+
 
     var totalTime = 0
 
@@ -242,8 +242,12 @@ const Editor = () => {
         segment = Builder.create('SteadyState')
           .att('Duration', bar.time)
           .att('Power', bar.power)
-          .att('Cadence', bar.cadence)
           .att('pace', 0)
+
+        // add cadence if not zero
+        if (bar.cadence !== 0)
+          segment.att('Cadence', bar.cadence)
+
       } else if (bar.type === 'trapeze' && bar.startPower && bar.endPower) {
 
         // index 0 is warmup
@@ -506,7 +510,7 @@ const Editor = () => {
             <button onClick={() => removeBar(actionId)} title='Delete'><FontAwesomeIcon icon={faTrash} size="lg" fixedWidth /></button>
             <button onClick={() => duplicateBar(actionId)} title='Duplicate'><FontAwesomeIcon icon={faCopy} size="lg" fixedWidth /></button>
             <button onClick={() => setShowCadenceInput(!showCadenceInput)} title='Cadence'><FontAwesomeIcon icon={faClock} size="lg" fixedWidth /></button>
-            {(showCadenceInput || cadence !==0) &&
+            {(showCadenceInput || cadence !== 0) &&
               <input className="textInput" type="number" min="40" max="150" name="cadence" value={cadence} onChange={(e) => saveCadence(actionId, parseInt(e.target.value))} />
             }
           </div>
