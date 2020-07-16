@@ -2,3 +2,19 @@
   color: red;
   font-size: 12px;
 }
+
+.link-button {
+  font-size: 16px;
+  color: #00C46A;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  display: inline;
+  margin: 0;
+  padding: 0;
+}
+
+.link-button:hover,
+.link-button:focus {
+text-decoration: none;
+}

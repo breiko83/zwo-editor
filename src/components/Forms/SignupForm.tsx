@@ -20,7 +20,7 @@ const SignupForm = (props: { signUp: Function, showLogin: Function, dismiss: Fun
   return (
     <form onSubmit={(e) => { signUp(email, password); e.preventDefault() }}>
       <h2>SignUp</h2>
-      <p>Already have an account? <a href="#" onClick={() => props.showLogin()}>Click here</a> to Login</p>
+      <p>Already have an account? <button type="button" className="link-button" onClick={() => props.showLogin()}>Click here</button> to Login</p>
       <div className="alert">{error}</div>
       <div className="form-control">
         <label htmlFor="email">email</label>
