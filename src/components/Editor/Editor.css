@@ -1,29 +1,59 @@
+.container {
+  margin: 0px;
+  display: flex;
+  margin: 0;
+  flex-direction: column;
+  flex-wrap: wrap;
+  align-content: stretch;
+  height: 100%;
+}
+
 .editor {
   display: block;
   position: relative;
   
-  overflow-x: scroll;
-  overflow-y: hidden;
+  overflow-x: scroll;  
   border: 1px dotted gray;
   white-space: nowrap;
 
   padding: 10px 30px;
+  margin: 10px 10px 0 10px;
+
+  height: 86vh;  
+}
+
+.terms {
+  color: white;
+  background-color: black;
+  width: 100%;
+  height: 2vh;
+
+  font-size: 11px;
+  padding: 5px;
+}
+
+a {
+  color: #00C46A;
 }
 
 .canvas {
-  position: relative;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  overflow-y: hidden;
+  overflow-x: visible;
+  
+  bottom: 50px;
+
   display: flex;
   flex-wrap: nowrap;
   justify-content: flex-start;
   align-items: flex-end;  
-  
-  
-  height: 80vh;
 }
 
 .fader {
   position: absolute;
-  background-color: rgba(255, 255, 255, 0.9);
+  background-color: rgba(255, 255, 255, 0.9);;
   top: 0;
   left: 0;
   right: 0;
@@ -35,6 +65,10 @@
 
 .cta {
   display: flex;
+  flex-direction: row;
+  margin: 0 10px 10px;
+
+  height: 10%;
 }
 
 .btn {
@@ -44,6 +78,7 @@
   text-align: center;
   font-size: 13px;
   border-radius: 5px;
+  min-width: 50px;
 }
 
 .btn > svg {
@@ -122,6 +157,9 @@ label {
 
 
 .timeline {  
+  position: absolute;
+  bottom: 10px;
+  
   border-top: 1px solid gray;
 }
 
@@ -164,8 +202,8 @@ label {
   position: absolute;
   width: 100%;
   top: 50px;
-  left: 20px;
-  z-index: 100;
+  left: 0px;
+  z-index: 1;
 }
 
 .workoutLength {

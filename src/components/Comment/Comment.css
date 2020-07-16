@@ -2,11 +2,12 @@
   position: relative;
 }
 .line {
+  
   position: absolute;
   top: 20px;
-  left: 10px;
+  left: 0px;
   right: 0;
-  height: 80vh;
+  height: 90vh;
   width: 1px;
   border-left: 1px dotted gray;  
 }

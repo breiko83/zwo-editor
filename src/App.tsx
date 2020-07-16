@@ -6,7 +6,6 @@ import Home from './Home';
 
 export default function App() {
   return (    
-
     <Router>
       <Switch>
         <Route path="/editor">
@@ -16,7 +15,6 @@ export default function App() {
           <Home />
         </Route>
       </Switch>
-
     </Router>
   )
 }

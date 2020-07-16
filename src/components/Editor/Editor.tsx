@@ -308,7 +308,7 @@ const Editor = () => {
     upload(file, false)
 
     // save to cloud (firebase) if logged in
-    if(user){
+    if (user) {
       const itemsRef = firebase.database().ref('workouts');
       const item = {
         id: id,
@@ -508,15 +508,15 @@ const Editor = () => {
   )
 
   const renderRegistrationForm = () => {
-    if(visibleForm === 'login'){
-      return <LoginForm login={setUser} showSignup={() => setVisibleForm('signup')} dismiss={() => setPopupVisibility(false)} />              
-    }else{
+    if (visibleForm === 'login') {
+      return <LoginForm login={setUser} showSignup={() => setVisibleForm('signup')} dismiss={() => setPopupVisibility(false)} />
+    } else {
       return <SignupForm signUp={setUser} showLogin={() => setVisibleForm('login')} dismiss={() => setPopupVisibility(false)} />
-    }        
+    }
   }
 
   return (
-    <div>
+    <div className="container">
       {popupIsVisile &&
         <Popup>
           {user ?
@@ -561,11 +561,10 @@ const Editor = () => {
             }
           </div>
         }
-        <div className='slider'>
-          {instructions.map((instruction) => renderComment(instruction))}
-        </div>
-
         <div className='canvas'>
+          <div className='slider'>
+            {instructions.map((instruction) => renderComment(instruction))}
+          </div>
           {actionId &&
             <div className='fader' onClick={() => setActionId(undefined)}></div>
           }
@@ -604,7 +603,7 @@ const Editor = () => {
         </div>
       </div>
       <div className='cta'>
-        <button className="btn btn-square" onClick={() => addBar(Zones.Z1.min)} style={{ backgroundColor: Colors.GRAY }}>Z1</button>
+        <button className="btn btn-square" onClick={() => addBar(0.5)} style={{ backgroundColor: Colors.GRAY }}>Z1</button>
         <button className="btn btn-square" onClick={() => addBar(Zones.Z2.min)} style={{ backgroundColor: Colors.BLUE }}>Z2</button>
         <button className="btn btn-square" onClick={() => addBar(Zones.Z3.min)} style={{ backgroundColor: Colors.GREEN }}>Z3</button>
         <button className="btn btn-square" onClick={() => addBar(Zones.Z4.min)} style={{ backgroundColor: Colors.YELLOW }}>Z4</button>
@@ -647,6 +646,7 @@ const Editor = () => {
         </div>
 
       </div>
+      <div className="terms">Terms</div>
     </div>
 
   )
