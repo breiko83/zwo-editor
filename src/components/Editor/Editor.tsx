@@ -14,6 +14,8 @@ import Builder from 'xmlbuilder'
 import Converter from 'xml-js'
 import helpers from '../helpers'
 import firebase, { auth } from '../firebase'
+import SignupForm from '../Forms/SignupForm'
+import LoginForm from '../Forms/LoginForm'
 
 interface Bar {
   id: string,
@@ -53,8 +55,8 @@ const Editor = () => {
   const [popupIsVisile, setPopupVisibility] = useState(false)
 
   const [user, setUser] = useState<firebase.User | null>(null)
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
+  const [error, setError] = useState('')
+  const [visibleForm, setVisibleForm] = useState('login') // default form is login
 
 
   React.useEffect(() => {
@@ -71,7 +73,7 @@ const Editor = () => {
     window.history.replaceState('', '', `/editor/${id}`)
 
     auth.onAuthStateChanged(user => {
-      if (user) {        
+      if (user) {
         setUser(user)
       }
     });
@@ -311,22 +313,22 @@ const Editor = () => {
 
     const itemsRef = firebase.database().ref('workouts');
     const item = {
+      id: id,
       name: name,
       description: description,
       author: author,
-      workout: bars
+      workout: bars,
+      userId: auth.currentUser?.uid
     }
     itemsRef.push(item);
 
     return file
   }
 
-  function signup() {
-    auth.createUserWithEmailAndPassword(email, password)
-      .then((result: { user: any }) => {
-        const user = result.user
-        setUser(user)
-      });
+  function logout() {
+    console.log('logout');
+
+    auth.signOut().then(() => setUser(null))
   }
 
   function downloadWorkout() {
@@ -506,12 +508,21 @@ const Editor = () => {
       onDelete={(id: string) => deleteInstruction(id)} />
   )
 
+  const renderRegistrationForm = () => {
+    if(visibleForm === 'login'){
+      return <LoginForm login={setUser} showSignup={() => setVisibleForm('signup')} />              
+    }else{
+      return <SignupForm signUp={setUser} showLogin={() => setVisibleForm('login')} />
+    }        
+  }
+
   return (
     <div>
       {popupIsVisile &&
-        <Popup title="Save Workout">
+        <Popup>
           {user ?
             <div>
+              <h2>Save</h2>
               <div className="form-control">
                 <label htmlFor="name">Workout Title</label>
                 <input type="text" name="name" placeholder="Workout title" value={name} onChange={(e) => setName(e.target.value)} />
@@ -530,16 +541,11 @@ const Editor = () => {
                   setPopupVisibility(false)
                 }}>Save</button>
                 <button className="btn" onClick={() => setPopupVisibility(false)}>Dismiss</button>
+                <button onClick={() => logout()}>Logout</button>
               </div>
             </div>
             :
-            <form>
-              <label htmlFor="email">email</label>
-              <input type="email" name="email" value={email} onChange={(e) => setEmail(e.target.value)} />
-              <label htmlFor="password">password</label>
-              <input type="password" name="password" autoComplete='new-password' value={password} onChange={(e) => setPassword(e.target.value)} />
-              <input type="submit" name="Signup" onClick={() => signup()} />
-            </form>
+            renderRegistrationForm()
           }
         </Popup>
       }

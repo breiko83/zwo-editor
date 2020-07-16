@@ -1,12 +1,11 @@
 import React from 'react'
 import './Popup.css'
 
-const Popop = (props: { children: any, title: string }) => {
+const Popop = (props: { children: any}) => {
 
   return (
     <div className='popup-background'>
-      <div className='popup'>
-        <h2>{props.title}</h2>
+      <div className='popup'>        
         {props.children}
       </div>
     </div>
