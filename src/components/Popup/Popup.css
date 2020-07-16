@@ -35,15 +35,30 @@
   font-size: 14px;
   color: gray;
   display: block;
+  text-align: left;
 }
 
-.form-control > input, textarea {
+.form-control > input, .form-control > textarea {
   display: block;
   width: 100%;
   padding: 10px;
+  margin-top: 10px;
   
   font-size: 16px; 
-  border: 1px solid gray;
+  border: 1px solid #AAA;
+  border-radius: 5px;
+  box-sizing:border-box;
+}
+
+ .form-control > button {
+  
+  padding: 10px;
+  margin-top: 10px;  
+
+  width: 50%;
+  
+  font-size: 16px; 
+  border: 1px solid #EEEEEE;
   border-radius: 5px;
   box-sizing:border-box;
 }

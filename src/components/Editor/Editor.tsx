@@ -510,9 +510,9 @@ const Editor = () => {
 
   const renderRegistrationForm = () => {
     if(visibleForm === 'login'){
-      return <LoginForm login={setUser} showSignup={() => setVisibleForm('signup')} />              
+      return <LoginForm login={setUser} showSignup={() => setVisibleForm('signup')} dismiss={() => setPopupVisibility(false)} />              
     }else{
-      return <SignupForm signUp={setUser} showLogin={() => setVisibleForm('login')} />
+      return <SignupForm signUp={setUser} showLogin={() => setVisibleForm('login')} dismiss={() => setPopupVisibility(false)} />
     }        
   }
 
@@ -522,7 +522,7 @@ const Editor = () => {
         <Popup>
           {user ?
             <div>
-              <h2>Save</h2>
+              <h2>Save Workout</h2>
               <div className="form-control">
                 <label htmlFor="name">Workout Title</label>
                 <input type="text" name="name" placeholder="Workout title" value={name} onChange={(e) => setName(e.target.value)} />

@@ -66,6 +66,16 @@
   background-color: #27ae60;
 }
 
+.btn-secondary {
+  background-color: white;
+  color: black;
+  padding: 5px 20px;
+}
+
+.btn-secondary:hover {
+  background-color: #EEEEEE;
+}
+
 .btn-square {
   color: white;
   width: 50px;
