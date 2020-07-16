@@ -13,6 +13,7 @@ import { ReactComponent as WarmupLogo } from '../../assets/warmup.svg'
 import Builder from 'xmlbuilder'
 import Converter from 'xml-js'
 import helpers from '../helpers'
+import firebase, { auth } from '../firebase'
 
 interface Bar {
   id: string,
@@ -51,6 +52,11 @@ const Editor = () => {
 
   const [popupIsVisile, setPopupVisibility] = useState(false)
 
+  const [user, setUser] = useState<firebase.User | null>(null)
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+
+
   React.useEffect(() => {
     localStorage.setItem('currentWorkout', JSON.stringify(bars))
     localStorage.setItem('ftp', ftp.toString())
@@ -63,6 +69,12 @@ const Editor = () => {
     localStorage.setItem('author', author)
 
     window.history.replaceState('', '', `/editor/${id}`)
+
+    auth.onAuthStateChanged(user => {
+      if (user) {        
+        setUser(user)
+      }
+    });
 
   }, [instructions, bars, ftp, weight, id, name, author, description])
 
@@ -219,8 +231,6 @@ const Editor = () => {
 
   function save() {
 
-
-
     var totalTime = 0
 
     const xml = Builder.begin()
@@ -297,7 +307,26 @@ const Editor = () => {
     // save this to cloud
     upload(file, false)
 
+    // save to firebase
+
+    const itemsRef = firebase.database().ref('workouts');
+    const item = {
+      name: name,
+      description: description,
+      author: author,
+      workout: bars
+    }
+    itemsRef.push(item);
+
     return file
+  }
+
+  function signup() {
+    auth.createUserWithEmailAndPassword(email, password)
+      .then((result: { user: any }) => {
+        const user = result.user
+        setUser(user)
+      });
   }
 
   function downloadWorkout() {
@@ -481,25 +510,37 @@ const Editor = () => {
     <div>
       {popupIsVisile &&
         <Popup title="Save Workout">
-          <div className="form-control">
-            <label htmlFor="name">Workout Title</label>
-            <input type="text" name="name" placeholder="Workout title" value={name} onChange={(e) => setName(e.target.value)} />
-          </div>
-          <div className="form-control">
-            <label htmlFor="description">Workout description</label>
-            <textarea name="description" placeholder="Workout description" onChange={(e) => setDescription(e.target.value)}>{description}</textarea>
-          </div>
-          <div className="form-control">
-            <label htmlFor="author">Workout Author</label>
-            <input type="text" name="author" placeholder="Workout Author" value={author} onChange={(e) => setAuthor(e.target.value)} />
-          </div>
-          <div className="form-control">
-            <button className="btn btn-primary" onClick={() => {
-              save()
-              setPopupVisibility(false)
-            }}>Save</button>
-            <button className="btn" onClick={() => setPopupVisibility(false)}>Dismiss</button>
-          </div>
+          {user ?
+            <div>
+              <div className="form-control">
+                <label htmlFor="name">Workout Title</label>
+                <input type="text" name="name" placeholder="Workout title" value={name} onChange={(e) => setName(e.target.value)} />
+              </div>
+              <div className="form-control">
+                <label htmlFor="description">Workout description</label>
+                <textarea name="description" placeholder="Workout description" value={description} onChange={(e) => setDescription(e.target.value)}></textarea>
+              </div>
+              <div className="form-control">
+                <label htmlFor="author">Workout Author</label>
+                <input type="text" name="author" placeholder="Workout Author" value={author} onChange={(e) => setAuthor(e.target.value)} />
+              </div>
+              <div className="form-control">
+                <button className="btn btn-primary" onClick={() => {
+                  save()
+                  setPopupVisibility(false)
+                }}>Save</button>
+                <button className="btn" onClick={() => setPopupVisibility(false)}>Dismiss</button>
+              </div>
+            </div>
+            :
+            <form>
+              <label htmlFor="email">email</label>
+              <input type="email" name="email" value={email} onChange={(e) => setEmail(e.target.value)} />
+              <label htmlFor="password">password</label>
+              <input type="password" name="password" autoComplete='new-password' value={password} onChange={(e) => setPassword(e.target.value)} />
+              <input type="submit" name="Signup" onClick={() => signup()} />
+            </form>
+          }
         </Popup>
       }
       <div className='editor'>
