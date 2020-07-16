@@ -1,13 +1,17 @@
 .commentBlock {
   position: relative;
+  padding: 5px;
 }
-.line {
-  
+.line {  
   position: absolute;
-  top: 20px;
+  top: 30px;
   left: 0px;
   right: 0;
   height: 90vh;
   width: 1px;
   border-left: 1px dotted gray;  
+  z-index: 0;
+}
+.react-draggable {
+  position: absolute;
 }

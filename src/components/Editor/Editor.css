@@ -201,9 +201,8 @@ label {
 .slider {  
   position: absolute;
   width: 100%;
-  top: 50px;
+  top: 100px;
   left: 0px;
-  z-index: 1;
 }
 
 .workoutLength {
