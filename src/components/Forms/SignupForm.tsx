@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import firebase, { auth } from '../firebase'
+import { auth } from '../firebase'
 import './Form.css'
 
 const SignupForm = (props: { signUp: Function, showLogin: Function, dismiss: Function }) => {

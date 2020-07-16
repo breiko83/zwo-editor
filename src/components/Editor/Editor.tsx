@@ -55,9 +55,7 @@ const Editor = () => {
   const [popupIsVisile, setPopupVisibility] = useState(false)
 
   const [user, setUser] = useState<firebase.User | null>(null)
-  const [error, setError] = useState('')
   const [visibleForm, setVisibleForm] = useState('login') // default form is login
-
 
   React.useEffect(() => {
     localStorage.setItem('currentWorkout', JSON.stringify(bars))
@@ -309,18 +307,19 @@ const Editor = () => {
     // save this to cloud
     upload(file, false)
 
-    // save to firebase
-
-    const itemsRef = firebase.database().ref('workouts');
-    const item = {
-      id: id,
-      name: name,
-      description: description,
-      author: author,
-      workout: bars,
-      userId: auth.currentUser?.uid
+    // save to cloud (firebase) if logged in
+    if(user){
+      const itemsRef = firebase.database().ref('workouts');
+      const item = {
+        id: id,
+        name: name,
+        description: description,
+        author: author,
+        workout: bars,
+        userId: user.uid
+      }
+      itemsRef.push(item);
     }
-    itemsRef.push(item);
 
     return file
   }

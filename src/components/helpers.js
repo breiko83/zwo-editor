@@ -19,20 +19,17 @@ const helpers = {
         const np = bar.power * ftp        
         const iff = bar.power
         
-        tss += (((bar.time * np * iff) / (ftp * 3600)) * 100)
+        tss += (bar.time * np * iff)
       }
       if (bar.type === 'trapeze'){
         const np = (bar.startPower + bar.endPower) / 2 * ftp        
         const iff = (bar.startPower + bar.endPower) / 2
         
-        tss += (((bar.time * np * iff) / (ftp * 3600)) * 100)
+        tss += (bar.time * np * iff)
       }
       return false;
     })
-
-
-
-    return tss.toFixed(0);
+    return ((tss / (ftp * 3600)) * 100).toFixed(0);
   }
 }
 
