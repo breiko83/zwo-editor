@@ -41,7 +41,7 @@ export default function Home() {
         <div className="bio">
           <h3>Bio</h3>
           <p>I'm a full stack developer and I love cycling. I joined Zwift during the 2020 lockdown and I loved it.</p>
-          <p>Follow me on Zwift (Carlo Schiesaro 🇮🇹) or <a href="https://www.strava.com/athletes/4523127" target="blank">Strava</a></p>
+          <p>Find me on Zwift (Carlo Schiesaro <span role="img" aria-label="Italy">🇮🇹</span>) or follow on <a href="https://www.strava.com/athletes/4523127" target="blank">Strava</a></p>
         </div>
         <div className="contact">
           <h3>Support</h3>
