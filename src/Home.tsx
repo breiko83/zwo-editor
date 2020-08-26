@@ -14,7 +14,7 @@ export default function Home() {
         <h1>Zwift Workout Editor</h1>
         <Link to="/editor" className="btn btn-primary btn-xl">Open Editor</Link>
       </div>
-      <div className="about">
+      <div className="features">
         <h2>Top features</h2>
         <p>Why should I use it?</p>
         <div className="perks">
@@ -34,6 +34,18 @@ export default function Home() {
             <h3><FontAwesomeIcon icon={faPiggyBank} fixedWidth /> Free</h3>
             <p>Free. Forever.</p>
           </div>
+        </div>
+      </div>
+      <div className="about">
+        <h2>About me</h2>
+        <div className="bio">
+          <h3>Bio</h3>
+          <p>I'm a full stack developer and I love cycling. I joined Zwift during the 2020 lockdown and I loved it.</p>
+          <p>Follow me on Zwift (Carlo Schiesaro 🇮🇹) or <a href="https://www.strava.com/athletes/4523127" target="blank">Strava</a></p>
+        </div>
+        <div className="contact">
+          <h3>Support</h3>
+          <p>If you'd like to report for a bug or ask for a new feature please use my <a href="https://github.com/breiko83/zwo-editor" target="blank">github repository</a>.</p>
         </div>
       </div>
     </div>

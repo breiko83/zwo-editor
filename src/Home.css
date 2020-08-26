@@ -11,8 +11,9 @@
 h2 {
   font-size: 34px;
   font-weight: 200;
-  margin-bottom: 0;
+  margin: 0;
   text-transform: uppercase;
+
 }
 
 a {
@@ -24,8 +25,9 @@ a {
   padding: 20px 60px;
 }
 
-.about {
+.features {
   text-align: center;
+  padding: 50px;
 }
 
 .perks {
@@ -33,10 +35,33 @@ a {
   flex-wrap: wrap;
 }
 .perks > div{
-  width: 50%;  
+  width: 25%;  
   height: 120px;  
 }
 .perks > div > p{
   max-width: 250px;
   margin: 0 auto;
+}
+.about {
+  background-color: black;
+  color: white;
+  text-align: center;
+  padding: 50px;
+  display: flex;
+  flex-wrap: wrap;
+}
+.about > h2 {
+  width: 100%;
+  margin: 0;
+}
+.about > div {
+  width: 50%;
+  margin: 0; 
+}
+.about > div > p {
+  align-items: center;
+  align-self: center;
+  max-width: 300px;
+  margin: 20px auto;  
+  margin-top: 0;
 }
