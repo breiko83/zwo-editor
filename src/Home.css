@@ -75,9 +75,12 @@ a {
 }
 
 @media (max-width: 720px) {
+  .features {
+    padding: 10px;
+  }
   .perks > div{
     width: 50%;  
-    height: 120px;  
+    height: auto;  
   }
   .about > div {
     width: 100%;
