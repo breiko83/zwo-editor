@@ -31,24 +31,33 @@ export default function Home() {
             <p>Easily share your workout files with your friends</p>
           </div>
           <div>
-            <h3><FontAwesomeIcon icon={faPiggyBank} fixedWidth /> Free</h3>
-            <p>Free. Forever.</p>
+            <h3><FontAwesomeIcon icon={faPiggyBank} fixedWidth /> Open Source</h3>
+            <p>This software is free to use.</p>
           </div>
         </div>
       </div>
-      <div className="alt-background">
-        <div className="about">
-          <h2>About me</h2>        
-          <div className="bio">
-            <h3>Bio</h3>
-            <p>I'm a full stack developer and I love cycling. I joined Zwift during the 2020 lockdown and I loved it.</p>
-            <p>Find me on Zwift (Carlo Schiesaro <span role="img" aria-label="Italy">🇮🇹</span>) or follow on <a href="https://www.strava.com/athletes/4523127" target="blank">Strava</a></p>
-          </div>
-          <div className="contact">
-            <h3>Support</h3>
-            <p>If you'd like to report for a bug or ask for a new feature please use my <a href="https://github.com/breiko83/zwo-editor" target="blank">github repository</a>.</p>
-          </div>
+      <div className="blue">
+        <div className="share">
+          <h2>Do you like this?</h2>
+          <p>Please help me out by sharing this page on Social Media</p>
+          <a className="twitter-share-button"
+            href="https://twitter.com/intent/tweet?text=Check%20out%20https://zwiftworkout.netlify.app/">
+          Tweet</a>
         </div>
+      </div>
+      <div className="black">
+      <div className="about">
+        <h2>About me</h2>
+        <div className="bio">
+          <h3>Bio</h3>
+          <p>I'm a full stack developer and I love cycling. I joined Zwift during the 2020 lockdown and I loved it.</p>
+          <p>Find me on Zwift (Carlo Schiesaro <span role="img" aria-label="Italy">🇮🇹</span>) or follow on <a href="https://www.strava.com/athletes/4523127" target="blank">Strava</a></p>
+        </div>
+        <div className="contact">
+          <h3>Support</h3>
+          <p>If you'd like to report for a bug or ask for a new feature please use my <a href="https://github.com/breiko83/zwo-editor" target="blank">github repository</a>.</p>
+        </div>
+      </div>
       </div>
     </div>
   )
