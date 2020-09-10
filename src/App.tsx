@@ -17,10 +17,11 @@ export default function App() {
         <meta name="description" content="Edit and share your Zwift workouts directly from your browser" />
         <meta name="twitter:card" content="summary" />
         <meta name="twitter:creator" content="@CarloSchiesaro" />
-        <meta name="og:title" content="Zwift Workout Editor" />
-        <meta name="og:description" content="Edit and share your Zwift workouts directly from your browser" />
-        <meta name="og:image" content={Icon} />
+        <meta property="og:title" content="Zwift Workout Editor" />
+        <meta property="og:description" content="Edit and share your Zwift workouts directly from your browser" />
+        <meta property="og:image" content="/android-chrome-256x256.png" />
         <meta property="og:url" content="https://zwiftworkout.netlify.app/" />
+        <meta property="og:type" content="website" />
       </Helmet>
       <Switch>
         <Route path="/editor">
