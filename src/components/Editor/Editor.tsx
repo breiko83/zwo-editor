@@ -309,16 +309,17 @@ const Editor = () => {
 
     // save to cloud (firebase) if logged in
     if (user) {
-      const itemsRef = firebase.database().ref('workouts');
+      const itemsRef = firebase.database().ref('workouts/' + id);
       const item = {
         id: id,
         name: name,
         description: description,
         author: author,
         workout: bars,
-        userId: user.uid
+        userId: user.uid,
+        updatedAt: Date()
       }
-      itemsRef.push(item);
+      itemsRef.set(item);
     }
 
     return file
