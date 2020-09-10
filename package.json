@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@babel/plugin-proposal-class-properties": "^7.10.4",
     "@fortawesome/fontawesome-svg-core": "^1.2.28",
     "@fortawesome/free-solid-svg-icons": "^5.13.0",
     "@fortawesome/react-fontawesome": "^0.1.9",
@@ -19,6 +20,14 @@
     "@types/xml2js": "^0.4.5",
     "aws-sdk": "^2.692.0",
     "firebase": "^7.16.0",
+    "gatsby": "^2.24.57",
+    "gatsby-image": "^2.4.17",
+    "gatsby-plugin-manifest": "^2.4.28",
+    "gatsby-plugin-offline": "^3.2.27",
+    "gatsby-plugin-react-helmet": "^3.3.10",
+    "gatsby-plugin-sharp": "^2.6.35",
+    "gatsby-source-filesystem": "^2.3.29",
+    "gatsby-transformer-sharp": "^2.5.14",
     "immutability-helper": "^3.0.2",
     "moment": "^2.26.0",
     "moment-duration-format": "^2.3.2",
@@ -37,7 +46,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build",
+    "build": "gatsby build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
@@ -59,6 +68,7 @@
   "devDependencies": {
     "@babel/preset-env": "^7.10.3",
     "@babel/preset-react": "^7.10.1",
+    "prettier": "2.1.1",
     "react-test-renderer": "^16.13.1"
   },
   "jest": {
