@@ -5,7 +5,6 @@ import Editor from './components/Editor/Editor';
 import Viewer from './components/Viewer/Viewer'
 import Home from './Home';
 import { Helmet } from "react-helmet";
-import Icon from './assets/icon.png'
 
 export default function App() {
   return (
