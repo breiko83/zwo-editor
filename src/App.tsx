@@ -12,14 +12,15 @@ export default function App() {
       <Helmet>
         <meta charSet="utf-8" />
         <title>Zwift Workout Editor</title>
-        <link rel="canonical" href="https://zwiftworkout.netlify.app/" />
-        <meta name="description" content="Edit and share your Zwift workouts directly from your browser" />
+        <link rel="canonical" href="https://zwiftworkout.netlify.app/" />        
+        <meta name="description" content="Edit and share your Zwift workouts directly from your browser" />        
         <meta name="twitter:card" content="summary" />
         <meta name="twitter:creator" content="@CarloSchiesaro" />
+        <meta property="og:url" content="https://zwiftworkout.netlify.app/" />        
         <meta property="og:title" content="Zwift Workout Editor" />
         <meta property="og:description" content="Edit and share your Zwift workouts directly from your browser" />
-        <meta property="og:image" content="/android-chrome-256x256.png" />
-        <meta property="og:url" content="https://zwiftworkout.netlify.app/" />
+        <meta property="og:image" content="https://zwiftworkout.netlify.app/android-chrome-256x256.png" />
+        
         <meta property="og:type" content="website" />
       </Helmet>
       <Switch>
