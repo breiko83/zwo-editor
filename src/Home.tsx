@@ -2,10 +2,20 @@ import React from 'react'
 import { Link } from 'react-router-dom';
 import './Home.css'
 import Icon from './assets/icon.png'
+import Facebook from './assets/facebook.png'
+import Twitter from './assets/twitter.png'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faBolt, faLaptop, faCloud, faPiggyBank } from '@fortawesome/free-solid-svg-icons'
 
 export default function Home() {
+
+  function shareOnFacebook(){
+    window.open(
+      'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent('https://zwiftworkout.netlify.app/'), 
+      'facebook-share-dialog', 
+      'width=626,height=436'); 
+    return false;
+  }
 
   return (
     <div className="home">
@@ -40,9 +50,12 @@ export default function Home() {
         <div className="share">
           <h2>Do you like this?</h2>
           <p>Please help me out by sharing this page on Social Media</p>
-          <a className="twitter-share-button"
-            href="https://twitter.com/intent/tweet?text=Check%20out%20https://zwiftworkout.netlify.app/">
-          Tweet</a>
+          <a href="https://twitter.com/intent/tweet?text=Check%20out%20https://zwiftworkout.netlify.app/">
+            <img src={Twitter} alt="Twitter" width="80" />
+          </a>
+          <a href="#" onClick={shareOnFacebook}>
+            <img src={Facebook} alt="Facebook" width="80" />
+          </a>
         </div>
       </div>
       <div className="black">

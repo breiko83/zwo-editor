@@ -81,6 +81,10 @@ a {
   padding: 50px;
 }
 
+.share > a {
+  padding: 20px;
+}
+
 @media (max-width: 720px) {
   .features {
     padding: 10px;
