@@ -16,6 +16,7 @@ import helpers from '../helpers'
 import firebase, { auth } from '../firebase'
 import SignupForm from '../Forms/SignupForm'
 import LoginForm from '../Forms/LoginForm'
+import { Helmet } from "react-helmet";
 
 interface Bar {
   id: string,
@@ -518,6 +519,10 @@ const Editor = () => {
 
   return (
     <div className="container">
+      <Helmet>
+        <title>{name ? `${name} - Zwift Workout Editor` : "Zwift Workout Editor"}</title>
+      </Helmet>      
+      
       {popupIsVisile &&
         <Popup>
           {user ?
