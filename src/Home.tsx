@@ -47,13 +47,13 @@ export default function Home() {
         </div>
       </div>
       <div className="blue">
-        <div className="share">
+        <div className="share" id="share">
           <h2>Do you like this?</h2>
           <p>Please help me out by sharing this page on Social Media</p>
           <a href="https://twitter.com/intent/tweet?text=Check%20out%20https://zwiftworkout.netlify.app/">
             <img src={Twitter} alt="Twitter" width="80" />
           </a>
-          <a href="#" onClick={shareOnFacebook}>
+          <a href="#share" onClick={shareOnFacebook}>
             <img src={Facebook} alt="Facebook" width="80" />
           </a>
         </div>
