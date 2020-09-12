@@ -10,7 +10,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTrash, faArrowRight, faArrowLeft, faFile, faSave, faUpload, faDownload, faComment, faBicycle, faCopy, faClock } from '@fortawesome/free-solid-svg-icons'
 import { ReactComponent as WarmdownLogo } from '../../assets/warmdown.svg'
 import { ReactComponent as WarmupLogo } from '../../assets/warmup.svg'
-import Builder from 'xmlbuilder'
+import Builder, { writerState } from 'xmlbuilder'
 import Converter from 'xml-js'
 import helpers from '../helpers'
 import firebase, { auth } from '../firebase'
@@ -34,7 +34,7 @@ interface Instruction {
   time: number
 }
 
-const Editor = () => {
+const Editor = (props: {id: string, name: string, author:string, description: string, bars: string[], instructions: string[]}) => {
 
   const { v4: uuidv4 } = require('uuid');
 
@@ -48,8 +48,8 @@ const Editor = () => {
   const [instructions, setInstructions] = useState<Array<Instruction>>(JSON.parse(localStorage.getItem('instructions') || '[]'))
   const [cadence, setCadence] = useState(0)
   const [showCadenceInput, setShowCadenceInput] = useState(false)
-
-  const [name, setName] = useState(localStorage.getItem('name') || '')
+  
+  const [name, setName] = useState(props.name || localStorage.getItem('name') || '')
   const [description, setDescription] = useState(localStorage.getItem('description') || '')
   const [author, setAuthor] = useState(localStorage.getItem('author') || '')
 
@@ -69,7 +69,7 @@ const Editor = () => {
     localStorage.setItem('description', description)
     localStorage.setItem('author', author)
 
-    window.history.replaceState('', '', `/editor/${id}`)
+    //window.history.replaceState('', '', `/editor/${id}`)
 
     auth.onAuthStateChanged(user => {
       if (user) {
@@ -317,6 +317,7 @@ const Editor = () => {
         description: description,
         author: author,
         workout: bars,
+        instructions: instructions,
         userId: user.uid,
         updatedAt: Date()
       }
