@@ -3,6 +3,7 @@
 Zwift Workout editor is a web based tool to edit ZWO files (Zwift workouts). It's developed in React. 
 
 [Website](https://zwiftworkout.netlify.app/)
+[![Netlify Status](https://api.netlify.com/api/v1/badges/0379dca2-6a91-4d51-af55-ea3fa0489520/deploy-status)](https://app.netlify.com/sites/zwiftworkout/deploys)
 
 ## Support
 
