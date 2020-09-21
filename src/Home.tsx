@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useEffect} from 'react'
 import { Link } from 'react-router-dom';
 import './Home.css'
 import Icon from './assets/icon.png'
@@ -6,8 +6,15 @@ import Facebook from './assets/facebook.png'
 import Twitter from './assets/twitter.png'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faBolt, faLaptop, faCloud, faPiggyBank } from '@fortawesome/free-solid-svg-icons'
+import ReactGA from 'react-ga';
+
 
 export default function Home() {
+
+  useEffect(() => {
+    ReactGA.initialize('UA-55073449-9');  
+    ReactGA.pageview(window.location.pathname + window.location.search);
+  })
 
   function shareOnFacebook(){
     window.open(

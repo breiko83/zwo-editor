@@ -18,6 +18,7 @@ import SignupForm from '../Forms/SignupForm'
 import LoginForm from '../Forms/LoginForm'
 import { Helmet } from "react-helmet";
 import {RouteComponentProps} from 'react-router-dom';
+import ReactGA from 'react-ga';
 
 interface Bar {
   id: string,
@@ -43,7 +44,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
 
   const S3_URL = 'https://zwift-workout.s3-eu-west-1.amazonaws.com'
 
-  const [id, setId] = useState(match.params.id === "new" ? generateId() : match.params.id)
+  const [id, setId] = useState(match.params.id === "new" ? (localStorage.getItem('id') || generateId()) : match.params.id)
   const [bars, setBars] = useState<Array<Bar>>(JSON.parse(localStorage.getItem('currentWorkout') || '[]'))
   const [actionId, setActionId] = useState<string | undefined>(undefined)
   const [ftp, setFtp] = useState(parseInt(localStorage.getItem('ftp') || '200'))
@@ -113,6 +114,9 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
     });
 
     window.history.replaceState('', '', `/editor/${id}`)
+
+    ReactGA.initialize('UA-55073449-9');  
+    ReactGA.pageview(window.location.pathname + window.location.search);
 
   }, [id, db])
 
