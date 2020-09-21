@@ -9,9 +9,7 @@ export default function App() {
   return (
     <Router>
       <Switch>
-        <Route path="/editor">
-          <Editor />
-        </Route>
+        <Route path="/editor/:id" component={Editor} />
         <Route path="/viewer/:id" component={Viewer} />
         <Route path="/">
           <Home />

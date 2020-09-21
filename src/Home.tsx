@@ -22,7 +22,7 @@ export default function Home() {
       <div className="hero">
         <img src={Icon} alt="logo" width="100" />
         <h1>Zwift Workout Editor</h1>
-        <Link to="/editor" className="btn btn-primary btn-xl">Open Editor</Link>
+        <Link to="/editor/new" className="btn btn-primary btn-xl">Open Editor</Link>
       </div>
       <div className="features">
         <h2>Top features</h2>

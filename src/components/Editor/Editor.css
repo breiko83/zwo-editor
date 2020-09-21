@@ -212,3 +212,18 @@ label {
 .alert {
   color: 'red'
 }
+
+.loading {
+  position: absolute;
+  top: 50px;
+  left: 0;
+  right: 0;
+  margin: 0 auto;
+  width: 400px;
+  text-align: center;
+
+  color:white;
+  background-color: rgba(0, 0, 0, 0.7);
+  padding: 20px;
+  border-radius: 10px;
+}

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import './Editor.css'
 import { Colors, Zones } from '../Constants'
 import Bar from '../Bar/Bar'
@@ -7,7 +7,7 @@ import FreeRide from '../FreeRide/FreeRide'
 import Comment from '../Comment/Comment'
 import Popup from '../Popup/Popup'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faTrash, faArrowRight, faArrowLeft, faFile, faSave, faUpload, faDownload, faComment, faBicycle, faCopy, faClock } from '@fortawesome/free-solid-svg-icons'
+import { faTrash, faArrowRight, faArrowLeft, faFile, faSave, faUpload, faDownload, faComment, faBicycle, faCopy, faClock, faShareAlt } from '@fortawesome/free-solid-svg-icons'
 import { ReactComponent as WarmdownLogo } from '../../assets/warmdown.svg'
 import { ReactComponent as WarmupLogo } from '../../assets/warmup.svg'
 import Builder from 'xmlbuilder'
@@ -17,6 +17,7 @@ import firebase, { auth } from '../firebase'
 import SignupForm from '../Forms/SignupForm'
 import LoginForm from '../Forms/LoginForm'
 import { Helmet } from "react-helmet";
+import {RouteComponentProps} from 'react-router-dom';
 
 interface Bar {
   id: string,
@@ -34,13 +35,15 @@ interface Instruction {
   time: number
 }
 
-const Editor = () => {
+type TParams = { id: string };
+
+const Editor = ({ match }: RouteComponentProps<TParams>) => {
 
   const { v4: uuidv4 } = require('uuid');
 
   const S3_URL = 'https://zwift-workout.s3-eu-west-1.amazonaws.com'
 
-  const [id, setId] = useState(localStorage.getItem('id') || generateId())
+  const [id, setId] = useState(match.params.id === "new" ? generateId() : match.params.id)
   const [bars, setBars] = useState<Array<Bar>>(JSON.parse(localStorage.getItem('currentWorkout') || '[]'))
   const [actionId, setActionId] = useState<string | undefined>(undefined)
   const [ftp, setFtp] = useState(parseInt(localStorage.getItem('ftp') || '200'))
@@ -53,15 +56,70 @@ const Editor = () => {
   const [description, setDescription] = useState(localStorage.getItem('description') || '')
   const [author, setAuthor] = useState(localStorage.getItem('author') || '')
 
-  const [popupIsVisile, setPopupVisibility] = useState(false)
+  const [savePopupIsVisile, setSavePopupVisibility] = useState(false)
+  const [sharePopupIsVisile, setSharePopupVisibility] = useState(false)
 
   const [user, setUser] = useState<firebase.User | null>(null)
   const [visibleForm, setVisibleForm] = useState('login') // default form is login
 
-  React.useEffect(() => {
+  const [loading, setLoading] = useState(false)
+  const sherableLinkRef = useRef<HTMLInputElement>(null);
+  const [copied, setCopied] = useState('')
+
+
+  const db = firebase.database();
+
+  useEffect(() => {
+    setLoading(true)
+    
+    db.ref('workouts/' + id).once('value').then(function(snapshot) {
+      if(snapshot.val()){
+        // workout exist on server
+        setAuthor(snapshot.val().author)
+        setName(snapshot.val().name)
+        setDescription(snapshot.val().description)
+        setBars(snapshot.val().workout || [])
+        setInstructions(snapshot.val().instructions || [])
+        
+        localStorage.setItem('id', id)
+        
+      }else {
+        
+        // workout doesn't exist on cloud 
+        if(id === localStorage.getItem('id')){
+          // user refreshed the page
+        }else{
+          // treat this as new workout
+          setBars([])
+          setInstructions([])    
+          setName('')
+          setDescription('')
+          setAuthor('')
+        }        
+
+        localStorage.setItem('id', id)
+
+      }
+      console.log('useEffect firebase');
+
+      //finished loading
+      setLoading(false)
+    }) 
+  
+    auth.onAuthStateChanged(user => {
+      if (user) {
+        setUser(user)
+      }
+    });
+
+    window.history.replaceState('', '', `/editor/${id}`)
+
+  }, [id, db])
+
+  useEffect(() => {
     localStorage.setItem('currentWorkout', JSON.stringify(bars))
     localStorage.setItem('ftp', ftp.toString())
-    localStorage.setItem('id', id)
+    
     localStorage.setItem('instructions', JSON.stringify(instructions))
     localStorage.setItem('weight', weight.toString())
 
@@ -69,15 +127,7 @@ const Editor = () => {
     localStorage.setItem('description', description)
     localStorage.setItem('author', author)
 
-    window.history.replaceState('', '', `/editor/${id}`)
-
-    auth.onAuthStateChanged(user => {
-      if (user) {
-        setUser(user)
-      }
-    });
-
-  }, [instructions, bars, ftp, weight, id, name, author, description])
+  },[bars, ftp, instructions, weight, name, description, author])
 
   function generateId() {
     return Math.random().toString(36).substr(2, 16)
@@ -86,12 +136,13 @@ const Editor = () => {
   function newWorkout() {
     console.log('New workout')
 
-    setBars([])
-    setInstructions([])
     setId(generateId())
+    setBars([])
+    setInstructions([])    
     setName('')
     setDescription('')
     setAuthor('')
+
   }
 
   function handleOnChange(id: string, values: Bar) {
@@ -99,7 +150,9 @@ const Editor = () => {
 
     const updatedArray = [...bars]
     updatedArray[index] = values
-    setBars(updatedArray)
+
+    setBars(updatedArray) 
+
   }
 
   function handleOnClick(id: string) {
@@ -227,7 +280,18 @@ const Editor = () => {
   }
 
   function saveWorkout() {
-    setPopupVisibility(true)
+    setSavePopupVisibility(true)
+  }
+
+  function shareWorkout() {
+    if(user){
+      save()
+      setCopied('')
+      setSharePopupVisibility(true)
+    }else{
+      saveWorkout()
+    }
+    
   }
 
   function save() {
@@ -511,10 +575,17 @@ const Editor = () => {
 
   const renderRegistrationForm = () => {
     if (visibleForm === 'login') {
-      return <LoginForm login={setUser} showSignup={() => setVisibleForm('signup')} dismiss={() => setPopupVisibility(false)} />
+      return <LoginForm login={setUser} showSignup={() => setVisibleForm('signup')} dismiss={() => setSavePopupVisibility(false)} />
     } else {
-      return <SignupForm signUp={setUser} showLogin={() => setVisibleForm('login')} dismiss={() => setPopupVisibility(false)} />
+      return <SignupForm signUp={setUser} showLogin={() => setVisibleForm('login')} dismiss={() => setSavePopupVisibility(false)} />
     }
+  }
+
+  const copyToClipboard = () => {
+    const node = sherableLinkRef.current
+    node?.select();    
+    document.execCommand('copy');
+    setCopied('copied!')
   }
 
   return (
@@ -522,8 +593,12 @@ const Editor = () => {
       <Helmet>
         <title>{name ? `${name} - Zwift Workout Editor` : "Zwift Workout Editor"}</title>
       </Helmet>      
+
+      {loading &&
+        <div className="loading">Loading...</div>      
+      }
       
-      {popupIsVisile &&
+      {savePopupIsVisile &&
         <Popup>
           {user ?
             <div>
@@ -543,15 +618,31 @@ const Editor = () => {
               <div className="form-control">
                 <button className="btn btn-primary" onClick={() => {
                   save()
-                  setPopupVisibility(false)
+                  setSavePopupVisibility(false)
                 }}>Save</button>
-                <button className="btn" onClick={() => setPopupVisibility(false)}>Dismiss</button>
+                <button className="btn" onClick={() => setSavePopupVisibility(false)}>Dismiss</button>
                 <button onClick={() => logout()}>Logout</button>
               </div>
             </div>
             :
             renderRegistrationForm()
           }
+        </Popup>
+      }
+      {sharePopupIsVisile &&
+        <Popup>
+          <div>
+            <h2>Share Workout</h2>
+            <div className="form-control">
+                <label htmlFor="link">Share this link</label>
+                <input type="text" name="link" value={"https://www.zwiftworkout.com/editor/"+id} ref={sherableLinkRef} />
+                <button onClick={() => copyToClipboard()}><FontAwesomeIcon icon={faCopy} size="lg" fixedWidth /> {copied}</button>
+              </div>
+            <div className="form-control">
+              <button className="btn" onClick={() => setSharePopupVisibility(false)}>Dismiss</button>  
+            </div>            
+          </div>
+          
         </Popup>
       }
       <div className='editor'>
@@ -628,9 +719,15 @@ const Editor = () => {
         <div className="form-input">
           <label htmlFor="weight">Body Weight (Kg)</label>
           <input className="textInput" type="number" name="weight" value={weight} onChange={(e) => setWeight(parseInt(e.target.value))} />
+        </div>        
+        <div className="form-input">
+          <label>Workout Time</label>
+          <input className="textInput" value={helpers.getWorkoutLength(bars)} disabled />
         </div>
-
-
+        <div className="form-input">
+          <label>TSS</label>
+          <input className="textInput" value={helpers.getStressScore(bars, ftp)} disabled />
+        </div>
         <button className="btn" onClick={() => { if (window.confirm('Are you sure you want to create a new workout?')) newWorkout() }}><FontAwesomeIcon icon={faFile} size="lg" fixedWidth /> New</button>
         <button className="btn" onClick={() => saveWorkout()}><FontAwesomeIcon icon={faSave} size="lg" fixedWidth /> Save</button>
         <button className="btn" onClick={() => downloadWorkout()} ><FontAwesomeIcon icon={faDownload} size="lg" fixedWidth /> Download</button>
@@ -642,15 +739,7 @@ const Editor = () => {
           onChange={(e) => handleUpload(e.target.files![0])}
         />
         <button className="btn" onClick={() => document.getElementById("contained-button-file")!.click()}><FontAwesomeIcon icon={faUpload} size="lg" fixedWidth /> Upload</button>
-        <div className="form-input">
-          <label>Workout Time</label>
-          <input className="textInput" value={helpers.getWorkoutLength(bars)} disabled />
-        </div>
-        <div className="form-input">
-          <label>TSS</label>
-          <input className="textInput" value={helpers.getStressScore(bars, ftp)} disabled />
-        </div>
-
+        <button className="btn" onClick={() => shareWorkout()} ><FontAwesomeIcon icon={faShareAlt} size="lg" fixedWidth /> Share</button>
       </div>
       <div className="terms">Terms</div>
     </div>
