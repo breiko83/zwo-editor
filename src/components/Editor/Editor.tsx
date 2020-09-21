@@ -636,11 +636,9 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
             <div className="form-control">
                 <label htmlFor="link">Share this link</label>
                 <input type="text" name="link" value={"https://www.zwiftworkout.com/editor/"+id} ref={sherableLinkRef} />
-                <button onClick={() => copyToClipboard()}><FontAwesomeIcon icon={faCopy} size="lg" fixedWidth /> {copied}</button>
-              </div>
-            <div className="form-control">
-              <button className="btn" onClick={() => setSharePopupVisibility(false)}>Dismiss</button>  
-            </div>            
+                <button onClick={() => copyToClipboard()}><FontAwesomeIcon icon={faCopy} size="lg" fixedWidth /> {copied}</button>                
+                <button className="btn" onClick={() => setSharePopupVisibility(false)}>Dismiss</button>  
+              </div>        
           </div>
           
         </Popup>
