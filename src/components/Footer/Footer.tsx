@@ -24,8 +24,8 @@ export default function Footer() {
         </Popup>
       }
       {showPrivacy &&
-        <Popup width="90%" height="80%" dismiss={() => setShowPrivacy(false)}>
-          <Terms />
+        <Popup width="50%" height="50%" dismiss={() => setShowPrivacy(false)}>
+          <Privacy />
         </Popup>
       }
     </div>

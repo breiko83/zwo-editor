@@ -2,6 +2,8 @@
   padding: 10px;
   font-size: 12px;
   text-align: center;
+
+  color: black;
 }
 .footer > ul{
   list-style: none;
