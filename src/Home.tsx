@@ -31,6 +31,8 @@ export default function Home() {
         <meta name="description" content="Edit and share your Zwift workouts directly from your browser" />
         <meta property="og:title" content="Zwift Workout Editor" />
         <meta property="og:description" content="Edit and share your Zwift workouts directly from your browser" />
+        <link rel="canonical" href="https://www.zwiftworkout.com/" />  
+        <meta property="og:url" content="https://www.zwiftworkout.com/" />      
       </Helmet>
       <div className="hero">
         <img src={Icon} alt="logo" width="100" />

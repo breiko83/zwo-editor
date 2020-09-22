@@ -617,6 +617,8 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
         <meta name="description" content={description ? description : 'Edit and share your Zwift workouts directly from your browser'} />      
         <meta property="og:title" content={name ? `${name} - Zwift Workout Editor` : "Zwift Workout Editor"} />
         <meta property="og:description" content={description ? description : 'Edit and share your Zwift workouts directly from your browser'} />
+        <link rel="canonical" href={`https://www.zwiftworkout.com/editor/${id}`} />  
+        <meta property="og:url" content={`https://www.zwiftworkout.com/editor/${id}`} />     
       </Helmet>      
 
       {message?.visible &&
