@@ -29,6 +29,8 @@ export default function Home() {
     <div className="home">
       <Helmet>
         <meta name="description" content="Edit and share your Zwift workouts directly from your browser" />
+        <meta property="og:title" content="Zwift Workout Editor" />
+        <meta property="og:description" content="Edit and share your Zwift workouts directly from your browser" />
       </Helmet>
       <div className="hero">
         <img src={Icon} alt="logo" width="100" />
