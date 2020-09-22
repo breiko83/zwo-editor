@@ -8,22 +8,28 @@
   width: 100%;
   height: 100%;
   z-index: 1000;
-
-  display: flex;
 }
 
 .popup {
+  position: fixed;
+  position: fixed;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+  
+
   align-self: center;
   margin: 0 auto;  
   background-color: white;
-  width: 500px;
   border-radius: 5px;
 
   box-shadow: -5px 1px 51px 0px rgba(0,0,0,0.75);
   -webkit-box-shadow: -5px 1px 51px 0px rgba(0,0,0,0.75);
   -moz-box-shadow: -5px 1px 51px 0px rgba(0,0,0,0.75);
 
-  padding: 10px 20px;
+  padding: 20px;
+
+  overflow-y: scroll;
 }
 
 .form-control {
@@ -61,4 +67,8 @@
   border: 1px solid #EEEEEE;
   border-radius: 5px;
   box-sizing:border-box;
+}
+
+.close {
+  color: black;  
 }

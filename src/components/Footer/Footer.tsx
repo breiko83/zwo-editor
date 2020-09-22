@@ -1,0 +1,33 @@
+import React, {useState} from 'react'
+import './Footer.css'
+import Privacy from '../Privacy/Privacy'
+import Terms from '../Terms/Terms'
+import Popup from '../Popup/Popup'
+
+export default function Footer() {
+
+  const [showTerms, setShowTerm] = useState(false)
+  const [showPrivacy, setShowPrivacy] = useState(false)
+
+  return (
+    <div className="footer">
+      <ul>
+        <li>&copy; 2020 Sharpify Ltd All Rights Reserved</li>
+        <li><a href="#terms" onClick={() => setShowTerm(true)}>Terms of Service</a></li>
+        <li><a href="#privacy" onClick={() => setShowPrivacy(true)}>Privacy Policy</a></li>
+        <li><a href="https://github.com/breiko83/zwo-editor" target="blank">Report an issue</a></li>        
+      </ul>
+       
+      {showTerms &&
+        <Popup width="90%" height="80%" dismiss={() => setShowTerm(false)}>      
+          <Terms />
+        </Popup>
+      }
+      {showPrivacy &&
+        <Popup width="90%" height="80%" dismiss={() => setShowPrivacy(false)}>
+          <Terms />
+        </Popup>
+      }
+    </div>
+  )
+}

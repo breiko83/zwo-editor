@@ -6,6 +6,7 @@ import Trapeze from '../Trapeze/Trapeze'
 import FreeRide from '../FreeRide/FreeRide'
 import Comment from '../Comment/Comment'
 import Popup from '../Popup/Popup'
+import Footer from '../Footer/Footer'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTrash, faArrowRight, faArrowLeft, faFile, faSave, faUpload, faDownload, faComment, faBicycle, faCopy, faClock, faShareAlt, faTimesCircle } from '@fortawesome/free-solid-svg-icons'
 import { ReactComponent as WarmdownLogo } from '../../assets/warmdown.svg'
@@ -626,7 +627,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
       }
       
       {savePopupIsVisile &&
-        <Popup>
+        <Popup width="500px" dismiss={() => setSavePopupVisibility(false)}>
           {user ?
             <div>
               <h2>Save Workout</h2>
@@ -657,7 +658,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
         </Popup>
       }
       {sharePopupIsVisile &&
-        <Popup>
+        <Popup width="500px" dismiss={() => setSharePopupVisibility(false)}>
           <div>
             <h2>Share Workout</h2>
             <div className="form-control">
@@ -670,6 +671,14 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
           
         </Popup>
       }
+      <div className="info">
+        <div>
+          <h1>{name}</h1>
+          <p className="author">{author ? `by ${author}` : ''}</p>
+        </div>        
+        <p className="description">{description}</p>
+      </div>
+      
       <div className='editor'>
         {actionId &&
           <div className='actions'>
@@ -765,8 +774,8 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
         />
         <button className="btn" onClick={() => document.getElementById("contained-button-file")!.click()}><FontAwesomeIcon icon={faUpload} size="lg" fixedWidth /> Upload</button>
         <button className="btn" onClick={() => shareWorkout()} ><FontAwesomeIcon icon={faShareAlt} size="lg" fixedWidth /> Share</button>
-      </div>
-      <div className="terms">Terms</div>
+      </div>      
+      <Footer />
     </div>
 
   )
