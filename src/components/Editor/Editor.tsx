@@ -7,7 +7,7 @@ import FreeRide from '../FreeRide/FreeRide'
 import Comment from '../Comment/Comment'
 import Popup from '../Popup/Popup'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faTrash, faArrowRight, faArrowLeft, faFile, faSave, faUpload, faDownload, faComment, faBicycle, faCopy, faClock, faShareAlt } from '@fortawesome/free-solid-svg-icons'
+import { faTrash, faArrowRight, faArrowLeft, faFile, faSave, faUpload, faDownload, faComment, faBicycle, faCopy, faClock, faShareAlt, faTimesCircle } from '@fortawesome/free-solid-svg-icons'
 import { ReactComponent as WarmdownLogo } from '../../assets/warmdown.svg'
 import { ReactComponent as WarmupLogo } from '../../assets/warmup.svg'
 import Builder from 'xmlbuilder'
@@ -34,6 +34,12 @@ interface Instruction {
   id: string,
   text: string,
   time: number
+}
+
+interface Message {
+  visible: boolean,
+  class?: string,
+  text?: string
 }
 
 type TParams = { id: string };
@@ -63,15 +69,16 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
   const [user, setUser] = useState<firebase.User | null>(null)
   const [visibleForm, setVisibleForm] = useState('login') // default form is login
 
-  const [loading, setLoading] = useState(false)
   const sherableLinkRef = useRef<HTMLInputElement>(null);
   const [copied, setCopied] = useState('')
+
+  const [message, setMessage] = useState<Message>()
 
 
   const db = firebase.database();
 
   useEffect(() => {
-    setLoading(true)
+    setMessage({visible: true, class: 'loading', text: 'Loading..'})
     
     db.ref('workouts/' + id).once('value').then(function(snapshot) {
       if(snapshot.val()){
@@ -104,7 +111,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
       console.log('useEffect firebase');
 
       //finished loading
-      setLoading(false)
+      setMessage({visible: false})
     }) 
   
     auth.onAuthStateChanged(user => {
@@ -300,6 +307,8 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
 
   function save() {
 
+    setMessage({visible: true, class:'loading', text: 'Saving..'})
+
     var totalTime = 0
 
     const xml = Builder.begin()
@@ -373,9 +382,6 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
 
     const file = new Blob([xml.end({ pretty: true })], { type: 'application/xml' })
 
-    // save this to cloud
-    upload(file, false)
-
     // save to cloud (firebase) if logged in
     if (user) {
       const itemsRef = firebase.database().ref('workouts/' + id);
@@ -388,9 +394,18 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
         userId: user.uid,
         updatedAt: Date()
       }
-      console.log(item);
-      
-      itemsRef.set(item);
+      // save to firebase      
+      itemsRef.set(item).then(() => {
+        //upload to s3  
+        upload(file, false)
+        setMessage({visible: false})
+
+      }).catch((error) => {
+        console.log(error);        
+
+        setMessage({visible: true, class: 'error', text: 'Cannot save this'})
+
+      });
     }
 
     return file
@@ -601,8 +616,13 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
         <meta name="description" content={description ? description : 'Edit and share your Zwift workouts directly from your browser'} />      
       </Helmet>      
 
-      {loading &&
-        <div className="loading">Loading...</div>      
+      {message?.visible &&
+        <div className={message.class}>
+          {message.text}
+          <button className="close" onClick={()=>setMessage({visible: false})}>
+            <FontAwesomeIcon icon={faTimesCircle} size="lg" fixedWidth />
+          </button>
+        </div>  
       }
       
       {savePopupIsVisile &&
