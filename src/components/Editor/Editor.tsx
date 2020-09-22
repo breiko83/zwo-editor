@@ -356,7 +356,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
         // free ride
         segment = Builder.create('FreeRide')
           .att('Duration', bar.time)
-          .att('Cadence', 85) // add control for this?
+          //.att('Cadence', 85) // add control for this?
       }
 
       // add instructions if present
@@ -388,6 +388,8 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
         userId: user.uid,
         updatedAt: Date()
       }
+      console.log(item);
+      
       itemsRef.set(item);
     }
 
@@ -496,7 +498,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
 
 
             if (w.name === 'SteadyState')
-              addBar(parseFloat(w.attributes.Power || w.attributes.PowerLow), parseFloat(w.attributes.Duration), parseFloat(w.attributes.Cadence))
+              addBar(parseFloat(w.attributes.Power || w.attributes.PowerLow), parseFloat(w.attributes.Duration), parseFloat(w.attributes.Cadence || '0'))
 
             if (w.name === 'Ramp' || w.name === 'Warmup' || w.name === 'Cooldown')
               addTrapeze(parseFloat(w.attributes.PowerLow), parseFloat(w.attributes.PowerHigh), parseFloat(w.attributes.Duration))
@@ -596,6 +598,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
     <div className="container">
       <Helmet>
         <title>{name ? `${name} - Zwift Workout Editor` : "Zwift Workout Editor"}</title>
+        <meta name="description" content={description ? description : 'Edit and share your Zwift workouts directly from your browser'} />      
       </Helmet>      
 
       {loading &&

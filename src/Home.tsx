@@ -7,7 +7,7 @@ import Twitter from './assets/twitter.png'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faBolt, faLaptop, faCloud, faPiggyBank } from '@fortawesome/free-solid-svg-icons'
 import ReactGA from 'react-ga';
-
+import { Helmet } from "react-helmet";
 
 export default function Home() {
 
@@ -26,6 +26,9 @@ export default function Home() {
 
   return (
     <div className="home">
+      <Helmet>
+        <meta name="description" content="Edit and share your Zwift workouts directly from your browser" />      
+      </Helmet>
       <div className="hero">
         <img src={Icon} alt="logo" width="100" />
         <h1>Zwift Workout Editor</h1>
