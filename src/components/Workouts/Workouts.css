@@ -1,0 +1,11 @@
+.workouts {
+  padding: 0;
+  margin: 0;
+}
+
+.workouts > a {  
+  display: block;
+  padding: 20px;
+  margin: 5px 0;
+  border: 1px solid gray;
+}

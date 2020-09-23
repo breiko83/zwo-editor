@@ -7,8 +7,9 @@ import FreeRide from '../FreeRide/FreeRide'
 import Comment from '../Comment/Comment'
 import Popup from '../Popup/Popup'
 import Footer from '../Footer/Footer'
+import Workouts from '../Workouts/Workouts'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faTrash, faArrowRight, faArrowLeft, faFile, faSave, faUpload, faDownload, faComment, faBicycle, faCopy, faClock, faShareAlt, faTimesCircle } from '@fortawesome/free-solid-svg-icons'
+import { faTrash, faArrowRight, faArrowLeft, faFile, faSave, faUpload, faDownload, faComment, faBicycle, faCopy, faClock, faShareAlt, faTimesCircle, faList } from '@fortawesome/free-solid-svg-icons'
 import { ReactComponent as WarmdownLogo } from '../../assets/warmdown.svg'
 import { ReactComponent as WarmupLogo } from '../../assets/warmup.svg'
 import Builder from 'xmlbuilder'
@@ -20,6 +21,7 @@ import LoginForm from '../Forms/LoginForm'
 import { Helmet } from "react-helmet";
 import {RouteComponentProps} from 'react-router-dom';
 import ReactGA from 'react-ga';
+import { Hash } from 'crypto'
 
 interface Bar {
   id: string,
@@ -74,6 +76,8 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
   const [copied, setCopied] = useState('')
 
   const [message, setMessage] = useState<Message>()
+
+  const [showWorkouts, setShowWorkouts] = useState(false)
 
 
   const db = firebase.database();
@@ -385,27 +389,39 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
 
     // save to cloud (firebase) if logged in
     if (user) {
-      const itemsRef = firebase.database().ref('workouts/' + id);
+      const itemsRef = firebase.database().ref();      
+
       const item = {
         id: id,
         name: name,
         description: description,
         author: author,
         workout: bars,
+        instructions: instructions,
         userId: user.uid,
         updatedAt: Date()
       }
+
+      const item2 = {
+        name: name,
+        description: description,
+        updatedAt: Date()
+      }
+
+      var updates : any = {}
+      updates[`users/${user.uid}/workouts/${id}`] = item2       
+      updates[`workouts/${id}`] = item
+      
+
       // save to firebase      
-      itemsRef.set(item).then(() => {
+      itemsRef.update(updates).then(() => {
         //upload to s3  
         upload(file, false)
         setMessage({visible: false})
 
       }).catch((error) => {
         console.log(error);        
-
         setMessage({visible: true, class: 'error', text: 'Cannot save this'})
-
       });
     }
 
@@ -622,12 +638,22 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
       </Helmet>      
 
       {message?.visible &&
-        <div className={message.class}>
+        <div className={`message ${message.class}`}>
           {message.text}
           <button className="close" onClick={()=>setMessage({visible: false})}>
             <FontAwesomeIcon icon={faTimesCircle} size="lg" fixedWidth />
           </button>
         </div>  
+      }
+
+      {showWorkouts &&
+        <Popup width="500px" dismiss={() => setShowWorkouts(false)}>
+          {user ?
+            <Workouts userId={user.uid} />
+            :
+            renderRegistrationForm()
+          }
+        </Popup>        
       }
       
       {savePopupIsVisile &&
@@ -777,6 +803,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
           onChange={(e) => handleUpload(e.target.files![0])}
         />
         <button className="btn" onClick={() => document.getElementById("contained-button-file")!.click()}><FontAwesomeIcon icon={faUpload} size="lg" fixedWidth /> Upload</button>
+        <button className="btn" onClick={() => setShowWorkouts(true)}><FontAwesomeIcon icon={faList} size="lg" fixedWidth /> Workouts</button>
         <button className="btn" onClick={() => shareWorkout()} ><FontAwesomeIcon icon={faShareAlt} size="lg" fixedWidth /> Share</button>
       </div>      
       <Footer />
