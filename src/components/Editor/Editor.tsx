@@ -21,7 +21,6 @@ import LoginForm from '../Forms/LoginForm'
 import { Helmet } from "react-helmet";
 import {RouteComponentProps} from 'react-router-dom';
 import ReactGA from 'react-ga';
-import { Hash } from 'crypto'
 
 interface Bar {
   id: string,

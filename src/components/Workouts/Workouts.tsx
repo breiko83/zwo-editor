@@ -1,8 +1,6 @@
 import React, { useState } from 'react'
 import './Workouts.css'
 import firebase from '../firebase'
-import { RouteComponentProps } from 'react-router-dom';
-import { CloudWatchLogs, WorkDocs } from 'aws-sdk';
 
 interface Workout {
   id: string,
@@ -10,8 +8,6 @@ interface Workout {
   description: string,
   updatedAt: string
 }
-
-type TParams = { id: string };
 
 const Workouts = (props: {userId: string} ) => {
   
@@ -30,7 +26,7 @@ const Workouts = (props: {userId: string} ) => {
         ])
       });
     })
-  }, [])
+  }, [props.userId])
 
   return (
     <div>
