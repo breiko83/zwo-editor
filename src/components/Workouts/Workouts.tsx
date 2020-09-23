@@ -9,8 +9,8 @@ interface Workout {
   updatedAt: string
 }
 
-const Workouts = (props: {userId: string} ) => {
-  
+const Workouts = (props: { userId: string }) => {
+
   const [workouts, setWorkouts] = useState<Array<Workout>>([])
 
   React.useEffect(() => {
@@ -31,17 +31,17 @@ const Workouts = (props: {userId: string} ) => {
   return (
     <div>
       <h2>Your workouts</h2>
-    <div className="workouts">
-      {workouts.map(item => (
-        <a href={`/editor/${item.id}`} key={item.id}>
-          {item.name}
-        </a>
-      ))
-      }
-      {workouts.length < 1 &&
-        <p>No saved workouts yet</p>
-      } 
-    </div>
+      <div className="workouts">
+        {workouts.map(item => (
+          <a href={`/editor/${item.id}`} key={item.id}>
+            {item.name}
+          </a>
+        ))
+        }
+        {workouts.length < 1 &&
+          <p>No saved workouts yet</p>
+        }
+      </div>
     </div>
   )
 }

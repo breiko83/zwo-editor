@@ -20,7 +20,7 @@
   margin: 10px auto;
   overflow-x: scroll;
   width: 100%;
-  max-width: 1320px;
+  max-width: 1280px;
   -webkit-box-shadow: 0px 0px 27px -9px rgba(0,0,0,0.35);
   -moz-box-shadow: 0px 0px 27px -9px rgba(0,0,0,0.35);
   box-shadow: 0px 0px 27px -9px rgba(0,0,0,0.35);
@@ -172,7 +172,7 @@ label {
 .timeline > span{
   position: relative;
   display: inline-block;
-  width: 300px;
+  width: 200px;
   margin-top: 20px;
   padding: 0;
   

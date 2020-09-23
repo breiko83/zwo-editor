@@ -6,12 +6,15 @@ import moment from 'moment'
 import 'moment-duration-format'
 import Label from '../Label/Label'
 
-
+function round5(x: number)
+{
+  return Math.ceil(x/5)*5;
+}
 
 const Bar = (props: { id: string, time: number, power: number, cadence: number, ftp: number, weight: number, onChange: Function, onClick: Function, selected: boolean }) => {
 
   const multiplier = 250
-  const timeMultiplier = 2
+  const timeMultiplier = 3
 
   const powerLabel = Math.round(props.power * props.ftp)
   const durationLabel = getDuration(props.time)
@@ -25,11 +28,11 @@ const Bar = (props: { id: string, time: number, power: number, cadence: number, 
   const handleResizeStop = (dWidth: number, dHeight: number) => {
     setWidth(width + dWidth)
     setHeight(height + dHeight)
-    props.onChange(props.id, { time: (width + dWidth) * timeMultiplier, power: (height + dHeight) / multiplier, cadence: props.cadence, type: 'bar', id: props.id })
+    props.onChange(props.id, { time: round5((width + dWidth) * timeMultiplier), power: (height + dHeight) / multiplier, cadence: props.cadence, type: 'bar', id: props.id })
   }
 
   const handleResize = (dWidth: number, dHeight: number) => {
-    props.onChange(props.id, { time: (width + dWidth) * timeMultiplier, power: (height + dHeight) / multiplier, cadence: props.cadence, type: 'bar', id: props.id })
+    props.onChange(props.id, { time: round5((width + dWidth) * timeMultiplier), power: (height + dHeight) / multiplier, cadence: props.cadence, type: 'bar', id: props.id })
   }
 
   function getDuration(seconds: number) {
@@ -80,7 +83,7 @@ const Bar = (props: { id: string, time: number, power: number, cadence: number, 
         minHeight={multiplier * Zones.Z1.min}
         maxHeight={multiplier * Zones.Z6.max}
         enable={{ top: true, right: true }}
-        grid={[5, 1]}
+        grid={[1, 1]}
         onResizeStop={(e, direction, ref, d) => handleResizeStop(d.width, d.height)}
         onResize={(e, direction, ref, d) => handleResize(d.width, d.height)}
         style={style}

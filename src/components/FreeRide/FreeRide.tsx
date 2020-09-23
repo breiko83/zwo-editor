@@ -7,7 +7,7 @@ import Label from '../Label/Label'
 
 const FreeRide = (props: { id: string, time: number, onChange: Function, onClick: Function, selected: boolean }) => {
 
-  const timeMultiplier = 2
+  const timeMultiplier = 3
 
   const durationLabel = getDuration(props.time)
 

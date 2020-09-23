@@ -18,11 +18,11 @@ function round5(x: number)
 const Trapeze = (props: { id: string, time: number, startPower: number, endPower: number, ftp: number, onChange: Function, onClick: Function, selected: boolean }) => {
 
   const multiplier = 250
-  const timeMultiplier = 2
+  const timeMultiplier = 3
 
   const powerLabelStart = Math.round(props.startPower * props.ftp)
   const powerLabelEnd = Math.round(props.endPower * props.ftp)
-  const durationLabel = getDuration(props.time / timeMultiplier / 2.5)
+  const durationLabel = getDuration(props.time / timeMultiplier)
   const [showLabel, setShowLabel] = useState(false)
 
   const [width, setWidth] = useState(Math.round(props.time / timeMultiplier / 3 ))
@@ -57,10 +57,10 @@ const Trapeze = (props: { id: string, time: number, startPower: number, endPower
   }
 
   const handleResize1 = (dHeight: number) => {
-    props.onChange(props.id, { time: Math.round(width * timeMultiplier * 3), startPower: (height1 + dHeight) / multiplier, endPower: height3 / multiplier, type: 'trapeze', id: props.id })
+    props.onChange(props.id, { time: round5(width * timeMultiplier * 3), startPower: (height1 + dHeight) / multiplier, endPower: height3 / multiplier, type: 'trapeze', id: props.id })
   }
   const handleResize2 = (dHeight: number) => {    
-    props.onChange(props.id, { time: Math.round(width * timeMultiplier * 3), startPower: (height1 + dHeight) / multiplier, endPower: (height3 + dHeight) / multiplier, type: 'trapeze', id: props.id })
+    props.onChange(props.id, { time: round5(width * timeMultiplier * 3), startPower: (height1 + dHeight) / multiplier, endPower: (height3 + dHeight) / multiplier, type: 'trapeze', id: props.id })
   }
   const handleResize3 = (dWidth: number, dHeight: number) => {    
     const newWidth = width + (dWidth / 3)    
@@ -88,8 +88,8 @@ const Trapeze = (props: { id: string, time: number, startPower: number, endPower
   }
 
   function getDuration(seconds: number) {
-    // 1 pixel equals 5 seconds 
-    return moment.duration(seconds * 5, "seconds").format("mm:ss", { trim: false })
+    // 1 pixel equals 3 seconds 
+    return moment.duration(seconds * timeMultiplier, "seconds").format("mm:ss", { trim: false })
   }
 
   function zwiftStyle(zone: number) {
