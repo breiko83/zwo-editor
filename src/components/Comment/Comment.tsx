@@ -14,7 +14,7 @@ interface Instruction {
 
 const Comment = (props: { instruction: Instruction, onChange: Function, onDelete: Function }) => {
 
-  const timeMultiplier = 2
+  const timeMultiplier = 3
 
   const [text, setText] = useState(props.instruction.text)
   const [time, setTime] = useState(props.instruction.time / timeMultiplier)
