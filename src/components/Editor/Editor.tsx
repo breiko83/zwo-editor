@@ -298,6 +298,26 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
     setSavePopupVisibility(true)
   }
 
+  function deleteWorkout(){
+    // save to cloud (firebase) if logged in
+    if (user) {
+      const itemsRef = firebase.database().ref();      
+
+      var updates : any = {}
+      updates[`users/${user.uid}/workouts/${id}`] = null       
+      updates[`workouts/${id}`] = null
+      
+
+      // save to firebase      
+      itemsRef.update(updates).then(() => {        
+        newWorkout()        
+      }).catch((error) => {
+        console.log(error);        
+        setMessage({visible: true, class: 'error', text: 'Cannot delete workout'})
+      });
+    }
+  }
+
   function shareWorkout() {
     if(user){
       save()
@@ -646,7 +666,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
       }
 
       {showWorkouts &&
-        <Popup width="500px" dismiss={() => setShowWorkouts(false)}>
+        <Popup width="500px" height="500px" dismiss={() => setShowWorkouts(false)}>
           {user ?
             <Workouts userId={user.uid} />
             :
@@ -794,6 +814,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
         </div>
         <button className="btn" onClick={() => { if (window.confirm('Are you sure you want to create a new workout?')) newWorkout() }}><FontAwesomeIcon icon={faFile} size="lg" fixedWidth /> New</button>
         <button className="btn" onClick={() => saveWorkout()}><FontAwesomeIcon icon={faSave} size="lg" fixedWidth /> Save</button>
+        <button className="btn" onClick={() => { if (window.confirm('Are you sure you want to delete this workout?')) deleteWorkout() }}><FontAwesomeIcon icon={faTrash} size="lg" fixedWidth /> Delete</button>
         <button className="btn" onClick={() => downloadWorkout()} ><FontAwesomeIcon icon={faDownload} size="lg" fixedWidth /> Download</button>
         <input
           accept=".xml,.zwo"
