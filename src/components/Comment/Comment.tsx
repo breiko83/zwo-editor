@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import Draggable from 'react-draggable'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faComment, faTrashAlt, faEdit } from '@fortawesome/free-solid-svg-icons'
+import { faComment, faTrashAlt } from '@fortawesome/free-solid-svg-icons'
 import './Comment.css'
 import moment from 'moment'
 import 'moment-duration-format'
