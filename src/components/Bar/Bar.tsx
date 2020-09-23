@@ -11,7 +11,7 @@ import Label from '../Label/Label'
 const Bar = (props: { id: string, time: number, power: number, cadence: number, ftp: number, weight: number, onChange: Function, onClick: Function, selected: boolean }) => {
 
   const multiplier = 250
-  const timeMultiplier = 5
+  const timeMultiplier = 2
 
   const powerLabel = Math.round(props.power * props.ftp)
   const durationLabel = getDuration(props.time)
@@ -80,7 +80,7 @@ const Bar = (props: { id: string, time: number, power: number, cadence: number, 
         minHeight={multiplier * Zones.Z1.min}
         maxHeight={multiplier * Zones.Z6.max}
         enable={{ top: true, right: true }}
-        grid={[1, 1]}
+        grid={[5, 1]}
         onResizeStop={(e, direction, ref, d) => handleResizeStop(d.width, d.height)}
         onResize={(e, direction, ref, d) => handleResize(d.width, d.height)}
         style={style}

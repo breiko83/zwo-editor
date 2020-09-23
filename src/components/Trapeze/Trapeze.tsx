@@ -10,17 +10,22 @@ interface IDictionary {
   [index: string]: number;
 }
 
+function round5(x: number)
+{
+  return Math.ceil(x/5)*5;
+}
+
 const Trapeze = (props: { id: string, time: number, startPower: number, endPower: number, ftp: number, onChange: Function, onClick: Function, selected: boolean }) => {
 
   const multiplier = 250
-  const timeMultiplier = 5
+  const timeMultiplier = 2
 
   const powerLabelStart = Math.round(props.startPower * props.ftp)
   const powerLabelEnd = Math.round(props.endPower * props.ftp)
-  const durationLabel = getDuration(props.time / timeMultiplier)
+  const durationLabel = getDuration(props.time / timeMultiplier / 2.5)
   const [showLabel, setShowLabel] = useState(false)
 
-  const [width, setWidth] = useState(Math.round(props.time / timeMultiplier / 3))
+  const [width, setWidth] = useState(Math.round(props.time / timeMultiplier / 3 ))
 
   const [height1, setHeight1] = useState(props.startPower * multiplier)
   const [height2, setHeight2] = useState(((props.endPower + props.startPower) * multiplier) / 2)
@@ -57,8 +62,9 @@ const Trapeze = (props: { id: string, time: number, startPower: number, endPower
   const handleResize2 = (dHeight: number) => {    
     props.onChange(props.id, { time: Math.round(width * timeMultiplier * 3), startPower: (height1 + dHeight) / multiplier, endPower: (height3 + dHeight) / multiplier, type: 'trapeze', id: props.id })
   }
-  const handleResize3 = (dWidth: number, dHeight: number) => {
-    props.onChange(props.id, { time: Math.round((width * timeMultiplier * 3) + (dWidth * timeMultiplier)), startPower: height1 / multiplier, endPower: (height3 + dHeight) / multiplier, type: 'trapeze', id: props.id })
+  const handleResize3 = (dWidth: number, dHeight: number) => {    
+    const newWidth = width + (dWidth / 3)    
+    props.onChange(props.id, { time: round5(newWidth * timeMultiplier * 3), startPower: height1 / multiplier, endPower: (height3 + dHeight) / multiplier, type: 'trapeze', id: props.id })
   }
 
   function calculateColors(start: number, end: number) {

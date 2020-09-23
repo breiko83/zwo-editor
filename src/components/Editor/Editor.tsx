@@ -745,14 +745,15 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
         </div>
         <div className='timeline'>
           <span>0:00</span>
-          <span>0:15</span>
+          <span>0:10</span>
+          <span>0:20</span>
           <span>0:30</span>
-          <span>0:45</span>
+          <span>0:40</span>
+          <span>0:50</span>
           <span>1:00</span>
-          <span>1:15</span>
+          <span>1:10</span>
+          <span>1:20</span>
           <span>1:30</span>
-          <span>1:45</span>
-          <span>2:00</span>
         </div>
         <div className='zones'>
           <div style={{ height: 250 * Zones.Z6.max }}>Z6</div>
