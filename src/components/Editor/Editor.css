@@ -18,7 +18,7 @@
 
   padding: 0px 40px;  
   margin: 10px auto;
-  overflow-x: scroll;
+  overflow-x: hidden;
   width: 100%;
   max-width: 1280px;
   -webkit-box-shadow: 0px 0px 27px -9px rgba(0,0,0,0.35);

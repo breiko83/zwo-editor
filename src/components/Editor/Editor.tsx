@@ -151,10 +151,10 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
   }, [bars, ftp, instructions, weight, name, description, author, tags])
 
   useEffect(() => {
-    document.addEventListener('keyup',handleKeyPress)
+    document.addEventListener('keydown',handleKeyPress)
 
     return () => {
-      document.removeEventListener('keyup', handleKeyPress)
+      document.removeEventListener('keydown', handleKeyPress)
     };
   },[document, handleKeyPress])
 
@@ -204,7 +204,25 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
     switch(event.keyCode) {
       case 8:
         removeBar(actionId || '')
+        break;
+      case 37:
+        // reduce time
+        removeTimeToBar(actionId || '')
+        break;
+      case 39:
+        // add time
+        addTimeToBar(actionId || '')
+        break;
+      case 38:
+        // add power
+        addPowerToBar(actionId || '')
+        break;
+      case 40:
+        // add power
+        removePowerToBar(actionId || '')
+        break;
       default:
+        console.log(event.keyCode);        
         break;
     }    
   }
@@ -269,6 +287,50 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
     const updatedArray = [...bars]
     setBars(updatedArray.filter(item => item.id !== id))
     setActionId(undefined)
+  }
+
+  function addTimeToBar(id: string) {
+    const updatedArray = [...bars]
+    
+    const index = updatedArray.findIndex(bar => bar.id === id)
+    const element = updatedArray[index]
+    if (element){
+        element.time = element.time + 5
+      setBars(updatedArray)
+    }
+  }
+
+  function removeTimeToBar(id: string) {
+    const updatedArray = [...bars]
+    
+    const index = updatedArray.findIndex(bar => bar.id === id)
+    const element = updatedArray[index]
+    if (element && element.time > 5){
+        element.time = element.time - 5
+      setBars(updatedArray)
+    }
+  }
+
+  function addPowerToBar(id: string) {
+    const updatedArray = [...bars]
+    
+    const index = updatedArray.findIndex(bar => bar.id === id)
+    const element = updatedArray[index]
+    if (element && element.power){
+        element.power = parseFloat((element.power + 1/ftp).toFixed(3)) 
+      setBars(updatedArray)
+    }
+  }
+
+  function removePowerToBar(id: string) {
+    const updatedArray = [...bars]
+    
+    const index = updatedArray.findIndex(bar => bar.id === id)
+    const element = updatedArray[index]
+    if (element && element.power && element.power >= Zones.Z1.min){
+        element.power = parseFloat((element.power - 1/ftp).toFixed(3))
+      setBars(updatedArray)
+    }
   }
 
   function duplicateBar(id: string) {

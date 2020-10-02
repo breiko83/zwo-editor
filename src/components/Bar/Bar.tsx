@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import './Bar.css'
 import { Colors, Zones } from '../Constants'
 import { Resizable } from 're-resizable'
@@ -21,9 +21,14 @@ const Bar = (props: { id: string, time: number, power: number, cadence: number, 
   const style = zwiftStyle(props.power)
 
   const [width, setWidth] = useState(props.time / timeMultiplier)
-  const [height, setHeight] = useState(props.power * multiplier)
+  const [height, setHeight] = useState(props.power * multiplier)  
 
   const [showLabel, setShowLabel] = useState(false)
+
+  const [selected, setSelected] = useState(props.selected)
+  useEffect(()=>{
+    setSelected(props.selected)
+  },[props.selected])
 
   const handleResizeStop = (dWidth: number, dHeight: number) => {
     setWidth(width + dWidth)
@@ -70,14 +75,14 @@ const Bar = (props: { id: string, time: number, power: number, cadence: number, 
       onClick={() => props.onClick(props.id)}
       style={props.selected ? { zIndex: 10 } : {}}
     >
-      {showLabel &&
+      {(selected || showLabel) &&
         <Label duration={durationLabel} power={powerLabel} weight={props.weight} ftp={props.ftp} />
       }
       <Resizable
         className='bar'
         size={{
-          width: width,
-          height: height,
+          width: props.time / timeMultiplier,
+          height: props.power * multiplier,
         }}
         minWidth={3}
         minHeight={multiplier * Zones.Z1.min}

@@ -1,9 +1,15 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import './FreeRide.css'
 import { Resizable } from 're-resizable'
 import moment from 'moment'
 import 'moment-duration-format'
 import Label from '../Label/Label'
+import { time } from 'console'
+
+function round5(x: number)
+{
+  return Math.ceil(x/5)*5;
+}
 
 const FreeRide = (props: { id: string, time: number, onChange: Function, onClick: Function, selected: boolean }) => {
 
@@ -13,6 +19,7 @@ const FreeRide = (props: { id: string, time: number, onChange: Function, onClick
 
 
   const [width, setWidth] = useState(props.time / timeMultiplier)
+
   const [showLabel, setShowLabel] = useState(false)
 
   // standard height
@@ -20,11 +27,11 @@ const FreeRide = (props: { id: string, time: number, onChange: Function, onClick
 
   const handleResizeStop = (dWidth: number) => {
     setWidth(width + dWidth)
-    props.onChange(props.id, { time: (width + dWidth) * timeMultiplier, type: 'freeRide', id: props.id })
+    props.onChange(props.id, { time: round5((width + dWidth) * timeMultiplier), type: 'freeRide', id: props.id })
   }
 
   const handleResize = (dWidth: number) => {
-    props.onChange(props.id, { time: (width + dWidth) * timeMultiplier, type: 'freeRide', id: props.id })
+    props.onChange(props.id, { time: round5((width + dWidth) * timeMultiplier), type: 'freeRide', id: props.id })
   }
 
   function getDuration(seconds: number) {
@@ -45,10 +52,10 @@ const FreeRide = (props: { id: string, time: number, onChange: Function, onClick
       <Resizable
         className='freeRide'
         size={{
-          width: width,
+          width: props.time / timeMultiplier,
           height: height,
         }}
-        minWidth={3}
+        minWidth={timeMultiplier}
         minHeight={height}
         maxHeight={height}
         enable={{ right: true }}
