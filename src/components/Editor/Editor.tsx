@@ -82,7 +82,6 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
 
   const DEFAULT_TAGS = ["Recovery", "Intervals", "FTP", "TT"]
 
-
   const db = firebase.database();
 
   useEffect(() => {
@@ -151,6 +150,14 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
 
   }, [bars, ftp, instructions, weight, name, description, author, tags])
 
+  useEffect(() => {
+    document.addEventListener('keyup',handleKeyPress)
+
+    return () => {
+      document.removeEventListener('keyup', handleKeyPress)
+    };
+  },[document, handleKeyPress])
+
   function generateId() {
     return Math.random().toString(36).substr(2, 16)
   }
@@ -190,6 +197,16 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
 
       setCadence(element.cadence)
     }
+  }
+
+  function handleKeyPress(event: { keyCode: any }) {
+
+    switch(event.keyCode) {
+      case 8:
+        removeBar(actionId || '')
+      default:
+        break;
+    }    
   }
 
   function addBar(zone: number, duration: number = 300, cadence: number = 0) {

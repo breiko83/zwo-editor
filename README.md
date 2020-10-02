@@ -12,6 +12,7 @@ Zwift Workout editor is a web based tool to edit ZWO files (Zwift workouts). It'
 
 - Add tags to your workout
 - Duplicate segment also copy cadance value
+- Delete a segment with keyboard backspace
 
 ### V1.0 
 
