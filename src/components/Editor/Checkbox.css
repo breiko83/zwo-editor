@@ -1,0 +1,9 @@
+.form-check {
+  display: inline-block;   
+  padding: 10px 10px 10px 0;
+}
+
+.form-check > label {
+  font-size: 16px;
+  color: gray;
+}

@@ -8,6 +8,7 @@ import Comment from '../Comment/Comment'
 import Popup from '../Popup/Popup'
 import Footer from '../Footer/Footer'
 import Workouts from '../Workouts/Workouts'
+import Checkbox from './Checkbox'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTrash, faArrowRight, faArrowLeft, faFile, faSave, faUpload, faDownload, faComment, faBicycle, faCopy, faClock, faShareAlt, faTimesCircle, faList } from '@fortawesome/free-solid-svg-icons'
 import { ReactComponent as WarmdownLogo } from '../../assets/warmdown.svg'
@@ -19,7 +20,7 @@ import firebase, { auth } from '../firebase'
 import SignupForm from '../Forms/SignupForm'
 import LoginForm from '../Forms/LoginForm'
 import { Helmet } from "react-helmet";
-import {RouteComponentProps} from 'react-router-dom';
+import { RouteComponentProps } from 'react-router-dom';
 import ReactGA from 'react-ga';
 
 interface Bar {
@@ -60,6 +61,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
   const [instructions, setInstructions] = useState<Array<Instruction>>(JSON.parse(localStorage.getItem('instructions') || '[]'))
   const [cadence, setCadence] = useState(0)
   const [showCadenceInput, setShowCadenceInput] = useState(false)
+  const [tags, setTags] = useState(JSON.parse(localStorage.getItem('tags') || '[]'))
 
   const [name, setName] = useState(localStorage.getItem('name') || '')
   const [description, setDescription] = useState(localStorage.getItem('description') || '')
@@ -78,36 +80,40 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
 
   const [showWorkouts, setShowWorkouts] = useState(false)
 
+  const DEFAULT_TAGS = ["Recovery", "Intervals", "FTP", "TT"]
+
 
   const db = firebase.database();
 
   useEffect(() => {
-    setMessage({visible: true, class: 'loading', text: 'Loading..'})
-    
-    db.ref('workouts/' + id).once('value').then(function(snapshot) {
-      if(snapshot.val()){
+    setMessage({ visible: true, class: 'loading', text: 'Loading..' })
+
+    db.ref('workouts/' + id).once('value').then(function (snapshot) {
+      if (snapshot.val()) {
         // workout exist on server
         setAuthor(snapshot.val().author)
         setName(snapshot.val().name)
         setDescription(snapshot.val().description)
         setBars(snapshot.val().workout || [])
         setInstructions(snapshot.val().instructions || [])
-        
+        setTags(snapshot.val().tags || [])
+
         localStorage.setItem('id', id)
-        
-      }else {
-        
+
+      } else {
+
         // workout doesn't exist on cloud 
-        if(id === localStorage.getItem('id')){
+        if (id === localStorage.getItem('id')) {
           // user refreshed the page
-        }else{
+        } else {
           // treat this as new workout
           setBars([])
-          setInstructions([])    
+          setInstructions([])
           setName('')
           setDescription('')
           setAuthor('')
-        }        
+          setTags([])
+        }
 
         localStorage.setItem('id', id)
 
@@ -115,9 +121,9 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
       console.log('useEffect firebase');
 
       //finished loading
-      setMessage({visible: false})
-    }) 
-  
+      setMessage({ visible: false })
+    })
+
     auth.onAuthStateChanged(user => {
       if (user) {
         setUser(user)
@@ -126,7 +132,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
 
     window.history.replaceState('', '', `/editor/${id}`)
 
-    ReactGA.initialize('UA-55073449-9');  
+    ReactGA.initialize('UA-55073449-9');
     ReactGA.pageview(window.location.pathname + window.location.search);
 
   }, [id, db])
@@ -134,15 +140,16 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
   useEffect(() => {
     localStorage.setItem('currentWorkout', JSON.stringify(bars))
     localStorage.setItem('ftp', ftp.toString())
-    
+
     localStorage.setItem('instructions', JSON.stringify(instructions))
     localStorage.setItem('weight', weight.toString())
 
     localStorage.setItem('name', name)
     localStorage.setItem('description', description)
     localStorage.setItem('author', author)
+    localStorage.setItem('tags', JSON.stringify(tags))
 
-  },[bars, ftp, instructions, weight, name, description, author])
+  }, [bars, ftp, instructions, weight, name, description, author, tags])
 
   function generateId() {
     return Math.random().toString(36).substr(2, 16)
@@ -153,10 +160,11 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
 
     setId(generateId())
     setBars([])
-    setInstructions([])    
+    setInstructions([])
     setName('')
     setDescription('')
     setAuthor('')
+    setTags([])
 
   }
 
@@ -166,7 +174,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
     const updatedArray = [...bars]
     updatedArray[index] = values
 
-    setBars(updatedArray) 
+    setBars(updatedArray)
 
   }
 
@@ -250,7 +258,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
     const index = bars.findIndex(bar => bar.id === id)
     const element = [...bars][index]
 
-    if (element.type === 'bar') addBar(element.power || 80, element.time)
+    if (element.type === 'bar') addBar(element.power || 80, element.time, element.cadence)
     if (element.type === 'freeRide') addFreeRide(element.time)
     if (element.type === 'trapeze') addTrapeze(element.startPower || 80, element.endPower || 160, element.time)
 
@@ -298,51 +306,59 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
     setSavePopupVisibility(true)
   }
 
-  function deleteWorkout(){
+  function deleteWorkout() {
     // save to cloud (firebase) if logged in
     if (user) {
-      const itemsRef = firebase.database().ref();      
+      const itemsRef = firebase.database().ref();
 
-      var updates : any = {}
-      updates[`users/${user.uid}/workouts/${id}`] = null       
+      var updates: any = {}
+      updates[`users/${user.uid}/workouts/${id}`] = null
       updates[`workouts/${id}`] = null
-      
+
 
       // save to firebase      
-      itemsRef.update(updates).then(() => {        
-        newWorkout()        
+      itemsRef.update(updates).then(() => {
+        newWorkout()
       }).catch((error) => {
-        console.log(error);        
-        setMessage({visible: true, class: 'error', text: 'Cannot delete workout'})
+        console.log(error);
+        setMessage({ visible: true, class: 'error', text: 'Cannot delete workout' })
       });
     }
   }
 
   function shareWorkout() {
-    if(user){
+    if (user) {
       save()
       setCopied('')
       setSharePopupVisibility(true)
-    }else{
+    } else {
       saveWorkout()
     }
-    
+
   }
 
   function save() {
 
-    setMessage({visible: true, class:'loading', text: 'Saving..'})
+    setMessage({ visible: true, class: 'loading', text: 'Saving..' })
 
     var totalTime = 0
 
-    const xml = Builder.begin()
+    let xml = Builder.begin()
       .ele('workout_file')
       .ele('author', author).up()
       .ele('name', name).up()
       .ele('description', description).up()
-      .ele('sportType', 'bike').up()
-      .ele('tags', {}).up()
-      .ele('workout')
+      .ele('sportType', 'bike').up()    
+      .ele('tags')          
+    
+    tags.map((tag: string) => {
+      var t: Builder.XMLNode
+      t = Builder.create('tag')
+                 .att('name',tag)
+      xml.importDocument(t)
+    })
+          
+    xml = xml.up().ele('workout')
 
 
     bars.map((bar, index) => {
@@ -389,7 +405,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
         // free ride
         segment = Builder.create('FreeRide')
           .att('Duration', bar.time)
-          //.att('Cadence', 85) // add control for this?
+        //.att('Cadence', 85) // add control for this?
       }
 
       // add instructions if present
@@ -408,7 +424,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
 
     // save to cloud (firebase) if logged in
     if (user) {
-      const itemsRef = firebase.database().ref();      
+      const itemsRef = firebase.database().ref();
 
       const item = {
         id: id,
@@ -416,6 +432,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
         description: description,
         author: author,
         workout: bars,
+        tags: tags,
         instructions: instructions,
         userId: user.uid,
         updatedAt: Date()
@@ -427,20 +444,20 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
         updatedAt: Date()
       }
 
-      var updates : any = {}
-      updates[`users/${user.uid}/workouts/${id}`] = item2       
+      var updates: any = {}
+      updates[`users/${user.uid}/workouts/${id}`] = item2
       updates[`workouts/${id}`] = item
-      
+
 
       // save to firebase      
       itemsRef.update(updates).then(() => {
         //upload to s3  
         upload(file, false)
-        setMessage({visible: false})
+        setMessage({ visible: false })
 
       }).catch((error) => {
-        console.log(error);        
-        setMessage({visible: true, class: 'error', text: 'Cannot save this'})
+        console.log(error);
+        setMessage({ visible: true, class: 'error', text: 'Cannot save this' })
       });
     }
 
@@ -640,29 +657,56 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
 
   const copyToClipboard = () => {
     const node = sherableLinkRef.current
-    node?.select();    
+    node?.select();
     document.execCommand('copy');
     setCopied('copied!')
+  }
+
+  const handleOnCheckboxChange = (option: any) => {
+    if (tags.includes(option)) {
+      const updatedArray = [...tags]
+      setTags(updatedArray.filter(item => item !== option))
+    }else{
+      setTags((tags: any) => [...tags, option])
+    }
+  }
+
+  const createCheckbox = (option: string) => {
+    console.log(option);
+    console.log(tags.includes(option));
+    
+    
+    return (
+      <Checkbox 
+        label={option}
+        isSelected={tags.includes(option)}
+        onCheckboxChange={() => handleOnCheckboxChange(option)}
+      />
+    )
+  }
+
+  const renderCheckboxes = () => {
+    return DEFAULT_TAGS.map(createCheckbox)
   }
 
   return (
     <div className="container">
       <Helmet>
         <title>{name ? `${name} - Zwift Workout Editor` : "My Workout - Zwift Workout Editor"}</title>
-        <meta name="description" content={description} />      
+        <meta name="description" content={description} />
         <meta property="og:title" content={name ? `${name} - Zwift Workout Editor` : "My Workout - Zwift Workout Editor"} />
         <meta property="og:description" content={description} />
-        <link rel="canonical" href={`https://www.zwiftworkout.com/editor/${id}`} />  
-        <meta property="og:url" content={`https://www.zwiftworkout.com/editor/${id}`} />     
-      </Helmet>      
+        <link rel="canonical" href={`https://www.zwiftworkout.com/editor/${id}`} />
+        <meta property="og:url" content={`https://www.zwiftworkout.com/editor/${id}`} />
+      </Helmet>
 
       {message?.visible &&
         <div className={`message ${message.class}`}>
           {message.text}
-          <button className="close" onClick={()=>setMessage({visible: false})}>
+          <button className="close" onClick={() => setMessage({ visible: false })}>
             <FontAwesomeIcon icon={faTimesCircle} size="lg" fixedWidth />
           </button>
-        </div>  
+        </div>
       }
 
       {showWorkouts &&
@@ -672,9 +716,9 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
             :
             renderRegistrationForm()
           }
-        </Popup>        
+        </Popup>
       }
-      
+
       {savePopupIsVisile &&
         <Popup width="500px" dismiss={() => setSavePopupVisibility(false)}>
           {user ?
@@ -691,6 +735,10 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
               <div className="form-control">
                 <label htmlFor="author">Workout Author</label>
                 <input type="text" name="author" placeholder="Workout Author" value={author} onChange={(e) => setAuthor(e.target.value)} />
+              </div>
+              <div className="form-control">
+                <label htmlFor="author">Workout Tags</label>
+                {renderCheckboxes()}
               </div>
               <div className="form-control">
                 <button className="btn btn-primary" onClick={() => {
@@ -711,23 +759,23 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
           <div>
             <h2>Share Workout</h2>
             <div className="form-control">
-                <label htmlFor="link">Share this link</label>
-                <input type="text" name="link" value={"https://www.zwiftworkout.com/editor/"+id} ref={sherableLinkRef} />
-                <button onClick={() => copyToClipboard()}><FontAwesomeIcon icon={faCopy} size="lg" fixedWidth /> {copied}</button>                
-                <button className="btn" onClick={() => setSharePopupVisibility(false)}>Dismiss</button>  
-              </div>        
+              <label htmlFor="link">Share this link</label>
+              <input type="text" name="link" value={"https://www.zwiftworkout.com/editor/" + id} ref={sherableLinkRef} />
+              <button onClick={() => copyToClipboard()}><FontAwesomeIcon icon={faCopy} size="lg" fixedWidth /> {copied}</button>
+              <button className="btn" onClick={() => setSharePopupVisibility(false)}>Dismiss</button>
+            </div>
           </div>
-          
+
         </Popup>
       }
       <div className="info">
         <div>
           <h1>{name}</h1>
           <p className="author">{author ? `by ${author}` : ''}</p>
-        </div>        
+        </div>
         <p className="description">{description}</p>
       </div>
-      
+
       <div className='editor'>
         {actionId &&
           <div className='actions'>
@@ -803,7 +851,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
         <div className="form-input">
           <label htmlFor="weight">Body Weight (Kg)</label>
           <input className="textInput" type="number" name="weight" value={weight} onChange={(e) => setWeight(parseInt(e.target.value))} />
-        </div>        
+        </div>
         <div className="form-input">
           <label>Workout Time</label>
           <input className="textInput" value={helpers.getWorkoutLength(bars)} disabled />
@@ -826,7 +874,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
         <button className="btn" onClick={() => document.getElementById("contained-button-file")!.click()}><FontAwesomeIcon icon={faUpload} size="lg" fixedWidth /> Upload</button>
         <button className="btn" onClick={() => setShowWorkouts(true)}><FontAwesomeIcon icon={faList} size="lg" fixedWidth /> Workouts</button>
         <button className="btn" onClick={() => shareWorkout()} ><FontAwesomeIcon icon={faShareAlt} size="lg" fixedWidth /> Share</button>
-      </div>      
+      </div>
       <Footer />
     </div>
 
