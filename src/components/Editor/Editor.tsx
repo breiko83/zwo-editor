@@ -430,11 +430,12 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
       .ele('sportType', 'bike').up()    
       .ele('tags')          
     
-    tags.each((tag: string) => {
+    tags.map((tag: string) => {
       var t: Builder.XMLNode
       t = Builder.create('tag')
                  .att('name',tag)
       xml.importDocument(t)
+      return false;
     })
           
     xml = xml.up().ele('workout')
@@ -848,11 +849,21 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
         </Popup>
       }
       <div className="info">
-        <div>
+        <div className="title">
           <h1>{name}</h1>
-          <p className="author">{author ? `by ${author}` : ''}</p>
+          <p>{author ? `by ${author}` : ''}</p>
         </div>
-        <p className="description">{description}</p>
+        <div className="description">{description}</div>
+        <div className="workout">
+          <div className="form-input">
+            <label>Workout Time</label>
+            <input className="textInput" value={helpers.getWorkoutLength(bars)} disabled />
+          </div>
+          <div className="form-input">
+            <label>TSS</label>
+            <input className="textInput" value={helpers.getStressScore(bars, ftp)} disabled />
+          </div>
+        </div>
       </div>
 
       <div className='editor'>
@@ -930,15 +941,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
         <div className="form-input">
           <label htmlFor="weight">Body Weight (Kg)</label>
           <input className="textInput" type="number" name="weight" value={weight} onChange={(e) => setWeight(parseInt(e.target.value))} />
-        </div>
-        <div className="form-input">
-          <label>Workout Time</label>
-          <input className="textInput" value={helpers.getWorkoutLength(bars)} disabled />
-        </div>
-        <div className="form-input">
-          <label>TSS</label>
-          <input className="textInput" value={helpers.getStressScore(bars, ftp)} disabled />
-        </div>
+        </div>        
         <button className="btn" onClick={() => { if (window.confirm('Are you sure you want to create a new workout?')) newWorkout() }}><FontAwesomeIcon icon={faFile} size="lg" fixedWidth /> New</button>
         <button className="btn" onClick={() => saveWorkout()}><FontAwesomeIcon icon={faSave} size="lg" fixedWidth /> Save</button>
         <button className="btn" onClick={() => { if (window.confirm('Are you sure you want to delete this workout?')) deleteWorkout() }}><FontAwesomeIcon icon={faTrash} size="lg" fixedWidth /> Delete</button>

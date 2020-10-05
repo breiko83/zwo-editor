@@ -263,20 +263,25 @@ label {
   
   display: flex;
   flex-direction: row;
-
 }
 
-.info > div > h1 {
+.info > .description {
+  flex: 1;  
+  padding: 20px;  
+}
+
+.info > .title > h1 {
   padding: 10px 0;
   margin: 0;
 }
 
-.description {
-  padding: 0 20px;
-  max-width: 500px;
-}
-
-.author {
+.info > .title > p {
   font-style: italic;
   margin: 10px 0 0 0;
+}
+
+.info > .workout {
+
+  padding: 10px;
+
 }

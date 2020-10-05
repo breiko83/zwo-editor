@@ -14,6 +14,7 @@ Zwift Workout editor is a web based tool to edit ZWO files (Zwift workouts). It'
 - [feature] Delete a segment via keyboard backspace
 - [feature] Resize a segment via keyboard arrows (◀️ reduce time, ▶️ add time, 🔼 add power, ⬇️ reduce power) 
 - [feature] Showing %ftp range on warmup / cooldown
+- [feature] Moved total workout time and TSS to top right screen
 - [bugfix] Duplicating segments also copy cadance value
 - [bugfix] Warmup / Cooldown default values set to 25%-75% FTP 
 
