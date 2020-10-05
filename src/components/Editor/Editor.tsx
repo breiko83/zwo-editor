@@ -156,7 +156,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
     return () => {
       document.removeEventListener('keydown', handleKeyPress)
     };
-  },[document, handleKeyPress])
+  })
 
   function generateId() {
     return Math.random().toString(36).substr(2, 16)
@@ -222,7 +222,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
         removePowerToBar(actionId || '')
         break;
       default:
-        console.log(event.keyCode);        
+        //console.log(event.keyCode);        
         break;
     }    
   }
@@ -430,7 +430,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
       .ele('sportType', 'bike').up()    
       .ele('tags')          
     
-    tags.map((tag: string) => {
+    tags.each((tag: string) => {
       var t: Builder.XMLNode
       t = Builder.create('tag')
                  .att('name',tag)
@@ -917,8 +917,8 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
         <button className="btn btn-square" onClick={() => addBar(Zones.Z4.min)} style={{ backgroundColor: Colors.YELLOW }}>Z4</button>
         <button className="btn btn-square" onClick={() => addBar(Zones.Z5.min)} style={{ backgroundColor: Colors.ORANGE }}>Z5</button>
         <button className="btn btn-square" onClick={() => addBar(Zones.Z6.min)} style={{ backgroundColor: Colors.RED }}>Z6</button>
-        <button className="btn" onClick={() => addTrapeze(Zones.Z1.max / 2, Zones.Z4.min)} style={{ backgroundColor: Colors.WHITE }}><WarmupLogo className="btn-icon" /> Warm up</button>
-        <button className="btn" onClick={() => addTrapeze(Zones.Z4.min, Zones.Z1.max / 2)} style={{ backgroundColor: Colors.WHITE }}><WarmdownLogo className="btn-icon" /> Cool down</button>
+        <button className="btn" onClick={() => addTrapeze(0.25, 0.75)} style={{ backgroundColor: Colors.WHITE }}><WarmupLogo className="btn-icon" /> Warm up</button>
+        <button className="btn" onClick={() => addTrapeze(0.75, 0.25)} style={{ backgroundColor: Colors.WHITE }}><WarmdownLogo className="btn-icon" /> Cool down</button>
         <button className="btn" onClick={() => addFreeRide()} style={{ backgroundColor: Colors.WHITE }}><FontAwesomeIcon icon={faBicycle} size="lg" fixedWidth /> Free Ride</button>
         <button className="btn" onClick={() => addInstruction()} style={{ backgroundColor: Colors.WHITE }}><FontAwesomeIcon icon={faComment} size="lg" fixedWidth /> Text Event</button>
 

@@ -123,7 +123,7 @@ const Trapeze = (props: { id: string, time: number, startPower: number, endPower
       onClick={() => props.onClick(props.id)}
     >
       {showLabel &&
-        <Label duration={durationLabel} powerStart={powerLabelStart} powerEnd={powerLabelEnd} />
+        <Label duration={durationLabel} powerStart={powerLabelStart} powerEnd={powerLabelEnd} ftp={props.ftp} />
       }
       <div className='trapeze' onClick={() => props.onClick(props.id)}>
         <Resizable

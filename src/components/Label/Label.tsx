@@ -27,6 +27,11 @@ const Label = (props: { duration: string, power?: number, powerStart?: number, p
           {(props.power / props.weight).toFixed(1)}W/Kg &middot; {(props.power / props.ftp * 100).toFixed(0)}% FTP
         </div>
       }
+      {props.powerStart && props.powerEnd && props.ftp &&
+        <div>
+          {(props.powerStart / props.ftp * 100).toFixed(0)}% FTP - {(props.powerEnd / props.ftp * 100).toFixed(0)}% FTP
+        </div>
+      }
     </div>
   )
 }

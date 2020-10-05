@@ -1,10 +1,9 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import './FreeRide.css'
 import { Resizable } from 're-resizable'
 import moment from 'moment'
 import 'moment-duration-format'
 import Label from '../Label/Label'
-import { time } from 'console'
 
 function round5(x: number)
 {
