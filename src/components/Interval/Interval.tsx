@@ -24,14 +24,20 @@ const Interval = (props: { id: string, repeat: number, onDuration: number, offDu
   const [bars, setBars] = useState<Array<Bar>>([])
   const [nIntervals, setNIntervals] = useState(props.repeat)
 
+  const [onDuration, setOnDuration] = useState(props.onDuration)
+  const [offDuration, setOffDuration] = useState(props.offDuration)
+
   useEffect(() => {
+
+    console.log('render intervals inside');
+    
 
     const bars = []
 
     for (var i = 0; i < nIntervals; i++) {
       bars.push(
         {
-          time: props.onDuration,
+          time: onDuration,
           power: props.onPower,
           cadence: 0,
           type: 'bar',
@@ -40,7 +46,7 @@ const Interval = (props: { id: string, repeat: number, onDuration: number, offDu
 
       bars.push(
         {
-          time: props.offDuration,
+          time: offDuration,
           power: props.offPower,
           cadence: 0,
           type: 'bar',
@@ -48,22 +54,26 @@ const Interval = (props: { id: string, repeat: number, onDuration: number, offDu
         })
     }
     setBars(bars)
-  // eslint-disable-next-line
+    // eslint-disable-next-line
   }, [nIntervals])
 
   function handleOnChange(id: string, values: Bar) {
     const index = bars.findIndex(bar => bar.id === id)
+    
 
-    const updatedArray = [...bars]
-
-    for (var i = 0; i < updatedArray.length; i++) {
-
-      if (index % 2 === i % 2) {
-        updatedArray[i].time = values.time
-        updatedArray[i].power = values.power
-      }
+    if (index % 2 === 1) {
+      setOffDuration(values.time)
+    }else{
+      setOnDuration(values.time)
     }
 
+    for (var i = 0; i < bars.length; i++) {
+      if (index % 2 === i % 2) {       
+        bars[i].time = values.time
+        bars[i].power = values.power
+      }      
+    }
+    
     var length = 0
     bars.map((bar) => length += bar.time)
 
@@ -73,10 +83,10 @@ const Interval = (props: { id: string, repeat: number, onDuration: number, offDu
       type: 'interval',
       cadence: 0,
       repeat: nIntervals,
-      onDuration: updatedArray[0].time,
-      offDuration: updatedArray[1].time,
-      onPower: updatedArray[0].power,
-      offPower: updatedArray[1].power
+      onDuration: bars[0].time,
+      offDuration: bars[1].time,
+      onPower: bars[0].power,
+      offPower: bars[1].power
     })
 
   }

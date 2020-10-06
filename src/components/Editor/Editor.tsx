@@ -92,6 +92,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
   const db = firebase.database();
 
   useEffect(() => {
+    
     setMessage({ visible: true, class: 'loading', text: 'Loading..' })
 
     db.ref('workouts/' + id).once('value').then(function (snapshot) {
@@ -144,6 +145,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
   }, [id, db])
 
   useEffect(() => {
+
     localStorage.setItem('currentWorkout', JSON.stringify(bars))
     localStorage.setItem('ftp', ftp.toString())
 
@@ -158,6 +160,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
   }, [bars, ftp, instructions, weight, name, description, author, tags])
 
   useEffect(() => {
+
     document.addEventListener('keydown',handleKeyPress)
 
     return () => {
@@ -267,18 +270,18 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
     ])
   }
 
-  function addInterval(){
+  function addInterval(repeat: number = 3, onDuration: number = 30, offDuration: number = 120, onPower: number = 1, offPower: number = 0.5, cadence: number = 0){
 
     setBars(bars => [...bars, {            
-      time: 150,
+      time: onDuration + offDuration,
       id: uuidv4(),
       type: 'interval',
-      cadence: 0,
-      repeat: 4,
-      onDuration: 50,
-      offDuration: 100,
-      onPower: 1,
-      offPower: 0.3
+      cadence: cadence,
+      repeat: repeat,
+      onDuration: onDuration,
+      offDuration: offDuration,
+      onPower: onPower,
+      offPower: offPower
     }
     ])
   }
@@ -661,19 +664,25 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
         if (workout_file.name === 'workout_file') {
           // file is valid
           const authorIndex = workout_file.elements.findIndex((element: { name: string }) => element.name === 'author')
-          setAuthor(workout_file.elements[authorIndex].elements[0].text)
+          if (authorIndex && workout_file.elements[authorIndex].elements) {
+            setAuthor(workout_file.elements[authorIndex].elements[0].text)
+          }                            
 
           const nameIndex = workout_file.elements.findIndex((element: { name: string }) => element.name === 'name')
-          setName(workout_file.elements[nameIndex].elements[0].text)
+          if (nameIndex && workout_file.elements[nameIndex].elements) {
+            setName(workout_file.elements[nameIndex].elements[0].text)
+          }            
 
           const descriptionIndex = workout_file.elements.findIndex((element: { name: string }) => element.name === 'description')
-          setDescription(workout_file.elements[descriptionIndex].elements[0].text)
+          if (descriptionIndex && workout_file.elements[descriptionIndex].elements) {
+            setDescription(workout_file.elements[descriptionIndex].elements[0].text)
+          }            
 
           const workoutIndex = workout_file.elements.findIndex((element: { name: string }) => element.name === 'workout')
 
           var totalTime = 0
 
-          workout_file.elements[workoutIndex].elements.map((w: { name: string; attributes: { Power: any; PowerLow: string; Duration: string; PowerHigh: string; Cadence: string }; elements: any }) => {
+          workout_file.elements[workoutIndex].elements.map((w: { name: string; attributes: { Power: any; PowerLow: string; Duration: string; PowerHigh: string; Cadence: string; Repeat: string; OnDuration: string; OffDuration: string; OnPower: string, OffPower: string; }; elements: any }) => {
 
 
             if (w.name === 'SteadyState')
@@ -681,6 +690,9 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
 
             if (w.name === 'Ramp' || w.name === 'Warmup' || w.name === 'Cooldown')
               addTrapeze(parseFloat(w.attributes.PowerLow), parseFloat(w.attributes.PowerHigh), parseFloat(w.attributes.Duration))
+
+            if (w.name === 'IntervalsT')              
+              addInterval(parseFloat(w.attributes.Repeat),parseFloat(w.attributes.OnDuration), parseFloat(w.attributes.OffDuration), parseFloat(w.attributes.OnPower), parseFloat(w.attributes.OffPower), parseFloat(w.attributes.Cadence || '0'))
 
             if (w.name === 'FreeRide')
               addFreeRide(parseFloat(w.attributes.Duration))
@@ -935,7 +947,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
           {actionId &&
             <div className='fader' onClick={() => setActionId(undefined)}></div>
           }
-          {bars.map((bar) => {
+          {bars.map((bar) => {            
             if (bar.type === 'bar') {
               return (renderBar(bar))
             }
@@ -945,7 +957,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
             else if (bar.type === 'freeRide') {
               return (renderFreeRide(bar))
             }
-            else if (bar.type === 'interval') {              
+            else if (bar.type === 'interval') {  
               return (renderInterval(bar))             
             } else {
               return false
