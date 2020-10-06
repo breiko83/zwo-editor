@@ -11,7 +11,7 @@ Zwift Workout editor is a web based tool to edit ZWO files (Zwift workouts). It'
 
 ### V1.2 (6/10/2020)
 
-- [feature] Added intervals
+- [feature] Added intervals (beta)
 
 ### V1.1 (5/10/2020)
 
