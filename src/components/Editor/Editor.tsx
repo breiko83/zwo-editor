@@ -4,6 +4,7 @@ import { Colors, Zones } from '../Constants'
 import Bar from '../Bar/Bar'
 import Trapeze from '../Trapeze/Trapeze'
 import FreeRide from '../FreeRide/FreeRide'
+import Interval from '../Interval/Interval'
 import Comment from '../Comment/Comment'
 import Popup from '../Popup/Popup'
 import Footer from '../Footer/Footer'
@@ -13,6 +14,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTrash, faArrowRight, faArrowLeft, faFile, faSave, faUpload, faDownload, faComment, faBicycle, faCopy, faClock, faShareAlt, faTimesCircle, faList } from '@fortawesome/free-solid-svg-icons'
 import { ReactComponent as WarmdownLogo } from '../../assets/warmdown.svg'
 import { ReactComponent as WarmupLogo } from '../../assets/warmup.svg'
+import { ReactComponent as IntervalLogo } from '../../assets/interval.svg'
 import Builder from 'xmlbuilder'
 import Converter from 'xml-js'
 import helpers from '../helpers'
@@ -30,7 +32,12 @@ interface Bar {
   power?: number,
   startPower?: number,
   endPower?: number,
-  cadence: number
+  cadence: number,
+  onPower?: number,
+  offPower?: number,
+  onDuration?: number,
+  offDuration?: number,
+  repeat?: number
 }
 
 interface Instruction {
@@ -175,7 +182,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
 
   }
 
-  function handleOnChange(id: string, values: Bar) {
+  function handleOnChange(id: string, values: Bar) {    
     const index = bars.findIndex(bar => bar.id === id)
 
     const updatedArray = [...bars]
@@ -256,6 +263,22 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
       cadence: 0,
       type: 'freeRide',
       id: uuidv4()
+    }
+    ])
+  }
+
+  function addInterval(){
+
+    setBars(bars => [...bars, {            
+      time: 150,
+      id: uuidv4(),
+      type: 'interval',
+      cadence: 0,
+      repeat: 4,
+      onDuration: 50,
+      offDuration: 100,
+      onPower: 1,
+      offPower: 0.3
     }
     ])
   }
@@ -481,6 +504,14 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
             .att('PowerHigh', bar.endPower) // looks like a bug on zwift editor            
             .att('pace', 0) // is this cadence?
         }
+      } else if (bar.type === 'interval'){
+        // <IntervalsT Repeat="5" OnDuration="60" OffDuration="300" OnPower="0.8844353" OffPower="0.51775455" pace="0"/>
+        segment = Builder.create('IntervalsT')
+          .att('Repeat', bar.repeat)
+          .att('OnDuration', bar.onDuration)
+          .att('OffDuration', bar.offDuration)
+          .att('OnPower', bar.onPower)
+          .att('OffPower', bar.offPower)
       } else {
         // free ride
         segment = Builder.create('FreeRide')
@@ -691,6 +722,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
       onChange={(id: string, value: any) => handleOnChange(id, value)} // Change any to Interface Bar?
       onClick={(id: string) => handleOnClick(id)}
       selected={bar.id === actionId}
+      showLabel={true}
     />
   )
 
@@ -715,6 +747,23 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
       time={bar.time}
       onChange={(id: string, value: any) => handleOnChange(id, value)} // Change any to Interface Bar?
       onClick={(id: string) => handleOnClick(id)}
+      selected={bar.id === actionId}
+    />
+  )
+
+  const renderInterval = (bar: Bar) => (
+    <Interval
+      key={bar.id}
+      id={bar.id}
+      repeat={bar.repeat || 3}
+      onDuration={bar.onDuration || 10}
+      offDuration={bar.offDuration || 50}
+      onPower={bar.onPower || 250}
+      offPower={bar.offPower || 120}      
+      ftp={ftp}
+      weight={weight}
+      handleIntervalChange={(id: string, value: any) => handleOnChange(id, value)}
+      handleIntervalClick={(id: string) => handleOnClick(id)}
       selected={bar.id === actionId}
     />
   )
@@ -895,6 +944,9 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
             }
             else if (bar.type === 'freeRide') {
               return (renderFreeRide(bar))
+            }
+            else if (bar.type === 'interval') {              
+              return (renderInterval(bar))             
             } else {
               return false
             }
@@ -930,7 +982,8 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
         <button className="btn btn-square" onClick={() => addBar(Zones.Z6.min)} style={{ backgroundColor: Colors.RED }}>Z6</button>
         <button className="btn" onClick={() => addTrapeze(0.25, 0.75)} style={{ backgroundColor: Colors.WHITE }}><WarmupLogo className="btn-icon" /> Warm up</button>
         <button className="btn" onClick={() => addTrapeze(0.75, 0.25)} style={{ backgroundColor: Colors.WHITE }}><WarmdownLogo className="btn-icon" /> Cool down</button>
-        <button className="btn" onClick={() => addFreeRide()} style={{ backgroundColor: Colors.WHITE }}><FontAwesomeIcon icon={faBicycle} size="lg" fixedWidth /> Free Ride</button>
+        <button className="btn" onClick={() => addInterval()} style={{ backgroundColor: Colors.WHITE }}><IntervalLogo className="btn-icon" /> Interval</button>
+        <button className="btn" onClick={() => addFreeRide()} style={{ backgroundColor: Colors.WHITE }}><FontAwesomeIcon icon={faBicycle} size="lg" fixedWidth /> Free Ride</button>        
         <button className="btn" onClick={() => addInstruction()} style={{ backgroundColor: Colors.WHITE }}><FontAwesomeIcon icon={faComment} size="lg" fixedWidth /> Text Event</button>
 
         <div className="form-input">

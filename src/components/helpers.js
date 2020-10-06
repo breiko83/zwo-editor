@@ -27,6 +27,17 @@ const helpers = {
         
         tss += (bar.time * np * iff)
       }
+      if (bar.type === 'interval'){
+        const npOn = (bar.onPower * ftp)       
+        const iffOn = bar.onPower
+        
+        tss += (bar.onDuration * bar.repeat * npOn * iffOn)
+
+        const npOff = (bar.offPower * ftp)       
+        const iffOff = bar.offPower
+        
+        tss += (bar.offDuration * bar.repeat * npOff * iffOff)
+      }
       return false;
     })
     return ((tss / (ftp * 3600)) * 100).toFixed(0);

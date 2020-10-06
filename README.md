@@ -8,6 +8,11 @@ Zwift Workout editor is a web based tool to edit ZWO files (Zwift workouts). It'
 
 ## Changelog
 
+
+### V1.2 (6/10/2020)
+
+- [feature] Added intervals
+
 ### V1.1 (5/10/2020)
 
 - [feature] Add tags to your workout

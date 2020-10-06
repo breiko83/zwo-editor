@@ -1,0 +1,9 @@
+.intervals{
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+}
+
+.buttons {
+  padding: 10px 0;
+}

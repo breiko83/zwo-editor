@@ -11,7 +11,7 @@ function round5(x: number)
   return Math.ceil(x/5)*5;
 }
 
-const Bar = (props: { id: string, time: number, power: number, cadence: number, ftp: number, weight: number, onChange: Function, onClick: Function, selected: boolean }) => {
+const Bar = (props: { id: string, time: number, power: number, cadence: number, ftp: number, weight: number, onChange: Function, onClick: Function, selected: boolean, showLabel: boolean }) => {
 
   const multiplier = 250
   const timeMultiplier = 3
@@ -75,7 +75,7 @@ const Bar = (props: { id: string, time: number, power: number, cadence: number, 
       onClick={() => props.onClick(props.id)}
       style={props.selected ? { zIndex: 10 } : {}}
     >
-      {(selected || showLabel) &&
+      {((selected || showLabel) && (props.showLabel)) &&
         <Label duration={durationLabel} power={powerLabel} weight={props.weight} ftp={props.ftp} />
       }
       <Resizable
