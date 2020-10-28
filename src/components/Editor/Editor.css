@@ -53,7 +53,7 @@ a {
 
 .fader {
   position: absolute;
-  background-color: rgba(255, 255, 255, 0.9);;
+  background-color: rgba(255, 255, 255, 0.9);
   top: 0;
   left: 0;
   right: 0;
@@ -75,6 +75,10 @@ a {
   -moz-box-shadow: 0px 0px 27px -9px rgba(0,0,0,0.35);
   box-shadow: 0px 0px 27px -9px rgba(0,0,0,0.35);
   border-radius: 5px;
+}
+
+.cta > .form-input {
+  max-width: 100px;
 }
 
 .btn {
@@ -129,16 +133,16 @@ a {
 }
 
 .textInput {
-  max-width: 100px;
+  
   font-size: 20px;
-  border: 1px solid lightgray;
-  flex: 1;
+  border: 1px solid lightgray;  
   text-align: center;
 }
 
 label {
-  font-size: 11px;
+  font-size: 10px;
   text-align: center;
+  padding: 5px;
 }
 
 .actions {
@@ -257,9 +261,8 @@ label {
 .info {  
   margin: 0 auto;
   text-align: left;
-  max-width: 1290px;
+  max-width: 1360px;
   width: 100%;
-  padding: 10px;
   
   display: flex;
   flex-direction: row;
@@ -280,8 +283,38 @@ label {
   margin: 10px 0 0 0;
 }
 
+
 .info > .workout {
-
   padding: 10px;
+  display: flex;
+  flex-direction: row; 
+}
+.info > .workout > .form-input{
+  max-width: 120px;  
+  padding: 0 10px;
+}
+.switch {
+  display: flex;
+  flex-direction: row;
+  color: lightgray;
+}
+.switch > .icon {
+  padding: 5px;
+}
+.switch > .icon.active {
+  color: #00C46A;  
+}
 
+.run-workout {
+  display: flex;  
+  margin: 0 auto;
+  flex-direction: row;  
+  width: 100%;
+  max-width: 1360px;
+  
+}
+
+.run-workout > .form-input {
+  padding-right: 10px;
+  align-self: flex-end;
 }

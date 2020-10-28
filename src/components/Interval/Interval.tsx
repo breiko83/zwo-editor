@@ -17,7 +17,7 @@ interface Bar {
   repeat?: number
 }
 
-const Interval = (props: { id: string, repeat: number, onDuration: number, offDuration: number, onPower: number, offPower: number, ftp: number, weight: number, handleIntervalChange: Function, handleIntervalClick: Function, selected: boolean }) => {
+const Interval = (props: { id: string, repeat: number, onDuration: number, offDuration: number, onPower: number, offPower: number, ftp: number, weight: number, pace: number, sportType: string, handleIntervalChange: Function, handleIntervalClick: Function, selected: boolean }) => {
 
   const { v4: uuidv4 } = require('uuid');
 
@@ -136,6 +136,8 @@ const Interval = (props: { id: string, repeat: number, onDuration: number, offDu
       cadence={bar.cadence}
       ftp={props.ftp}
       weight={props.weight}
+      sportType={props.sportType}
+      pace={props.pace || 0}
       onChange={(id: string, value: any) => handleOnChange(id, value)} // Change any to Interface Bar?
       onClick={() => props.handleIntervalClick(props.id)}
       selected={props.selected}

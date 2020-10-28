@@ -15,7 +15,7 @@ function round5(x: number)
   return Math.ceil(x/5)*5;
 }
 
-const Trapeze = (props: { id: string, time: number, startPower: number, endPower: number, ftp: number, onChange: Function, onClick: Function, selected: boolean }) => {
+const Trapeze = (props: { id: string, time: number, startPower: number, endPower: number, ftp: number, sportType: string, onChange: Function, onClick: Function, selected: boolean }) => {
 
   const multiplier = 250
   const timeMultiplier = 3
@@ -123,7 +123,7 @@ const Trapeze = (props: { id: string, time: number, startPower: number, endPower
       onClick={() => props.onClick(props.id)}
     >
       {showLabel &&
-        <Label duration={durationLabel} powerStart={powerLabelStart} powerEnd={powerLabelEnd} ftp={props.ftp} />
+        <Label duration={durationLabel} powerStart={powerLabelStart} powerEnd={powerLabelEnd} ftp={props.ftp} sportType={props.sportType} />
       }
       <div className='trapeze' onClick={() => props.onClick(props.id)}>
         <Resizable
