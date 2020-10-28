@@ -5,7 +5,7 @@ import './Label.css'
 
 const Label = (props: { sportType: string, duration: string, distance?: number, power?: number, powerStart?: number, powerEnd?: number, weight?: number, ftp?: number, pace?: number }) => {
 
-  const paces = ["1 Mile", "5 Km", "10 Km", "½Marathon", "Marathon"]  
+  const paces = ["1M", "5K", "10K", "HM", "M"]  
 
   return (
     <div className='label'>
@@ -42,6 +42,11 @@ const Label = (props: { sportType: string, duration: string, distance?: number, 
       {props.power && props.ftp && props.pace !== null && props.sportType === "run" &&
         <div>
           {(props.power / props.ftp * 100).toFixed(0)}% {paces[props.pace || 0]} pace
+        </div>
+      }
+      {props.powerStart && props.powerEnd && props.ftp && props.pace !== null && props.sportType === "run" &&
+        <div>
+          {(props.powerStart / props.ftp * 100).toFixed(0)}% to {(props.powerEnd / props.ftp * 100).toFixed(0)}% {paces[props.pace || 0]} pace
         </div>
       }
     </div>

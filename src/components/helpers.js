@@ -75,6 +75,7 @@ const helpers = {
   },
 
   getWorkoutDistance: function(bars, oneMileTime, fiveKmTime, tenKmTime, halfMarathonTime, marathonTime){
+  
     // paces
     // 0 = 1 mile
     // 1 = 5k
@@ -84,13 +85,28 @@ const helpers = {
     const distances = [1.60934, 5, 10, 21.0975, 42.195]
     const times = [oneMileTime, fiveKmTime, tenKmTime, halfMarathonTime, marathonTime]
 
-    var distance = 0
+    var distance = 0    
     bars.map((bar) => {
-      const t = moment.duration(times[bar.pace]).asSeconds()
-      return distance += bar.power * distances[bar.pace] * bar.time / t
+
+      if (bar.type === 'bar'){
+        const t = moment.duration(times[bar.pace]).asSeconds()
+        distance += bar.power * distances[bar.pace] * bar.time / t
+      }
+      if (bar.type === 'trapeze'){
+        const t = moment.duration(times[bar.pace]).asSeconds()
+        distance += ((bar.startPower + bar.endPower) / 2) * distances[bar.pace] * bar.time / t
+      }
+      if (bar.type === 'interval'){
+        const t = moment.duration(times[bar.pace]).asSeconds()
+        distance += bar.repeat * bar.onPower * distances[bar.pace] * bar.onDuration / t
+        distance += bar.repeat * bar.offPower * distances[bar.pace] * bar.offDuration / t
+        
+      }
+
+      return false
     })
 
-    return distance.toFixed(3)  
+    return distance.toFixed(1)  
   },
 
   getTimeinSeconds: function(time){
