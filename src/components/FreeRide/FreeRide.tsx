@@ -10,7 +10,7 @@ function round5(x: number)
   return Math.ceil(x/5)*5;
 }
 
-const FreeRide = (props: { id: string, time: number, onChange: Function, onClick: Function, selected: boolean }) => {
+const FreeRide = (props: { id: string, time: number, sportType: string, onChange: Function, onClick: Function, selected: boolean }) => {
 
   const timeMultiplier = 3
 
@@ -46,7 +46,7 @@ const FreeRide = (props: { id: string, time: number, onChange: Function, onClick
       onClick={() => props.onClick(props.id)}
     >
       {showLabel &&
-        <Label duration={durationLabel} />
+        <Label duration={durationLabel} sportType={props.sportType} />
       }
       <Resizable
         className='freeRide'

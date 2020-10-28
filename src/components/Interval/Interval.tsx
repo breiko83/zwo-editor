@@ -14,10 +14,11 @@ interface Bar {
   offPower?: number,
   onDuration?: number,
   offDuration?: number,
-  repeat?: number
+  repeat?: number,
+  pace?: number
 }
 
-const Interval = (props: { id: string, repeat: number, onDuration: number, offDuration: number, onPower: number, offPower: number, ftp: number, weight: number, handleIntervalChange: Function, handleIntervalClick: Function, selected: boolean }) => {
+const Interval = (props: { id: string, repeat: number, onDuration: number, offDuration: number, onPower: number, offPower: number, ftp: number, weight: number, pace: number, speed?: number, sportType: string, handleIntervalChange: Function, handleIntervalClick: Function, selected: boolean }) => {
 
   const { v4: uuidv4 } = require('uuid');
 
@@ -28,10 +29,6 @@ const Interval = (props: { id: string, repeat: number, onDuration: number, offDu
   const [offDuration, setOffDuration] = useState(props.offDuration)
 
   useEffect(() => {
-
-    console.log('render intervals inside');
-    
-
     const bars = []
 
     for (var i = 0; i < nIntervals; i++) {
@@ -41,6 +38,7 @@ const Interval = (props: { id: string, repeat: number, onDuration: number, offDu
           power: props.onPower,
           cadence: 0,
           type: 'bar',
+          pace: props.pace,
           id: uuidv4()
         })
 
@@ -50,6 +48,7 @@ const Interval = (props: { id: string, repeat: number, onDuration: number, offDu
           power: props.offPower,
           cadence: 0,
           type: 'bar',
+          pace: props.pace,
           id: uuidv4()
         })
     }
@@ -82,6 +81,8 @@ const Interval = (props: { id: string, repeat: number, onDuration: number, offDu
       id: props.id,
       type: 'interval',
       cadence: 0,
+      pace: props.pace,
+      speed: props.speed,
       repeat: nIntervals,
       onDuration: bars[0].time,
       offDuration: bars[1].time,
@@ -100,6 +101,8 @@ const Interval = (props: { id: string, repeat: number, onDuration: number, offDu
       id: props.id,
       type: 'interval',
       cadence: 0,
+      pace: props.pace,
+      speed: props.speed,
       repeat: props.repeat + 1,
       onDuration: props.onDuration,
       offDuration: props.offDuration,
@@ -118,6 +121,8 @@ const Interval = (props: { id: string, repeat: number, onDuration: number, offDu
         id: props.id,
         type: 'interval',
         cadence: 0,
+        pace: props.pace,
+        speed: props.speed,
         repeat: props.repeat - 1,
         onDuration: props.onDuration,
         offDuration: props.offDuration,
@@ -136,6 +141,9 @@ const Interval = (props: { id: string, repeat: number, onDuration: number, offDu
       cadence={bar.cadence}
       ftp={props.ftp}
       weight={props.weight}
+      sportType={props.sportType}
+      pace={bar.pace || 0}
+      speed={props.speed}
       onChange={(id: string, value: any) => handleOnChange(id, value)} // Change any to Interface Bar?
       onClick={() => props.handleIntervalClick(props.id)}
       selected={props.selected}

@@ -5,7 +5,7 @@ import Icon from './assets/icon.png'
 import Facebook from './assets/facebook.png'
 import Twitter from './assets/twitter.png'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faBolt, faLaptop, faCloud, faPiggyBank } from '@fortawesome/free-solid-svg-icons'
+import { faBolt, faLaptop, faCloud, faPiggyBank, faRunning, faBiking } from '@fortawesome/free-solid-svg-icons'
 import ReactGA from 'react-ga';
 import { Helmet } from "react-helmet";
 import Footer from './components/Footer/Footer'
@@ -43,6 +43,10 @@ export default function Home() {
         <h2>Top features</h2>
         <p>Why should I use it?</p>
         <div className="perks">
+          <div>
+            <h3><FontAwesomeIcon icon={faBiking} fixedWidth /><FontAwesomeIcon icon={faRunning} fixedWidth /> Bike & Run</h3>
+            <p>Works both for Running and Cycling workouts</p>
+          </div>
           <div>
             <h3><FontAwesomeIcon icon={faBolt} fixedWidth /> Fast</h3>
             <p>Super fast Online editor for your Zwift workout files.</p>

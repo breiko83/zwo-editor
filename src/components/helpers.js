@@ -41,7 +41,80 @@ const helpers = {
       return false;
     })
     return ((tss / (ftp * 3600)) * 100).toFixed(0);
+  },
+
+  calculateEstimatedTimes: function(distances, times){
+    var estimatedTimes = []
+    
+    times.forEach((value, i) => {
+      
+      if(!value){
+
+        for (let index = 0; index < times.length; index++) {
+          
+          // found a time
+          if(times[index]){
+
+            // Predictions calculated using Riegel's formula: T2 = T1 x (D2/D1) x 1.06
+            // T1 = T2 / (1.06 * (D2/D1))
+            const t = moment.duration(times[index]).asSeconds()
+
+
+            let et = t * (distances[i] / distances[index]) * 1.06
+            
+
+            estimatedTimes[i] =  moment.utc(et*1000).format('HH:mm:ss')
+
+            break;
+
+          }
+        }
+      }
+    })
+    return estimatedTimes;
+  },
+
+  getWorkoutDistance: function(bars, oneMileTime, fiveKmTime, tenKmTime, halfMarathonTime, marathonTime){
+  
+    // paces
+    // 0 = 1 mile
+    // 1 = 5k
+    // 2 = 10km
+    // 3 = Half Marathon
+    // 4 = Marathon
+    const distances = [1.60934, 5, 10, 21.0975, 42.195]
+    const times = [oneMileTime, fiveKmTime, tenKmTime, halfMarathonTime, marathonTime]
+
+    var distance = 0    
+    bars.map((bar) => {
+
+      if (bar.type === 'bar'){
+        const t = moment.duration(times[bar.pace]).asSeconds()
+        distance += bar.power * distances[bar.pace] * bar.time / t
+      }
+      if (bar.type === 'trapeze'){
+        const t = moment.duration(times[bar.pace]).asSeconds()
+        distance += ((bar.startPower + bar.endPower) / 2) * distances[bar.pace] * bar.time / t
+      }
+      if (bar.type === 'interval'){
+        const t = moment.duration(times[bar.pace]).asSeconds()
+        distance += bar.repeat * bar.onPower * distances[bar.pace] * bar.onDuration / t
+        distance += bar.repeat * bar.offPower * distances[bar.pace] * bar.offDuration / t
+        
+      }
+
+      return false
+    })
+
+    return distance.toFixed(1)  
+  },
+
+  getTimeinSeconds: function(time){
+    //convert time 01:00:00 to seconds 3600
+    return moment.duration(time).asSeconds()
   }
+
+
 }
 
 export default helpers;

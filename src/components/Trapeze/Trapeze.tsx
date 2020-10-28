@@ -15,7 +15,7 @@ function round5(x: number)
   return Math.ceil(x/5)*5;
 }
 
-const Trapeze = (props: { id: string, time: number, startPower: number, endPower: number, ftp: number, onChange: Function, onClick: Function, selected: boolean }) => {
+const Trapeze = (props: { id: string, time: number, startPower: number, endPower: number, ftp: number, pace: number, sportType: string, speed?: number, onChange: Function, onClick: Function, selected: boolean }) => {
 
   const multiplier = 250
   const timeMultiplier = 3
@@ -24,6 +24,8 @@ const Trapeze = (props: { id: string, time: number, startPower: number, endPower
   const powerLabelEnd = Math.round(props.endPower * props.ftp)
   const durationLabel = getDuration(props.time / timeMultiplier)
   const [showLabel, setShowLabel] = useState(false)
+
+  const avgPower = Math.abs((props.endPower + props.startPower) / 2)
 
   const [width, setWidth] = useState(Math.round(props.time / timeMultiplier / 3 ))
 
@@ -57,14 +59,14 @@ const Trapeze = (props: { id: string, time: number, startPower: number, endPower
   }
 
   const handleResize1 = (dHeight: number) => {
-    props.onChange(props.id, { time: round5(width * timeMultiplier * 3), startPower: (height1 + dHeight) / multiplier, endPower: height3 / multiplier, type: 'trapeze', id: props.id })
+    props.onChange(props.id, { time: round5(width * timeMultiplier * 3), startPower: (height1 + dHeight) / multiplier, endPower: height3 / multiplier, type: 'trapeze', pace: props.pace, id: props.id })
   }
   const handleResize2 = (dHeight: number) => {    
-    props.onChange(props.id, { time: round5(width * timeMultiplier * 3), startPower: (height1 + dHeight) / multiplier, endPower: (height3 + dHeight) / multiplier, type: 'trapeze', id: props.id })
+    props.onChange(props.id, { time: round5(width * timeMultiplier * 3), startPower: (height1 + dHeight) / multiplier, endPower: (height3 + dHeight) / multiplier, type: 'trapeze', pace: props.pace, id: props.id })
   }
   const handleResize3 = (dWidth: number, dHeight: number) => {    
     const newWidth = width + (dWidth / 3)    
-    props.onChange(props.id, { time: round5(newWidth * timeMultiplier * 3), startPower: height1 / multiplier, endPower: (height3 + dHeight) / multiplier, type: 'trapeze', id: props.id })
+    props.onChange(props.id, { time: round5(newWidth * timeMultiplier * 3), startPower: height1 / multiplier, endPower: (height3 + dHeight) / multiplier, type: 'trapeze', pace: props.pace, id: props.id })
   }
 
   function calculateColors(start: number, end: number) {
@@ -123,7 +125,7 @@ const Trapeze = (props: { id: string, time: number, startPower: number, endPower
       onClick={() => props.onClick(props.id)}
     >
       {showLabel &&
-        <Label duration={durationLabel} powerStart={powerLabelStart} powerEnd={powerLabelEnd} ftp={props.ftp} />
+        <Label duration={durationLabel} powerStart={powerLabelStart} powerEnd={powerLabelEnd} ftp={props.ftp} sportType={props.sportType} pace={props.pace} distance={props.time * (props.speed || 0) * avgPower} />
       }
       <div className='trapeze' onClick={() => props.onClick(props.id)}>
         <Resizable

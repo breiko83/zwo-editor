@@ -11,7 +11,7 @@ function round5(x: number)
   return Math.ceil(x/5)*5;
 }
 
-const Bar = (props: { id: string, time: number, power: number, cadence: number, ftp: number, weight: number, onChange: Function, onClick: Function, selected: boolean, showLabel: boolean }) => {
+const Bar = (props: { id: string, time: number, power: number, cadence: number, ftp: number, weight: number, pace: number, sportType: string, speed?: number, onChange: Function, onClick: Function, selected: boolean, showLabel: boolean }) => {
 
   const multiplier = 250
   const timeMultiplier = 3
@@ -27,17 +27,17 @@ const Bar = (props: { id: string, time: number, power: number, cadence: number, 
 
   const [selected, setSelected] = useState(props.selected)
   useEffect(()=>{
-    setSelected(props.selected)
+    setSelected(props.selected)    
   },[props.selected])
 
   const handleResizeStop = (dWidth: number, dHeight: number) => {
     setWidth(width + dWidth)
     setHeight(height + dHeight)
-    props.onChange(props.id, { time: round5((width + dWidth) * timeMultiplier), power: (height + dHeight) / multiplier, cadence: props.cadence, type: 'bar', id: props.id })
+    props.onChange(props.id, { time: round5((width + dWidth) * timeMultiplier), power: (height + dHeight) / multiplier, cadence: props.cadence, type: 'bar', pace: props.pace, id: props.id })
   }
 
-  const handleResize = (dWidth: number, dHeight: number) => {
-    props.onChange(props.id, { time: round5((width + dWidth) * timeMultiplier), power: (height + dHeight) / multiplier, cadence: props.cadence, type: 'bar', id: props.id })
+  const handleResize = (dWidth: number, dHeight: number) => {        
+    props.onChange(props.id, { time: round5((width + dWidth) * timeMultiplier), power: (height + dHeight) / multiplier, cadence: props.cadence, type: 'bar', pace: props.pace, id: props.id })
   }
 
   function getDuration(seconds: number) {
@@ -76,7 +76,7 @@ const Bar = (props: { id: string, time: number, power: number, cadence: number, 
       style={props.selected ? { zIndex: 10 } : {}}
     >
       {((selected || showLabel) && (props.showLabel)) &&
-        <Label duration={durationLabel} power={powerLabel} weight={props.weight} ftp={props.ftp} />
+        <Label sportType={props.sportType} duration={durationLabel} power={powerLabel} weight={props.weight} ftp={props.ftp} pace={props.pace} distance={props.time * (props.speed || 0) * props.power} />
       }
       <Resizable
         className='bar'

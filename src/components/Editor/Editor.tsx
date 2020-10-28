@@ -11,10 +11,11 @@ import Footer from '../Footer/Footer'
 import Workouts from '../Workouts/Workouts'
 import Checkbox from './Checkbox'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faTrash, faArrowRight, faArrowLeft, faFile, faSave, faUpload, faDownload, faComment, faBicycle, faCopy, faClock, faShareAlt, faTimesCircle, faList } from '@fortawesome/free-solid-svg-icons'
+import { faTrash, faArrowRight, faArrowLeft, faFile, faSave, faUpload, faDownload, faComment, faBicycle, faCopy, faClock, faShareAlt, faTimesCircle, faList, faBiking, faRunning } from '@fortawesome/free-solid-svg-icons'
 import { ReactComponent as WarmdownLogo } from '../../assets/warmdown.svg'
 import { ReactComponent as WarmupLogo } from '../../assets/warmup.svg'
 import { ReactComponent as IntervalLogo } from '../../assets/interval.svg'
+import { ReactComponent as SteadyLogo } from '../../assets/steady.svg'
 import Builder from 'xmlbuilder'
 import Converter from 'xml-js'
 import helpers from '../helpers'
@@ -24,6 +25,8 @@ import LoginForm from '../Forms/LoginForm'
 import { Helmet } from "react-helmet";
 import { RouteComponentProps } from 'react-router-dom';
 import ReactGA from 'react-ga';
+import Switch from "react-switch";
+import { stringType } from 'aws-sdk/clients/iam'
 
 interface Bar {
   id: string,
@@ -37,7 +40,8 @@ interface Bar {
   offPower?: number,
   onDuration?: number,
   offDuration?: number,
-  repeat?: number
+  repeat?: number,
+  pace?: number
 }
 
 interface Instruction {
@@ -86,13 +90,20 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
   const [message, setMessage] = useState<Message>()
 
   const [showWorkouts, setShowWorkouts] = useState(false)
+  const [sportType, setSportType] = useState(localStorage.getItem('sportType') || 'bike')
+
+  const [oneMileTime, setOneMileTime] = useState(localStorage.getItem('oneMileTime') || '')
+  const [fiveKmTime, setFiveKmTime] = useState(localStorage.getItem('fiveKmTime') || '')
+  const [tenKmTime, setTenKmTime] = useState(localStorage.getItem('tenKmTime') || '')
+  const [halfMarathonTime, setHalfMarathonTime] = useState(localStorage.getItem('halfMarathonTime') || '')
+  const [marathonTime, setMarathonTime] = useState(localStorage.getItem('marathonTime') || '')
 
   const DEFAULT_TAGS = ["Recovery", "Intervals", "FTP", "TT"]
 
   const db = firebase.database();
 
   useEffect(() => {
-    
+
     setMessage({ visible: true, class: 'loading', text: 'Loading..' })
 
     db.ref('workouts/' + id).once('value').then(function (snapshot) {
@@ -156,12 +167,20 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
     localStorage.setItem('description', description)
     localStorage.setItem('author', author)
     localStorage.setItem('tags', JSON.stringify(tags))
+    localStorage.setItem('sportType', sportType)
 
-  }, [bars, ftp, instructions, weight, name, description, author, tags])
+    localStorage.setItem('oneMileTime', oneMileTime)
+    localStorage.setItem('fiveKmTime', fiveKmTime)
+    localStorage.setItem('tenKmTime', tenKmTime)
+    localStorage.setItem('halfMarathonTime', halfMarathonTime)
+    localStorage.setItem('marathonTime', marathonTime)
+
+
+  }, [bars, ftp, instructions, weight, name, description, author, tags, sportType, oneMileTime, fiveKmTime, tenKmTime, halfMarathonTime, marathonTime])
 
   useEffect(() => {
 
-    document.addEventListener('keydown',handleKeyPress)
+    document.addEventListener('keydown', handleKeyPress)
 
     return () => {
       document.removeEventListener('keydown', handleKeyPress)
@@ -185,7 +204,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
 
   }
 
-  function handleOnChange(id: string, values: Bar) {    
+  function handleOnChange(id: string, values: Bar) {
     const index = bars.findIndex(bar => bar.id === id)
 
     const updatedArray = [...bars]
@@ -211,7 +230,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
 
   function handleKeyPress(event: { keyCode: any }) {
 
-    switch(event.keyCode) {
+    switch (event.keyCode) {
       case 8:
         removeBar(actionId || '')
         break;
@@ -234,26 +253,53 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
       default:
         //console.log(event.keyCode);        
         break;
-    }    
+    }
   }
 
-  function addBar(zone: number, duration: number = 300, cadence: number = 0) {
+  function estimateRunningTimes() {
+
+    const distances = [1.60934, 5, 10, 21.0975, 42.195, 1.60934]
+    const times = [oneMileTime, fiveKmTime, tenKmTime, halfMarathonTime, marathonTime, '00:11:20']
+
+    var estimatedTimes = helpers.calculateEstimatedTimes(distances, times)
+
+    if (!oneMileTime) {
+      setOneMileTime(estimatedTimes[0])
+    }
+    if (!fiveKmTime) {
+      setFiveKmTime(estimatedTimes[1])
+    }
+    if (!tenKmTime) {
+      setTenKmTime(estimatedTimes[2])
+    }
+    if (!halfMarathonTime) {
+      setHalfMarathonTime(estimatedTimes[3])
+    }
+    if (!marathonTime) {
+      setMarathonTime(estimatedTimes[4])
+    }
+
+  }
+
+  function addBar(zone: number, duration: number = 300, cadence: number = 0, pace: number = 0) {
     setBars(bars => [...bars, {
       time: duration,
       power: zone,
       cadence: cadence,
       type: 'bar',
-      id: uuidv4()
+      id: uuidv4(),
+      pace: pace
     }
     ])
   }
 
-  function addTrapeze(zone1: number, zone2: number, duration: number = 300) {
+  function addTrapeze(zone1: number, zone2: number, duration: number = 300, pace: number = 0) {
     setBars(bars => [...bars, {
       time: duration,
       startPower: zone1,
       endPower: zone2,
       cadence: 0,
+      pace: pace,
       type: 'trapeze',
       id: uuidv4()
     }
@@ -270,9 +316,9 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
     ])
   }
 
-  function addInterval(repeat: number = 3, onDuration: number = 30, offDuration: number = 120, onPower: number = 1, offPower: number = 0.5, cadence: number = 0){
+  function addInterval(repeat: number = 3, onDuration: number = 30, offDuration: number = 120, onPower: number = 1, offPower: number = 0.5, cadence: number = 0, pace: number = 0) {
 
-    setBars(bars => [...bars, {            
+    setBars(bars => [...bars, {
       time: onDuration + offDuration,
       id: uuidv4(),
       type: 'interval',
@@ -281,7 +327,8 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
       onDuration: onDuration,
       offDuration: offDuration,
       onPower: onPower,
-      offPower: offPower
+      offPower: offPower,
+      pace: pace
     }
     ])
   }
@@ -317,44 +364,44 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
 
   function addTimeToBar(id: string) {
     const updatedArray = [...bars]
-    
+
     const index = updatedArray.findIndex(bar => bar.id === id)
     const element = updatedArray[index]
-    if (element){
-        element.time = element.time + 5
+    if (element) {
+      element.time = element.time + 5
       setBars(updatedArray)
     }
   }
 
   function removeTimeToBar(id: string) {
     const updatedArray = [...bars]
-    
+
     const index = updatedArray.findIndex(bar => bar.id === id)
     const element = updatedArray[index]
-    if (element && element.time > 5){
-        element.time = element.time - 5
+    if (element && element.time > 5) {
+      element.time = element.time - 5
       setBars(updatedArray)
     }
   }
 
   function addPowerToBar(id: string) {
     const updatedArray = [...bars]
-    
+
     const index = updatedArray.findIndex(bar => bar.id === id)
     const element = updatedArray[index]
-    if (element && element.power){
-        element.power = parseFloat((element.power + 1/ftp).toFixed(3)) 
+    if (element && element.power) {
+      element.power = parseFloat((element.power + 1 / ftp).toFixed(3))
       setBars(updatedArray)
     }
   }
 
   function removePowerToBar(id: string) {
     const updatedArray = [...bars]
-    
+
     const index = updatedArray.findIndex(bar => bar.id === id)
     const element = updatedArray[index]
-    if (element && element.power && element.power >= Zones.Z1.min){
-        element.power = parseFloat((element.power - 1/ftp).toFixed(3))
+    if (element && element.power && element.power >= Zones.Z1.min) {
+      element.power = parseFloat((element.power - 1 / ftp).toFixed(3))
       setBars(updatedArray)
     }
   }
@@ -363,9 +410,9 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
     const index = bars.findIndex(bar => bar.id === id)
     const element = [...bars][index]
 
-    if (element.type === 'bar') addBar(element.power || 80, element.time, element.cadence)
+    if (element.type === 'bar') addBar(element.power || 80, element.time, element.cadence, element.pace || 0)
     if (element.type === 'freeRide') addFreeRide(element.time)
-    if (element.type === 'trapeze') addTrapeze(element.startPower || 80, element.endPower || 160, element.time)
+    if (element.type === 'trapeze') addTrapeze(element.startPower || 80, element.endPower || 160, element.time, element.pace || 0)
 
     setActionId(undefined)
   }
@@ -453,17 +500,17 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
       .ele('author', author).up()
       .ele('name', name).up()
       .ele('description', description).up()
-      .ele('sportType', 'bike').up()    
-      .ele('tags')          
-    
+      .ele('sportType', sportType).up()
+      .ele('tags')
+
     tags.map((tag: string) => {
       var t: Builder.XMLNode
       t = Builder.create('tag')
-                 .att('name',tag)
+        .att('name', tag)
       xml.importDocument(t)
       return false;
     })
-          
+
     xml = xml.up().ele('workout')
 
 
@@ -476,7 +523,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
         segment = Builder.create('SteadyState')
           .att('Duration', bar.time)
           .att('Power', bar.power)
-          .att('pace', 0)
+          .att('pace', bar.pace)
 
         // add cadence if not zero
         if (bar.cadence !== 0)
@@ -498,16 +545,16 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
             .att('Duration', bar.time)
             .att('PowerLow', bar.startPower)
             .att('PowerHigh', bar.endPower)
-            .att('pace', 0) // is this cadence?
+            .att('pace', bar.pace) // is this cadence?
         } else {
           // cooldown
           segment = Builder.create(ramp)
             .att('Duration', bar.time)
             .att('PowerLow', bar.startPower) // these 2 values are inverted
             .att('PowerHigh', bar.endPower) // looks like a bug on zwift editor            
-            .att('pace', 0) // is this cadence?
+            .att('pace', bar.pace) // is this cadence?
         }
-      } else if (bar.type === 'interval'){
+      } else if (bar.type === 'interval') {
         // <IntervalsT Repeat="5" OnDuration="60" OffDuration="300" OnPower="0.8844353" OffPower="0.51775455" pace="0"/>
         segment = Builder.create('IntervalsT')
           .att('Repeat', bar.repeat)
@@ -515,6 +562,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
           .att('OffDuration', bar.offDuration)
           .att('OnPower', bar.onPower)
           .att('OffPower', bar.offPower)
+          .att('pace', bar.pace)
       } else {
         // free ride
         segment = Builder.create('FreeRide')
@@ -573,6 +621,9 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
         console.log(error);
         setMessage({ visible: true, class: 'error', text: 'Cannot save this' })
       });
+    } else {
+      // download workout without saving
+      setMessage({ visible: false })
     }
 
     return file
@@ -666,33 +717,33 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
           const authorIndex = workout_file.elements.findIndex((element: { name: string }) => element.name === 'author')
           if (authorIndex && workout_file.elements[authorIndex].elements) {
             setAuthor(workout_file.elements[authorIndex].elements[0].text)
-          }                            
+          }
 
           const nameIndex = workout_file.elements.findIndex((element: { name: string }) => element.name === 'name')
           if (nameIndex && workout_file.elements[nameIndex].elements) {
             setName(workout_file.elements[nameIndex].elements[0].text)
-          }            
+          }
 
           const descriptionIndex = workout_file.elements.findIndex((element: { name: string }) => element.name === 'description')
           if (descriptionIndex && workout_file.elements[descriptionIndex].elements) {
             setDescription(workout_file.elements[descriptionIndex].elements[0].text)
-          }            
+          }
 
           const workoutIndex = workout_file.elements.findIndex((element: { name: string }) => element.name === 'workout')
 
           var totalTime = 0
 
-          workout_file.elements[workoutIndex].elements.map((w: { name: string; attributes: { Power: any; PowerLow: string; Duration: string; PowerHigh: string; Cadence: string; Repeat: string; OnDuration: string; OffDuration: string; OnPower: string, OffPower: string; }; elements: any }) => {
+          workout_file.elements[workoutIndex].elements.map((w: { name: string; attributes: { Power: any; PowerLow: string; Duration: string; PowerHigh: string; Cadence: string; Repeat: string; OnDuration: string; OffDuration: string; OnPower: string, OffPower: string; Pace: stringType }; elements: any }) => {
 
 
             if (w.name === 'SteadyState')
-              addBar(parseFloat(w.attributes.Power || w.attributes.PowerLow), parseFloat(w.attributes.Duration), parseFloat(w.attributes.Cadence || '0'))
+              addBar(parseFloat(w.attributes.Power || w.attributes.PowerLow), parseFloat(w.attributes.Duration), parseFloat(w.attributes.Cadence || '0'), parseInt(w.attributes.Pace || '0'))
 
             if (w.name === 'Ramp' || w.name === 'Warmup' || w.name === 'Cooldown')
-              addTrapeze(parseFloat(w.attributes.PowerLow), parseFloat(w.attributes.PowerHigh), parseFloat(w.attributes.Duration))
+              addTrapeze(parseFloat(w.attributes.PowerLow), parseFloat(w.attributes.PowerHigh), parseFloat(w.attributes.Duration), parseInt(w.attributes.Pace || '0'))
 
-            if (w.name === 'IntervalsT')              
-              addInterval(parseFloat(w.attributes.Repeat),parseFloat(w.attributes.OnDuration), parseFloat(w.attributes.OffDuration), parseFloat(w.attributes.OnPower), parseFloat(w.attributes.OffPower), parseFloat(w.attributes.Cadence || '0'))
+            if (w.name === 'IntervalsT')
+              addInterval(parseFloat(w.attributes.Repeat), parseFloat(w.attributes.OnDuration), parseFloat(w.attributes.OffDuration), parseFloat(w.attributes.OnPower), parseFloat(w.attributes.OffPower), parseFloat(w.attributes.Cadence || '0'), parseInt(w.attributes.Pace || '0'))
 
             if (w.name === 'FreeRide')
               addFreeRide(parseFloat(w.attributes.Duration))
@@ -722,6 +773,17 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
       })
   }
 
+  function calculateSpeed(pace: number) {
+
+    // return speed in m/s
+    // speed  = distance / time
+    const distances = [1.60934, 5, 10, 21.0975, 42.195]
+    const times = [oneMileTime, fiveKmTime, tenKmTime, halfMarathonTime, marathonTime]
+
+    return distances[pace] * 1000 / helpers.getTimeinSeconds(times[pace])
+
+  }
+
   const renderBar = (bar: Bar) => (
     <Bar
       key={bar.id}
@@ -731,6 +793,9 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
       cadence={bar.cadence}
       ftp={ftp}
       weight={weight}
+      sportType={sportType}
+      pace={bar.pace || 0}
+      speed={calculateSpeed(bar.pace || 0)}
       onChange={(id: string, value: any) => handleOnChange(id, value)} // Change any to Interface Bar?
       onClick={(id: string) => handleOnClick(id)}
       selected={bar.id === actionId}
@@ -746,6 +811,9 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
       startPower={bar.startPower || 80}
       endPower={bar.endPower || 160}
       ftp={ftp}
+      sportType={sportType}
+      pace={bar.pace || 0}
+      speed={calculateSpeed(bar.pace || 0)}
       onChange={(id: string, value: any) => handleOnChange(id, value)} // Change any to Interface Bar?
       onClick={(id: string) => handleOnClick(id)}
       selected={bar.id === actionId}
@@ -757,6 +825,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
       key={bar.id}
       id={bar.id}
       time={bar.time}
+      sportType={sportType}
       onChange={(id: string, value: any) => handleOnChange(id, value)} // Change any to Interface Bar?
       onClick={(id: string) => handleOnClick(id)}
       selected={bar.id === actionId}
@@ -774,6 +843,9 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
       offPower={bar.offPower || 120}      
       ftp={ftp}
       weight={weight}
+      sportType={sportType}
+      pace={bar.pace || 0}
+      speed={calculateSpeed(bar.pace || 0)}
       handleIntervalChange={(id: string, value: any) => handleOnChange(id, value)}
       handleIntervalClick={(id: string) => handleOnClick(id)}
       selected={bar.id === actionId}
@@ -807,7 +879,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
     if (tags.includes(option)) {
       const updatedArray = [...tags]
       setTags(updatedArray.filter(item => item !== option))
-    }else{
+    } else {
       setTags((tags: any) => [...tags, option])
     }
   }
@@ -815,10 +887,10 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
   const createCheckbox = (option: string) => {
     console.log(option);
     console.log(tags.includes(option));
-    
-    
+
+
     return (
-      <Checkbox 
+      <Checkbox
         label={option}
         isSelected={tags.includes(option)}
         onCheckboxChange={() => handleOnCheckboxChange(option)}
@@ -828,6 +900,26 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
 
   const renderCheckboxes = () => {
     return DEFAULT_TAGS.map(createCheckbox)
+  }
+
+  function setPace(value: string, id: string) {
+    const index = bars.findIndex(bar => bar.id === id)
+
+    if (index !== -1) {
+      const updatedArray = [...bars]
+      const element = [...updatedArray][index]
+      element.pace = parseInt(value)
+      setBars(updatedArray)
+    }
+  }
+
+  function getPace(id: string) {
+    const index = bars.findIndex(bar => bar.id === id)
+
+    if (index !== -1) {
+      const element = [...bars][index]
+      return element.pace
+    }
   }
 
   return (
@@ -912,20 +1004,59 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
       <div className="info">
         <div className="title">
           <h1>{name}</h1>
+          <div className="description">{description}</div>
           <p>{author ? `by ${author}` : ''}</p>
         </div>
-        <div className="description">{description}</div>
         <div className="workout">
           <div className="form-input">
             <label>Workout Time</label>
             <input className="textInput" value={helpers.getWorkoutLength(bars)} disabled />
           </div>
           <div className="form-input">
+            <label>Workout Distance</label>
+            <input className="textInput" value={helpers.getWorkoutDistance(bars, oneMileTime, fiveKmTime, tenKmTime, halfMarathonTime, marathonTime)} disabled />
+          </div>
+          <div className="form-input">
             <label>TSS</label>
             <input className="textInput" value={helpers.getStressScore(bars, ftp)} disabled />
           </div>
+          <div className="form-input">
+            <label>Sport Type</label>
+            <div className="switch">
+              <FontAwesomeIcon className={`icon bike ${sportType === "bike" ? "active" : ""}`} icon={faBiking} size="lg" fixedWidth />
+              <Switch onChange={() => setSportType(sportType === "run" ? "bike" : "run")} checked={sportType !== "bike"} checkedIcon={false} uncheckedIcon={false} onColor="#00C46A" offColor="#00C46A" />
+              <FontAwesomeIcon className={`icon run ${sportType === "run" ? "active" : ""}`} icon={faRunning} size="lg" fixedWidth />
+            </div>
+          </div>
         </div>
       </div>
+      {sportType === "run" &&
+        <div className="run-workout">
+          <div className="form-input">
+            <label>1 Mile Time (hh:mm:ss)</label>
+            <input className="textInput" value={oneMileTime} type="time" step="1" onChange={(e) => setOneMileTime(e.target.value)} />
+          </div>
+          <div className="form-input">
+            <label>5 Km Time (hh:mm:ss)</label>
+            <input className="textInput" value={fiveKmTime} type="time" step="1" onChange={(e) => setFiveKmTime(e.target.value)} />
+          </div>
+          <div className="form-input">
+            <label>10 Km Time (hh:mm:ss)</label>
+            <input className="textInput" value={tenKmTime} type="time" step="1" onChange={(e) => setTenKmTime(e.target.value)} />
+          </div>
+          <div className="form-input">
+            <label>Half Marathon Time (hh:mm:ss)</label>
+            <input className="textInput" value={halfMarathonTime} type="time" step="1" onChange={(e) => setHalfMarathonTime(e.target.value)} />
+          </div>
+          <div className="form-input">
+            <label>Marathon Time (hh:mm:ss)</label>
+            <input className="textInput" value={marathonTime} type="time" step="1" onChange={(e) => setMarathonTime(e.target.value)} />
+          </div>
+          <div className="form-input">
+            <button onClick={estimateRunningTimes} className="btn">Estimate missing times</button>
+          </div>
+        </div>
+      }
 
       <div className='editor'>
         {actionId &&
@@ -934,9 +1065,21 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
             <button onClick={() => moveRight(actionId)} title='Move Right'><FontAwesomeIcon icon={faArrowRight} size="lg" fixedWidth /></button>
             <button onClick={() => removeBar(actionId)} title='Delete'><FontAwesomeIcon icon={faTrash} size="lg" fixedWidth /></button>
             <button onClick={() => duplicateBar(actionId)} title='Duplicate'><FontAwesomeIcon icon={faCopy} size="lg" fixedWidth /></button>
-            <button onClick={() => setShowCadenceInput(!showCadenceInput)} title='Cadence'><FontAwesomeIcon icon={faClock} size="lg" fixedWidth /></button>
-            {(showCadenceInput || cadence !== 0) &&
-              <input className="textInput" type="number" min="40" max="150" name="cadence" value={cadence} onChange={(e) => saveCadence(actionId, parseInt(e.target.value))} />
+            {sportType === "bike" ?
+              <div>
+                <button onClick={() => setShowCadenceInput(!showCadenceInput)} title='Cadence'><FontAwesomeIcon icon={faClock} size="lg" fixedWidth /></button>
+                {(showCadenceInput || cadence !== 0) &&
+                  <input className="textInput" type="number" min="40" max="150" name="cadence" value={cadence} onChange={(e) => saveCadence(actionId, parseInt(e.target.value))} />
+                }
+              </div>
+              :
+              <select name="pace" value={getPace(actionId)} onChange={(e) => setPace(e.target?.value, actionId)} className="selectInput">
+                <option value="0">1 Mile Pace</option>
+                <option value="1">5K Pace</option>
+                <option value="2">10K Pace</option>
+                <option value="3">Half Marathon Pace</option>
+                <option value="4">Marathon Pace</option>
+              </select>
             }
           </div>
         }
@@ -947,7 +1090,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
           {actionId &&
             <div className='fader' onClick={() => setActionId(undefined)}></div>
           }
-          {bars.map((bar) => {            
+          {bars.map((bar) => {
             if (bar.type === 'bar') {
               return (renderBar(bar))
             }
@@ -957,8 +1100,8 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
             else if (bar.type === 'freeRide') {
               return (renderFreeRide(bar))
             }
-            else if (bar.type === 'interval') {  
-              return (renderInterval(bar))             
+            else if (bar.type === 'interval') {
+              return (renderInterval(bar))
             } else {
               return false
             }
@@ -986,27 +1129,40 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
         </div>
       </div>
       <div className='cta'>
-        <button className="btn btn-square" onClick={() => addBar(0.5)} style={{ backgroundColor: Colors.GRAY }}>Z1</button>
-        <button className="btn btn-square" onClick={() => addBar(Zones.Z2.min)} style={{ backgroundColor: Colors.BLUE }}>Z2</button>
-        <button className="btn btn-square" onClick={() => addBar(Zones.Z3.min)} style={{ backgroundColor: Colors.GREEN }}>Z3</button>
-        <button className="btn btn-square" onClick={() => addBar(Zones.Z4.min)} style={{ backgroundColor: Colors.YELLOW }}>Z4</button>
-        <button className="btn btn-square" onClick={() => addBar(Zones.Z5.min)} style={{ backgroundColor: Colors.ORANGE }}>Z5</button>
-        <button className="btn btn-square" onClick={() => addBar(Zones.Z6.min)} style={{ backgroundColor: Colors.RED }}>Z6</button>
+        {sportType === "bike" ?
+          <div>
+            <button className="btn btn-square" onClick={() => addBar(0.5)} style={{ backgroundColor: Colors.GRAY }}>Z1</button>
+            <button className="btn btn-square" onClick={() => addBar(Zones.Z2.min)} style={{ backgroundColor: Colors.BLUE }}>Z2</button>
+            <button className="btn btn-square" onClick={() => addBar(Zones.Z3.min)} style={{ backgroundColor: Colors.GREEN }}>Z3</button>
+            <button className="btn btn-square" onClick={() => addBar(Zones.Z4.min)} style={{ backgroundColor: Colors.YELLOW }}>Z4</button>
+            <button className="btn btn-square" onClick={() => addBar(Zones.Z5.min)} style={{ backgroundColor: Colors.ORANGE }}>Z5</button>
+            <button className="btn btn-square" onClick={() => addBar(Zones.Z6.min)} style={{ backgroundColor: Colors.RED }}>Z6</button>
+          </div>
+          :
+          <button className="btn" onClick={() => addBar(1, 300, 0, 0)} style={{ backgroundColor: Colors.WHITE }}><SteadyLogo className="btn-icon" /> Steady Pace</button>
+        }
         <button className="btn" onClick={() => addTrapeze(0.25, 0.75)} style={{ backgroundColor: Colors.WHITE }}><WarmupLogo className="btn-icon" /> Warm up</button>
         <button className="btn" onClick={() => addTrapeze(0.75, 0.25)} style={{ backgroundColor: Colors.WHITE }}><WarmdownLogo className="btn-icon" /> Cool down</button>
         <button className="btn" onClick={() => addInterval()} style={{ backgroundColor: Colors.WHITE }}><IntervalLogo className="btn-icon" /> Interval</button>
-        <button className="btn" onClick={() => addFreeRide()} style={{ backgroundColor: Colors.WHITE }}><FontAwesomeIcon icon={faBicycle} size="lg" fixedWidth /> Free Ride</button>        
+        {sportType === "bike" &&
+          <button className="btn" onClick={() => addFreeRide()} style={{ backgroundColor: Colors.WHITE }}><FontAwesomeIcon icon={faBicycle} size="lg" fixedWidth /> Free Ride</button>
+        }
         <button className="btn" onClick={() => addInstruction()} style={{ backgroundColor: Colors.WHITE }}><FontAwesomeIcon icon={faComment} size="lg" fixedWidth /> Text Event</button>
 
-        <div className="form-input">
-          <label htmlFor="ftp">FTP (W)</label>
-          <input className="textInput" type="number" name="ftp" value={ftp} onChange={(e) => setFtp(parseInt(e.target.value))} />
-        </div>
+        {sportType === "bike" &&
+          <div className="form-input">
+            <label htmlFor="ftp">FTP (W)</label>
+            <input className="textInput" type="number" name="ftp" value={ftp} onChange={(e) => setFtp(parseInt(e.target.value))} />
+          </div>
+        }
 
-        <div className="form-input">
-          <label htmlFor="weight">Body Weight (Kg)</label>
-          <input className="textInput" type="number" name="weight" value={weight} onChange={(e) => setWeight(parseInt(e.target.value))} />
-        </div>        
+        {sportType === "bike" &&
+          <div className="form-input">
+            <label htmlFor="weight">Body Weight (Kg)</label>
+            <input className="textInput" type="number" name="weight" value={weight} onChange={(e) => setWeight(parseInt(e.target.value))} />
+          </div>
+        }
+
         <button className="btn" onClick={() => { if (window.confirm('Are you sure you want to create a new workout?')) newWorkout() }}><FontAwesomeIcon icon={faFile} size="lg" fixedWidth /> New</button>
         <button className="btn" onClick={() => saveWorkout()}><FontAwesomeIcon icon={faSave} size="lg" fixedWidth /> Save</button>
         <button className="btn" onClick={() => { if (window.confirm('Are you sure you want to delete this workout?')) deleteWorkout() }}><FontAwesomeIcon icon={faTrash} size="lg" fixedWidth /> Delete</button>
