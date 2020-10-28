@@ -5,7 +5,6 @@ import { Resizable } from 're-resizable'
 import moment from 'moment'
 import 'moment-duration-format'
 import Label from '../Label/Label'
-import { processors } from 'xml2js'
 
 interface IDictionary {
   [index: string]: number;
