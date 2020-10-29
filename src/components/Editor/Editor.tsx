@@ -31,6 +31,7 @@ import { stringType } from 'aws-sdk/clients/iam'
 interface Bar {
   id: string,
   time: number,
+  length?: number, 
   type: string,
   power?: number,
   startPower?: number,
@@ -281,11 +282,12 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
 
   }
 
-  function addBar(zone: number, duration: number = 300, cadence: number = 0, pace: number = 0) {
+  function addBar(zone: number, duration: number = 300, cadence: number = 0, pace: number = 0, length: number = 200) {
     setBars(bars => [...bars, {
       time: duration,
+      length: length,
       power: zone,
-      cadence: cadence,
+      cadence: cadence,      
       type: 'bar',
       id: uuidv4(),
       pace: pace
@@ -521,7 +523,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
 
       if (bar.type === 'bar') {
         segment = Builder.create('SteadyState')
-          .att('Duration', bar.time)
+          .att('Duration', sportType === 'bike' ? bar.time : bar.length)
           .att('Power', bar.power)
           .att('pace', bar.pace)
 
@@ -789,6 +791,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
       key={bar.id}
       id={bar.id}
       time={bar.time}
+      length={bar.length || 200}
       power={bar.power || 100}
       cadence={bar.cadence}
       ftp={ftp}
@@ -1010,12 +1013,14 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
         <div className="workout">
           <div className="form-input">
             <label>Workout Time</label>
-            <input className="textInput" value={helpers.getWorkoutLength(bars)} disabled />
+            <input className="textInput" value={helpers.getWorkoutLength(bars, sportType)} disabled />
           </div>
-          <div className="form-input">
-            <label>Workout Distance</label>
-            <input className="textInput" value={helpers.getWorkoutDistance(bars, oneMileTime, fiveKmTime, tenKmTime, halfMarathonTime, marathonTime)} disabled />
-          </div>
+          {sportType === 'run' &&
+            <div className="form-input">
+              <label>Workout Distance</label>
+              <input className="textInput" value={helpers.getWorkoutDistance(bars)} disabled />
+            </div>
+          }
           <div className="form-input">
             <label>TSS</label>
             <input className="textInput" value={helpers.getStressScore(bars, ftp)} disabled />
@@ -1107,18 +1112,39 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
             }
           })}
         </div>
-        <div className='timeline'>
-          <span>0:00</span>
-          <span>0:10</span>
-          <span>0:20</span>
-          <span>0:30</span>
-          <span>0:40</span>
-          <span>0:50</span>
-          <span>1:00</span>
-          <span>1:10</span>
-          <span>1:20</span>
-          <span>1:30</span>
+        {sportType === 'bike' ?
+          <div className='timeline'>
+            <span>0:00</span>
+            <span>0:10</span>
+            <span>0:20</span>
+            <span>0:30</span>
+            <span>0:40</span>
+            <span>0:50</span>
+            <span>1:00</span>
+            <span>1:10</span>
+            <span>1:20</span>
+            <span>1:30</span>
+          </div>
+        :
+        <div className='timeline run'>
+          <span>0</span>
+          <span>1K</span>
+          <span>2K</span>
+          <span>3K</span>
+          <span>4K</span>
+          <span>5K</span>
+          <span>6K</span>
+          <span>7K</span>
+          <span>8K</span>
+          <span>9K</span>
+          <span>10K</span>
+          <span>11K</span>
+          <span>12K</span>
+          <span>13K</span>
+          <span>14K</span>
+          <span>15K</span>
         </div>
+        }
         <div className='zones'>
           <div style={{ height: 250 * Zones.Z6.max }}>Z6</div>
           <div style={{ height: 250 * Zones.Z5.max }}>Z5</div>
@@ -1137,13 +1163,13 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
             <button className="btn btn-square" onClick={() => addBar(Zones.Z4.min)} style={{ backgroundColor: Colors.YELLOW }}>Z4</button>
             <button className="btn btn-square" onClick={() => addBar(Zones.Z5.min)} style={{ backgroundColor: Colors.ORANGE }}>Z5</button>
             <button className="btn btn-square" onClick={() => addBar(Zones.Z6.min)} style={{ backgroundColor: Colors.RED }}>Z6</button>
+            <button className="btn" onClick={() => addTrapeze(0.25, 0.75)} style={{ backgroundColor: Colors.WHITE }}><WarmupLogo className="btn-icon" /> Warm up</button>
+            <button className="btn" onClick={() => addTrapeze(0.75, 0.25)} style={{ backgroundColor: Colors.WHITE }}><WarmdownLogo className="btn-icon" /> Cool down</button>
+            <button className="btn" onClick={() => addInterval()} style={{ backgroundColor: Colors.WHITE }}><IntervalLogo className="btn-icon" /> Interval</button>        
           </div>
           :
           <button className="btn" onClick={() => addBar(1, 300, 0, 0)} style={{ backgroundColor: Colors.WHITE }}><SteadyLogo className="btn-icon" /> Steady Pace</button>
         }
-        <button className="btn" onClick={() => addTrapeze(0.25, 0.75)} style={{ backgroundColor: Colors.WHITE }}><WarmupLogo className="btn-icon" /> Warm up</button>
-        <button className="btn" onClick={() => addTrapeze(0.75, 0.25)} style={{ backgroundColor: Colors.WHITE }}><WarmdownLogo className="btn-icon" /> Cool down</button>
-        <button className="btn" onClick={() => addInterval()} style={{ backgroundColor: Colors.WHITE }}><IntervalLogo className="btn-icon" /> Interval</button>
         {sportType === "bike" &&
           <button className="btn" onClick={() => addFreeRide()} style={{ backgroundColor: Colors.WHITE }}><FontAwesomeIcon icon={faBicycle} size="lg" fixedWidth /> Free Ride</button>
         }

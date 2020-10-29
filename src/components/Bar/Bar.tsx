@@ -2,47 +2,64 @@ import React, { useState, useEffect } from 'react'
 import './Bar.css'
 import { Colors, Zones } from '../Constants'
 import { Resizable } from 're-resizable'
-import moment from 'moment'
-import 'moment-duration-format'
 import Label from '../Label/Label'
+import helpers from '../helpers'
 
-function round5(x: number)
-{
-  return Math.ceil(x/5)*5;
-}
 
-const Bar = (props: { id: string, time: number, power: number, cadence: number, ftp: number, weight: number, pace: number, sportType: string, speed?: number, onChange: Function, onClick: Function, selected: boolean, showLabel: boolean }) => {
+
+const Bar = (props: { id: string, time?: number, length?:number, power: number, cadence: number, ftp: number, weight: number, pace: number, sportType: string, speed?: number, onChange: Function, onClick: Function, selected: boolean, showLabel: boolean }) => {
 
   const multiplier = 250
   const timeMultiplier = 3
+  const lengthMultiplier = 10
 
   const powerLabel = Math.round(props.power * props.ftp)
-  const durationLabel = getDuration(props.time)
+  
+  // TIME
+  const duration = props.sportType === 'bike' ? helpers.formatDuration(props.time) : helpers.formatDuration(helpers.calculateTime(props.length, props.speed) * 1 / props.power)
+  
+  // USED ONLY ON RUN WORKOUT
+  const distance = props.length
+
+
+
+
   const style = zwiftStyle(props.power)
 
-  const [width, setWidth] = useState(props.time / timeMultiplier)
+  // RUN WORKOUTS ON DISTANCE - BIKE WORKOUTS ON TIME
+  const [width, setWidth] = useState(props.sportType === 'bike' ? ((props.time || 0) / timeMultiplier) : ((props.length || 0) / lengthMultiplier))  
+  
+
+
   const [height, setHeight] = useState(props.power * multiplier)  
 
   const [showLabel, setShowLabel] = useState(false)
 
   const [selected, setSelected] = useState(props.selected)
+  
   useEffect(()=>{
     setSelected(props.selected)    
   },[props.selected])
 
+
   const handleResizeStop = (dWidth: number, dHeight: number) => {
     setWidth(width + dWidth)
     setHeight(height + dHeight)
-    props.onChange(props.id, { time: round5((width + dWidth) * timeMultiplier), power: (height + dHeight) / multiplier, cadence: props.cadence, type: 'bar', pace: props.pace, id: props.id })
+
+    const length = props.sportType === 'bike' ? 0 : helpers.round((width + dWidth) * lengthMultiplier, 200)
+    const time = props.sportType === 'bike' ? helpers.round((width + dWidth) * timeMultiplier, 5) : helpers.calculateTime(props.length, props.speed)
+
+
+    props.onChange(props.id, { time: time, length: length, power: (height + dHeight) / multiplier, cadence: props.cadence, type: 'bar', pace: props.pace, id: props.id })
   }
 
-  const handleResize = (dWidth: number, dHeight: number) => {        
-    props.onChange(props.id, { time: round5((width + dWidth) * timeMultiplier), power: (height + dHeight) / multiplier, cadence: props.cadence, type: 'bar', pace: props.pace, id: props.id })
-  }
+  const handleResize = (dWidth: number, dHeight: number) => {       
+    
+      
+    const length = props.sportType === 'bike' ? 0 : helpers.round((width + dWidth) * lengthMultiplier, 200)
+    const time = props.sportType === 'bike' ? helpers.round((width + dWidth) * timeMultiplier, 5) : helpers.calculateTime(props.length, props.speed)
 
-  function getDuration(seconds: number) {
-    // 1 pixel equals 5 seconds 
-    return moment.duration(seconds, "seconds").format("mm:ss", { trim: false })
+    props.onChange(props.id, { time: time, length: length, power: (height + dHeight) / multiplier, cadence: props.cadence, type: 'bar', pace: props.pace, id: props.id })
   }
 
   function zwiftStyle(zone: number) {
@@ -76,12 +93,12 @@ const Bar = (props: { id: string, time: number, power: number, cadence: number, 
       style={props.selected ? { zIndex: 10 } : {}}
     >
       {((selected || showLabel) && (props.showLabel)) &&
-        <Label sportType={props.sportType} duration={durationLabel} power={powerLabel} weight={props.weight} ftp={props.ftp} pace={props.pace} distance={props.time * (props.speed || 0) * props.power} />
+        <Label sportType={props.sportType} duration={duration} power={powerLabel} weight={props.weight} ftp={props.ftp} pace={props.pace} distance={distance} />
       }
       <Resizable
         className='bar'
         size={{
-          width: props.time / timeMultiplier,
+          width: props.sportType === 'bike' ? (props.time || 0) / timeMultiplier : (props.length || 0) / lengthMultiplier,
           height: props.power * multiplier,
         }}
         minWidth={3}

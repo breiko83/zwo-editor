@@ -187,7 +187,10 @@ label {
   width: 200px;
   margin-top: 20px;
   padding: 0;
-  
+}
+
+.timeline.run > span {  
+  width: 100px;
 }
 
 .timeline > span::before{
