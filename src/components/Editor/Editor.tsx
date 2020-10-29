@@ -295,9 +295,10 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
     ])
   }
 
-  function addTrapeze(zone1: number, zone2: number, duration: number = 300, pace: number = 0) {
+  function addTrapeze(zone1: number, zone2: number, duration: number = 300, pace: number = 0, length: number = 1000) {
     setBars(bars => [...bars, {
       time: duration,
+      length: length,
       startPower: zone1,
       endPower: zone2,
       cadence: 0,
@@ -821,6 +822,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
       key={bar.id}
       id={bar.id}
       time={bar.time}
+      length={bar.length || 200}
       startPower={bar.startPower || 80}
       endPower={bar.endPower || 160}
       ftp={ftp}
@@ -1173,8 +1175,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
             <button className="btn btn-square" onClick={() => addBar(Zones.Z4.min)} style={{ backgroundColor: Colors.YELLOW }}>Z4</button>
             <button className="btn btn-square" onClick={() => addBar(Zones.Z5.min)} style={{ backgroundColor: Colors.ORANGE }}>Z5</button>
             <button className="btn btn-square" onClick={() => addBar(Zones.Z6.min)} style={{ backgroundColor: Colors.RED }}>Z6</button>
-            <button className="btn" onClick={() => addTrapeze(0.25, 0.75)} style={{ backgroundColor: Colors.WHITE }}><WarmupLogo className="btn-icon" /> Warm up</button>
-            <button className="btn" onClick={() => addTrapeze(0.75, 0.25)} style={{ backgroundColor: Colors.WHITE }}><WarmdownLogo className="btn-icon" /> Cool down</button>
+            
             <button className="btn" onClick={() => addInterval()} style={{ backgroundColor: Colors.WHITE }}><IntervalLogo className="btn-icon" /> Interval</button>        
           </div>
           :
@@ -1183,8 +1184,10 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
         {sportType === "bike" &&
           <button className="btn" onClick={() => addFreeRide()} style={{ backgroundColor: Colors.WHITE }}><FontAwesomeIcon icon={faBicycle} size="lg" fixedWidth /> Free Ride</button>
         }
+        
+        <button className="btn" onClick={() => addTrapeze(0.25, 0.75)} style={{ backgroundColor: Colors.WHITE }}><WarmupLogo className="btn-icon" /> Warm up</button>
+        <button className="btn" onClick={() => addTrapeze(0.75, 0.25)} style={{ backgroundColor: Colors.WHITE }}><WarmdownLogo className="btn-icon" /> Cool down</button>
         <button className="btn" onClick={() => addInstruction()} style={{ backgroundColor: Colors.WHITE }}><FontAwesomeIcon icon={faComment} size="lg" fixedWidth /> Text Event</button>
-
         {sportType === "bike" &&
           <div className="form-input">
             <label htmlFor="ftp">FTP (W)</label>

@@ -2,32 +2,31 @@ import React, { useState } from 'react'
 import './Trapeze.css'
 import { Colors, Zones, ZonesArray } from '../Constants'
 import { Resizable } from 're-resizable'
-import moment from 'moment'
-import 'moment-duration-format'
 import Label from '../Label/Label'
+import helpers from '../helpers'
 
 interface IDictionary {
   [index: string]: number;
 }
 
-function round5(x: number)
-{
-  return Math.ceil(x/5)*5;
-}
-
-const Trapeze = (props: { id: string, time: number, startPower: number, endPower: number, ftp: number, pace: number, sportType: string, speed?: number, onChange: Function, onClick: Function, selected: boolean }) => {
+const Trapeze = (props: { id: string, time?: number, length?:number, startPower: number, endPower: number, ftp: number, pace: number, sportType: string, speed?: number, onChange: Function, onClick: Function, selected: boolean }) => {
 
   const multiplier = 250
   const timeMultiplier = 3
+  const lengthMultiplier = 10
 
   const powerLabelStart = Math.round(props.startPower * props.ftp)
   const powerLabelEnd = Math.round(props.endPower * props.ftp)
-  const durationLabel = getDuration(props.time / timeMultiplier)
-  const [showLabel, setShowLabel] = useState(false)
 
   const avgPower = Math.abs((props.endPower + props.startPower) / 2)
 
-  const [width, setWidth] = useState(Math.round(props.time / timeMultiplier / 3 ))
+  const durationLabel = props.sportType === 'bike' ? helpers.formatDuration((props.time || 0) / timeMultiplier) : helpers.formatDuration(helpers.calculateTime(props.length, props.speed) * 1 / avgPower)
+
+  const [showLabel, setShowLabel] = useState(false)
+
+  
+  // RUN WORKOUTS ON DISTANCE - BIKE WORKOUTS ON TIME
+  const [width, setWidth] = useState(props.sportType === 'bike' ? Math.round((props.time || 0) / timeMultiplier / 3 ) : ((props.length || 0) / lengthMultiplier / 3))
 
   const [height1, setHeight1] = useState(props.startPower * multiplier)
   const [height2, setHeight2] = useState(((props.endPower + props.startPower) * multiplier) / 2)
@@ -59,14 +58,28 @@ const Trapeze = (props: { id: string, time: number, startPower: number, endPower
   }
 
   const handleResize1 = (dHeight: number) => {
-    props.onChange(props.id, { time: round5(width * timeMultiplier * 3), startPower: (height1 + dHeight) / multiplier, endPower: height3 / multiplier, type: 'trapeze', pace: props.pace, id: props.id })
+
+    
+    const time = props.sportType === 'bike' ? helpers.round(width * timeMultiplier * 3, 5) : helpers.calculateTime(props.length, props.speed)
+
+    props.onChange(props.id, { time: time, length: props.length, startPower: (height1 + dHeight) / multiplier, endPower: height3 / multiplier, type: 'trapeze', pace: props.pace, id: props.id })
   }
   const handleResize2 = (dHeight: number) => {    
-    props.onChange(props.id, { time: round5(width * timeMultiplier * 3), startPower: (height1 + dHeight) / multiplier, endPower: (height3 + dHeight) / multiplier, type: 'trapeze', pace: props.pace, id: props.id })
+
+    
+    const time = props.sportType === 'bike' ? helpers.round(width * timeMultiplier * 3, 5) : helpers.calculateTime(props.length, props.speed)
+
+    props.onChange(props.id, { time: time, length: props.length, startPower: (height1 + dHeight) / multiplier, endPower: (height3 + dHeight) / multiplier, type: 'trapeze', pace: props.pace, id: props.id })
   }
   const handleResize3 = (dWidth: number, dHeight: number) => {    
     const newWidth = width + (dWidth / 3)    
-    props.onChange(props.id, { time: round5(newWidth * timeMultiplier * 3), startPower: height1 / multiplier, endPower: (height3 + dHeight) / multiplier, type: 'trapeze', pace: props.pace, id: props.id })
+
+
+    const length = props.sportType === 'bike' ? 0 : helpers.round(newWidth * lengthMultiplier * 3, 200)
+    const time = props.sportType === 'bike' ? helpers.round(newWidth * timeMultiplier * 3, 5) : helpers.calculateTime(props.length, props.speed)
+
+
+    props.onChange(props.id, { time: time, length: length, startPower: height1 / multiplier, endPower: (height3 + dHeight) / multiplier, type: 'trapeze', pace: props.pace, id: props.id })
   }
 
   function calculateColors(start: number, end: number) {
@@ -87,11 +100,6 @@ const Trapeze = (props: { id: string, time: number, startPower: number, endPower
       }
     })
     return bars
-  }
-
-  function getDuration(seconds: number) {
-    // 1 pixel equals 3 seconds 
-    return moment.duration(seconds * timeMultiplier, "seconds").format("mm:ss", { trim: false })
   }
 
   function zwiftStyle(zone: number) {
@@ -125,7 +133,7 @@ const Trapeze = (props: { id: string, time: number, startPower: number, endPower
       onClick={() => props.onClick(props.id)}
     >
       {showLabel &&
-        <Label duration={durationLabel} powerStart={powerLabelStart} powerEnd={powerLabelEnd} ftp={props.ftp} sportType={props.sportType} pace={props.pace} distance={props.time * (props.speed || 0) * avgPower} />
+        <Label duration={durationLabel} powerStart={powerLabelStart} powerEnd={powerLabelEnd} ftp={props.ftp} sportType={props.sportType} pace={props.pace} distance={props.length} />
       }
       <div className='trapeze' onClick={() => props.onClick(props.id)}>
         <Resizable
