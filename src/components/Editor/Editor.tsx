@@ -369,10 +369,15 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
 
     const index = updatedArray.findIndex(bar => bar.id === id)
     const element = updatedArray[index]
-    if (element) {
+    if (element && sportType === 'bike') {
       element.time = element.time + 5
       setBars(updatedArray)
     }
+
+    if (element && sportType === 'run') {    
+      element.length = (element.length || 0) + 200      
+      setBars(updatedArray)
+    }  
   }
 
   function removeTimeToBar(id: string) {
@@ -380,10 +385,15 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
 
     const index = updatedArray.findIndex(bar => bar.id === id)
     const element = updatedArray[index]
-    if (element && element.time > 5) {
-      element.time = element.time - 5
+    if (element && element.time > 5 && sportType === 'bike') {
+      element.time = element.time - 5      
       setBars(updatedArray)
     }
+
+    if (element && (element.length || 0) > 200 && sportType === 'run') {    
+      element.length = (element.length || 0) - 200      
+      setBars(updatedArray)
+    }    
   }
 
   function addPowerToBar(id: string) {
@@ -1071,12 +1081,12 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
             <button onClick={() => removeBar(actionId)} title='Delete'><FontAwesomeIcon icon={faTrash} size="lg" fixedWidth /></button>
             <button onClick={() => duplicateBar(actionId)} title='Duplicate'><FontAwesomeIcon icon={faCopy} size="lg" fixedWidth /></button>
             {sportType === "bike" ?
-              <div>
+              <>
                 <button onClick={() => setShowCadenceInput(!showCadenceInput)} title='Cadence'><FontAwesomeIcon icon={faClock} size="lg" fixedWidth /></button>
                 {(showCadenceInput || cadence !== 0) &&
                   <input className="textInput" type="number" min="40" max="150" name="cadence" value={cadence} onChange={(e) => saveCadence(actionId, parseInt(e.target.value))} />
                 }
-              </div>
+              </>
               :
               <select name="pace" value={getPace(actionId)} onChange={(e) => setPace(e.target?.value, actionId)} className="selectInput">
                 <option value="0">1 Mile Pace</option>
