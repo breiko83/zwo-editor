@@ -555,14 +555,14 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
         if (bar.startPower < bar.endPower) {
           // warmup
           segment = Builder.create(ramp)
-            .att('Duration', bar.time)
+            .att('Duration', sportType === 'bike' ? bar.time : bar.length)
             .att('PowerLow', bar.startPower)
             .att('PowerHigh', bar.endPower)
             .att('pace', bar.pace) // is this cadence?
         } else {
           // cooldown
           segment = Builder.create(ramp)
-            .att('Duration', bar.time)
+            .att('Duration', sportType === 'bike' ? bar.time : bar.length)
             .att('PowerLow', bar.startPower) // these 2 values are inverted
             .att('PowerHigh', bar.endPower) // looks like a bug on zwift editor            
             .att('pace', bar.pace) // is this cadence?
