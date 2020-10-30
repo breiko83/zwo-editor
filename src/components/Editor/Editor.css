@@ -279,9 +279,10 @@ label {
   flex-direction: row;
 }
 
-.info > .description {
-  flex: 1;  
-  padding: 20px;  
+
+
+.info > .title {
+  flex: 1;
 }
 
 .info > .title > h1 {
