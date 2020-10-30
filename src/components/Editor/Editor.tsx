@@ -325,7 +325,8 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
   function addInterval(repeat: number = 3, onDuration: number = 30, offDuration: number = 120, onPower: number = 1, offPower: number = 0.5, cadence: number = 0, pace: number = 0, onLength: number = 200, offLength: number = 200) {
 
     setBars(bars => [...bars, {
-      time: onDuration + offDuration,
+      time: (onDuration + offDuration) * repeat,
+      length: (onLength + offLength) * repeat,
       id: uuidv4(),
       type: 'interval',
       cadence: cadence,
@@ -432,6 +433,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
     if (element.type === 'bar') addBar(element.power || 80, element.time, element.cadence, element.pace || 0)
     if (element.type === 'freeRide') addFreeRide(element.time)
     if (element.type === 'trapeze') addTrapeze(element.startPower || 80, element.endPower || 160, element.time, element.pace || 0)
+    if (element.type === 'interval') addInterval(element.repeat, element.onDuration, element.offDuration, element.onPower, element.offPower, element.cadence, element.pace, element.onLength, element.offLength)
 
     setActionId(undefined)
   }
