@@ -3,21 +3,25 @@ import Draggable from 'react-draggable'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faComment, faTrashAlt } from '@fortawesome/free-solid-svg-icons'
 import './Comment.css'
-import moment from 'moment'
-import 'moment-duration-format'
+import helpers from '../helpers'
 
 interface Instruction {
   id: string,
   text: string,
-  time: number
+  time: number,
+  length: number
 }
 
-const Comment = (props: { instruction: Instruction, onChange: Function, onDelete: Function }) => {
+const Comment = (props: { instruction: Instruction, sportType: string, onChange: Function, onDelete: Function }) => {
 
   const timeMultiplier = 3
+  const lengthMultiplier = 10
 
   const [text, setText] = useState(props.instruction.text)
   const [time, setTime] = useState(props.instruction.time / timeMultiplier)
+
+  // FOR RUN WORKOUTS
+  const [length, setLength] = useState(props.instruction.length / lengthMultiplier)
 
   const [showInput, setShowInput] = useState(false)
 
@@ -27,13 +31,15 @@ const Comment = (props: { instruction: Instruction, onChange: Function, onDelete
       {
         id: props.instruction.id,
         text: text,
-        time: position * timeMultiplier
+        time: position * timeMultiplier,
+        length: position * lengthMultiplier
       })
   }
 
   function handleDragging(position: number) { 
     setShowInput(true)  
     setTime(position)
+    setLength(position)
   }
 
   function handleInputChange(value: string) {
@@ -45,7 +51,8 @@ const Comment = (props: { instruction: Instruction, onChange: Function, onDelete
       {
         id: props.instruction.id,
         text: value,
-        time: time * timeMultiplier
+        time: time * timeMultiplier,
+        length: length * lengthMultiplier
       })
   }
 
@@ -72,7 +79,11 @@ const Comment = (props: { instruction: Instruction, onChange: Function, onDelete
         {showInput &&
         <div className="edit">
           <FontAwesomeIcon icon={faTrashAlt} fixedWidth className="delete" style={{ color: 'gray' }} onClick={() => handleDelete()} />
-          <span style={{fontSize:'13px'}} data-testid='time'>{moment.duration(time * timeMultiplier, "seconds").format("mm:ss", { trim: false })}</span>                  
+          {props.sportType === 'bike' ?
+            <span style={{fontSize:'13px'}} data-testid='time'>{helpers.formatDuration(time * timeMultiplier)}</span>                  
+          :
+            <span style={{fontSize:'13px'}} data-testid='time'>{length * lengthMultiplier} m</span>                  
+          }
           
           <textarea name="comment" value={text} style={{display:'block', padding:'5px', width:'250px',backgroundColor:'white'}} onChange={e => handleInputChange(e.target.value)} />        
         </div>

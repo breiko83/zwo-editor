@@ -17,6 +17,13 @@ const helpers = {
         if (bar.type === 'trapeze') {
           length += bar.time * 1 / ((bar.startPower + bar.endPower) / 2)
         }
+
+        if (bar.type === 'interval') {
+
+          length += bar.repeat * bar.onDuration * 1 / bar.onPower
+          length += bar.repeat * bar.offDuration * 1 / bar.offPower          
+  
+        }
       }
       return false;
     })

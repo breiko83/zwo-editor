@@ -42,13 +42,16 @@ interface Bar {
   onDuration?: number,
   offDuration?: number,
   repeat?: number,
-  pace?: number
+  pace?: number,
+  onLength?: number,
+  offLength?: number
 }
 
 interface Instruction {
   id: string,
   text: string,
-  time: number
+  time: number,
+  length: number
 }
 
 interface Message {
@@ -319,7 +322,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
     ])
   }
 
-  function addInterval(repeat: number = 3, onDuration: number = 30, offDuration: number = 120, onPower: number = 1, offPower: number = 0.5, cadence: number = 0, pace: number = 0) {
+  function addInterval(repeat: number = 3, onDuration: number = 30, offDuration: number = 120, onPower: number = 1, offPower: number = 0.5, cadence: number = 0, pace: number = 0, onLength: number = 200, offLength: number = 200) {
 
     setBars(bars => [...bars, {
       time: onDuration + offDuration,
@@ -331,15 +334,18 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
       offDuration: offDuration,
       onPower: onPower,
       offPower: offPower,
-      pace: pace
+      pace: pace,
+      onLength: onLength,
+      offLength: offLength
     }
     ])
   }
 
-  function addInstruction(text = '', time = 0) {
+  function addInstruction(text = '', time = 0, length = 0) {
     setInstructions(instructions => [...instructions, {
       text: text,
       time: time,
+      length: length,
       id: uuidv4()
     }])
   }
@@ -507,6 +513,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
     setMessage({ visible: true, class: 'loading', text: 'Saving..' })
 
     var totalTime = 0
+    var totalLength = 0
 
     let xml = Builder.begin()
       .ele('workout_file')
@@ -571,8 +578,8 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
         // <IntervalsT Repeat="5" OnDuration="60" OffDuration="300" OnPower="0.8844353" OffPower="0.51775455" pace="0"/>
         segment = Builder.create('IntervalsT')
           .att('Repeat', bar.repeat)
-          .att('OnDuration', bar.onDuration)
-          .att('OffDuration', bar.offDuration)
+          .att('OnDuration', sportType === 'bike' ? bar.onDuration : bar.onLength)
+          .att('OffDuration', sportType === 'bike' ? bar.offDuration : bar.offLength)
           .att('OnPower', bar.onPower)
           .att('OffPower', bar.offPower)
           .att('pace', bar.pace)
@@ -584,13 +591,21 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
       }
 
       // add instructions if present
-      instructions.filter((instruction) => (instruction.time > totalTime && instruction.time <= (totalTime + bar.time))).map((i) => {
-        return segment.ele('textevent', { timeoffset: (i.time - totalTime), message: i.text })
-      })
+      if (sportType === 'bike'){
+        instructions.filter((instruction) => (instruction.time > totalTime && instruction.time <= (totalTime + bar.time))).map((i) => {
+          return segment.ele('textevent', { timeoffset: (i.time - totalTime), message: i.text })
+        })  
+      }else{
+        instructions.filter((instruction) => (instruction.length > totalLength && instruction.length <= (totalLength + (bar.length || 0)))).map((i) => {
+          return segment.ele('textevent', { timeoffset: (i.length - totalLength), message: i.text })
+        })
+      }
+      
 
       xml.importDocument(segment)
 
       totalTime = totalTime + bar.time
+      totalLength = totalLength + (bar.length || 0)
 
       return false
     })
@@ -855,7 +870,9 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
       onDuration={bar.onDuration || 10}
       offDuration={bar.offDuration || 50}
       onPower={bar.onPower || 250}
-      offPower={bar.offPower || 120}      
+      offPower={bar.offPower || 120} 
+      onLength={bar.onLength || 200}
+      offLength={bar.offLength || 200}     
       ftp={ftp}
       weight={weight}
       sportType={sportType}
@@ -871,6 +888,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
     <Comment
       key={instruction.id}
       instruction={instruction}
+      sportType={sportType}
       onChange={(id: string, values: Instruction) => changeInstruction(id, values)}
       onDelete={(id: string) => deleteInstruction(id)} />
   )
@@ -1174,9 +1192,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
             <button className="btn btn-square" onClick={() => addBar(Zones.Z3.min)} style={{ backgroundColor: Colors.GREEN }}>Z3</button>
             <button className="btn btn-square" onClick={() => addBar(Zones.Z4.min)} style={{ backgroundColor: Colors.YELLOW }}>Z4</button>
             <button className="btn btn-square" onClick={() => addBar(Zones.Z5.min)} style={{ backgroundColor: Colors.ORANGE }}>Z5</button>
-            <button className="btn btn-square" onClick={() => addBar(Zones.Z6.min)} style={{ backgroundColor: Colors.RED }}>Z6</button>
-            
-            <button className="btn" onClick={() => addInterval()} style={{ backgroundColor: Colors.WHITE }}><IntervalLogo className="btn-icon" /> Interval</button>        
+            <button className="btn btn-square" onClick={() => addBar(Zones.Z6.min)} style={{ backgroundColor: Colors.RED }}>Z6</button>                        
           </div>
           :
           <button className="btn" onClick={() => addBar(1, 300, 0, 0)} style={{ backgroundColor: Colors.WHITE }}><SteadyLogo className="btn-icon" /> Steady Pace</button>
@@ -1187,6 +1203,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
         
         <button className="btn" onClick={() => addTrapeze(0.25, 0.75)} style={{ backgroundColor: Colors.WHITE }}><WarmupLogo className="btn-icon" /> Warm up</button>
         <button className="btn" onClick={() => addTrapeze(0.75, 0.25)} style={{ backgroundColor: Colors.WHITE }}><WarmdownLogo className="btn-icon" /> Cool down</button>
+        <button className="btn" onClick={() => addInterval()} style={{ backgroundColor: Colors.WHITE }}><IntervalLogo className="btn-icon" /> Interval</button>        
         <button className="btn" onClick={() => addInstruction()} style={{ backgroundColor: Colors.WHITE }}><FontAwesomeIcon icon={faComment} size="lg" fixedWidth /> Text Event</button>
         {sportType === "bike" &&
           <div className="form-input">
