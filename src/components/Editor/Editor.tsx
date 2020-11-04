@@ -293,8 +293,8 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
 
   function addBar(zone: number, duration: number = 300, cadence: number = 0, pace: number = 0, length: number = 200) {
     setBars(bars => [...bars, {
-      time: duration,
-      length: length,
+      time: durationType === 'time' ? duration : helpers.round(helpers.calculateTime(length, calculateSpeed(pace)),1),
+      length: durationType === 'time' ? helpers.round(helpers.calculateDistance(duration, calculateSpeed(pace)),1) : length,
       power: zone,
       cadence: cadence,      
       type: 'bar',
@@ -306,8 +306,8 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
 
   function addTrapeze(zone1: number, zone2: number, duration: number = 300, pace: number = 0, length: number = 1000) {
     setBars(bars => [...bars, {
-      time: duration,
-      length: length,
+      time: durationType === 'time' ? duration : helpers.round(helpers.calculateTime(length, calculateSpeed(pace)),1),
+      length: durationType === 'time' ? helpers.round(helpers.calculateDistance(duration, calculateSpeed(pace)),1) : length,
       startPower: zone1,
       endPower: zone2,
       cadence: 0,
@@ -331,19 +331,19 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
   function addInterval(repeat: number = 3, onDuration: number = 30, offDuration: number = 120, onPower: number = 1, offPower: number = 0.5, cadence: number = 0, pace: number = 0, onLength: number = 200, offLength: number = 200) {
 
     setBars(bars => [...bars, {
-      time: (onDuration + offDuration) * repeat,
-      length: (onLength + offLength) * repeat,
+      time: durationType === 'time' ? (onDuration + offDuration) * repeat : helpers.round(helpers.calculateTime((onLength + offLength) * repeat, calculateSpeed(pace)),1),
+      length: durationType === 'time' ? helpers.round(helpers.calculateDistance((onDuration + offDuration) * repeat, calculateSpeed(pace)),1) : (onLength + offLength) * repeat,
       id: uuidv4(),
       type: 'interval',
       cadence: cadence,
       repeat: repeat,
-      onDuration: onDuration,
-      offDuration: offDuration,
+      onDuration: durationType === 'time' ? onDuration : helpers.round(helpers.calculateTime(onLength * 1 / onPower, calculateSpeed(pace)),1),
+      offDuration: durationType === 'time' ? offDuration : helpers.round(helpers.calculateTime(offLength * 1 / offPower, calculateSpeed(pace)),1),
       onPower: onPower,
       offPower: offPower,
       pace: pace,
-      onLength: onLength,
-      offLength: offLength
+      onLength: durationType === 'time' ? helpers.round(helpers.calculateDistance(onDuration * 1 / onPower, calculateSpeed(pace)),1) : onLength,
+      offLength: durationType === 'time' ? helpers.round(helpers.calculateDistance(offDuration * 1 / offPower, calculateSpeed(pace)),1) : offLength,
     }
     ])
   }
@@ -836,6 +836,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
       ftp={ftp}
       weight={weight}
       sportType={sportType}
+      durationType={durationType}
       pace={bar.pace || 0}
       speed={calculateSpeed(bar.pace || 0)}
       onChange={(id: string, value: any) => handleOnChange(id, value)} // Change any to Interface Bar?
@@ -855,6 +856,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
       endPower={bar.endPower || 160}
       ftp={ftp}
       sportType={sportType}
+      durationType={durationType}
       pace={bar.pace || 0}
       speed={calculateSpeed(bar.pace || 0)}
       onChange={(id: string, value: any) => handleOnChange(id, value)} // Change any to Interface Bar?
@@ -889,6 +891,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
       ftp={ftp}
       weight={weight}
       sportType={sportType}
+      durationType={durationType}
       pace={bar.pace || 0}
       speed={calculateSpeed(bar.pace || 0)}
       handleIntervalChange={(id: string, value: any) => handleOnChange(id, value)}
@@ -901,7 +904,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
     <Comment
       key={instruction.id}
       instruction={instruction}
-      sportType={sportType}
+      durationType={durationType}
       onChange={(id: string, values: Instruction) => changeInstruction(id, values)}
       onDelete={(id: string) => deleteInstruction(id)} />
   )
@@ -1228,7 +1231,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
             <button className="btn btn-square" onClick={() => addBar(Zones.Z6.min)} style={{ backgroundColor: Colors.RED }}>Z6</button>                        
           </div>
           :
-          <button className="btn" onClick={() => addBar(1, 300, 0, 0)} style={{ backgroundColor: Colors.WHITE }}><SteadyLogo className="btn-icon" /> Steady Pace</button>
+          <button className="btn" onClick={() => addBar(1, 300, 0, 0, 1000)} style={{ backgroundColor: Colors.WHITE }}><SteadyLogo className="btn-icon" /> Steady Pace</button>
         }        
         
         <button className="btn" onClick={() => addTrapeze(0.25, 0.75)} style={{ backgroundColor: Colors.WHITE }}><WarmupLogo className="btn-icon" /> Warm up</button>

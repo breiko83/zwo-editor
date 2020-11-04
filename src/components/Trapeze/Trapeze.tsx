@@ -9,7 +9,7 @@ interface IDictionary {
   [index: string]: number;
 }
 
-const Trapeze = (props: { id: string, time?: number, length?:number, startPower: number, endPower: number, ftp: number, pace: number, sportType: string, speed?: number, onChange: Function, onClick: Function, selected: boolean }) => {
+const Trapeze = (props: { id: string, time?: number, length?:number, startPower: number, endPower: number, ftp: number, pace: number, sportType: string, durationType: string, speed?: number, onChange: Function, onClick: Function, selected: boolean }) => {
 
   const multiplier = 250
   const timeMultiplier = 3
@@ -20,13 +20,13 @@ const Trapeze = (props: { id: string, time?: number, length?:number, startPower:
 
   const avgPower = Math.abs((props.endPower + props.startPower) / 2)
 
-  const durationLabel = props.sportType === 'bike' ? helpers.formatDuration((props.time || 0) / timeMultiplier) : helpers.formatDuration(helpers.calculateTime(props.length, props.speed) * 1 / avgPower)
+  const durationLabel = helpers.formatDuration(props.time)
 
   const [showLabel, setShowLabel] = useState(false)
 
   
   // RUN WORKOUTS ON DISTANCE - BIKE WORKOUTS ON TIME
-  const [width, setWidth] = useState(props.sportType === 'bike' ? Math.round((props.time || 0) / timeMultiplier / 3 ) : ((props.length || 0) / lengthMultiplier / 3))
+  const [width, setWidth] = useState(props.durationType === 'time' ? Math.round((props.time || 0) / timeMultiplier / 3 ) : ((props.length || 0) / lengthMultiplier / 3))
 
   const [height1, setHeight1] = useState(props.startPower * multiplier)
   const [height2, setHeight2] = useState(((props.endPower + props.startPower) * multiplier) / 2)
@@ -58,25 +58,24 @@ const Trapeze = (props: { id: string, time?: number, length?:number, startPower:
   }
 
   const handleResize1 = (dHeight: number) => {
-
     
-    const time = props.sportType === 'bike' ? helpers.round(width * timeMultiplier * 3, 5) : helpers.calculateTime(props.length, props.speed)
+    const time = props.durationType === 'time' ? helpers.round(width * timeMultiplier * 3, 5) : helpers.round(helpers.calculateTime(props.length, props.speed) * 1 / avgPower, 1)
+    const length = props.durationType === 'time' ? helpers.round(helpers.calculateDistance(width * timeMultiplier, props.speed) * 1 / avgPower ,1) : helpers.round(width * lengthMultiplier * 3, 200)
 
-    props.onChange(props.id, { time: time, length: props.length, startPower: (height1 + dHeight) / multiplier, endPower: height3 / multiplier, type: 'trapeze', pace: props.pace, id: props.id })
+    props.onChange(props.id, { time: time, length: length, startPower: (height1 + dHeight) / multiplier, endPower: height3 / multiplier, type: 'trapeze', pace: props.pace, id: props.id })
   }
   const handleResize2 = (dHeight: number) => {    
-
     
-    const time = props.sportType === 'bike' ? helpers.round(width * timeMultiplier * 3, 5) : helpers.calculateTime(props.length, props.speed)
+    const time = props.durationType === 'time' ? helpers.round(width * timeMultiplier * 3, 5) : helpers.round(helpers.calculateTime(props.length, props.speed) * 1 / avgPower, 1)
+    const length = props.durationType === 'time' ? helpers.round(helpers.calculateDistance(width * timeMultiplier, props.speed) * 1 / avgPower ,1) : helpers.round(width * lengthMultiplier * 3, 200)
 
-    props.onChange(props.id, { time: time, length: props.length, startPower: (height1 + dHeight) / multiplier, endPower: (height3 + dHeight) / multiplier, type: 'trapeze', pace: props.pace, id: props.id })
+    props.onChange(props.id, { time: time, length: length, startPower: (height1 + dHeight) / multiplier, endPower: (height3 + dHeight) / multiplier, type: 'trapeze', pace: props.pace, id: props.id })
   }
   const handleResize3 = (dWidth: number, dHeight: number) => {    
     const newWidth = width + (dWidth / 3)    
 
-
-    const length = props.sportType === 'bike' ? 0 : helpers.round(newWidth * lengthMultiplier * 3, 200)
-    const time = props.sportType === 'bike' ? helpers.round(newWidth * timeMultiplier * 3, 5) : helpers.calculateTime(props.length, props.speed)
+    const length = props.durationType === 'time' ? helpers.round(helpers.calculateDistance(newWidth * timeMultiplier, props.speed) * 1 / avgPower ,1) : helpers.round(newWidth * lengthMultiplier * 3, 200)
+    const time = props.durationType === 'time' ? helpers.round(newWidth * timeMultiplier * 3, 5) : helpers.round(helpers.calculateTime(props.length, props.speed) * 1 / avgPower, 1)
 
 
     props.onChange(props.id, { time: time, length: length, startPower: height1 / multiplier, endPower: (height3 + dHeight) / multiplier, type: 'trapeze', pace: props.pace, id: props.id })

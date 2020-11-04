@@ -12,7 +12,7 @@ interface Instruction {
   length: number
 }
 
-const Comment = (props: { instruction: Instruction, sportType: string, onChange: Function, onDelete: Function }) => {
+const Comment = (props: { instruction: Instruction, durationType: string, onChange: Function, onDelete: Function }) => {
 
   const timeMultiplier = 3
   const lengthMultiplier = 10
@@ -79,7 +79,7 @@ const Comment = (props: { instruction: Instruction, sportType: string, onChange:
         {showInput &&
         <div className="edit">
           <FontAwesomeIcon icon={faTrashAlt} fixedWidth className="delete" style={{ color: 'gray' }} onClick={() => handleDelete()} />
-          {props.sportType === 'bike' ?
+          {props.durationType === 'time' ?
             <span style={{fontSize:'13px'}} data-testid='time'>{helpers.formatDuration(time * timeMultiplier)}</span>                  
           :
             <span style={{fontSize:'13px'}} data-testid='time'>{length * lengthMultiplier} m</span>                  

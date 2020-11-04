@@ -19,7 +19,7 @@ interface Bar {
   pace?: number
 }
 
-const Interval = (props: { id: string, repeat: number, onDuration?: number, offDuration?: number, onLength?: number, offLength?: number, onPower: number, offPower: number, ftp: number, weight: number, pace: number, speed?: number, sportType: string, handleIntervalChange: Function, handleIntervalClick: Function, selected: boolean }) => {
+const Interval = (props: { id: string, repeat: number, onDuration?: number, offDuration?: number, onLength?: number, offLength?: number, onPower: number, offPower: number, ftp: number, weight: number, pace: number, speed?: number, sportType: string, durationType: string, handleIntervalChange: Function, handleIntervalClick: Function, selected: boolean }) => {
 
   const { v4: uuidv4 } = require('uuid');
 
@@ -166,6 +166,7 @@ const Interval = (props: { id: string, repeat: number, onDuration?: number, offD
       ftp={props.ftp}
       weight={props.weight}
       sportType={props.sportType}
+      durationType={props.durationType}
       pace={props.pace}
       speed={props.speed}
       onChange={(id: string, value: any) => handleOnChange(id, value)} // Change any to Interface Bar?

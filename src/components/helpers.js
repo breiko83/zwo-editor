@@ -13,16 +13,16 @@ const helpers = {
       }else{
 
         if (bar.type === 'bar') {
-          length += bar.time * 1 / bar.power
+          length += bar.time
         }
 
         if (bar.type === 'trapeze') {
-          length += bar.time * 1 / ((bar.startPower + bar.endPower) / 2)
+          length += bar.time
         }
 
         if (bar.type === 'interval') {
-          length += bar.repeat * bar.onDuration * 1 / bar.onPower
-          length += bar.repeat * bar.offDuration * 1 / bar.offPower          
+          length += bar.repeat * bar.onDuration
+          length += bar.repeat * bar.offDuration         
         }
       }
       return false;
@@ -151,6 +151,9 @@ const helpers = {
   },
   calculateTime: function (distance, speed) {
     return distance / speed
+  },
+  calculateDistance: function (time, speed) {
+    return time * speed
   },
   round: function (x, roundTo) {
     return Math.ceil(x / roundTo) * roundTo
