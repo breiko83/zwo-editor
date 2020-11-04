@@ -156,7 +156,7 @@ const helpers = {
     return time * speed
   },
   round: function (x, roundTo) {
-    return Math.ceil(x / roundTo) * roundTo
+    return Math.floor(x / roundTo) * roundTo
   }
 }
 

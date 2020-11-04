@@ -4,11 +4,7 @@ import { Resizable } from 're-resizable'
 import moment from 'moment'
 import 'moment-duration-format'
 import Label from '../Label/Label'
-
-function round5(x: number)
-{
-  return Math.ceil(x/5)*5;
-}
+import helpers from '../helpers'
 
 const FreeRide = (props: { id: string, time: number, sportType: string, onChange: Function, onClick: Function, selected: boolean }) => {
 
@@ -26,11 +22,11 @@ const FreeRide = (props: { id: string, time: number, sportType: string, onChange
 
   const handleResizeStop = (dWidth: number) => {
     setWidth(width + dWidth)
-    props.onChange(props.id, { time: round5((width + dWidth) * timeMultiplier), type: 'freeRide', id: props.id })
+    props.onChange(props.id, { time: helpers.round((width + dWidth) * timeMultiplier, 5), type: 'freeRide', id: props.id })
   }
 
   const handleResize = (dWidth: number) => {
-    props.onChange(props.id, { time: round5((width + dWidth) * timeMultiplier), type: 'freeRide', id: props.id })
+    props.onChange(props.id, { time: helpers.round((width + dWidth) * timeMultiplier, 5), type: 'freeRide', id: props.id })
   }
 
   function getDuration(seconds: number) {
