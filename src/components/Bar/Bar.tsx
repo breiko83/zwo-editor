@@ -22,8 +22,6 @@ const Bar = (props: { id: string, time?: number, length?:number, power: number, 
   const distance = props.length
 
 
-
-
   const style = zwiftStyle(props.power)
 
   // RUN WORKOUTS ON DISTANCE - BIKE WORKOUTS ON TIME
@@ -48,13 +46,12 @@ const Bar = (props: { id: string, time?: number, length?:number, power: number, 
 
     const length = props.sportType === 'bike' ? 0 : helpers.round((width + dWidth) * lengthMultiplier, 200)
     const time = props.sportType === 'bike' ? helpers.round((width + dWidth) * timeMultiplier, 5) : helpers.calculateTime(props.length, props.speed)
-
+    
 
     props.onChange(props.id, { time: time, length: length, power: (height + dHeight) / multiplier, cadence: props.cadence, type: 'bar', pace: props.pace, id: props.id })
   }
 
   const handleResize = (dWidth: number, dHeight: number) => {       
-    
       
     const length = props.sportType === 'bike' ? 0 : helpers.round((width + dWidth) * lengthMultiplier, 200)
     const time = props.sportType === 'bike' ? helpers.round((width + dWidth) * timeMultiplier, 5) : helpers.calculateTime(props.length, props.speed)

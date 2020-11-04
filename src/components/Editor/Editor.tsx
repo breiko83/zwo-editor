@@ -11,7 +11,7 @@ import Footer from '../Footer/Footer'
 import Workouts from '../Workouts/Workouts'
 import Checkbox from './Checkbox'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faTrash, faArrowRight, faArrowLeft, faFile, faSave, faUpload, faDownload, faComment, faBicycle, faCopy, faClock, faShareAlt, faTimesCircle, faList, faBiking, faRunning } from '@fortawesome/free-solid-svg-icons'
+import { faTrash, faArrowRight, faArrowLeft, faFile, faSave, faUpload, faDownload, faComment, faBicycle, faCopy, faClock, faShareAlt, faTimesCircle, faList, faBiking, faRunning, faRuler } from '@fortawesome/free-solid-svg-icons'
 import { ReactComponent as WarmdownLogo } from '../../assets/warmdown.svg'
 import { ReactComponent as WarmupLogo } from '../../assets/warmup.svg'
 import { ReactComponent as IntervalLogo } from '../../assets/interval.svg'
@@ -94,7 +94,12 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
   const [message, setMessage] = useState<Message>()
 
   const [showWorkouts, setShowWorkouts] = useState(false)
+
+  // bike or run
   const [sportType, setSportType] = useState(localStorage.getItem('sportType') || 'bike')
+
+  // distance or time
+  const [durationType, setDurationType] = useState(localStorage.getItem('durationType') || 'distance')
 
   const [oneMileTime, setOneMileTime] = useState(localStorage.getItem('oneMileTime') || '')
   const [fiveKmTime, setFiveKmTime] = useState(localStorage.getItem('fiveKmTime') || '')
@@ -172,15 +177,16 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
     localStorage.setItem('author', author)
     localStorage.setItem('tags', JSON.stringify(tags))
     localStorage.setItem('sportType', sportType)
+    localStorage.setItem('durationType', durationType)
 
     localStorage.setItem('oneMileTime', oneMileTime)
     localStorage.setItem('fiveKmTime', fiveKmTime)
     localStorage.setItem('tenKmTime', tenKmTime)
     localStorage.setItem('halfMarathonTime', halfMarathonTime)
     localStorage.setItem('marathonTime', marathonTime)
+    
 
-
-  }, [bars, ftp, instructions, weight, name, description, author, tags, sportType, oneMileTime, fiveKmTime, tenKmTime, halfMarathonTime, marathonTime])
+  }, [bars, ftp, instructions, weight, name, description, author, tags, sportType, durationType, oneMileTime, fiveKmTime, tenKmTime, halfMarathonTime, marathonTime])
 
   useEffect(() => {
 
@@ -377,12 +383,12 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
 
     const index = updatedArray.findIndex(bar => bar.id === id)
     const element = updatedArray[index]
-    if (element && sportType === 'bike') {
+    if (element && durationType === 'time') {
       element.time = element.time + 5
       setBars(updatedArray)
     }
 
-    if (element && sportType === 'run') {    
+    if (element && durationType === 'distance') {    
       element.length = (element.length || 0) + 200      
       setBars(updatedArray)
     }  
@@ -393,12 +399,12 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
 
     const index = updatedArray.findIndex(bar => bar.id === id)
     const element = updatedArray[index]
-    if (element && element.time > 5 && sportType === 'bike') {
+    if (element && element.time > 5 && durationType === 'time') {
       element.time = element.time - 5      
       setBars(updatedArray)
     }
 
-    if (element && (element.length || 0) > 200 && sportType === 'run') {    
+    if (element && (element.length || 0) > 200 && durationType === 'distance') {    
       element.length = (element.length || 0) - 200      
       setBars(updatedArray)
     }    
@@ -523,6 +529,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
       .ele('name', name).up()
       .ele('description', description).up()
       .ele('sportType', sportType).up()
+      .ele('durationType', durationType).up()
       .ele('tags')
 
     tags.map((tag: string) => {
@@ -543,7 +550,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
 
       if (bar.type === 'bar') {
         segment = Builder.create('SteadyState')
-          .att('Duration', sportType === 'bike' ? bar.time : bar.length)
+          .att('Duration', durationType === 'time' ? bar.time : bar.length)
           .att('Power', bar.power)
           .att('pace', bar.pace)
 
@@ -564,14 +571,14 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
         if (bar.startPower < bar.endPower) {
           // warmup
           segment = Builder.create(ramp)
-            .att('Duration', sportType === 'bike' ? bar.time : bar.length)
+            .att('Duration', durationType === 'time' ? bar.time : bar.length)
             .att('PowerLow', bar.startPower)
             .att('PowerHigh', bar.endPower)
             .att('pace', bar.pace) // is this cadence?
         } else {
           // cooldown
           segment = Builder.create(ramp)
-            .att('Duration', sportType === 'bike' ? bar.time : bar.length)
+            .att('Duration', durationType === 'time' ? bar.time : bar.length)
             .att('PowerLow', bar.startPower) // these 2 values are inverted
             .att('PowerHigh', bar.endPower) // looks like a bug on zwift editor            
             .att('pace', bar.pace) // is this cadence?
@@ -580,8 +587,8 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
         // <IntervalsT Repeat="5" OnDuration="60" OffDuration="300" OnPower="0.8844353" OffPower="0.51775455" pace="0"/>
         segment = Builder.create('IntervalsT')
           .att('Repeat', bar.repeat)
-          .att('OnDuration', sportType === 'bike' ? bar.onDuration : bar.onLength)
-          .att('OffDuration', sportType === 'bike' ? bar.offDuration : bar.offLength)
+          .att('OnDuration', durationType === 'time' ? bar.onDuration : bar.onLength)
+          .att('OffDuration', durationType === 'time' ? bar.offDuration : bar.offLength)
           .att('OnPower', bar.onPower)
           .att('OffPower', bar.offPower)
           .att('pace', bar.pace)
@@ -593,7 +600,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
       }
 
       // add instructions if present
-      if (sportType === 'bike'){
+      if (durationType === 'time'){
         instructions.filter((instruction) => (instruction.time > totalTime && instruction.time <= (totalTime + bar.time))).map((i) => {
           return segment.ele('textevent', { timeoffset: (i.time - totalTime), message: i.text })
         })  
@@ -627,13 +634,17 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
         tags: tags,
         instructions: instructions,
         userId: user.uid,
-        updatedAt: Date()
+        updatedAt: Date(),
+        sportType: sportType,
+        durationType: durationType
       }
 
       const item2 = {
         name: name,
         description: description,
-        updatedAt: Date()
+        updatedAt: Date(),        
+        sportType: sportType,
+        durationType: durationType
       }
 
       var updates: any = {}
@@ -957,6 +968,16 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
     }
   }
 
+  function switchSportType(){
+    if(sportType === "bike"){
+      setSportType("run")
+      setDurationType("distance")
+    }else{
+      setSportType("bike")
+      setDurationType("time")
+    }
+  }
+
   return (
     <div className="container">
       <Helmet>
@@ -1044,8 +1065,8 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
         </div>
         <div className="workout">
           <div className="form-input">
-            <label>Workout Time</label>
-            <input className="textInput" value={helpers.getWorkoutLength(bars, sportType)} disabled />
+            <label>Workout Time</label>            
+            <input className="textInput" value={helpers.getWorkoutLength(bars, durationType)} disabled />
           </div>
           {sportType === 'run' &&
             <div className="form-input">
@@ -1061,10 +1082,20 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
             <label>Sport Type</label>
             <div className="switch">
               <FontAwesomeIcon className={`icon bike ${sportType === "bike" ? "active" : ""}`} icon={faBiking} size="lg" fixedWidth />
-              <Switch onChange={() => setSportType(sportType === "run" ? "bike" : "run")} checked={sportType !== "bike"} checkedIcon={false} uncheckedIcon={false} onColor="#00C46A" offColor="#00C46A" />
+              <Switch onChange={switchSportType} checked={sportType !== "bike"} checkedIcon={false} uncheckedIcon={false} onColor="#00C46A" offColor="#00C46A" />
               <FontAwesomeIcon className={`icon run ${sportType === "run" ? "active" : ""}`} icon={faRunning} size="lg" fixedWidth />
             </div>
           </div>
+          {sportType === 'run' &&
+            <div className="form-input">
+              <label>Duration Type</label>
+              <div className="switch">
+                <FontAwesomeIcon className={`icon bike ${durationType === "time" ? "active" : ""}`} icon={faClock} size="lg" fixedWidth />
+                <Switch onChange={() => setDurationType(durationType === "time" ? "distance" : "time")} checked={durationType !== "time"} checkedIcon={false} uncheckedIcon={false} onColor="#00C46A" offColor="#00C46A" />
+                <FontAwesomeIcon className={`icon run ${durationType === "distance" ? "active" : ""}`} icon={faRuler} size="lg" fixedWidth />
+              </div>
+            </div>
+          }
         </div>
       </div>
       {sportType === "run" &&
@@ -1144,7 +1175,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
             }
           })}
         </div>
-        {sportType === 'bike' ?
+        {durationType === 'time' ?
           <div className='timeline'>
             <span>0:00</span>
             <span>0:10</span>
@@ -1198,14 +1229,14 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
           </div>
           :
           <button className="btn" onClick={() => addBar(1, 300, 0, 0)} style={{ backgroundColor: Colors.WHITE }}><SteadyLogo className="btn-icon" /> Steady Pace</button>
-        }
-        {sportType === "bike" &&
-          <button className="btn" onClick={() => addFreeRide()} style={{ backgroundColor: Colors.WHITE }}><FontAwesomeIcon icon={faBicycle} size="lg" fixedWidth /> Free Ride</button>
-        }
+        }        
         
         <button className="btn" onClick={() => addTrapeze(0.25, 0.75)} style={{ backgroundColor: Colors.WHITE }}><WarmupLogo className="btn-icon" /> Warm up</button>
         <button className="btn" onClick={() => addTrapeze(0.75, 0.25)} style={{ backgroundColor: Colors.WHITE }}><WarmdownLogo className="btn-icon" /> Cool down</button>
         <button className="btn" onClick={() => addInterval()} style={{ backgroundColor: Colors.WHITE }}><IntervalLogo className="btn-icon" /> Interval</button>        
+        {sportType === "bike" &&
+          <button className="btn" onClick={() => addFreeRide()} style={{ backgroundColor: Colors.WHITE }}><FontAwesomeIcon icon={faBicycle} size="lg" fixedWidth /> Free Ride</button>
+        }
         <button className="btn" onClick={() => addInstruction()} style={{ backgroundColor: Colors.WHITE }}><FontAwesomeIcon icon={faComment} size="lg" fixedWidth /> Text Event</button>
         {sportType === "bike" &&
           <div className="form-input">

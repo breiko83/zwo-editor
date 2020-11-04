@@ -2,11 +2,13 @@ import moment from 'moment'
 import 'moment-duration-format'
 
 const helpers = {
-  getWorkoutLength: function (bars, sportType) {
+  // calculate total time
+  getWorkoutLength: function (bars, durationType) {
+
     var length = 0
 
     bars.map((bar) => {
-      if (sportType === 'bike') {
+      if (durationType === 'time') {
         length += bar.time  
       }else{
 
@@ -19,10 +21,8 @@ const helpers = {
         }
 
         if (bar.type === 'interval') {
-
           length += bar.repeat * bar.onDuration * 1 / bar.onPower
           length += bar.repeat * bar.offDuration * 1 / bar.offPower          
-  
         }
       }
       return false;
