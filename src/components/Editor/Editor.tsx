@@ -27,6 +27,7 @@ import { RouteComponentProps } from 'react-router-dom';
 import ReactGA from 'react-ga';
 import Switch from "react-switch";
 import { stringType } from 'aws-sdk/clients/iam'
+import { waitForElementToBeRemoved } from '@testing-library/react'
 
 interface Bar {
   id: string,
@@ -385,11 +386,13 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
     const element = updatedArray[index]
     if (element && durationType === 'time') {
       element.time = element.time + 5
+      element.length = helpers.calculateDistance(element.time, calculateSpeed(element.pace || 0)) * 1 / (element.power || 1)
       setBars(updatedArray)
     }
 
     if (element && durationType === 'distance') {    
       element.length = (element.length || 0) + 200      
+      element.time = helpers.calculateTime(element.length, calculateSpeed(element.pace || 0)) * 1 / (element.power || 1)
       setBars(updatedArray)
     }  
   }
@@ -401,11 +404,13 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
     const element = updatedArray[index]
     if (element && element.time > 5 && durationType === 'time') {
       element.time = element.time - 5      
+      element.length = helpers.calculateDistance(element.time, calculateSpeed(element.pace || 0)) * 1 / (element.power || 1)
       setBars(updatedArray)
     }
 
     if (element && (element.length || 0) > 200 && durationType === 'distance') {    
       element.length = (element.length || 0) - 200      
+      element.time = helpers.calculateTime(element.length, calculateSpeed(element.pace || 0)) * 1 / (element.power || 1)
       setBars(updatedArray)
     }    
   }
@@ -417,6 +422,13 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
     const element = updatedArray[index]
     if (element && element.power) {
       element.power = parseFloat((element.power + 1 / ftp).toFixed(3))
+
+      if(durationType === 'time'){
+        element.length = helpers.calculateDistance(element.time, calculateSpeed(element.pace || 0)) * 1 / element.power
+      }else{
+        element.time = helpers.calculateTime(element.length, calculateSpeed(element.pace || 0)) * 1 / element.power
+      }
+
       setBars(updatedArray)
     }
   }
@@ -428,6 +440,13 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
     const element = updatedArray[index]
     if (element && element.power && element.power >= Zones.Z1.min) {
       element.power = parseFloat((element.power - 1 / ftp).toFixed(3))
+
+      if(durationType === 'time'){
+        element.length = helpers.calculateDistance(element.time, calculateSpeed(element.pace || 0)) * 1 / element.power
+      }else{
+        element.time = helpers.calculateTime(element.length, calculateSpeed(element.pace || 0)) * 1 / element.power
+      }
+
       setBars(updatedArray)
     }
   }
@@ -960,6 +979,13 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
       const updatedArray = [...bars]
       const element = [...updatedArray][index]
       element.pace = parseInt(value)
+
+      if(durationType === 'time'){
+        element.length = helpers.calculateDistance(element.time, calculateSpeed(element.pace || 0)) * 1 / (element.power || 1)
+      }else{
+        element.time = helpers.calculateTime(element.length, calculateSpeed(element.pace || 0)) * 1 / (element.power || 1)
+      }
+
       setBars(updatedArray)
     }
   }
