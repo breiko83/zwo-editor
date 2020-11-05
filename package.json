@@ -18,10 +18,12 @@
     "@types/react-router-dom": "^5.1.5",
     "@types/xml2js": "^0.4.5",
     "aws-sdk": "^2.692.0",
+    "chrome-aws-lambda": "^5.3.1",
     "firebase": "^7.16.0",
     "immutability-helper": "^3.0.2",
     "moment": "^2.26.0",
     "moment-duration-format": "^2.3.2",
+    "puppeteer-core": "^5.4.1",
     "rc-slider": "^9.3.0",
     "re-resizable": "^6.4.0",
     "react": "^16.13.1",
@@ -61,6 +63,7 @@
   "devDependencies": {
     "@babel/preset-env": "^7.10.3",
     "@babel/preset-react": "^7.10.1",
+    "puppeteer": "^5.4.1",
     "react-test-renderer": "^16.13.1"
   },
   "jest": {

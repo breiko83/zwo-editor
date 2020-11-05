@@ -124,6 +124,8 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
         setBars(snapshot.val().workout || [])
         setInstructions(snapshot.val().instructions || [])
         setTags(snapshot.val().tags || [])
+        setDurationType(snapshot.val().durationType)
+        setSportType(snapshot.val().sportType)
 
         localStorage.setItem('id', id)
 
@@ -1156,7 +1158,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
         </div>
       }
 
-      <div className='editor'>
+      <div id="editor" className='editor'>
         {actionId &&
           <div className='actions'>
             <button onClick={() => moveLeft(actionId)} title='Move Left'><FontAwesomeIcon icon={faArrowLeft} size="lg" fixedWidth /></button>
