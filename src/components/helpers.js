@@ -1,4 +1,3 @@
-import { logDOM } from '@testing-library/react'
 import moment from 'moment'
 import 'moment-duration-format'
 
@@ -99,12 +98,7 @@ const helpers = {
 
   getWorkoutDistance: function (bars) {
     var distance = 0
-    bars.map((bar) => {
-      console.log('length ', bar.length);
-      distance += (bar.length || 0)
-    })
-
-    console.log('distance ', distance);
+    bars.map((bar) => distance += (bar.length))
 
     return (distance/1000).toFixed(1)
   },

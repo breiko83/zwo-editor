@@ -659,9 +659,6 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
         durationType: durationType
       }
 
-      console.log(item);
-
-
       const item2 = {
         name: name,
         description: description,
@@ -671,8 +668,6 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
         workoutTime: helpers.getWorkoutLength(bars, durationType),
         workoutDistance: helpers.getWorkoutDistance(bars)
       }
-
-      console.log(item2);
 
       var updates: any = {}
       updates[`users/${user.uid}/workouts/${id}`] = item2
