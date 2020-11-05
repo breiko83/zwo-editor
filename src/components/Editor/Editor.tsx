@@ -27,7 +27,6 @@ import { RouteComponentProps } from 'react-router-dom';
 import ReactGA from 'react-ga';
 import Switch from "react-switch";
 import { stringType } from 'aws-sdk/clients/iam'
-import { waitForElementToBeRemoved } from '@testing-library/react'
 
 interface Bar {
   id: string,
