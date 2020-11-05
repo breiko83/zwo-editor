@@ -644,7 +644,9 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
         description: description,
         updatedAt: Date(),        
         sportType: sportType,
-        durationType: durationType
+        durationType: durationType,
+        workoutTime: helpers.getWorkoutLength(bars, durationType),
+        workoutDistance: helpers.getWorkoutDistance(bars)
       }
 
       var updates: any = {}
@@ -1002,7 +1004,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
       }
 
       {showWorkouts &&
-        <Popup width="500px" height="500px" dismiss={() => setShowWorkouts(false)}>
+        <Popup width="500px" dismiss={() => setShowWorkouts(false)}>
           {user ?
             <Workouts userId={user.uid} />
             :

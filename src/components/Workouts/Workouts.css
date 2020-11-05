@@ -1,11 +1,23 @@
 .workouts {
-  padding: 0;
   margin: 0;
+  max-height: 500px;
+}
+
+.workouts > .title {
+  padding: 10px 0;
 }
 
 .workouts > a {  
   display: block;
   padding: 20px;
-  margin: 5px 0;
-  border: 1px solid gray;
+}
+
+.workouts > a > .title{  
+  color: black;
+  font-weight: bold;
+}
+
+.workouts > a > .description{  
+  color: gray;
+  font-weight: bold;
 }
