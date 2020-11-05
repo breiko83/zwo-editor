@@ -31,7 +31,7 @@ import { stringType } from 'aws-sdk/clients/iam'
 interface Bar {
   id: string,
   time: number,
-  length?: number, 
+  length?: number,
   type: string,
   power?: number,
   startPower?: number,
@@ -99,7 +99,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
   const [sportType, setSportType] = useState(localStorage.getItem('sportType') || 'bike')
 
   // distance or time
-  const [durationType, setDurationType] = useState(localStorage.getItem('durationType') || 'distance')
+  const [durationType, setDurationType] = useState(localStorage.getItem('durationType') || 'time')
 
   const [oneMileTime, setOneMileTime] = useState(localStorage.getItem('oneMileTime') || '')
   const [fiveKmTime, setFiveKmTime] = useState(localStorage.getItem('fiveKmTime') || '')
@@ -186,7 +186,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
     localStorage.setItem('tenKmTime', tenKmTime)
     localStorage.setItem('halfMarathonTime', halfMarathonTime)
     localStorage.setItem('marathonTime', marathonTime)
-    
+
 
   }, [bars, ftp, instructions, weight, name, description, author, tags, sportType, durationType, oneMileTime, fiveKmTime, tenKmTime, halfMarathonTime, marathonTime])
 
@@ -295,10 +295,10 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
 
   function addBar(zone: number, duration: number = 300, cadence: number = 0, pace: number = 0, length: number = 200) {
     setBars(bars => [...bars, {
-      time: durationType === 'time' ? duration : helpers.round(helpers.calculateTime(length, calculateSpeed(pace)),1),
-      length: durationType === 'time' ? helpers.round(helpers.calculateDistance(duration, calculateSpeed(pace)),1) : length,
+      time: durationType === 'time' ? duration : helpers.round(helpers.calculateTime(length, calculateSpeed(pace)), 1),
+      length: durationType === 'time' ? helpers.round(helpers.calculateDistance(duration, calculateSpeed(pace)), 1) : length,
       power: zone,
-      cadence: cadence,      
+      cadence: cadence,
       type: 'bar',
       id: uuidv4(),
       pace: pace
@@ -308,8 +308,8 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
 
   function addTrapeze(zone1: number, zone2: number, duration: number = 300, pace: number = 0, length: number = 1000) {
     setBars(bars => [...bars, {
-      time: durationType === 'time' ? duration : helpers.round(helpers.calculateTime(length, calculateSpeed(pace)),1),
-      length: durationType === 'time' ? helpers.round(helpers.calculateDistance(duration, calculateSpeed(pace)),1) : length,
+      time: durationType === 'time' ? duration : helpers.round(helpers.calculateTime(length, calculateSpeed(pace)), 1),
+      length: durationType === 'time' ? helpers.round(helpers.calculateDistance(duration, calculateSpeed(pace)), 1) : length,
       startPower: zone1,
       endPower: zone2,
       cadence: 0,
@@ -333,19 +333,19 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
   function addInterval(repeat: number = 3, onDuration: number = 30, offDuration: number = 120, onPower: number = 1, offPower: number = 0.5, cadence: number = 0, pace: number = 0, onLength: number = 200, offLength: number = 200) {
 
     setBars(bars => [...bars, {
-      time: durationType === 'time' ? (onDuration + offDuration) * repeat : helpers.round(helpers.calculateTime((onLength + offLength) * repeat, calculateSpeed(pace)),1),
-      length: durationType === 'time' ? helpers.round(helpers.calculateDistance((onDuration + offDuration) * repeat, calculateSpeed(pace)),1) : (onLength + offLength) * repeat,
+      time: durationType === 'time' ? (onDuration + offDuration) * repeat : helpers.round(helpers.calculateTime((onLength + offLength) * repeat, calculateSpeed(pace)), 1),
+      length: durationType === 'time' ? helpers.round(helpers.calculateDistance((onDuration + offDuration) * repeat, calculateSpeed(pace)), 1) : (onLength + offLength) * repeat,
       id: uuidv4(),
       type: 'interval',
       cadence: cadence,
       repeat: repeat,
-      onDuration: durationType === 'time' ? onDuration : helpers.round(helpers.calculateTime(onLength * 1 / onPower, calculateSpeed(pace)),1),
-      offDuration: durationType === 'time' ? offDuration : helpers.round(helpers.calculateTime(offLength * 1 / offPower, calculateSpeed(pace)),1),
+      onDuration: durationType === 'time' ? onDuration : helpers.round(helpers.calculateTime(onLength * 1 / onPower, calculateSpeed(pace)), 1),
+      offDuration: durationType === 'time' ? offDuration : helpers.round(helpers.calculateTime(offLength * 1 / offPower, calculateSpeed(pace)), 1),
       onPower: onPower,
       offPower: offPower,
       pace: pace,
-      onLength: durationType === 'time' ? helpers.round(helpers.calculateDistance(onDuration * 1 / onPower, calculateSpeed(pace)),1) : onLength,
-      offLength: durationType === 'time' ? helpers.round(helpers.calculateDistance(offDuration * 1 / offPower, calculateSpeed(pace)),1) : offLength,
+      onLength: durationType === 'time' ? helpers.round(helpers.calculateDistance(onDuration * 1 / onPower, calculateSpeed(pace)), 1) : onLength,
+      offLength: durationType === 'time' ? helpers.round(helpers.calculateDistance(offDuration * 1 / offPower, calculateSpeed(pace)), 1) : offLength,
     }
     ])
   }
@@ -391,11 +391,11 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
       setBars(updatedArray)
     }
 
-    if (element && durationType === 'distance') {    
-      element.length = (element.length || 0) + 200      
+    if (element && durationType === 'distance') {
+      element.length = (element.length || 0) + 200
       element.time = helpers.calculateTime(element.length, calculateSpeed(element.pace || 0)) * 1 / (element.power || 1)
       setBars(updatedArray)
-    }  
+    }
   }
 
   function removeTimeToBar(id: string) {
@@ -404,16 +404,16 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
     const index = updatedArray.findIndex(bar => bar.id === id)
     const element = updatedArray[index]
     if (element && element.time > 5 && durationType === 'time') {
-      element.time = element.time - 5      
+      element.time = element.time - 5
       element.length = helpers.calculateDistance(element.time, calculateSpeed(element.pace || 0)) * 1 / (element.power || 1)
       setBars(updatedArray)
     }
 
-    if (element && (element.length || 0) > 200 && durationType === 'distance') {    
-      element.length = (element.length || 0) - 200      
+    if (element && (element.length || 0) > 200 && durationType === 'distance') {
+      element.length = (element.length || 0) - 200
       element.time = helpers.calculateTime(element.length, calculateSpeed(element.pace || 0)) * 1 / (element.power || 1)
       setBars(updatedArray)
-    }    
+    }
   }
 
   function addPowerToBar(id: string) {
@@ -424,9 +424,9 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
     if (element && element.power) {
       element.power = parseFloat((element.power + 1 / ftp).toFixed(3))
 
-      if(durationType === 'time'){
+      if (durationType === 'time') {
         element.length = helpers.calculateDistance(element.time, calculateSpeed(element.pace || 0)) * 1 / element.power
-      }else{
+      } else {
         element.time = helpers.calculateTime(element.length, calculateSpeed(element.pace || 0)) * 1 / element.power
       }
 
@@ -442,9 +442,9 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
     if (element && element.power && element.power >= Zones.Z1.min) {
       element.power = parseFloat((element.power - 1 / ftp).toFixed(3))
 
-      if(durationType === 'time'){
+      if (durationType === 'time') {
         element.length = helpers.calculateDistance(element.time, calculateSpeed(element.pace || 0)) * 1 / element.power
-      }else{
+      } else {
         element.time = helpers.calculateTime(element.length, calculateSpeed(element.pace || 0)) * 1 / element.power
       }
 
@@ -620,16 +620,16 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
       }
 
       // add instructions if present
-      if (durationType === 'time'){
+      if (durationType === 'time') {
         instructions.filter((instruction) => (instruction.time > totalTime && instruction.time <= (totalTime + bar.time))).map((i) => {
           return segment.ele('textevent', { timeoffset: (i.time - totalTime), message: i.text })
-        })  
-      }else{
+        })
+      } else {
         instructions.filter((instruction) => (instruction.length > totalLength && instruction.length <= (totalLength + (bar.length || 0)))).map((i) => {
           return segment.ele('textevent', { timeoffset: (i.length - totalLength), message: i.text })
         })
       }
-      
+
 
       xml.importDocument(segment)
 
@@ -659,15 +659,20 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
         durationType: durationType
       }
 
+      console.log(item);
+
+
       const item2 = {
         name: name,
         description: description,
-        updatedAt: Date(),        
+        updatedAt: Date(),
         sportType: sportType,
         durationType: durationType,
         workoutTime: helpers.getWorkoutLength(bars, durationType),
         workoutDistance: helpers.getWorkoutDistance(bars)
       }
+
+      console.log(item2);
 
       var updates: any = {}
       updates[`users/${user.uid}/workouts/${id}`] = item2
@@ -836,15 +841,18 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
       })
   }
 
-  function calculateSpeed(pace: number) {
+  function calculateSpeed(pace: number = 0) {
 
-    // return speed in m/s
-    // speed  = distance / time
-    const distances = [1.60934, 5, 10, 21.0975, 42.195]
-    const times = [oneMileTime, fiveKmTime, tenKmTime, halfMarathonTime, marathonTime]
+    if (sportType === "bike") {
+      return 0;
+    } else {
+      // return speed in m/s
+      // speed  = distance / time
+      const distances = [1.60934, 5, 10, 21.0975, 42.195]
+      const times = [oneMileTime, fiveKmTime, tenKmTime, halfMarathonTime, marathonTime]
 
-    return distances[pace] * 1000 / helpers.getTimeinSeconds(times[pace])
-
+      return distances[pace] * 1000 / helpers.getTimeinSeconds(times[pace])
+    }
   }
 
   const renderBar = (bar: Bar) => (
@@ -907,9 +915,9 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
       onDuration={bar.onDuration || 10}
       offDuration={bar.offDuration || 50}
       onPower={bar.onPower || 250}
-      offPower={bar.offPower || 120} 
+      offPower={bar.offPower || 120}
       onLength={bar.onLength || 200}
-      offLength={bar.offLength || 200}     
+      offLength={bar.offLength || 200}
       ftp={ftp}
       weight={weight}
       sportType={sportType}
@@ -956,10 +964,6 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
   }
 
   const createCheckbox = (option: string) => {
-    console.log(option);
-    console.log(tags.includes(option));
-
-
     return (
       <Checkbox
         label={option}
@@ -981,9 +985,9 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
       const element = [...updatedArray][index]
       element.pace = parseInt(value)
 
-      if(durationType === 'time'){
+      if (durationType === 'time') {
         element.length = helpers.calculateDistance(element.time, calculateSpeed(element.pace || 0)) * 1 / (element.power || 1)
-      }else{
+      } else {
         element.time = helpers.calculateTime(element.length, calculateSpeed(element.pace || 0)) * 1 / (element.power || 1)
       }
 
@@ -1000,11 +1004,11 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
     }
   }
 
-  function switchSportType(){
-    if(sportType === "bike"){
+  function switchSportType() {
+    if (sportType === "bike") {
       setSportType("run")
       setDurationType("distance")
-    }else{
+    } else {
       setSportType("bike")
       setDurationType("time")
     }
@@ -1097,7 +1101,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
         </div>
         <div className="workout">
           <div className="form-input">
-            <label>Workout Time</label>            
+            <label>Workout Time</label>
             <input className="textInput" value={helpers.getWorkoutLength(bars, durationType)} disabled />
           </div>
           {sportType === 'run' &&
@@ -1220,25 +1224,25 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
             <span>1:20</span>
             <span>1:30</span>
           </div>
-        :
-        <div className='timeline run'>
-          <span>0</span>
-          <span>1K</span>
-          <span>2K</span>
-          <span>3K</span>
-          <span>4K</span>
-          <span>5K</span>
-          <span>6K</span>
-          <span>7K</span>
-          <span>8K</span>
-          <span>9K</span>
-          <span>10K</span>
-          <span>11K</span>
-          <span>12K</span>
-          <span>13K</span>
-          <span>14K</span>
-          <span>15K</span>
-        </div>
+          :
+          <div className='timeline run'>
+            <span>0</span>
+            <span>1K</span>
+            <span>2K</span>
+            <span>3K</span>
+            <span>4K</span>
+            <span>5K</span>
+            <span>6K</span>
+            <span>7K</span>
+            <span>8K</span>
+            <span>9K</span>
+            <span>10K</span>
+            <span>11K</span>
+            <span>12K</span>
+            <span>13K</span>
+            <span>14K</span>
+            <span>15K</span>
+          </div>
         }
         <div className='zones'>
           <div style={{ height: 250 * Zones.Z6.max }}>Z6</div>
@@ -1257,15 +1261,15 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
             <button className="btn btn-square" onClick={() => addBar(Zones.Z3.min)} style={{ backgroundColor: Colors.GREEN }}>Z3</button>
             <button className="btn btn-square" onClick={() => addBar(Zones.Z4.min)} style={{ backgroundColor: Colors.YELLOW }}>Z4</button>
             <button className="btn btn-square" onClick={() => addBar(Zones.Z5.min)} style={{ backgroundColor: Colors.ORANGE }}>Z5</button>
-            <button className="btn btn-square" onClick={() => addBar(Zones.Z6.min)} style={{ backgroundColor: Colors.RED }}>Z6</button>                        
+            <button className="btn btn-square" onClick={() => addBar(Zones.Z6.min)} style={{ backgroundColor: Colors.RED }}>Z6</button>
           </div>
           :
           <button className="btn" onClick={() => addBar(1, 300, 0, 0, 1000)} style={{ backgroundColor: Colors.WHITE }}><SteadyLogo className="btn-icon" /> Steady Pace</button>
-        }        
-        
+        }
+
         <button className="btn" onClick={() => addTrapeze(0.25, 0.75)} style={{ backgroundColor: Colors.WHITE }}><WarmupLogo className="btn-icon" /> Warm up</button>
         <button className="btn" onClick={() => addTrapeze(0.75, 0.25)} style={{ backgroundColor: Colors.WHITE }}><WarmdownLogo className="btn-icon" /> Cool down</button>
-        <button className="btn" onClick={() => addInterval()} style={{ backgroundColor: Colors.WHITE }}><IntervalLogo className="btn-icon" /> Interval</button>        
+        <button className="btn" onClick={() => addInterval()} style={{ backgroundColor: Colors.WHITE }}><IntervalLogo className="btn-icon" /> Interval</button>
         {sportType === "bike" &&
           <button className="btn" onClick={() => addFreeRide()} style={{ backgroundColor: Colors.WHITE }}><FontAwesomeIcon icon={faBicycle} size="lg" fixedWidth /> Free Ride</button>
         }

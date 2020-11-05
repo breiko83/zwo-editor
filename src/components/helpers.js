@@ -1,3 +1,4 @@
+import { logDOM } from '@testing-library/react'
 import moment from 'moment'
 import 'moment-duration-format'
 
@@ -27,43 +28,6 @@ const helpers = {
       }
       return false;
     })
-
-
-        // paces
-    // 0 = 1 mile
-    // 1 = 5k
-    // 2 = 10km
-    // 3 = Half Marathon
-    // 4 = Marathon
-
-    /*
-    const distances = [1.60934, 5, 10, 21.0975, 42.195]
-    const times = [oneMileTime, fiveKmTime, tenKmTime, halfMarathonTime, marathonTime]
-
-    var distance = 0
-    bars.map((bar) => { distance += bar.power * distances[bar.pace] * bar.time / t
-
-      if (bar.type === 'bar') {
-        const t = moment.duration(times[bar.pace]).asSeconds()
-        distance += bar.power * distances[bar.pace] * bar.time / t
-      }
-      if (bar.type === 'trapeze') {
-        const t = moment.duration(times[bar.pace]).asSeconds()
-        distance += ((bar.startPower + bar.endPower) / 2) * distances[bar.pace] * bar.time / t
-      }
-      if (bar.type === 'interval') {
-        const t = moment.duration(times[bar.pace]).asSeconds()
-        distance += bar.repeat * bar.onPower * distances[bar.pace] * bar.onDuration / t
-        distance += bar.repeat * bar.offPower * distances[bar.pace] * bar.offDuration / t
-
-      }
-
-      return false
-    })
-
-    return distance.toFixed(1)
-
-    */
 
     return moment.duration(length, "seconds").format("mm:ss", { trim: false })
   },
@@ -135,7 +99,12 @@ const helpers = {
 
   getWorkoutDistance: function (bars) {
     var distance = 0
-    bars.map((bar) => distance += bar.length)
+    bars.map((bar) => {
+      console.log('length ', bar.length);
+      distance += (bar.length || 0)
+    })
+
+    console.log('distance ', distance);
 
     return (distance/1000).toFixed(1)
   },
