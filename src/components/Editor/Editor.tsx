@@ -27,6 +27,9 @@ import { RouteComponentProps } from 'react-router-dom';
 import ReactGA from 'react-ga';
 import Switch from "react-switch";
 import { stringType } from 'aws-sdk/clients/iam'
+import TimePicker from 'rc-time-picker'
+import 'rc-time-picker/assets/index.css'
+import moment from 'moment'
 
 interface Bar {
   id: string,
@@ -1109,14 +1112,6 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
             <label>TSS</label>
             <input className="textInput" value={helpers.getStressScore(bars, ftp)} disabled />
           </div>
-          <div className="form-input">
-            <label>Sport Type</label>
-            <div className="switch">
-              <FontAwesomeIcon className={`icon bike ${sportType === "bike" ? "active" : ""}`} icon={faBiking} size="lg" fixedWidth />
-              <Switch onChange={switchSportType} checked={sportType !== "bike"} checkedIcon={false} uncheckedIcon={false} onColor="#00C46A" offColor="#00C46A" />
-              <FontAwesomeIcon className={`icon run ${sportType === "run" ? "active" : ""}`} icon={faRunning} size="lg" fixedWidth />
-            </div>
-          </div>
           {sportType === 'run' &&
             <div className="form-input">
               <label>Duration Type</label>
@@ -1127,29 +1122,38 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
               </div>
             </div>
           }
+          <div className="form-input">
+            <label>Sport Type</label>
+            <div className="switch">
+              <FontAwesomeIcon className={`icon bike ${sportType === "bike" ? "active" : ""}`} icon={faBiking} size="lg" fixedWidth />
+              <Switch onChange={switchSportType} checked={sportType !== "bike"} checkedIcon={false} uncheckedIcon={false} onColor="#00C46A" offColor="#00C46A" />
+              <FontAwesomeIcon className={`icon run ${sportType === "run" ? "active" : ""}`} icon={faRunning} size="lg" fixedWidth />
+            </div>
+          </div>
+          
         </div>
       </div>
       {sportType === "run" &&
         <div className="run-workout">
           <div className="form-input">
-            <label>1 Mile Time (hh:mm:ss)</label>
-            <input className="textInput" value={oneMileTime} type="time" step="1" onChange={(e) => setOneMileTime(e.target.value)} />
+            <label><abbr title="hh:mm:ss">1 Mile Time</abbr></label>       
+            <TimePicker value={oneMileTime === '' ? undefined : moment(oneMileTime, "HH:mm:ss")} placeholder="00:00:00" defaultOpenValue={moment("00:00:00")} className="timePicker" onChange={(value) => value ? setOneMileTime(value.format("HH:mm:ss")) : setOneMileTime('')} />
           </div>
           <div className="form-input">
-            <label>5 Km Time (hh:mm:ss)</label>
-            <input className="textInput" value={fiveKmTime} type="time" step="1" onChange={(e) => setFiveKmTime(e.target.value)} />
+            <label><abbr title="hh:mm:ss">5 Km Time</abbr></label>
+            <TimePicker value={fiveKmTime === '' ? undefined : moment(fiveKmTime, "HH:mm:ss")} placeholder="00:00:00" defaultOpenValue={moment("00:00:00")} className="timePicker" onChange={(value) => value ? setFiveKmTime(value.format("HH:mm:ss")) : setFiveKmTime('')} />            
           </div>
           <div className="form-input">
-            <label>10 Km Time (hh:mm:ss)</label>
-            <input className="textInput" value={tenKmTime} type="time" step="1" onChange={(e) => setTenKmTime(e.target.value)} />
+            <label><abbr title="hh:mm:ss">10 Km Time</abbr></label>
+            <TimePicker value={tenKmTime === '' ? undefined : moment(tenKmTime, "HH:mm:ss")} placeholder="00:00:00" defaultOpenValue={moment("00:00:00")} className="timePicker" onChange={(value) => value ? setTenKmTime(value.format("HH:mm:ss")) : setTenKmTime('')} />            
           </div>
           <div className="form-input">
-            <label>Half Marathon Time (hh:mm:ss)</label>
-            <input className="textInput" value={halfMarathonTime} type="time" step="1" onChange={(e) => setHalfMarathonTime(e.target.value)} />
+            <label><abbr title="hh:mm:ss">Half Marathon Time</abbr></label>            
+            <TimePicker value={halfMarathonTime === '' ? undefined : moment(halfMarathonTime, "HH:mm:ss")} placeholder="00:00:00" defaultOpenValue={moment("00:00:00")} className="timePicker" onChange={(value) => value ? setHalfMarathonTime(value.format("HH:mm:ss")) : setHalfMarathonTime('')} />                        
           </div>
           <div className="form-input">
-            <label>Marathon Time (hh:mm:ss)</label>
-            <input className="textInput" value={marathonTime} type="time" step="1" onChange={(e) => setMarathonTime(e.target.value)} />
+            <label><abbr title="hh:mm:ss">Marathon Time</abbr></label>            
+            <TimePicker value={marathonTime === '' ? undefined : moment(marathonTime, "HH:mm:ss")} placeholder="00:00:00" defaultOpenValue={moment("00:00:00")} className="timePicker" onChange={(value) => value ? setMarathonTime(value.format("HH:mm:ss")) : setMarathonTime('')} />                        
           </div>
           <div className="form-input">
             <button onClick={estimateRunningTimes} className="btn">Estimate missing times</button>
@@ -1182,10 +1186,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
             }
           </div>
         }
-        <div className='canvas'>
-          <div className='slider'>
-            {instructions.map((instruction) => renderComment(instruction))}
-          </div>
+        <div className='canvas'>          
           {actionId &&
             <div className='fader' onClick={() => setActionId(undefined)}></div>
           }
@@ -1205,7 +1206,11 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
               return false
             }
           })}
-        </div>
+
+          <div className='slider'>
+            {instructions.map((instruction) => renderComment(instruction))}
+          </div>
+        </div>        
         {durationType === 'time' ?
           <div className='timeline'>
             <span>0:00</span>

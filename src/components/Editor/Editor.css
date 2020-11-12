@@ -223,7 +223,7 @@ label {
 .slider {  
   position: absolute;
   width: 100%;
-  top: 100px;
+  top: 50px;
   left: 0px;
 }
 
@@ -329,4 +329,24 @@ label {
 .run-workout > .form-input {
   padding-right: 10px;
   align-self: flex-end;
+}
+
+.timePicker {
+  width: 120px;  
+}
+
+.timePicker > input{
+  font-size: 18px;  
+  font-family: monospace;
+  color: black;
+}
+
+.rc-time-picker-panel-input {
+  font-size: 18px;  
+  font-family: monospace;
+}
+
+.rc-time-picker-panel-select > ul > li {
+  font-size: 16px;  
+  font-family: monospace;
 }
