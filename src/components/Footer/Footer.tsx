@@ -15,7 +15,7 @@ export default function Footer() {
         <li>Zwift Workout v1.5 &copy; 2020 Sharpify Ltd All Rights Reserved</li>
         <li><a href="#terms" onClick={() => setShowTerm(true)}>Terms of Service</a></li>
         <li><a href="#privacy" onClick={() => setShowPrivacy(true)}>Privacy Policy</a></li>
-        <li><a href="https://github.com/breiko83/zwo-editor" target="blank">Report an issue</a></li>        
+        <li><a href="https://github.com/breiko83/zwo-editor/issues" target="blank">Report an issue</a></li>        
       </ul>
        
       {showTerms &&
