@@ -624,12 +624,12 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
 
       // add instructions if present
       if (durationType === 'time') {
-        instructions.filter((instruction) => (instruction.time > totalTime && instruction.time <= (totalTime + bar.time))).map((i) => {
+        instructions.filter((instruction) => (instruction.time >= totalTime && instruction.time < (totalTime + bar.time))).map((i) => {
           return segment.ele('textevent', { timeoffset: (i.time - totalTime), message: i.text })
         })
       } else {
-        instructions.filter((instruction) => (instruction.length > totalLength && instruction.length <= (totalLength + (bar.length || 0)))).map((i) => {
-          return segment.ele('textevent', { timeoffset: (i.length - totalLength), message: i.text })
+        instructions.filter((instruction) => (instruction.length >= totalLength && instruction.length < (totalLength + (bar.length || 0)))).map((i) => {
+          return segment.ele('textevent', { distoffset: (i.length - totalLength), message: i.text })
         })
       }
 
