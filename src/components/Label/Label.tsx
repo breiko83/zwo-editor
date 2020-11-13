@@ -41,7 +41,7 @@ const Label = (props: { sportType: string, duration: string, distance?: number, 
       }
       {props.power && props.ftp && props.pace !== null && props.sportType === "run" &&
         <div>
-          {(props.power / props.ftp * 100).toFixed(0)}% {paces[props.pace || 0]} pace
+          {(props.power / props.ftp * 100).toFixed(1).replace(/[.]0$/, "")}% {paces[props.pace || 0]} pace
         </div>
       }
       {props.powerStart && props.powerEnd && props.ftp && props.pace !== null && props.sportType === "run" &&
