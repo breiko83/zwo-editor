@@ -39,16 +39,27 @@ a {
 .canvas {
   position: absolute;
   width: 100%;
+  max-width: 1320px;
   height: 100%;
   overflow-y: hidden;
   overflow-x: visible;
   
-  bottom: 50px;
+  bottom: 10px;
+  
+}
+
+.segments {
+
+  position: absolute;
 
   display: flex;
   flex-wrap: nowrap;
   justify-content: flex-start;
   align-items: flex-end;  
+  bottom: 0px;
+  padding-bottom: 40px;
+
+  margin-right: 100px;
 }
 
 .fader {
@@ -58,7 +69,7 @@ a {
   left: 0;
   right: 0;
   bottom: 0;
-  width: 100%;
+  width: 50000px;
   height: 100%;
   z-index: 1;
 }
@@ -176,9 +187,11 @@ label {
 
 .timeline {  
   position: absolute;
-  bottom: 10px;
+  bottom: 0px;
   
   border-top: 1px solid gray;
+  overflow: hidden;
+  min-width: 1320px;
 }
 
 .timeline > span{
@@ -221,9 +234,8 @@ label {
 }
 
 .slider {  
-  position: absolute;
-  width: 100%;
-  top: 50px;
+  position: absolute;  
+  top: 10px;
   left: 0px;
 }
 

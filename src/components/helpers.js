@@ -28,7 +28,7 @@ const helpers = {
       return false;
     })
 
-    return moment.duration(length, "seconds").format("mm:ss", { trim: false })
+    return length
   },
 
   getStressScore: function (bars, ftp) {

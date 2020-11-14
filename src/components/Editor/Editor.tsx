@@ -92,6 +92,10 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
   const [visibleForm, setVisibleForm] = useState('login') // default form is login
 
   const sherableLinkRef = useRef<HTMLInputElement>(null);
+  const canvasRef = useRef<HTMLInputElement>(null);
+  const segmentsRef = useRef<HTMLInputElement>(null);
+  const [segmentsWidth, setSegmentsWidth] = useState(1320);
+
   const [copied, setCopied] = useState('')
 
   const [message, setMessage] = useState<Message>()
@@ -190,8 +194,9 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
     localStorage.setItem('halfMarathonTime', halfMarathonTime)
     localStorage.setItem('marathonTime', marathonTime)
 
+    setSegmentsWidth(segmentsRef.current?.scrollWidth || 1320)    
 
-  }, [bars, ftp, instructions, weight, name, description, author, tags, sportType, durationType, oneMileTime, fiveKmTime, tenKmTime, halfMarathonTime, marathonTime])
+  }, [segmentsRef, bars, ftp, instructions, weight, name, description, author, tags, sportType, durationType, oneMileTime, fiveKmTime, tenKmTime, halfMarathonTime, marathonTime])
 
   useEffect(() => {
 
@@ -459,7 +464,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
     const index = bars.findIndex(bar => bar.id === id)
     const element = [...bars][index]
 
-    if (element.type === 'bar') addBar(element.power || 80, element.time, element.cadence, element.pace || 0)
+    if (element.type === 'bar') addBar(element.power || 80, element.time, element.cadence, element.pace, element.length)
     if (element.type === 'freeRide') addFreeRide(element.time)
     if (element.type === 'trapeze') addTrapeze(element.startPower || 80, element.endPower || 160, element.time, element.pace || 0)
     if (element.type === 'interval') addInterval(element.repeat, element.onDuration, element.offDuration, element.onPower, element.offPower, element.cadence, element.pace, element.onLength, element.offLength)
@@ -668,7 +673,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
         updatedAt: Date(),
         sportType: sportType,
         durationType: durationType,
-        workoutTime: helpers.getWorkoutLength(bars, durationType),
+        workoutTime: helpers.formatDuration(helpers.getWorkoutLength(bars, durationType)),
         workoutDistance: helpers.getWorkoutDistance(bars)
       }
 
@@ -933,6 +938,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
       key={instruction.id}
       instruction={instruction}
       durationType={durationType}
+      width={durationType === "distance" ? parseInt(helpers.getWorkoutDistance(bars))*100 : helpers.getWorkoutLength(bars, durationType) / 3}
       onChange={(id: string, values: Instruction) => changeInstruction(id, values)}
       onDelete={(id: string) => deleteInstruction(id)} />
   )
@@ -1100,7 +1106,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
         <div className="workout">
           <div className="form-input">
             <label>Workout Time</label>
-            <input className="textInput" value={helpers.getWorkoutLength(bars, durationType)} disabled />
+            <input className="textInput" value={helpers.formatDuration(helpers.getWorkoutLength(bars, durationType))} disabled />
           </div>
           {sportType === 'run' &&
             <div className="form-input">
@@ -1186,33 +1192,35 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
             }
           </div>
         }
-        <div className='canvas'>          
+        <div className='canvas' ref={canvasRef}>          
           {actionId &&
-            <div className='fader' onClick={() => setActionId(undefined)}></div>
+            <div className='fader' style={{width: canvasRef.current?.scrollWidth}} onClick={() => setActionId(undefined)}></div>
           }
-          {bars.map((bar) => {
-            if (bar.type === 'bar') {
-              return (renderBar(bar))
-            }
-            else if (bar.type === 'trapeze') {
-              return (renderTrapeze(bar))
-            }
-            else if (bar.type === 'freeRide') {
-              return (renderFreeRide(bar))
-            }
-            else if (bar.type === 'interval') {
-              return (renderInterval(bar))
-            } else {
-              return false
-            }
-          })}
+          <div className='segments' ref={segmentsRef}>
+            {bars.map((bar) => {
+              if (bar.type === 'bar') {
+                return (renderBar(bar))
+              }
+              else if (bar.type === 'trapeze') {
+                return (renderTrapeze(bar))
+              }
+              else if (bar.type === 'freeRide') {
+                return (renderFreeRide(bar))
+              }
+              else if (bar.type === 'interval') {
+                return (renderInterval(bar))
+              } else {
+                return false
+              }
+            })}
+          </div>
 
           <div className='slider'>
             {instructions.map((instruction) => renderComment(instruction))}
           </div>
-        </div>        
-        {durationType === 'time' ?
-          <div className='timeline'>
+
+          {durationType === 'time' ?
+          <div className='timeline' style={{width: segmentsWidth}}>
             <span>0:00</span>
             <span>0:10</span>
             <span>0:20</span>
@@ -1223,27 +1231,41 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
             <span>1:10</span>
             <span>1:20</span>
             <span>1:30</span>
+            <span>1:40</span>
+            <span>1:50</span>
+            <span>2:00</span>
+            <span>2:10</span>
+            <span>2:20</span>
+            <span>2:30</span>
+            <span>2:40</span>
+            <span>2:50</span>
+            <span>3:00</span>
+            <span>3:10</span>
+            <span>3:20</span>
+            <span>3:30</span>
+            <span>3:40</span>
+            <span>3:50</span>
+            <span>4:00</span>
+            <span>4:10</span>
+            <span>4:20</span>
+            <span>4:30</span>
+            <span>4:40</span>
+            <span>4:50</span>
+            <span>5:00</span>
+            <span>5:10</span>
+            <span>5:20</span>
+            <span>5:30</span>
+            <span>5:40</span>
+            <span>5:50</span>
+            <span>6:00</span>
           </div>
-          :
-          <div className='timeline run'>
-            <span>0</span>
-            <span>1K</span>
-            <span>2K</span>
-            <span>3K</span>
-            <span>4K</span>
-            <span>5K</span>
-            <span>6K</span>
-            <span>7K</span>
-            <span>8K</span>
-            <span>9K</span>
-            <span>10K</span>
-            <span>11K</span>
-            <span>12K</span>
-            <span>13K</span>
-            <span>14K</span>
-            <span>15K</span>
+          :        
+          <div className='timeline run' style={{width: segmentsWidth}}>            
+            {[...Array(44)].map((e,i) => <span key={i}>{i}K</span>)}            
           </div>
         }
+        </div>        
+        
         <div className='zones'>
           <div style={{ height: 250 * Zones.Z6.max }}>Z6</div>
           <div style={{ height: 250 * Zones.Z5.max }}>Z5</div>

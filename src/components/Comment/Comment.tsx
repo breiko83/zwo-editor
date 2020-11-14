@@ -12,7 +12,7 @@ interface Instruction {
   length: number
 }
 
-const Comment = (props: { instruction: Instruction, durationType: string, onChange: Function, onDelete: Function }) => {
+const Comment = (props: { instruction: Instruction, durationType: string, width: number, onChange: Function, onDelete: Function }) => {
 
   const timeMultiplier = 3
   const lengthMultiplier = 10
@@ -69,7 +69,7 @@ const Comment = (props: { instruction: Instruction, durationType: string, onChan
       axis='x'
       handle=".handle"
       defaultPosition={{ x: time, y: 0 }}
-      bounds={{ left: 0, right: 1000 }}
+      bounds={{ left: 0, right: props.width}}
       scale={1}
       onStop={(e, data) => handleTouch(data.x)}
       onDrag={(e, data) => handleDragging(data.x)}
