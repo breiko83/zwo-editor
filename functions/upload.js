@@ -42,6 +42,12 @@ exports.handler = function (event, context, callback) {
 
   callback(null, {
     statusCode: 200,
+    headers: {
+      /* Required for CORS support to work */
+      'Access-Control-Allow-Origin': 'https://www.zwiftworkout.com',
+      /* Required for cookies, authorization headers with HTTPS */
+      'Access-Control-Allow-Credentials': true
+    },
     body: JSON.stringify({
       uploadURL: uploadURL
     }),
