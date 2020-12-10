@@ -602,14 +602,14 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
             .att('Duration', durationType === 'time' ? bar.time : bar.length)
             .att('PowerLow', bar.startPower)
             .att('PowerHigh', bar.endPower)
-            .att('pace', bar.pace) // is this cadence?
+            .att('pace', bar.pace)
         } else {
           // cooldown
           segment = Builder.create(ramp)
             .att('Duration', durationType === 'time' ? bar.time : bar.length)
             .att('PowerLow', bar.startPower) // these 2 values are inverted
             .att('PowerHigh', bar.endPower) // looks like a bug on zwift editor            
-            .att('pace', bar.pace) // is this cadence?
+            .att('pace', bar.pace)
         }
       } else if (bar.type === 'interval') {
         // <IntervalsT Repeat="5" OnDuration="60" OffDuration="300" OnPower="0.8844353" OffPower="0.51775455" pace="0"/>
@@ -620,6 +620,10 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
           .att('OnPower', bar.onPower)
           .att('OffPower', bar.offPower)
           .att('pace', bar.pace)
+          
+          // add cadence if not zero
+          if (bar.cadence !== 0)
+            segment.att('Cadence', bar.cadence)
       } else {
         // free ride
         segment = Builder.create('FreeRide')
