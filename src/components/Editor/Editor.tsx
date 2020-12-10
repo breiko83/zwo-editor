@@ -16,6 +16,7 @@ import { ReactComponent as WarmdownLogo } from '../../assets/warmdown.svg'
 import { ReactComponent as WarmupLogo } from '../../assets/warmup.svg'
 import { ReactComponent as IntervalLogo } from '../../assets/interval.svg'
 import { ReactComponent as SteadyLogo } from '../../assets/steady.svg'
+import CadenceIcon from '../../assets/cadence.png'
 import Builder from 'xmlbuilder'
 import Converter from 'xml-js'
 import helpers from '../helpers'
@@ -1180,7 +1181,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
             <button onClick={() => duplicateBar(actionId)} title='Duplicate'><FontAwesomeIcon icon={faCopy} size="lg" fixedWidth /></button>
             {sportType === "bike" ?
               <>
-                <button onClick={() => setShowCadenceInput(!showCadenceInput)} title='Cadence'><FontAwesomeIcon icon={faClock} size="lg" fixedWidth /></button>
+                <button onClick={() => setShowCadenceInput(!showCadenceInput)} title='Cadence' style={{backgroundImage:`url(${CadenceIcon})`,backgroundPosition:'center',backgroundSize:'25px',backgroundRepeat:'no-repeat'}}><FontAwesomeIcon icon={faCopy} size="lg" fixedWidth color="rgba(0,0,0,0)" /></button>
                 {(showCadenceInput || cadence !== 0) &&
                   <input className="textInput" type="number" min="40" max="150" name="cadence" value={cadence} onChange={(e) => saveCadence(actionId, parseInt(e.target.value))} />
                 }
