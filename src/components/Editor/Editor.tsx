@@ -938,14 +938,16 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
     />
   )
 
-  const renderComment = (instruction: Instruction) => (
+  const renderComment = (instruction: Instruction, index: number) => (
     <Comment
       key={instruction.id}
       instruction={instruction}
       durationType={durationType}
       width={durationType === "distance" ? parseInt(helpers.getWorkoutDistance(bars))*100 : helpers.getWorkoutLength(bars, durationType) / 3}
       onChange={(id: string, values: Instruction) => changeInstruction(id, values)}
-      onDelete={(id: string) => deleteInstruction(id)} />
+      onDelete={(id: string) => deleteInstruction(id)} 
+      index={index}
+      />
   )
 
   const renderRegistrationForm = () => {
@@ -1221,7 +1223,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
           </div>
 
           <div className='slider'>
-            {instructions.map((instruction) => renderComment(instruction))}
+            {instructions.map((instruction, index) => renderComment(instruction, index))}
           </div>
 
           {durationType === 'time' ?

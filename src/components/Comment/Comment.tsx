@@ -12,7 +12,7 @@ interface Instruction {
   length: number
 }
 
-const Comment = (props: { instruction: Instruction, durationType: string, width: number, onChange: Function, onDelete: Function }) => {
+const Comment = (props: { instruction: Instruction, durationType: string, width: number, onChange: Function, onDelete: Function, index: number }) => {
 
   const timeMultiplier = 3
   const lengthMultiplier = 10
@@ -37,7 +37,7 @@ const Comment = (props: { instruction: Instruction, durationType: string, width:
   }
 
   function handleDragging(position: number) { 
-    setShowInput(true)  
+    setShowInput(false)  
     setTime(position)
     setLength(position)
   }
@@ -68,13 +68,13 @@ const Comment = (props: { instruction: Instruction, durationType: string, width:
     <Draggable
       axis='x'
       handle=".handle"
-      defaultPosition={{ x: time, y: 0 }}
+      defaultPosition={{ x: time, y: (props.index % 5) * 20 }}
       bounds={{ left: 0, right: props.width}}
       scale={1}
       onStop={(e, data) => handleTouch(data.x)}
-      onDrag={(e, data) => handleDragging(data.x)}
+      onDrag={(e, data) => handleDragging(data.x)}      
     >
-      <div className='commentBlock'>
+      <div style={{}}>
         <FontAwesomeIcon style={{display:'block',opacity:0.7}} icon={faComment} size="lg" fixedWidth className="handle" onMouseDown={() => setShowInput(!showInput)} />        
         {showInput &&
         <div className="edit">
