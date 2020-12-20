@@ -245,6 +245,8 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
     switch (event.keyCode) {
       case 8:
         removeBar(actionId || '')
+        // Prevent navigation to previous page
+        event.preventDefault()
         break;
       case 37:
         // reduce time
