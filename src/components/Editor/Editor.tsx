@@ -1177,7 +1177,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
               <>
                 <button onClick={() => setShowCadenceInput(!showCadenceInput)} title='Cadence' style={{backgroundImage:`url(${CadenceIcon})`,backgroundPosition:'center',backgroundSize:'25px',backgroundRepeat:'no-repeat'}}><FontAwesomeIcon icon={faCopy} size="lg" fixedWidth color="rgba(0,0,0,0)" /></button>
                 {(showCadenceInput || cadence !== 0) &&
-                  <input className="textInput" type="number" min="40" max="150" name="cadence" value={cadence} onChange={(e) => saveCadence(actionId, parseInt(e.target.value))} />
+                  <input className="textInput" type="number" min="40" max="150" name="cadence" value={cadence} onChange={(e) => saveCadence(actionId, parseInt(e.target.value))} onKeyDown={(e) => { e.stopPropagation(); }} />
                 }
               </>
               :
