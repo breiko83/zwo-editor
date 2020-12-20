@@ -241,6 +241,10 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
   }
 
   function handleKeyPress(event: React.KeyboardEvent<HTMLDivElement>) {
+    if (event.target instanceof HTMLInputElement) {
+      // Ignore key presses coming from input elements
+      return;
+    }
 
     switch (event.keyCode) {
       case 8:
@@ -1179,7 +1183,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
               <>
                 <button onClick={() => setShowCadenceInput(!showCadenceInput)} title='Cadence' style={{backgroundImage:`url(${CadenceIcon})`,backgroundPosition:'center',backgroundSize:'25px',backgroundRepeat:'no-repeat'}}><FontAwesomeIcon icon={faCopy} size="lg" fixedWidth color="rgba(0,0,0,0)" /></button>
                 {(showCadenceInput || cadence !== 0) &&
-                  <input className="textInput" type="number" min="40" max="150" name="cadence" value={cadence} onChange={(e) => saveCadence(actionId, parseInt(e.target.value))} onKeyDown={(e) => { e.stopPropagation(); }} />
+                  <input className="textInput" type="number" min="40" max="150" name="cadence" value={cadence} onChange={(e) => saveCadence(actionId, parseInt(e.target.value))} />
                 }
               </>
               :
@@ -1300,14 +1304,14 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
         {sportType === "bike" &&
           <div className="form-input">
             <label htmlFor="ftp">FTP (W)</label>
-            <input className="textInput" type="number" name="ftp" value={ftp} onChange={(e) => setFtp(parseInt(e.target.value))} onKeyDown={(e) => { e.stopPropagation(); }} />
+            <input className="textInput" type="number" name="ftp" value={ftp} onChange={(e) => setFtp(parseInt(e.target.value))} />
           </div>
         }
 
         {sportType === "bike" &&
           <div className="form-input">
             <label htmlFor="weight">Body Weight (Kg)</label>
-            <input className="textInput" type="number" name="weight" value={weight} onChange={(e) => setWeight(parseInt(e.target.value))} onKeyDown={(e) => { e.stopPropagation(); }} />
+            <input className="textInput" type="number" name="weight" value={weight} onChange={(e) => setWeight(parseInt(e.target.value))} />
           </div>
         }
 
