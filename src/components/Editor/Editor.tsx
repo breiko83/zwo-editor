@@ -1298,14 +1298,14 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
         {sportType === "bike" &&
           <div className="form-input">
             <label htmlFor="ftp">FTP (W)</label>
-            <input className="textInput" type="number" name="ftp" value={ftp} onChange={(e) => setFtp(parseInt(e.target.value))} />
+            <input className="textInput" type="number" name="ftp" value={ftp} onChange={(e) => setFtp(parseInt(e.target.value))} onKeyDown={(e) => { e.stopPropagation(); }} />
           </div>
         }
 
         {sportType === "bike" &&
           <div className="form-input">
             <label htmlFor="weight">Body Weight (Kg)</label>
-            <input className="textInput" type="number" name="weight" value={weight} onChange={(e) => setWeight(parseInt(e.target.value))} />
+            <input className="textInput" type="number" name="weight" value={weight} onChange={(e) => setWeight(parseInt(e.target.value))} onKeyDown={(e) => { e.stopPropagation(); }} />
           </div>
         }
 
