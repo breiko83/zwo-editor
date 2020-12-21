@@ -782,7 +782,6 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
     fetch(`${S3_URL}/${id}.zwo`)
       .then(response => response.text())
       .then(data => {
-        console.log(data)
 
         //now parse file  
         const workout = Converter.xml2js(data)
@@ -791,17 +790,17 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
         if (workout_file.name === 'workout_file') {
           // file is valid
           const authorIndex = workout_file.elements.findIndex((element: { name: string }) => element.name === 'author')
-          if (authorIndex && workout_file.elements[authorIndex].elements) {
+          if (authorIndex !== -1 && workout_file.elements[authorIndex].elements) {
             setAuthor(workout_file.elements[authorIndex].elements[0].text)
           }
 
           const nameIndex = workout_file.elements.findIndex((element: { name: string }) => element.name === 'name')
-          if (nameIndex && workout_file.elements[nameIndex].elements) {
+          if (nameIndex !== -1 && workout_file.elements[nameIndex].elements) {
             setName(workout_file.elements[nameIndex].elements[0].text)
           }
 
           const descriptionIndex = workout_file.elements.findIndex((element: { name: string }) => element.name === 'description')
-          if (descriptionIndex && workout_file.elements[descriptionIndex].elements) {
+          if (descriptionIndex !== -1 && workout_file.elements[descriptionIndex].elements) {
             setDescription(workout_file.elements[descriptionIndex].elements[0].text)
           }
 
