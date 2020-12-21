@@ -199,15 +199,6 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
 
   }, [segmentsRef, bars, ftp, instructions, weight, name, description, author, tags, sportType, durationType, oneMileTime, fiveKmTime, tenKmTime, halfMarathonTime, marathonTime])
 
-  useEffect(() => {
-
-    document.addEventListener('keydown', handleKeyPress)
-
-    return () => {
-      document.removeEventListener('keydown', handleKeyPress)
-    };
-  })
-
   function generateId() {
     return Math.random().toString(36).substr(2, 16)
   }
@@ -249,11 +240,17 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
     }
   }
 
-  function handleKeyPress(event: { keyCode: any }) {
+  function handleKeyPress(event: React.KeyboardEvent<HTMLDivElement>) {
+    if (event.target instanceof HTMLInputElement) {
+      // Ignore key presses coming from input elements
+      return;
+    }
 
     switch (event.keyCode) {
       case 8:
         removeBar(actionId || '')
+        // Prevent navigation to previous page
+        event.preventDefault()
         break;
       case 37:
         // reduce time
@@ -1025,7 +1022,8 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
   }
 
   return (
-    <div className="container">
+    // Adding tabIndex allows div element to receive keyboard events
+    <div className="container" onKeyDown={handleKeyPress} tabIndex={0}>
       <Helmet>
         <title>{name ? `${name} - Zwift Workout Editor` : "My Workout - Zwift Workout Editor"}</title>
         <meta name="description" content={description} />
