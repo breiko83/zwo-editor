@@ -776,6 +776,8 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
   function fetchAndParse(id: string) {
 
     // remove previous workout
+
+    // TODO fix for running distance based
     setBars([])
     setInstructions([])
 
@@ -810,6 +812,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
 
           workout_file.elements[workoutIndex].elements.map((w: { name: string; attributes: { Power: any; PowerLow: string; Duration: string; PowerHigh: string; Cadence: string; Repeat: string; OnDuration: string; OffDuration: string; OnPower: string, OffPower: string; Pace: stringType }; elements: any }) => {
 
+            let duration = parseFloat(w.attributes.Duration)
 
             if (w.name === 'SteadyState')
               addBar(parseFloat(w.attributes.Power || w.attributes.PowerLow), parseFloat(w.attributes.Duration), parseFloat(w.attributes.Cadence || '0'), parseInt(w.attributes.Pace || '0'))
@@ -817,8 +820,10 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
             if (w.name === 'Ramp' || w.name === 'Warmup' || w.name === 'Cooldown')
               addTrapeze(parseFloat(w.attributes.PowerLow), parseFloat(w.attributes.PowerHigh), parseFloat(w.attributes.Duration), parseInt(w.attributes.Pace || '0'))
 
-            if (w.name === 'IntervalsT')
+            if (w.name === 'IntervalsT'){
               addInterval(parseFloat(w.attributes.Repeat), parseFloat(w.attributes.OnDuration), parseFloat(w.attributes.OffDuration), parseFloat(w.attributes.OnPower), parseFloat(w.attributes.OffPower), parseFloat(w.attributes.Cadence || '0'), parseInt(w.attributes.Pace || '0'))
+              duration = (parseFloat(w.attributes.OnDuration) + parseFloat(w.attributes.OffDuration)) * parseFloat(w.attributes.Repeat)
+            }              
 
             if (w.name === 'FreeRide')
               addFreeRide(parseFloat(w.attributes.Duration))
@@ -837,7 +842,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
 
             }
 
-            totalTime = totalTime + parseFloat(w.attributes.Duration)
+            totalTime = totalTime + duration
             // map functions expect return value
             return false
           })
