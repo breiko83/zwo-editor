@@ -1025,6 +1025,29 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
     }
   }
 
+  function transformTextToWorkout(textValue: string) {
+
+    // reset each time
+    setBars([])
+
+    // 2 minutes block at 112% FTP
+    // 2 minutes block at 330 W
+    // 30 seconds block at ..
+
+    //console.log(textValue);
+
+    const workoutBlocks = textValue.split('\n')
+    workoutBlocks.forEach((workoutBlock) => {
+      if(workoutBlock.includes("block")){
+        // generate a steady state block
+        addBar(1, 300)
+        
+      }
+      
+    })
+    
+  }
+
   return (
     <div className="container">
       <Helmet>
@@ -1173,7 +1196,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
           </div>
         </div>
       }
-
+      <textarea onChange={(e) => transformTextToWorkout(e.target.value)}></textarea>
       <div id="editor" className='editor'>
         {actionId &&
           <div className='actions'>
@@ -1198,7 +1221,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
               </select>
             }
           </div>
-        }
+        }        
         <div className='canvas' ref={canvasRef}>          
           {actionId &&
             <div className='fader' style={{width: canvasRef.current?.scrollWidth}} onClick={() => setActionId(undefined)}></div>
