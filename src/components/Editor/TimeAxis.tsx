@@ -1,45 +1,12 @@
 import React from "react";
 import "./XAxis.css";
 
+const hoursBy10Minutes = (hours: number): string[] => 
+  ([...new Array(hours)]).flatMap((v, h) => ["00", "10", "20", "30", "40", "50"].map(m => `${h}:${m}`));
+
 const TimeAxis = ({ width }: { width: number }) => (
   <div className='x-axis x-axis-time' style={{ width }}>
-    <span>0:00</span>
-    <span>0:10</span>
-    <span>0:20</span>
-    <span>0:30</span>
-    <span>0:40</span>
-    <span>0:50</span>
-    <span>1:00</span>
-    <span>1:10</span>
-    <span>1:20</span>
-    <span>1:30</span>
-    <span>1:40</span>
-    <span>1:50</span>
-    <span>2:00</span>
-    <span>2:10</span>
-    <span>2:20</span>
-    <span>2:30</span>
-    <span>2:40</span>
-    <span>2:50</span>
-    <span>3:00</span>
-    <span>3:10</span>
-    <span>3:20</span>
-    <span>3:30</span>
-    <span>3:40</span>
-    <span>3:50</span>
-    <span>4:00</span>
-    <span>4:10</span>
-    <span>4:20</span>
-    <span>4:30</span>
-    <span>4:40</span>
-    <span>4:50</span>
-    <span>5:00</span>
-    <span>5:10</span>
-    <span>5:20</span>
-    <span>5:30</span>
-    <span>5:40</span>
-    <span>5:50</span>
-    <span>6:00</span>
+    {hoursBy10Minutes(6).map(time => (<span key={time}>{time}</span>))}
   </div>
 );
 
