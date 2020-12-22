@@ -11,6 +11,7 @@ import Footer from '../Footer/Footer'
 import Workouts from '../Workouts/Workouts'
 import Checkbox from './Checkbox'
 import TimeAxis from './TimeAxis'
+import DistanceAxis from './DistanceAxis'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTrash, faArrowRight, faArrowLeft, faFile, faSave, faUpload, faDownload, faComment, faBicycle, faCopy, faClock, faShareAlt, faTimesCircle, faList, faBiking, faRunning, faRuler } from '@fortawesome/free-solid-svg-icons'
 import { ReactComponent as WarmdownLogo } from '../../assets/warmdown.svg'
@@ -1229,13 +1230,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
             {instructions.map((instruction, index) => renderComment(instruction, index))}
           </div>
 
-          {durationType === 'time' ?
-          <TimeAxis width={segmentsWidth} />
-          :        
-          <div className='timeline run' style={{width: segmentsWidth}}>            
-            {[...Array(44)].map((e,i) => <span key={i}>{i}K</span>)}            
-          </div>
-        }
+          {durationType === 'time' ? <TimeAxis width={segmentsWidth} /> : <DistanceAxis width={segmentsWidth} />}
         </div>        
         
         <div className='zones'>
