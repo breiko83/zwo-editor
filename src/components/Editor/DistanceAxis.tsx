@@ -3,7 +3,7 @@ import "./XAxis.css";
 
 const DistanceAxis = ({ width }: { width: number }) => (
   <div className='x-axis x-axis-distance' style={{ width }}>
-    {[...Array(44)].map((e,i) => <span key={i}>{i}K</span>)}
+    {[...new Array(44)].map((e,i) => <span key={i}>{i}K</span>)}
   </div>
 );
 
