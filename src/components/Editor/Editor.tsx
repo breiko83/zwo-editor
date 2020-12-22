@@ -12,6 +12,7 @@ import Workouts from '../Workouts/Workouts'
 import Checkbox from './Checkbox'
 import TimeAxis from './TimeAxis'
 import DistanceAxis from './DistanceAxis'
+import ZoneAxis from './ZoneAxis'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTrash, faArrowRight, faArrowLeft, faFile, faSave, faUpload, faDownload, faComment, faBicycle, faCopy, faClock, faShareAlt, faTimesCircle, faList, faBiking, faRunning, faRuler } from '@fortawesome/free-solid-svg-icons'
 import { ReactComponent as WarmdownLogo } from '../../assets/warmdown.svg'
@@ -1233,14 +1234,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
           {durationType === 'time' ? <TimeAxis width={segmentsWidth} /> : <DistanceAxis width={segmentsWidth} />}
         </div>        
         
-        <div className='zones'>
-          <div style={{ height: 250 * Zones.Z6.max }}>Z6</div>
-          <div style={{ height: 250 * Zones.Z5.max }}>Z5</div>
-          <div style={{ height: 250 * Zones.Z4.max }}>Z4</div>
-          <div style={{ height: 250 * Zones.Z3.max }}>Z3</div>
-          <div style={{ height: 250 * Zones.Z2.max }}>Z2</div>
-          <div style={{ height: 250 * Zones.Z1.max }}>Z1</div>
-        </div>
+        <ZoneAxis />
       </div>
       <div className='cta'>
         {sportType === "bike" ?
