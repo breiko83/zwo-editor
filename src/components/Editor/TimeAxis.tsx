@@ -1,7 +1,8 @@
 import React from "react";
+import "./XAxis.css";
 
 const TimeAxis = ({ width }: { width: number }) => (
-  <div className='timeline' style={{ width }}>
+  <div className='x-axis x-axis-time' style={{ width }}>
     <span>0:00</span>
     <span>0:10</span>
     <span>0:20</span>
