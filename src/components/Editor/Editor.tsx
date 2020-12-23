@@ -31,6 +31,7 @@ import { stringType } from 'aws-sdk/clients/iam'
 import TimePicker from 'rc-time-picker'
 import 'rc-time-picker/assets/index.css'
 import moment from 'moment'
+import ShareForm from '../Forms/ShareForm'
 
 interface Bar {
   id: string,
@@ -92,12 +93,9 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
   const [user, setUser] = useState<firebase.User | null>(null)
   const [visibleForm, setVisibleForm] = useState('login') // default form is login
 
-  const sherableLinkRef = useRef<HTMLInputElement>(null);
   const canvasRef = useRef<HTMLInputElement>(null);
   const segmentsRef = useRef<HTMLInputElement>(null);
   const [segmentsWidth, setSegmentsWidth] = useState(1320);
-
-  const [copied, setCopied] = useState('')
 
   const [message, setMessage] = useState<Message>()
 
@@ -532,7 +530,6 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
   function shareWorkout() {
     if (user) {
       save()
-      setCopied('')
       setSharePopupVisibility(true)
     } else {
       saveWorkout()
@@ -957,13 +954,6 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
     }
   }
 
-  const copyToClipboard = () => {
-    const node = sherableLinkRef.current
-    node?.select();
-    document.execCommand('copy');
-    setCopied('copied!')
-  }
-
   function setPace(value: string, id: string) {
     const index = bars.findIndex(bar => bar.id === id)
 
@@ -1058,16 +1048,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
       }
       {sharePopupIsVisile &&
         <Popup width="500px" dismiss={() => setSharePopupVisibility(false)}>
-          <div>
-            <h2>Share Workout</h2>
-            <div className="form-control">
-              <label htmlFor="link">Share this link</label>
-              <input type="text" name="link" value={"https://www.zwiftworkout.com/editor/" + id} ref={sherableLinkRef} />
-              <button onClick={() => copyToClipboard()}><FontAwesomeIcon icon={faCopy} size="lg" fixedWidth /> {copied}</button>
-              <button className="btn" onClick={() => setSharePopupVisibility(false)}>Dismiss</button>
-            </div>
-          </div>
-
+          <ShareForm id={id} onDismiss={() => setSharePopupVisibility(false)} />
         </Popup>
       }
       <div className="info">
