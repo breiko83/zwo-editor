@@ -25,19 +25,16 @@ export default function createWorkoutXml({ author, name, description, sportType,
     .ele('durationType', durationType).up()
     .ele('tags')
 
-  tags.map((tag: string) => {
+  tags.forEach((tag: string) => {
     var t: Builder.XMLNode
     t = Builder.create('tag')
       .att('name', tag)
     xml.importDocument(t)
-    return false;
   })
 
   xml = xml.up().ele('workout')
 
-
-  bars.map((bar, index) => {
-
+  bars.forEach((bar, index) => {
     var segment: Builder.XMLNode
     var ramp
 
@@ -98,12 +95,12 @@ export default function createWorkoutXml({ author, name, description, sportType,
 
     // add instructions if present
     if (durationType === 'time') {
-      instructions.filter((instruction) => (instruction.time >= totalTime && instruction.time < (totalTime + bar.time))).map((i) => {
-        return segment.ele('textevent', { timeoffset: (i.time - totalTime), message: i.text })
+      instructions.filter((instruction) => (instruction.time >= totalTime && instruction.time < (totalTime + bar.time))).forEach((i) => {
+        segment.ele('textevent', { timeoffset: (i.time - totalTime), message: i.text })
       })
     } else {
-      instructions.filter((instruction) => (instruction.length >= totalLength && instruction.length < (totalLength + (bar.length || 0)))).map((i) => {
-        return segment.ele('textevent', { distoffset: (i.length - totalLength), message: i.text })
+      instructions.filter((instruction) => (instruction.length >= totalLength && instruction.length < (totalLength + (bar.length || 0)))).forEach((i) => {
+        segment.ele('textevent', { distoffset: (i.length - totalLength), message: i.text })
       })
     }
 
@@ -111,8 +108,6 @@ export default function createWorkoutXml({ author, name, description, sportType,
 
     totalTime = totalTime + bar.time
     totalLength = totalLength + (bar.length || 0)
-
-    return false
   })
 
   return xml.end({ pretty: true });
