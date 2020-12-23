@@ -9,7 +9,6 @@ import Comment from '../Comment/Comment'
 import Popup from '../Popup/Popup'
 import Footer from '../Footer/Footer'
 import Workouts from '../Workouts/Workouts'
-import Checkbox from './Checkbox'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTrash, faArrowRight, faArrowLeft, faFile, faSave, faUpload, faDownload, faComment, faBicycle, faCopy, faClock, faShareAlt, faTimesCircle, faList, faBiking, faRunning, faRuler } from '@fortawesome/free-solid-svg-icons'
 import { ReactComponent as WarmdownLogo } from '../../assets/warmdown.svg'
@@ -21,6 +20,7 @@ import Builder from 'xmlbuilder'
 import Converter from 'xml-js'
 import helpers from '../helpers'
 import firebase, { auth } from '../firebase'
+import SaveForm from '../Forms/SaveForm'
 import SignupForm from '../Forms/SignupForm'
 import LoginForm from '../Forms/LoginForm'
 import { Helmet } from "react-helmet";
@@ -114,8 +114,6 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
   const [tenKmTime, setTenKmTime] = useState(localStorage.getItem('tenKmTime') || '')
   const [halfMarathonTime, setHalfMarathonTime] = useState(localStorage.getItem('halfMarathonTime') || '')
   const [marathonTime, setMarathonTime] = useState(localStorage.getItem('marathonTime') || '')
-
-  const DEFAULT_TAGS = ["Recovery", "Intervals", "FTP", "TT"]
 
   const db = firebase.database();
 
@@ -966,29 +964,6 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
     setCopied('copied!')
   }
 
-  const handleOnCheckboxChange = (option: any) => {
-    if (tags.includes(option)) {
-      const updatedArray = [...tags]
-      setTags(updatedArray.filter(item => item !== option))
-    } else {
-      setTags((tags: any) => [...tags, option])
-    }
-  }
-
-  const createCheckbox = (option: string) => {
-    return (
-      <Checkbox
-        label={option}
-        isSelected={tags.includes(option)}
-        onCheckboxChange={() => handleOnCheckboxChange(option)}
-      />
-    )
-  }
-
-  const renderCheckboxes = () => {
-    return DEFAULT_TAGS.map(createCheckbox)
-  }
-
   function setPace(value: string, id: string) {
     const index = bars.findIndex(bar => bar.id === id)
 
@@ -1060,33 +1035,22 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
       {savePopupIsVisile &&
         <Popup width="500px" dismiss={() => setSavePopupVisibility(false)}>
           {user ?
-            <div>
-              <h2>Save Workout</h2>
-              <div className="form-control">
-                <label htmlFor="name">Workout Title</label>
-                <input type="text" name="name" placeholder="Workout title" value={name} onChange={(e) => setName(e.target.value)} />
-              </div>
-              <div className="form-control">
-                <label htmlFor="description">Workout description</label>
-                <textarea name="description" placeholder="Workout description" value={description} onChange={(e) => setDescription(e.target.value)}></textarea>
-              </div>
-              <div className="form-control">
-                <label htmlFor="author">Workout Author</label>
-                <input type="text" name="author" placeholder="Workout Author" value={author} onChange={(e) => setAuthor(e.target.value)} />
-              </div>
-              <div className="form-control">
-                <label htmlFor="author">Workout Tags</label>
-                {renderCheckboxes()}
-              </div>
-              <div className="form-control">
-                <button className="btn btn-primary" onClick={() => {
-                  save()
-                  setSavePopupVisibility(false)
-                }}>Save</button>
-                <button className="btn" onClick={() => setSavePopupVisibility(false)}>Dismiss</button>
-                <button onClick={() => logout()}>Logout</button>
-              </div>
-            </div>
+            <SaveForm
+              name={name}
+              description={description}
+              author={author}
+              tags={tags}
+              onNameChange={setName}
+              onDescriptionChange={setDescription}
+              onAuthorChange={setAuthor}
+              onTagsChange={setTags}
+              onSave={() => {
+                save()
+                setSavePopupVisibility(false)
+              }}
+              onDismiss={() => setSavePopupVisibility(false)}
+              onLogout={logout}
+            />
             :
             renderRegistrationForm()
           }
