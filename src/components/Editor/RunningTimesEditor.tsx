@@ -44,29 +44,37 @@ export default function RunningTimesEditor(props: RunningTimesEditorProps) {
 
   return (
     <div className="run-workout">
-      <div className="form-input">
-        <label><abbr title="hh:mm:ss">1 Mile Time</abbr></label>       
-        <TimePicker value={props.oneMileTime === '' ? undefined : moment(props.oneMileTime, "HH:mm:ss")} placeholder="00:00:00" defaultOpenValue={moment("00:00:00")} className="timePicker" onChange={(value) => value ? props.onOneMileTimeChange(value.format("HH:mm:ss")) : props.onOneMileTimeChange('')} />
-      </div>
-      <div className="form-input">
-        <label><abbr title="hh:mm:ss">5 Km Time</abbr></label>
-        <TimePicker value={props.fiveKmTime === '' ? undefined : moment(props.fiveKmTime, "HH:mm:ss")} placeholder="00:00:00" defaultOpenValue={moment("00:00:00")} className="timePicker" onChange={(value) => value ? props.onFiveKmTimeChange(value.format("HH:mm:ss")) : props.onFiveKmTimeChange('')} />            
-      </div>
-      <div className="form-input">
-        <label><abbr title="hh:mm:ss">10 Km Time</abbr></label>
-        <TimePicker value={props.tenKmTime === '' ? undefined : moment(props.tenKmTime, "HH:mm:ss")} placeholder="00:00:00" defaultOpenValue={moment("00:00:00")} className="timePicker" onChange={(value) => value ? props.onTenKmTimeChange(value.format("HH:mm:ss")) : props.onTenKmTimeChange('')} />            
-      </div>
-      <div className="form-input">
-        <label><abbr title="hh:mm:ss">Half Marathon Time</abbr></label>            
-        <TimePicker value={props.halfMarathonTime === '' ? undefined : moment(props.halfMarathonTime, "HH:mm:ss")} placeholder="00:00:00" defaultOpenValue={moment("00:00:00")} className="timePicker" onChange={(value) => value ? props.onHalfMarathonTimeChange(value.format("HH:mm:ss")) : props.onHalfMarathonTimeChange('')} />                        
-      </div>
-      <div className="form-input">
-        <label><abbr title="hh:mm:ss">Marathon Time</abbr></label>            
-        <TimePicker value={props.marathonTime === '' ? undefined : moment(props.marathonTime, "HH:mm:ss")} placeholder="00:00:00" defaultOpenValue={moment("00:00:00")} className="timePicker" onChange={(value) => value ? props.onMarathonTimeChange(value.format("HH:mm:ss")) : props.onMarathonTimeChange('')} />                        
-      </div>
+      <RunTimeInput time={props.oneMileTime} onChange={props.onOneMileTimeChange}>
+        1 Mile Time
+      </RunTimeInput>
+      <RunTimeInput time={props.fiveKmTime} onChange={props.onFiveKmTimeChange}>
+        5 Km Time
+      </RunTimeInput>
+      <RunTimeInput time={props.tenKmTime} onChange={props.onTenKmTimeChange}>
+        10 Mile Time
+      </RunTimeInput>
+      <RunTimeInput time={props.halfMarathonTime} onChange={props.onHalfMarathonTimeChange}>
+        Half Marathon Time
+      </RunTimeInput>
+      <RunTimeInput time={props.marathonTime} onChange={props.onMarathonTimeChange}>
+        Marathon Time
+      </RunTimeInput>
       <div className="form-input">
         <button onClick={estimateRunningTimes} className="btn">Estimate missing times</button>
       </div>
     </div>
   );
 }
+
+const RunTimeInput: React.FC<{time: string, onChange: (time: string) => void}> = ({time, onChange, children}) => (
+  <div className="form-input">
+    <label><abbr title="hh:mm:ss">{children}</abbr></label>
+    <TimePicker
+      value={time === '' ? undefined : moment(time, "HH:mm:ss")}
+      placeholder="00:00:00"
+      defaultOpenValue={moment("00:00:00")}
+      className="timePicker"
+      onChange={(value) => onChange(value ? value.format("HH:mm:ss") : '')}
+    />
+  </div>
+);
