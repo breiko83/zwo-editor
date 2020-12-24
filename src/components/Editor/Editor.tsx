@@ -28,9 +28,7 @@ import { RouteComponentProps } from 'react-router-dom';
 import ReactGA from 'react-ga';
 import Switch from "react-switch";
 import { stringType } from 'aws-sdk/clients/iam'
-import TimePicker from 'rc-time-picker'
-import 'rc-time-picker/assets/index.css'
-import moment from 'moment'
+import RunningTimesEditor from './RunningTimesEditor'
 
 interface Bar {
   id: string,
@@ -272,31 +270,6 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
         //console.log(event.keyCode);        
         break;
     }
-  }
-
-  function estimateRunningTimes() {
-
-    const distances = [1.60934, 5, 10, 21.0975, 42.195, 1.60934]
-    const times = [oneMileTime, fiveKmTime, tenKmTime, halfMarathonTime, marathonTime, '00:11:20']
-
-    var estimatedTimes = helpers.calculateEstimatedTimes(distances, times)
-
-    if (!oneMileTime) {
-      setOneMileTime(estimatedTimes[0])
-    }
-    if (!fiveKmTime) {
-      setFiveKmTime(estimatedTimes[1])
-    }
-    if (!tenKmTime) {
-      setTenKmTime(estimatedTimes[2])
-    }
-    if (!halfMarathonTime) {
-      setHalfMarathonTime(estimatedTimes[3])
-    }
-    if (!marathonTime) {
-      setMarathonTime(estimatedTimes[4])
-    }
-
   }
 
   function addBar(zone: number, duration: number = 300, cadence: number = 0, pace: number = 0, length: number = 200) {
@@ -1149,31 +1122,18 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
         </div>
       </div>
       {sportType === "run" &&
-        <div className="run-workout">
-          <div className="form-input">
-            <label><abbr title="hh:mm:ss">1 Mile Time</abbr></label>       
-            <TimePicker value={oneMileTime === '' ? undefined : moment(oneMileTime, "HH:mm:ss")} placeholder="00:00:00" defaultOpenValue={moment("00:00:00")} className="timePicker" onChange={(value) => value ? setOneMileTime(value.format("HH:mm:ss")) : setOneMileTime('')} />
-          </div>
-          <div className="form-input">
-            <label><abbr title="hh:mm:ss">5 Km Time</abbr></label>
-            <TimePicker value={fiveKmTime === '' ? undefined : moment(fiveKmTime, "HH:mm:ss")} placeholder="00:00:00" defaultOpenValue={moment("00:00:00")} className="timePicker" onChange={(value) => value ? setFiveKmTime(value.format("HH:mm:ss")) : setFiveKmTime('')} />            
-          </div>
-          <div className="form-input">
-            <label><abbr title="hh:mm:ss">10 Km Time</abbr></label>
-            <TimePicker value={tenKmTime === '' ? undefined : moment(tenKmTime, "HH:mm:ss")} placeholder="00:00:00" defaultOpenValue={moment("00:00:00")} className="timePicker" onChange={(value) => value ? setTenKmTime(value.format("HH:mm:ss")) : setTenKmTime('')} />            
-          </div>
-          <div className="form-input">
-            <label><abbr title="hh:mm:ss">Half Marathon Time</abbr></label>            
-            <TimePicker value={halfMarathonTime === '' ? undefined : moment(halfMarathonTime, "HH:mm:ss")} placeholder="00:00:00" defaultOpenValue={moment("00:00:00")} className="timePicker" onChange={(value) => value ? setHalfMarathonTime(value.format("HH:mm:ss")) : setHalfMarathonTime('')} />                        
-          </div>
-          <div className="form-input">
-            <label><abbr title="hh:mm:ss">Marathon Time</abbr></label>            
-            <TimePicker value={marathonTime === '' ? undefined : moment(marathonTime, "HH:mm:ss")} placeholder="00:00:00" defaultOpenValue={moment("00:00:00")} className="timePicker" onChange={(value) => value ? setMarathonTime(value.format("HH:mm:ss")) : setMarathonTime('')} />                        
-          </div>
-          <div className="form-input">
-            <button onClick={estimateRunningTimes} className="btn">Estimate missing times</button>
-          </div>
-        </div>
+        <RunningTimesEditor
+          oneMileTime={oneMileTime}
+          fiveKmTime={fiveKmTime}
+          tenKmTime={tenKmTime}
+          halfMarathonTime={halfMarathonTime}
+          marathonTime={marathonTime}
+          onOneMileTimeChange={setOneMileTime}
+          onFiveKmTimeChange={setFiveKmTime}
+          onTenKmTimeChange={setTenKmTime}
+          onHalfMarathonTimeChange={setHalfMarathonTime}
+          onMarathonTimeChange={setMarathonTime}
+        />
       }
 
       <div id="editor" className='editor'>
