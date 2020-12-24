@@ -64,6 +64,26 @@ interface Message {
 
 type TParams = { id: string };
 
+const loadRunningTimes = (): RunningTimes => {
+  const missingRunningTimes: RunningTimes = { oneMile: "", fiveKm: "", tenKm: "", halfMarathon: "", marathon: "" }
+  const runningTimesJson = localStorage.getItem('runningTimes')
+  if (runningTimesJson) {
+    return JSON.parse(runningTimesJson)
+  }
+
+  // Fallback to old localStorage keys
+  const oneMile = localStorage.getItem('oneMileTime') || ''
+  const fiveKm = localStorage.getItem('fiveKmTime') || ''
+  const tenKm = localStorage.getItem('tenKmTime') || ''
+  const halfMarathon = localStorage.getItem('halfMarathonTime') || ''
+  const marathon = localStorage.getItem('marathonTime') || ''
+  if (oneMile || fiveKm || tenKm || halfMarathon || marathon) {
+    return { oneMile, fiveKm, tenKm, halfMarathon, marathon }
+  }
+
+  return missingRunningTimes
+}
+
 const Editor = ({ match }: RouteComponentProps<TParams>) => {
 
   const { v4: uuidv4 } = require('uuid');
@@ -107,9 +127,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
   // distance or time
   const [durationType, setDurationType] = useState(localStorage.getItem('durationType') || 'time')
 
-  const missingRunningTimes: RunningTimes = { oneMile: "", fiveKm: "", tenKm: "", halfMarathon: "", marathon: "" }
-
-  const [runningTimes, setRunningTimes] = useState<RunningTimes>(JSON.parse(localStorage.getItem('runningTimes') || 'null') || missingRunningTimes)
+  const [runningTimes, setRunningTimes] = useState(loadRunningTimes())
 
   const DEFAULT_TAGS = ["Recovery", "Intervals", "FTP", "TT"]
 
