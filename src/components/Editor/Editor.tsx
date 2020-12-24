@@ -28,7 +28,7 @@ import { RouteComponentProps } from 'react-router-dom';
 import ReactGA from 'react-ga';
 import Switch from "react-switch";
 import { stringType } from 'aws-sdk/clients/iam'
-import RunningTimesEditor from './RunningTimesEditor'
+import RunningTimesEditor, { RunningTimes } from './RunningTimesEditor'
 
 interface Bar {
   id: string,
@@ -107,11 +107,9 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
   // distance or time
   const [durationType, setDurationType] = useState(localStorage.getItem('durationType') || 'time')
 
-  const [oneMileTime, setOneMileTime] = useState(localStorage.getItem('oneMileTime') || '')
-  const [fiveKmTime, setFiveKmTime] = useState(localStorage.getItem('fiveKmTime') || '')
-  const [tenKmTime, setTenKmTime] = useState(localStorage.getItem('tenKmTime') || '')
-  const [halfMarathonTime, setHalfMarathonTime] = useState(localStorage.getItem('halfMarathonTime') || '')
-  const [marathonTime, setMarathonTime] = useState(localStorage.getItem('marathonTime') || '')
+  const missingRunningTimes: RunningTimes = { oneMile: "", fiveKm: "", tenKm: "", halfMarathon: "", marathon: "" }
+
+  const [runningTimes, setRunningTimes] = useState<RunningTimes>(JSON.parse(localStorage.getItem('runningTimes') || 'null') || missingRunningTimes)
 
   const DEFAULT_TAGS = ["Recovery", "Intervals", "FTP", "TT"]
 
@@ -187,15 +185,11 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
     localStorage.setItem('sportType', sportType)
     localStorage.setItem('durationType', durationType)
 
-    localStorage.setItem('oneMileTime', oneMileTime)
-    localStorage.setItem('fiveKmTime', fiveKmTime)
-    localStorage.setItem('tenKmTime', tenKmTime)
-    localStorage.setItem('halfMarathonTime', halfMarathonTime)
-    localStorage.setItem('marathonTime', marathonTime)
+    localStorage.setItem('runningTimes', JSON.stringify(runningTimes))
 
     setSegmentsWidth(segmentsRef.current?.scrollWidth || 1320)    
 
-  }, [segmentsRef, bars, ftp, instructions, weight, name, description, author, tags, sportType, durationType, oneMileTime, fiveKmTime, tenKmTime, halfMarathonTime, marathonTime])
+  }, [segmentsRef, bars, ftp, instructions, weight, name, description, author, tags, sportType, durationType, runningTimes])
 
   function generateId() {
     return Math.random().toString(36).substr(2, 16)
@@ -831,7 +825,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
       // return speed in m/s
       // speed  = distance / time
       const distances = [1.60934, 5, 10, 21.0975, 42.195]
-      const times = [oneMileTime, fiveKmTime, tenKmTime, halfMarathonTime, marathonTime]
+      const times = [runningTimes.oneMile, runningTimes.fiveKm, runningTimes.tenKm, runningTimes.halfMarathon, runningTimes.marathon]
 
       return distances[pace] * 1000 / helpers.getTimeinSeconds(times[pace])
     }
@@ -1121,20 +1115,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
           
         </div>
       </div>
-      {sportType === "run" &&
-        <RunningTimesEditor
-          oneMileTime={oneMileTime}
-          fiveKmTime={fiveKmTime}
-          tenKmTime={tenKmTime}
-          halfMarathonTime={halfMarathonTime}
-          marathonTime={marathonTime}
-          onOneMileTimeChange={setOneMileTime}
-          onFiveKmTimeChange={setFiveKmTime}
-          onTenKmTimeChange={setTenKmTime}
-          onHalfMarathonTimeChange={setHalfMarathonTime}
-          onMarathonTimeChange={setMarathonTime}
-        />
-      }
+      {sportType === "run" && <RunningTimesEditor times={runningTimes} onChange={setRunningTimes} />}
 
       <div id="editor" className='editor'>
         {actionId &&
