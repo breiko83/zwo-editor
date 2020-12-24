@@ -1,5 +1,5 @@
 import React from "react";
-import Checkbox from "../Editor/Checkbox";
+import Checkbox from "./Checkbox";
 
 const DEFAULT_TAGS = ["Recovery", "Intervals", "FTP", "TT"]
 
