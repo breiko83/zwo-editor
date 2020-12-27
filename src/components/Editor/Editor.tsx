@@ -29,12 +29,10 @@ import { Helmet } from "react-helmet";
 import { RouteComponentProps } from 'react-router-dom';
 import ReactGA from 'react-ga';
 import Switch from "react-switch";
-import { stringType } from 'aws-sdk/clients/iam'
-import TimePicker from 'rc-time-picker'
-import 'rc-time-picker/assets/index.css'
-import moment from 'moment'
+import RunningTimesEditor, { RunningTimes } from './RunningTimesEditor'
 import createWorkoutXml from './createWorkoutXml'
 import ShareForm from '../Forms/ShareForm'
+
 
 export interface Bar {
   id: string,
@@ -69,6 +67,26 @@ interface Message {
 }
 
 type TParams = { id: string };
+
+const loadRunningTimes = (): RunningTimes => {
+  const missingRunningTimes: RunningTimes = { oneMile: "", fiveKm: "", tenKm: "", halfMarathon: "", marathon: "" }
+  const runningTimesJson = localStorage.getItem('runningTimes')
+  if (runningTimesJson) {
+    return JSON.parse(runningTimesJson)
+  }
+
+  // Fallback to old localStorage keys
+  const oneMile = localStorage.getItem('oneMileTime') || ''
+  const fiveKm = localStorage.getItem('fiveKmTime') || ''
+  const tenKm = localStorage.getItem('tenKmTime') || ''
+  const halfMarathon = localStorage.getItem('halfMarathonTime') || ''
+  const marathon = localStorage.getItem('marathonTime') || ''
+  if (oneMile || fiveKm || tenKm || halfMarathon || marathon) {
+    return { oneMile, fiveKm, tenKm, halfMarathon, marathon }
+  }
+
+  return missingRunningTimes
+}
 
 const Editor = ({ match }: RouteComponentProps<TParams>) => {
 
@@ -110,11 +128,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
   // distance or time
   const [durationType, setDurationType] = useState(localStorage.getItem('durationType') || 'time')
 
-  const [oneMileTime, setOneMileTime] = useState(localStorage.getItem('oneMileTime') || '')
-  const [fiveKmTime, setFiveKmTime] = useState(localStorage.getItem('fiveKmTime') || '')
-  const [tenKmTime, setTenKmTime] = useState(localStorage.getItem('tenKmTime') || '')
-  const [halfMarathonTime, setHalfMarathonTime] = useState(localStorage.getItem('halfMarathonTime') || '')
-  const [marathonTime, setMarathonTime] = useState(localStorage.getItem('marathonTime') || '')
+  const [runningTimes, setRunningTimes] = useState(loadRunningTimes())
 
   const db = firebase.database();
 
@@ -188,15 +202,11 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
     localStorage.setItem('sportType', sportType)
     localStorage.setItem('durationType', durationType)
 
-    localStorage.setItem('oneMileTime', oneMileTime)
-    localStorage.setItem('fiveKmTime', fiveKmTime)
-    localStorage.setItem('tenKmTime', tenKmTime)
-    localStorage.setItem('halfMarathonTime', halfMarathonTime)
-    localStorage.setItem('marathonTime', marathonTime)
+    localStorage.setItem('runningTimes', JSON.stringify(runningTimes))
 
     setSegmentsWidth(segmentsRef.current?.scrollWidth || 1320)    
 
-  }, [segmentsRef, bars, ftp, instructions, weight, name, description, author, tags, sportType, durationType, oneMileTime, fiveKmTime, tenKmTime, halfMarathonTime, marathonTime])
+  }, [segmentsRef, bars, ftp, instructions, weight, name, description, author, tags, sportType, durationType, runningTimes])
 
   function generateId() {
     return Math.random().toString(36).substr(2, 16)
@@ -271,31 +281,6 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
         //console.log(event.keyCode);        
         break;
     }
-  }
-
-  function estimateRunningTimes() {
-
-    const distances = [1.60934, 5, 10, 21.0975, 42.195, 1.60934]
-    const times = [oneMileTime, fiveKmTime, tenKmTime, halfMarathonTime, marathonTime, '00:11:20']
-
-    var estimatedTimes = helpers.calculateEstimatedTimes(distances, times)
-
-    if (!oneMileTime) {
-      setOneMileTime(estimatedTimes[0])
-    }
-    if (!fiveKmTime) {
-      setFiveKmTime(estimatedTimes[1])
-    }
-    if (!tenKmTime) {
-      setTenKmTime(estimatedTimes[2])
-    }
-    if (!halfMarathonTime) {
-      setHalfMarathonTime(estimatedTimes[3])
-    }
-    if (!marathonTime) {
-      setMarathonTime(estimatedTimes[4])
-    }
-
   }
 
   function addBar(zone: number, duration: number = 300, cadence: number = 0, pace: number = 0, length: number = 200) {
@@ -713,7 +698,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
 
           var totalTime = 0
 
-          workout_file.elements[workoutIndex].elements.map((w: { name: string; attributes: { Power: any; PowerLow: string; Duration: string; PowerHigh: string; Cadence: string; Repeat: string; OnDuration: string; OffDuration: string; OnPower: string, OffPower: string; Pace: stringType }; elements: any }) => {
+          workout_file.elements[workoutIndex].elements.map((w: { name: string; attributes: { Power: any; PowerLow: string; Duration: string; PowerHigh: string; Cadence: string; Repeat: string; OnDuration: string; OffDuration: string; OnPower: string, OffPower: string; Pace: string }; elements: any }) => {
 
             let duration = parseFloat(w.attributes.Duration)
 
@@ -764,7 +749,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
       // return speed in m/s
       // speed  = distance / time
       const distances = [1.60934, 5, 10, 21.0975, 42.195]
-      const times = [oneMileTime, fiveKmTime, tenKmTime, halfMarathonTime, marathonTime]
+      const times = [runningTimes.oneMile, runningTimes.fiveKm, runningTimes.tenKm, runningTimes.halfMarathon, runningTimes.marathon]
 
       return distances[pace] * 1000 / helpers.getTimeinSeconds(times[pace])
     }
@@ -1004,33 +989,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
           
         </div>
       </div>
-      {sportType === "run" &&
-        <div className="run-workout">
-          <div className="form-input">
-            <label><abbr title="hh:mm:ss">1 Mile Time</abbr></label>       
-            <TimePicker value={oneMileTime === '' ? undefined : moment(oneMileTime, "HH:mm:ss")} placeholder="00:00:00" defaultOpenValue={moment("00:00:00")} className="timePicker" onChange={(value) => value ? setOneMileTime(value.format("HH:mm:ss")) : setOneMileTime('')} />
-          </div>
-          <div className="form-input">
-            <label><abbr title="hh:mm:ss">5 Km Time</abbr></label>
-            <TimePicker value={fiveKmTime === '' ? undefined : moment(fiveKmTime, "HH:mm:ss")} placeholder="00:00:00" defaultOpenValue={moment("00:00:00")} className="timePicker" onChange={(value) => value ? setFiveKmTime(value.format("HH:mm:ss")) : setFiveKmTime('')} />            
-          </div>
-          <div className="form-input">
-            <label><abbr title="hh:mm:ss">10 Km Time</abbr></label>
-            <TimePicker value={tenKmTime === '' ? undefined : moment(tenKmTime, "HH:mm:ss")} placeholder="00:00:00" defaultOpenValue={moment("00:00:00")} className="timePicker" onChange={(value) => value ? setTenKmTime(value.format("HH:mm:ss")) : setTenKmTime('')} />            
-          </div>
-          <div className="form-input">
-            <label><abbr title="hh:mm:ss">Half Marathon Time</abbr></label>            
-            <TimePicker value={halfMarathonTime === '' ? undefined : moment(halfMarathonTime, "HH:mm:ss")} placeholder="00:00:00" defaultOpenValue={moment("00:00:00")} className="timePicker" onChange={(value) => value ? setHalfMarathonTime(value.format("HH:mm:ss")) : setHalfMarathonTime('')} />                        
-          </div>
-          <div className="form-input">
-            <label><abbr title="hh:mm:ss">Marathon Time</abbr></label>            
-            <TimePicker value={marathonTime === '' ? undefined : moment(marathonTime, "HH:mm:ss")} placeholder="00:00:00" defaultOpenValue={moment("00:00:00")} className="timePicker" onChange={(value) => value ? setMarathonTime(value.format("HH:mm:ss")) : setMarathonTime('')} />                        
-          </div>
-          <div className="form-input">
-            <button onClick={estimateRunningTimes} className="btn">Estimate missing times</button>
-          </div>
-        </div>
-      }
+      {sportType === "run" && <RunningTimesEditor times={runningTimes} onChange={setRunningTimes} />}
 
       <div id="editor" className='editor'>
         {actionId &&
