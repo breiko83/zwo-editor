@@ -279,37 +279,3 @@ label {
 .switch > .icon.active {
   color: #00C46A;  
 }
-
-.run-workout {
-  display: flex;  
-  margin: 0 auto;
-  flex-direction: row;  
-  width: 100%;
-  max-width: 1360px;
-  
-}
-
-.run-workout > .form-input {
-  padding-right: 10px;
-  align-self: flex-end;
-}
-
-.timePicker {
-  width: 120px;  
-}
-
-.timePicker > input{
-  font-size: 18px;  
-  font-family: monospace;
-  color: black;
-}
-
-.rc-time-picker-panel-input {
-  font-size: 18px;  
-  font-family: monospace;
-}
-
-.rc-time-picker-panel-select > ul > li {
-  font-size: 16px;  
-  font-family: monospace;
-}
