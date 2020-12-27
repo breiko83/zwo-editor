@@ -9,7 +9,9 @@ import Comment from '../Comment/Comment'
 import Popup from '../Popup/Popup'
 import Footer from '../Footer/Footer'
 import Workouts from '../Workouts/Workouts'
-import Checkbox from './Checkbox'
+import TimeAxis from './TimeAxis'
+import DistanceAxis from './DistanceAxis'
+import ZoneAxis from './ZoneAxis'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTrash, faArrowRight, faArrowLeft, faFile, faSave, faUpload, faDownload, faComment, faBicycle, faCopy, faClock, faShareAlt, faTimesCircle, faList, faBiking, faRunning, faRuler } from '@fortawesome/free-solid-svg-icons'
 import { ReactComponent as WarmdownLogo } from '../../assets/warmdown.svg'
@@ -17,10 +19,10 @@ import { ReactComponent as WarmupLogo } from '../../assets/warmup.svg'
 import { ReactComponent as IntervalLogo } from '../../assets/interval.svg'
 import { ReactComponent as SteadyLogo } from '../../assets/steady.svg'
 import CadenceIcon from '../../assets/cadence.png'
-import Builder from 'xmlbuilder'
 import Converter from 'xml-js'
 import helpers from '../helpers'
 import firebase, { auth } from '../firebase'
+import SaveForm from '../Forms/SaveForm'
 import SignupForm from '../Forms/SignupForm'
 import LoginForm from '../Forms/LoginForm'
 import { Helmet } from "react-helmet";
@@ -29,8 +31,10 @@ import ReactGA from 'react-ga';
 import Switch from "react-switch";
 import { stringType } from 'aws-sdk/clients/iam'
 import RunningTimesEditor, { RunningTimes } from './RunningTimesEditor'
+import createWorkoutXml from './createWorkoutXml'
+import ShareForm from '../Forms/ShareForm'
 
-interface Bar {
+export interface Bar {
   id: string,
   time: number,
   length?: number,
@@ -49,7 +53,7 @@ interface Bar {
   offLength?: number
 }
 
-interface Instruction {
+export interface Instruction {
   id: string,
   text: string,
   time: number,
@@ -110,12 +114,9 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
   const [user, setUser] = useState<firebase.User | null>(null)
   const [visibleForm, setVisibleForm] = useState('login') // default form is login
 
-  const sherableLinkRef = useRef<HTMLInputElement>(null);
   const canvasRef = useRef<HTMLInputElement>(null);
   const segmentsRef = useRef<HTMLInputElement>(null);
   const [segmentsWidth, setSegmentsWidth] = useState(1320);
-
-  const [copied, setCopied] = useState('')
 
   const [message, setMessage] = useState<Message>()
 
@@ -128,8 +129,6 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
   const [durationType, setDurationType] = useState(localStorage.getItem('durationType') || 'time')
 
   const [runningTimes, setRunningTimes] = useState(loadRunningTimes())
-
-  const DEFAULT_TAGS = ["Recovery", "Intervals", "FTP", "TT"]
 
   const db = firebase.database();
 
@@ -519,7 +518,6 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
   function shareWorkout() {
     if (user) {
       save()
-      setCopied('')
       setSharePopupVisibility(true)
     } else {
       saveWorkout()
@@ -531,110 +529,18 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
 
     setMessage({ visible: true, class: 'loading', text: 'Saving..' })
 
-    var totalTime = 0
-    var totalLength = 0
+    const xml = createWorkoutXml({
+      author,
+      name,
+      description,
+      sportType,
+      durationType,
+      tags,
+      bars,
+      instructions
+    });
 
-    let xml = Builder.begin()
-      .ele('workout_file')
-      .ele('author', author).up()
-      .ele('name', name).up()
-      .ele('description', description).up()
-      .ele('sportType', sportType).up()
-      .ele('durationType', durationType).up()
-      .ele('tags')
-
-    tags.map((tag: string) => {
-      var t: Builder.XMLNode
-      t = Builder.create('tag')
-        .att('name', tag)
-      xml.importDocument(t)
-      return false;
-    })
-
-    xml = xml.up().ele('workout')
-
-
-    bars.map((bar, index) => {
-
-      var segment: Builder.XMLNode
-      var ramp
-
-      if (bar.type === 'bar') {
-        segment = Builder.create('SteadyState')
-          .att('Duration', durationType === 'time' ? bar.time : bar.length)
-          .att('Power', bar.power)
-          .att('pace', bar.pace)
-
-        // add cadence if not zero
-        if (bar.cadence !== 0)
-          segment.att('Cadence', bar.cadence)
-
-      } else if (bar.type === 'trapeze' && bar.startPower && bar.endPower) {
-
-        // index 0 is warmup
-        // last index is cooldown
-        // everything else is ramp
-
-        ramp = 'Ramp'
-        if (index === 0) ramp = 'Warmup'
-        if (index === bars.length - 1) ramp = 'Cooldown'
-
-        if (bar.startPower < bar.endPower) {
-          // warmup
-          segment = Builder.create(ramp)
-            .att('Duration', durationType === 'time' ? bar.time : bar.length)
-            .att('PowerLow', bar.startPower)
-            .att('PowerHigh', bar.endPower)
-            .att('pace', bar.pace)
-        } else {
-          // cooldown
-          segment = Builder.create(ramp)
-            .att('Duration', durationType === 'time' ? bar.time : bar.length)
-            .att('PowerLow', bar.startPower) // these 2 values are inverted
-            .att('PowerHigh', bar.endPower) // looks like a bug on zwift editor            
-            .att('pace', bar.pace)
-        }
-      } else if (bar.type === 'interval') {
-        // <IntervalsT Repeat="5" OnDuration="60" OffDuration="300" OnPower="0.8844353" OffPower="0.51775455" pace="0"/>
-        segment = Builder.create('IntervalsT')
-          .att('Repeat', bar.repeat)
-          .att('OnDuration', durationType === 'time' ? bar.onDuration : bar.onLength)
-          .att('OffDuration', durationType === 'time' ? bar.offDuration : bar.offLength)
-          .att('OnPower', bar.onPower)
-          .att('OffPower', bar.offPower)
-          .att('pace', bar.pace)
-          
-          // add cadence if not zero
-          if (bar.cadence !== 0)
-            segment.att('Cadence', bar.cadence)
-      } else {
-        // free ride
-        segment = Builder.create('FreeRide')
-          .att('Duration', bar.time)
-        //.att('Cadence', 85) // add control for this?
-      }
-
-      // add instructions if present
-      if (durationType === 'time') {
-        instructions.filter((instruction) => (instruction.time >= totalTime && instruction.time < (totalTime + bar.time))).map((i) => {
-          return segment.ele('textevent', { timeoffset: (i.time - totalTime), message: i.text })
-        })
-      } else {
-        instructions.filter((instruction) => (instruction.length >= totalLength && instruction.length < (totalLength + (bar.length || 0)))).map((i) => {
-          return segment.ele('textevent', { distoffset: (i.length - totalLength), message: i.text })
-        })
-      }
-
-
-      xml.importDocument(segment)
-
-      totalTime = totalTime + bar.time
-      totalLength = totalLength + (bar.length || 0)
-
-      return false
-    })
-
-    const file = new Blob([xml.end({ pretty: true })], { type: 'application/xml' })
+    const file = new Blob([xml], { type: 'application/xml' })
 
     // save to cloud (firebase) if logged in
     if (user) {
@@ -944,36 +850,6 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
     }
   }
 
-  const copyToClipboard = () => {
-    const node = sherableLinkRef.current
-    node?.select();
-    document.execCommand('copy');
-    setCopied('copied!')
-  }
-
-  const handleOnCheckboxChange = (option: any) => {
-    if (tags.includes(option)) {
-      const updatedArray = [...tags]
-      setTags(updatedArray.filter(item => item !== option))
-    } else {
-      setTags((tags: any) => [...tags, option])
-    }
-  }
-
-  const createCheckbox = (option: string) => {
-    return (
-      <Checkbox
-        label={option}
-        isSelected={tags.includes(option)}
-        onCheckboxChange={() => handleOnCheckboxChange(option)}
-      />
-    )
-  }
-
-  const renderCheckboxes = () => {
-    return DEFAULT_TAGS.map(createCheckbox)
-  }
-
   function setPace(value: string, id: string) {
     const index = bars.findIndex(bar => bar.id === id)
 
@@ -1045,33 +921,22 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
       {savePopupIsVisile &&
         <Popup width="500px" dismiss={() => setSavePopupVisibility(false)}>
           {user ?
-            <div>
-              <h2>Save Workout</h2>
-              <div className="form-control">
-                <label htmlFor="name">Workout Title</label>
-                <input type="text" name="name" placeholder="Workout title" value={name} onChange={(e) => setName(e.target.value)} />
-              </div>
-              <div className="form-control">
-                <label htmlFor="description">Workout description</label>
-                <textarea name="description" placeholder="Workout description" value={description} onChange={(e) => setDescription(e.target.value)}></textarea>
-              </div>
-              <div className="form-control">
-                <label htmlFor="author">Workout Author</label>
-                <input type="text" name="author" placeholder="Workout Author" value={author} onChange={(e) => setAuthor(e.target.value)} />
-              </div>
-              <div className="form-control">
-                <label htmlFor="author">Workout Tags</label>
-                {renderCheckboxes()}
-              </div>
-              <div className="form-control">
-                <button className="btn btn-primary" onClick={() => {
-                  save()
-                  setSavePopupVisibility(false)
-                }}>Save</button>
-                <button className="btn" onClick={() => setSavePopupVisibility(false)}>Dismiss</button>
-                <button onClick={() => logout()}>Logout</button>
-              </div>
-            </div>
+            <SaveForm
+              name={name}
+              description={description}
+              author={author}
+              tags={tags}
+              onNameChange={setName}
+              onDescriptionChange={setDescription}
+              onAuthorChange={setAuthor}
+              onTagsChange={setTags}
+              onSave={() => {
+                save()
+                setSavePopupVisibility(false)
+              }}
+              onDismiss={() => setSavePopupVisibility(false)}
+              onLogout={logout}
+            />
             :
             renderRegistrationForm()
           }
@@ -1079,16 +944,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
       }
       {sharePopupIsVisile &&
         <Popup width="500px" dismiss={() => setSharePopupVisibility(false)}>
-          <div>
-            <h2>Share Workout</h2>
-            <div className="form-control">
-              <label htmlFor="link">Share this link</label>
-              <input type="text" name="link" value={"https://www.zwiftworkout.com/editor/" + id} ref={sherableLinkRef} />
-              <button onClick={() => copyToClipboard()}><FontAwesomeIcon icon={faCopy} size="lg" fixedWidth /> {copied}</button>
-              <button className="btn" onClick={() => setSharePopupVisibility(false)}>Dismiss</button>
-            </div>
-          </div>
-
+          <ShareForm id={id} onDismiss={() => setSharePopupVisibility(false)} />
         </Popup>
       }
       <div className="info">
@@ -1187,61 +1043,10 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
             {instructions.map((instruction, index) => renderComment(instruction, index))}
           </div>
 
-          {durationType === 'time' ?
-          <div className='timeline' style={{width: segmentsWidth}}>
-            <span>0:00</span>
-            <span>0:10</span>
-            <span>0:20</span>
-            <span>0:30</span>
-            <span>0:40</span>
-            <span>0:50</span>
-            <span>1:00</span>
-            <span>1:10</span>
-            <span>1:20</span>
-            <span>1:30</span>
-            <span>1:40</span>
-            <span>1:50</span>
-            <span>2:00</span>
-            <span>2:10</span>
-            <span>2:20</span>
-            <span>2:30</span>
-            <span>2:40</span>
-            <span>2:50</span>
-            <span>3:00</span>
-            <span>3:10</span>
-            <span>3:20</span>
-            <span>3:30</span>
-            <span>3:40</span>
-            <span>3:50</span>
-            <span>4:00</span>
-            <span>4:10</span>
-            <span>4:20</span>
-            <span>4:30</span>
-            <span>4:40</span>
-            <span>4:50</span>
-            <span>5:00</span>
-            <span>5:10</span>
-            <span>5:20</span>
-            <span>5:30</span>
-            <span>5:40</span>
-            <span>5:50</span>
-            <span>6:00</span>
-          </div>
-          :        
-          <div className='timeline run' style={{width: segmentsWidth}}>            
-            {[...Array(44)].map((e,i) => <span key={i}>{i}K</span>)}            
-          </div>
-        }
+          {durationType === 'time' ? <TimeAxis width={segmentsWidth} /> : <DistanceAxis width={segmentsWidth} />}
         </div>        
         
-        <div className='zones'>
-          <div style={{ height: 250 * Zones.Z6.max }}>Z6</div>
-          <div style={{ height: 250 * Zones.Z5.max }}>Z5</div>
-          <div style={{ height: 250 * Zones.Z4.max }}>Z4</div>
-          <div style={{ height: 250 * Zones.Z3.max }}>Z3</div>
-          <div style={{ height: 250 * Zones.Z2.max }}>Z2</div>
-          <div style={{ height: 250 * Zones.Z1.max }}>Z1</div>
-        </div>
+        <ZoneAxis />
       </div>
       <div className='cta'>
         {sportType === "bike" ?

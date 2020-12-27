@@ -184,55 +184,6 @@ label {
   border-radius: 50%;
 }
 
-
-.timeline {  
-  position: absolute;
-  bottom: 0px;
-  
-  border-top: 1px solid gray;
-  overflow: hidden;
-  min-width: 1320px;
-}
-
-.timeline > span{
-  position: relative;
-  display: inline-block;
-  width: 200px;
-  margin-top: 20px;
-  padding: 0;
-}
-
-.timeline.run > span {  
-  width: 100px;
-}
-
-.timeline > span::before{
-  content: '';
-  position: absolute;
-  width: 1px;
-  height: 10px;
-  top: -20px;
-  left: 0;
-  background-color: gray;
-  
-}
-
-.zones {
-  position: absolute;
-  bottom: 50px;
-  left: 2px;
-  color: gray;
-}
-
-.zones > div {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-}
-.zones > div:not(:first-child){
-  border-top: 1px solid gray;
-}
-
 .slider {  
   position: absolute;  
   top: 10px;

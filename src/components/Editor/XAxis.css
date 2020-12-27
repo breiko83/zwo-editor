@@ -1,0 +1,32 @@
+.x-axis {
+  position: absolute;
+  bottom: 0px;
+
+  border-top: 1px solid gray;
+  overflow: hidden;
+  min-width: 1320px;
+}
+
+.x-axis > span {
+  position: relative;
+  display: inline-block;
+  margin-top: 20px;
+  padding: 0;
+}
+
+.x-axis.x-axis-time > span {
+  width: 200px;
+}
+.x-axis.x-axis-distance > span {
+  width: 100px;
+}
+
+.x-axis > span::before {
+  content: '';
+  position: absolute;
+  width: 1px;
+  height: 10px;
+  top: -20px;
+  left: 0;
+  background-color: gray;
+}
