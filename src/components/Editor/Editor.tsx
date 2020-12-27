@@ -28,7 +28,7 @@ import LoginForm from '../Forms/LoginForm'
 import { Helmet } from "react-helmet";
 import { RouteComponentProps } from 'react-router-dom';
 import ReactGA from 'react-ga';
-import Switch from "react-switch";
+import LeftRightToggle from './LeftRightToggle'
 import { stringType } from 'aws-sdk/clients/iam'
 import TimePicker from 'rc-time-picker'
 import 'rc-time-picker/assets/index.css'
@@ -984,24 +984,25 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
             <input className="textInput" value={helpers.getStressScore(bars, ftp)} disabled />
           </div>
           {sportType === 'run' &&
-            <div className="form-input">
-              <label>Duration Type</label>
-              <div className="switch">
-                <FontAwesomeIcon className={`icon bike ${durationType === "time" ? "active" : ""}`} icon={faClock} size="lg" fixedWidth />
-                <Switch onChange={() => setDurationType(durationType === "time" ? "distance" : "time")} checked={durationType !== "time"} checkedIcon={false} uncheckedIcon={false} onColor="#00C46A" offColor="#00C46A" />
-                <FontAwesomeIcon className={`icon run ${durationType === "distance" ? "active" : ""}`} icon={faRuler} size="lg" fixedWidth />
-              </div>
-            </div>
+            <LeftRightToggle
+              label="Duration Type"
+              leftValue="time"
+              rightValue="distance"
+              leftIcon={faClock}
+              rightIcon={faRuler}
+              selected={durationType}
+              onChange={setDurationType}
+            />
           }
-          <div className="form-input">
-            <label>Sport Type</label>
-            <div className="switch">
-              <FontAwesomeIcon className={`icon bike ${sportType === "bike" ? "active" : ""}`} icon={faBiking} size="lg" fixedWidth />
-              <Switch onChange={switchSportType} checked={sportType !== "bike"} checkedIcon={false} uncheckedIcon={false} onColor="#00C46A" offColor="#00C46A" />
-              <FontAwesomeIcon className={`icon run ${sportType === "run" ? "active" : ""}`} icon={faRunning} size="lg" fixedWidth />
-            </div>
-          </div>
-          
+          <LeftRightToggle
+            label="Sport Type"
+            leftValue="bike"
+            rightValue="run"
+            leftIcon={faBiking}
+            rightIcon={faRunning}
+            selected={sportType}
+            onChange={switchSportType}
+          />
         </div>
       </div>
       {sportType === "run" &&
