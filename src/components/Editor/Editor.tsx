@@ -895,14 +895,9 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
     }
   }
 
-  function switchSportType() {
-    if (sportType === "bike") {
-      setSportType("run")
-      setDurationType("distance")
-    } else {
-      setSportType("bike")
-      setDurationType("time")
-    }
+  function switchSportType(newSportType: SportType) {
+    setSportType(newSportType);
+    setDurationType(newSportType === "bike" ? "time" : "distance");
   }
 
   return (
