@@ -70,6 +70,9 @@ interface Message {
 
 type TParams = { id: string };
 
+export type SportType = "bike" | "run";
+export type DurationType = "time" | "distance";
+
 const Editor = ({ match }: RouteComponentProps<TParams>) => {
 
   const { v4: uuidv4 } = require('uuid');
@@ -105,10 +108,10 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
   const [showWorkouts, setShowWorkouts] = useState(false)
 
   // bike or run
-  const [sportType, setSportType] = useState(localStorage.getItem('sportType') || 'bike')
+  const [sportType, setSportType] = useState<SportType>(localStorage.getItem('sportType') as SportType || 'bike')
 
   // distance or time
-  const [durationType, setDurationType] = useState(localStorage.getItem('durationType') || 'time')
+  const [durationType, setDurationType] = useState<DurationType>(localStorage.getItem('durationType') as DurationType || 'time')
 
   const [oneMileTime, setOneMileTime] = useState(localStorage.getItem('oneMileTime') || '')
   const [fiveKmTime, setFiveKmTime] = useState(localStorage.getItem('fiveKmTime') || '')
@@ -984,7 +987,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
             <input className="textInput" value={helpers.getStressScore(bars, ftp)} disabled />
           </div>
           {sportType === 'run' &&
-            <LeftRightToggle
+            <LeftRightToggle<"time","distance">
               label="Duration Type"
               leftValue="time"
               rightValue="distance"
@@ -994,7 +997,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
               onChange={setDurationType}
             />
           }
-          <LeftRightToggle
+          <LeftRightToggle<"bike","run">
             label="Sport Type"
             leftValue="bike"
             rightValue="run"
