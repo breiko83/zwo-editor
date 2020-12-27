@@ -268,14 +268,37 @@ label {
   max-width: 120px;  
   padding: 0 10px;
 }
-.switch {
-  display: flex;
-  flex-direction: row;
-  color: lightgray;
+
+.run-workout {
+  display: flex;  
+  margin: 0 auto;
+  flex-direction: row;  
+  width: 100%;
+  max-width: 1360px;
+  
 }
-.switch > .icon {
-  padding: 5px;
+
+.run-workout > .form-input {
+  padding-right: 10px;
+  align-self: flex-end;
 }
-.switch > .icon.active {
-  color: #00C46A;  
+
+.timePicker {
+  width: 120px;  
+}
+
+.timePicker > input{
+  font-size: 18px;  
+  font-family: monospace;
+  color: black;
+}
+
+.rc-time-picker-panel-input {
+  font-size: 18px;  
+  font-family: monospace;
+}
+
+.rc-time-picker-panel-select > ul > li {
+  font-size: 16px;  
+  font-family: monospace;
 }

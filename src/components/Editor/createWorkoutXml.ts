@@ -1,12 +1,12 @@
 import Builder from 'xmlbuilder'
-import { Bar, Instruction } from './Editor'
+import { Bar, Instruction, SportType, DurationType } from './Editor'
 
 interface Workout {
   author: string;
   name: string;
   description: string;
-  sportType: string;
-  durationType: string;
+  sportType: SportType;
+  durationType: DurationType;
   tags: string[];
   bars: Array<Bar>;
   instructions: Array<Instruction>;

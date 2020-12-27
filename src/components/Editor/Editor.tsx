@@ -28,8 +28,8 @@ import LoginForm from '../Forms/LoginForm'
 import { Helmet } from "react-helmet";
 import { RouteComponentProps } from 'react-router-dom';
 import ReactGA from 'react-ga';
-import Switch from "react-switch";
 import RunningTimesEditor, { RunningTimes } from './RunningTimesEditor'
+import LeftRightToggle from './LeftRightToggle'
 import createWorkoutXml from './createWorkoutXml'
 import ShareForm from '../Forms/ShareForm'
 
@@ -87,6 +87,8 @@ const loadRunningTimes = (): RunningTimes => {
 
   return missingRunningTimes
 }
+export type SportType = "bike" | "run";
+export type DurationType = "time" | "distance";
 
 const Editor = ({ match }: RouteComponentProps<TParams>) => {
 
@@ -123,10 +125,10 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
   const [showWorkouts, setShowWorkouts] = useState(false)
 
   // bike or run
-  const [sportType, setSportType] = useState(localStorage.getItem('sportType') || 'bike')
+  const [sportType, setSportType] = useState<SportType>(localStorage.getItem('sportType') as SportType || 'bike')
 
   // distance or time
-  const [durationType, setDurationType] = useState(localStorage.getItem('durationType') || 'time')
+  const [durationType, setDurationType] = useState<DurationType>(localStorage.getItem('durationType') as DurationType || 'time')
 
   const [runningTimes, setRunningTimes] = useState(loadRunningTimes())
 
@@ -877,14 +879,9 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
     }
   }
 
-  function switchSportType() {
-    if (sportType === "bike") {
-      setSportType("run")
-      setDurationType("distance")
-    } else {
-      setSportType("bike")
-      setDurationType("time")
-    }
+  function switchSportType(newSportType: SportType) {
+    setSportType(newSportType);
+    setDurationType(newSportType === "bike" ? "time" : "distance");
   }
 
   return (
@@ -969,24 +966,25 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
             <input className="textInput" value={helpers.getStressScore(bars, ftp)} disabled />
           </div>
           {sportType === 'run' &&
-            <div className="form-input">
-              <label>Duration Type</label>
-              <div className="switch">
-                <FontAwesomeIcon className={`icon bike ${durationType === "time" ? "active" : ""}`} icon={faClock} size="lg" fixedWidth />
-                <Switch onChange={() => setDurationType(durationType === "time" ? "distance" : "time")} checked={durationType !== "time"} checkedIcon={false} uncheckedIcon={false} onColor="#00C46A" offColor="#00C46A" />
-                <FontAwesomeIcon className={`icon run ${durationType === "distance" ? "active" : ""}`} icon={faRuler} size="lg" fixedWidth />
-              </div>
-            </div>
+            <LeftRightToggle<"time","distance">
+              label="Duration Type"
+              leftValue="time"
+              rightValue="distance"
+              leftIcon={faClock}
+              rightIcon={faRuler}
+              selected={durationType}
+              onChange={setDurationType}
+            />
           }
-          <div className="form-input">
-            <label>Sport Type</label>
-            <div className="switch">
-              <FontAwesomeIcon className={`icon bike ${sportType === "bike" ? "active" : ""}`} icon={faBiking} size="lg" fixedWidth />
-              <Switch onChange={switchSportType} checked={sportType !== "bike"} checkedIcon={false} uncheckedIcon={false} onColor="#00C46A" offColor="#00C46A" />
-              <FontAwesomeIcon className={`icon run ${sportType === "run" ? "active" : ""}`} icon={faRunning} size="lg" fixedWidth />
-            </div>
-          </div>
-          
+          <LeftRightToggle<"bike","run">
+            label="Sport Type"
+            leftValue="bike"
+            rightValue="run"
+            leftIcon={faBiking}
+            rightIcon={faRunning}
+            selected={sportType}
+            onChange={switchSportType}
+          />
         </div>
       </div>
       {sportType === "run" && <RunningTimesEditor times={runningTimes} onChange={setRunningTimes} />}
