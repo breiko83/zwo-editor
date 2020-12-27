@@ -4,19 +4,19 @@ import React from "react";
 import Switch from "react-switch";
 import "./LeftRightToggle.css";
 
-interface LeftRightToggleProps {
+interface LeftRightToggleProps<TLeft,TRight> {
   label: string;
-  leftValue: string;
-  rightValue: string;
+  leftValue: TLeft;
+  rightValue: TRight;
   leftIcon: IconProp;
   rightIcon: IconProp;
-  selected: string;
-  onChange: (selected: string) => void;
+  selected: TLeft | TRight;
+  onChange: (selected: TLeft | TRight) => void;
 }
 
 const COLOR = "#00C46A";
 
-const LeftRightToggle = ({ label, leftValue, rightValue, leftIcon, rightIcon, selected, onChange }: LeftRightToggleProps) => (
+const LeftRightToggle = <TLeft,TRight>({ label, leftValue, rightValue, leftIcon, rightIcon, selected, onChange }: LeftRightToggleProps<TLeft,TRight>) => (
   <div className="form-input">
     <label>{label}</label>
     <div className="left-right-toggle">
