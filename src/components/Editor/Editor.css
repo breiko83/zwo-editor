@@ -268,17 +268,6 @@ label {
   max-width: 120px;  
   padding: 0 10px;
 }
-.switch {
-  display: flex;
-  flex-direction: row;
-  color: lightgray;
-}
-.switch > .icon {
-  padding: 5px;
-}
-.switch > .icon.active {
-  color: #00C46A;  
-}
 
 .run-workout {
   display: flex;  
