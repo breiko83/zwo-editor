@@ -1,0 +1,14 @@
+.zone-axis {
+  position: absolute;
+  bottom: 50px;
+  left: 2px;
+  color: gray;
+}
+.zone-axis > div {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+}
+.zone-axis > div:not(:first-child) {
+  border-top: 1px solid gray;
+}
