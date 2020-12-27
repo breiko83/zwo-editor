@@ -20,7 +20,6 @@ import { ReactComponent as WarmupLogo } from '../../assets/warmup.svg'
 import { ReactComponent as IntervalLogo } from '../../assets/interval.svg'
 import { ReactComponent as SteadyLogo } from '../../assets/steady.svg'
 import CadenceIcon from '../../assets/cadence.png'
-import Builder from 'xmlbuilder'
 import Converter from 'xml-js'
 import helpers from '../helpers'
 import firebase, { auth } from '../firebase'
@@ -34,8 +33,9 @@ import { stringType } from 'aws-sdk/clients/iam'
 import TimePicker from 'rc-time-picker'
 import 'rc-time-picker/assets/index.css'
 import moment from 'moment'
+import createWorkoutXml from './createWorkoutXml'
 
-interface Bar {
+export interface Bar {
   id: string,
   time: number,
   length?: number,
@@ -54,7 +54,7 @@ interface Bar {
   offLength?: number
 }
 
-interface Instruction {
+export interface Instruction {
   id: string,
   text: string,
   time: number,
@@ -549,110 +549,18 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
 
     setMessage({ visible: true, class: 'loading', text: 'Saving..' })
 
-    var totalTime = 0
-    var totalLength = 0
+    const xml = createWorkoutXml({
+      author,
+      name,
+      description,
+      sportType,
+      durationType,
+      tags,
+      bars,
+      instructions
+    });
 
-    let xml = Builder.begin()
-      .ele('workout_file')
-      .ele('author', author).up()
-      .ele('name', name).up()
-      .ele('description', description).up()
-      .ele('sportType', sportType).up()
-      .ele('durationType', durationType).up()
-      .ele('tags')
-
-    tags.map((tag: string) => {
-      var t: Builder.XMLNode
-      t = Builder.create('tag')
-        .att('name', tag)
-      xml.importDocument(t)
-      return false;
-    })
-
-    xml = xml.up().ele('workout')
-
-
-    bars.map((bar, index) => {
-
-      var segment: Builder.XMLNode
-      var ramp
-
-      if (bar.type === 'bar') {
-        segment = Builder.create('SteadyState')
-          .att('Duration', durationType === 'time' ? bar.time : bar.length)
-          .att('Power', bar.power)
-          .att('pace', bar.pace)
-
-        // add cadence if not zero
-        if (bar.cadence !== 0)
-          segment.att('Cadence', bar.cadence)
-
-      } else if (bar.type === 'trapeze' && bar.startPower && bar.endPower) {
-
-        // index 0 is warmup
-        // last index is cooldown
-        // everything else is ramp
-
-        ramp = 'Ramp'
-        if (index === 0) ramp = 'Warmup'
-        if (index === bars.length - 1) ramp = 'Cooldown'
-
-        if (bar.startPower < bar.endPower) {
-          // warmup
-          segment = Builder.create(ramp)
-            .att('Duration', durationType === 'time' ? bar.time : bar.length)
-            .att('PowerLow', bar.startPower)
-            .att('PowerHigh', bar.endPower)
-            .att('pace', bar.pace)
-        } else {
-          // cooldown
-          segment = Builder.create(ramp)
-            .att('Duration', durationType === 'time' ? bar.time : bar.length)
-            .att('PowerLow', bar.startPower) // these 2 values are inverted
-            .att('PowerHigh', bar.endPower) // looks like a bug on zwift editor            
-            .att('pace', bar.pace)
-        }
-      } else if (bar.type === 'interval') {
-        // <IntervalsT Repeat="5" OnDuration="60" OffDuration="300" OnPower="0.8844353" OffPower="0.51775455" pace="0"/>
-        segment = Builder.create('IntervalsT')
-          .att('Repeat', bar.repeat)
-          .att('OnDuration', durationType === 'time' ? bar.onDuration : bar.onLength)
-          .att('OffDuration', durationType === 'time' ? bar.offDuration : bar.offLength)
-          .att('OnPower', bar.onPower)
-          .att('OffPower', bar.offPower)
-          .att('pace', bar.pace)
-          
-          // add cadence if not zero
-          if (bar.cadence !== 0)
-            segment.att('Cadence', bar.cadence)
-      } else {
-        // free ride
-        segment = Builder.create('FreeRide')
-          .att('Duration', bar.time)
-        //.att('Cadence', 85) // add control for this?
-      }
-
-      // add instructions if present
-      if (durationType === 'time') {
-        instructions.filter((instruction) => (instruction.time >= totalTime && instruction.time < (totalTime + bar.time))).map((i) => {
-          return segment.ele('textevent', { timeoffset: (i.time - totalTime), message: i.text })
-        })
-      } else {
-        instructions.filter((instruction) => (instruction.length >= totalLength && instruction.length < (totalLength + (bar.length || 0)))).map((i) => {
-          return segment.ele('textevent', { distoffset: (i.length - totalLength), message: i.text })
-        })
-      }
-
-
-      xml.importDocument(segment)
-
-      totalTime = totalTime + bar.time
-      totalLength = totalLength + (bar.length || 0)
-
-      return false
-    })
-
-    const file = new Blob([xml.end({ pretty: true })], { type: 'application/xml' })
+    const file = new Blob([xml], { type: 'application/xml' })
 
     // save to cloud (firebase) if logged in
     if (user) {
