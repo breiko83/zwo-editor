@@ -29,10 +29,10 @@ import { Helmet } from "react-helmet";
 import { RouteComponentProps } from 'react-router-dom';
 import ReactGA from 'react-ga';
 import Switch from "react-switch";
-import { stringType } from 'aws-sdk/clients/iam'
 import RunningTimesEditor, { RunningTimes } from './RunningTimesEditor'
 import createWorkoutXml from './createWorkoutXml'
 import ShareForm from '../Forms/ShareForm'
+
 
 export interface Bar {
   id: string,
@@ -698,7 +698,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
 
           var totalTime = 0
 
-          workout_file.elements[workoutIndex].elements.map((w: { name: string; attributes: { Power: any; PowerLow: string; Duration: string; PowerHigh: string; Cadence: string; Repeat: string; OnDuration: string; OffDuration: string; OnPower: string, OffPower: string; Pace: stringType }; elements: any }) => {
+          workout_file.elements[workoutIndex].elements.map((w: { name: string; attributes: { Power: any; PowerLow: string; Duration: string; PowerHigh: string; Cadence: string; Repeat: string; OnDuration: string; OffDuration: string; OnPower: string, OffPower: string; Pace: string }; elements: any }) => {
 
             let duration = parseFloat(w.attributes.Duration)
 
