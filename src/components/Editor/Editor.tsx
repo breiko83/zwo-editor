@@ -31,6 +31,7 @@ import RunningTimesEditor, { RunningTimes } from './RunningTimesEditor'
 import LeftRightToggle from './LeftRightToggle'
 import createWorkoutXml from './createWorkoutXml'
 import ShareForm from '../Forms/ShareForm'
+import PaceSelector from './PaceSelector'
 
 
 export interface Bar {
@@ -840,13 +841,13 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
     }
   }
 
-  function setPace(value: string, id: string) {
+  function setPace(pace: number, id: string) {
     const index = bars.findIndex(bar => bar.id === id)
 
     if (index !== -1) {
       const updatedArray = [...bars]
       const element = [...updatedArray][index]
-      element.pace = parseInt(value)
+      element.pace = pace
 
       if (durationType === 'time') {
         element.length = helpers.calculateDistance(element.time, calculateSpeed(element.pace || 0)) * 1 / (element.power || 1)
@@ -985,13 +986,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
             <button onClick={() => removeBar(actionId)} title='Delete'><FontAwesomeIcon icon={faTrash} size="lg" fixedWidth /></button>
             <button onClick={() => duplicateBar(actionId)} title='Duplicate'><FontAwesomeIcon icon={faCopy} size="lg" fixedWidth /></button>
             {sportType === "run" &&
-              <select name="pace" value={getPace(actionId)} onChange={(e) => setPace(e.target?.value, actionId)} className="selectInput">
-                <option value="0">1 Mile Pace</option>
-                <option value="1">5K Pace</option>
-                <option value="2">10K Pace</option>
-                <option value="3">Half Marathon Pace</option>
-                <option value="4">Marathon Pace</option>
-              </select>
+              <PaceSelector value={getPace(actionId)} onChange={(pace) => setPace(pace, actionId)} />
             }
           </div>
         }
