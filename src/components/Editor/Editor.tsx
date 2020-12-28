@@ -18,7 +18,6 @@ import { ReactComponent as WarmdownLogo } from '../../assets/warmdown.svg'
 import { ReactComponent as WarmupLogo } from '../../assets/warmup.svg'
 import { ReactComponent as IntervalLogo } from '../../assets/interval.svg'
 import { ReactComponent as SteadyLogo } from '../../assets/steady.svg'
-import CadenceIcon from '../../assets/cadence.png'
 import Converter from 'xml-js'
 import helpers from '../helpers'
 import firebase, { auth } from '../firebase'
@@ -43,6 +42,7 @@ export interface Bar {
   startPower?: number,
   endPower?: number,
   cadence: number,
+  restingCadence?: number,
   onPower?: number,
   offPower?: number,
   onDuration?: number,
@@ -101,9 +101,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
   const [actionId, setActionId] = useState<string | undefined>(undefined)
   const [ftp, setFtp] = useState(parseInt(localStorage.getItem('ftp') || '200'))
   const [weight, setWeight] = useState(parseInt(localStorage.getItem('weight') || '75'))
-  const [instructions, setInstructions] = useState<Array<Instruction>>(JSON.parse(localStorage.getItem('instructions') || '[]'))
-  const [cadence, setCadence] = useState(0)
-  const [showCadenceInput, setShowCadenceInput] = useState(false)
+  const [instructions, setInstructions] = useState<Array<Instruction>>(JSON.parse(localStorage.getItem('instructions') || '[]'))  
   const [tags, setTags] = useState(JSON.parse(localStorage.getItem('tags') || '[]'))
 
   const [name, setName] = useState(localStorage.getItem('name') || '')
@@ -243,11 +241,6 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
       setActionId(undefined)
     } else {
       setActionId(id)
-
-      const index = bars.findIndex(bar => bar.id === id)
-      const element = [...bars][index]
-
-      setCadence(element.cadence)
     }
   }
 
@@ -298,13 +291,13 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
     ])
   }
 
-  function addTrapeze(zone1: number, zone2: number, duration: number = 300, pace: number = 0, length: number = 1000) {
+  function addTrapeze(zone1: number, zone2: number, duration: number = 300, pace: number = 0, length: number = 1000, cadence: number = 0) {
     setBars(bars => [...bars, {
       time: durationType === 'time' ? duration : helpers.round(helpers.calculateTime(length, calculateSpeed(pace)), 1),
       length: durationType === 'time' ? helpers.round(helpers.calculateDistance(duration, calculateSpeed(pace)), 1) : length,
       startPower: zone1,
       endPower: zone2,
-      cadence: 0,
+      cadence: cadence,
       pace: pace,
       type: 'trapeze',
       id: uuidv4()
@@ -312,10 +305,10 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
     ])
   }
 
-  function addFreeRide(duration = 600) {
+  function addFreeRide(duration = 600, cadence: number = 0) {
     setBars(bars => [...bars, {
       time: duration,
-      cadence: 0,
+      cadence: cadence,
       type: 'freeRide',
       id: uuidv4()
     }
@@ -449,8 +442,8 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
     const element = [...bars][index]
 
     if (element.type === 'bar') addBar(element.power || 80, element.time, element.cadence, element.pace, element.length)
-    if (element.type === 'freeRide') addFreeRide(element.time)
-    if (element.type === 'trapeze') addTrapeze(element.startPower || 80, element.endPower || 160, element.time, element.pace || 0)
+    if (element.type === 'freeRide') addFreeRide(element.time, element.cadence)
+    if (element.type === 'trapeze') addTrapeze(element.startPower || 80, element.endPower || 160, element.time, element.pace || 0, element.length, element.cadence)
     if (element.type === 'interval') addInterval(element.repeat, element.onDuration, element.offDuration, element.onPower, element.offPower, element.cadence, element.pace, element.onLength, element.offLength)
 
     setActionId(undefined)
@@ -478,19 +471,6 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
       updatedArray.splice(index + 1, 0, element)
       setBars(updatedArray)
     }
-  }
-
-  function saveCadence(id: string, cadence: number) {
-    setCadence(cadence)
-
-    const updatedArray = [...bars]
-
-    const index = updatedArray.findIndex(bar => bar.id === id)
-    const element = [...updatedArray][index]
-
-    element.cadence = cadence
-    setBars(updatedArray)
-
   }
 
   function saveWorkout() {
@@ -784,6 +764,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
       id={bar.id}
       time={bar.time}
       length={bar.length || 200}
+      cadence={bar.cadence}
       startPower={bar.startPower || 80}
       endPower={bar.endPower || 160}
       ftp={ftp}
@@ -802,6 +783,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
       key={bar.id}
       id={bar.id}
       time={bar.time}
+      cadence={bar.cadence}
       sportType={sportType}
       onChange={(id: string, value: any) => handleOnChange(id, value)} // Change any to Interface Bar?
       onClick={(id: string) => handleOnClick(id)}
@@ -820,6 +802,8 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
       offPower={bar.offPower || 120}
       onLength={bar.onLength || 200}
       offLength={bar.offLength || 200}
+      cadence={bar.cadence}
+      restingCadence={bar.restingCadence || 0}
       ftp={ftp}
       weight={weight}
       sportType={sportType}
@@ -996,14 +980,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
             <button onClick={() => moveRight(actionId)} title='Move Right'><FontAwesomeIcon icon={faArrowRight} size="lg" fixedWidth /></button>
             <button onClick={() => removeBar(actionId)} title='Delete'><FontAwesomeIcon icon={faTrash} size="lg" fixedWidth /></button>
             <button onClick={() => duplicateBar(actionId)} title='Duplicate'><FontAwesomeIcon icon={faCopy} size="lg" fixedWidth /></button>
-            {sportType === "bike" ?
-              <>
-                <button onClick={() => setShowCadenceInput(!showCadenceInput)} title='Cadence' style={{backgroundImage:`url(${CadenceIcon})`,backgroundPosition:'center',backgroundSize:'25px',backgroundRepeat:'no-repeat'}}><FontAwesomeIcon icon={faCopy} size="lg" fixedWidth color="rgba(0,0,0,0)" /></button>
-                {(showCadenceInput || cadence !== 0) &&
-                  <input className="textInput" type="number" min="40" max="150" name="cadence" value={cadence} onChange={(e) => saveCadence(actionId, parseInt(e.target.value))} />
-                }
-              </>
-              :
+            {sportType === "run" &&
               <select name="pace" value={getPace(actionId)} onChange={(e) => setPace(e.target?.value, actionId)} className="selectInput">
                 <option value="0">1 Mile Pace</option>
                 <option value="1">5K Pace</option>

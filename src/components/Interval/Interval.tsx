@@ -2,28 +2,13 @@ import React, { useEffect, useState } from 'react'
 import Bar from '../Bar/Bar'
 import './Interval.css'
 
-interface Bar {
-  id: string,
-  time: number,
-  type: string,
-  power?: number,
-  length?: number, 
-  startPower?: number,
-  endPower?: number,
-  cadence: number,
-  onPower?: number,
-  offPower?: number,
-  onDuration?: number,
-  offDuration?: number,
-  repeat?: number,
-  pace?: number
-}
+import {Bar as BarInterface} from '../Editor/Editor'
 
-const Interval = (props: { id: string, repeat: number, onDuration?: number, offDuration?: number, onLength?: number, offLength?: number, onPower: number, offPower: number, ftp: number, weight: number, pace: number, speed?: number, sportType: string, durationType: string, handleIntervalChange: Function, handleIntervalClick: Function, selected: boolean }) => {
+const Interval = (props: { id: string, repeat: number, onDuration?: number, offDuration?: number, onLength?: number, offLength?: number, onPower: number, offPower: number, cadence: number, restingCadence: number, ftp: number, weight: number, pace: number, speed?: number, sportType: string, durationType: string, handleIntervalChange: Function, handleIntervalClick: Function, selected: boolean }) => {
 
   const { v4: uuidv4 } = require('uuid');
 
-  const [bars, setBars] = useState<Array<Bar>>([])
+  const [bars, setBars] = useState<Array<BarInterface>>([])
   const [nIntervals, setNIntervals] = useState(props.repeat)
 
   const [onDuration, setOnDuration] = useState(props.onDuration)
@@ -41,7 +26,7 @@ const Interval = (props: { id: string, repeat: number, onDuration?: number, offD
           time: onDuration || 0,
           length: onLength || 0,
           power: props.onPower,
-          cadence: 0,
+          cadence: props.cadence,
           type: 'bar',
           pace: props.pace,
           id: uuidv4()
@@ -52,7 +37,7 @@ const Interval = (props: { id: string, repeat: number, onDuration?: number, offD
           time: offDuration || 0,
           length: offLength || 0,
           power: props.offPower,
-          cadence: 0,
+          cadence: props.restingCadence,
           type: 'bar',
           pace: props.pace,
           id: uuidv4()
@@ -63,7 +48,10 @@ const Interval = (props: { id: string, repeat: number, onDuration?: number, offD
     // eslint-disable-next-line
   }, [nIntervals])
 
-  function handleOnChange(id: string, values: Bar) {
+  function handleOnChange(id: string, values: BarInterface) {
+
+    console.log(values);
+    
   
     const index = bars.findIndex(bar => bar.id === id)
     
@@ -80,6 +68,7 @@ const Interval = (props: { id: string, repeat: number, onDuration?: number, offD
         bars[i].time = values.time
         bars[i].power = values.power
         bars[i].length = values.length
+        bars[i].cadence = values.cadence        
       }      
     }
     var time = 0
@@ -93,9 +82,9 @@ const Interval = (props: { id: string, repeat: number, onDuration?: number, offD
       length: length,
       id: props.id,
       type: 'interval',
-      cadence: 0,
+      cadence: bars[0].cadence,
+      restingCadence: bars[1].cadence,
       pace: props.pace,
-      speed: props.speed,
       repeat: nIntervals,
       onDuration: bars[0].time,
       offDuration: bars[1].time,
@@ -117,9 +106,9 @@ const Interval = (props: { id: string, repeat: number, onDuration?: number, offD
       length: ((props.onLength || 0) + (props.offLength || 0)) * (nIntervals + 1),
       id: props.id,
       type: 'interval',
-      cadence: 0,
+      cadence: props.cadence,
+      restingCadence: props.restingCadence,
       pace: props.pace,
-      speed: props.speed,
       repeat: props.repeat + 1,
       onDuration: props.onDuration,
       offDuration: props.offDuration,
@@ -141,9 +130,9 @@ const Interval = (props: { id: string, repeat: number, onDuration?: number, offD
         length: ((props.onLength || 0) + (props.offLength || 0)) * (nIntervals - 1),
         id: props.id,
         type: 'interval',
-        cadence: 0,
+        cadence: props.cadence,
+        restingCadence: props.restingCadence,
         pace: props.pace,
-        speed: props.speed,
         repeat: props.repeat - 1,
         onDuration: props.onDuration,
         offDuration: props.offDuration,
@@ -155,7 +144,7 @@ const Interval = (props: { id: string, repeat: number, onDuration?: number, offD
     }
   }
 
-  const renderBar = (bar: Bar, withLabel: boolean) => (
+  const renderBar = (bar: BarInterface, withLabel: boolean) => (
     <Bar
       key={bar.id}
       id={bar.id}

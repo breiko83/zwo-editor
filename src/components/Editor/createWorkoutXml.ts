@@ -45,8 +45,7 @@ export default function createWorkoutXml({ author, name, description, sportType,
         .att('pace', bar.pace)
 
       // add cadence if not zero
-      if (bar.cadence !== 0)
-        segment.att('Cadence', bar.cadence)
+      bar.cadence !== 0 && segment.att('Cadence', bar.cadence)
 
     } else if (bar.type === 'trapeze' && bar.startPower && bar.endPower) {
 
@@ -65,6 +64,9 @@ export default function createWorkoutXml({ author, name, description, sportType,
           .att('PowerLow', bar.startPower)
           .att('PowerHigh', bar.endPower)
           .att('pace', bar.pace)
+        // add cadence if not zero
+        bar.cadence !== 0 && segment.att('Cadence', bar.cadence)
+          
       } else {
         // cooldown
         segment = Builder.create(ramp)
@@ -72,6 +74,8 @@ export default function createWorkoutXml({ author, name, description, sportType,
           .att('PowerLow', bar.startPower) // these 2 values are inverted
           .att('PowerHigh', bar.endPower) // looks like a bug on zwift editor            
           .att('pace', bar.pace)
+        // add cadence if not zero
+        bar.cadence !== 0 && segment.att('Cadence', bar.cadence)
       }
     } else if (bar.type === 'interval') {
       // <IntervalsT Repeat="5" OnDuration="60" OffDuration="300" OnPower="0.8844353" OffPower="0.51775455" pace="0"/>
@@ -81,16 +85,18 @@ export default function createWorkoutXml({ author, name, description, sportType,
         .att('OffDuration', durationType === 'time' ? bar.offDuration : bar.offLength)
         .att('OnPower', bar.onPower)
         .att('OffPower', bar.offPower)
-        .att('pace', bar.pace)
-        
+        .att('pace', bar.pace)        
         // add cadence if not zero
-        if (bar.cadence !== 0)
-          segment.att('Cadence', bar.cadence)
+        bar.cadence !== 0 && segment.att('Cadence', bar.cadence)
+        // add cadence resting if not zero
+        bar.restingCadence !== 0 && segment.att('CadenceResting', bar.restingCadence)        
     } else {
       // free ride
       segment = Builder.create('FreeRide')
         .att('Duration', bar.time)
-      //.att('Cadence', 85) // add control for this?
+        .att('FlatRoad', 0) // Not sure what this is for
+      // add cadence if not zero
+      bar.cadence !== 0 && segment.att('Cadence', bar.cadence)
     }
 
     // add instructions if present

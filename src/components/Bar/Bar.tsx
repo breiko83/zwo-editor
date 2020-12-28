@@ -21,7 +21,6 @@ const Bar = (props: { id: string, time?: number, length?:number, power: number, 
   // DISTANCE
   const distance = props.length
   
-  
   // USED ONLY ON RUN WORKOUT
   // const distance = props.length
 
@@ -33,8 +32,6 @@ const Bar = (props: { id: string, time?: number, length?:number, power: number, 
 
   // RUN WORKOUTS ON DISTANCE - BIKE WORKOUTS ON TIME
   const [width, setWidth] = useState(props.durationType === 'time' ? ((props.time || 0) / timeMultiplier) : ((props.length || 0) / lengthMultiplier))  
-  
-  
 
   const [height, setHeight] = useState(props.power * multiplier)  
 
@@ -44,8 +41,11 @@ const Bar = (props: { id: string, time?: number, length?:number, power: number, 
   
   useEffect(()=>{
     setSelected(props.selected) 
-  },[props.selected])
+  },[props.selected])  
 
+  const handleCadenceChange = (cadence: number) => {
+    props.onChange(props.id, { time: props.time, length: props.length, power: props.power, cadence: cadence, type: 'bar', pace: props.pace, id: props.id })
+  }
 
   const handleResizeStop = (dWidth: number, dHeight: number) => {
     setWidth(width + dWidth)
@@ -97,7 +97,7 @@ const Bar = (props: { id: string, time?: number, length?:number, power: number, 
       style={props.selected ? { zIndex: 10 } : {}}
     >
       {((selected || showLabel) && (props.showLabel)) &&
-        <Label sportType={props.sportType} duration={duration} power={powerLabel} weight={props.weight} ftp={props.ftp} pace={props.pace} distance={distance} />
+        <Label sportType={props.sportType} duration={duration} power={powerLabel} weight={props.weight} ftp={props.ftp} pace={props.pace} distance={distance} cadence={props.cadence} setCadence={(cadence: number)=> handleCadenceChange(cadence)} />
       }
       <Resizable
         className='bar'

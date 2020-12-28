@@ -5,7 +5,7 @@ import "./ZoneAxis.css";
 const ZoneAxis = () => (
   <div className='zone-axis'>
     {Object.entries(Zones).reverse().map(([name, zone]) =>
-      (<div style={{ height: 250 * zone.max }}>{name}</div>))}
+      (<div key={name} style={{ height: 250 * zone.max }}>{name}</div>))}
   </div>
 );
 
