@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faBolt, faClock, faRuler } from '@fortawesome/free-solid-svg-icons'
 import './Label.css'
 
-const Label = (props: { sportType: string, duration: string, distance?: number, power?: number, powerStart?: number, powerEnd?: number, weight?: number, ftp?: number, pace?: number }) => {
+const Label = (props: { sportType: string, duration: string, distance?: number, power?: number, powerStart?: number, powerEnd?: number, weight?: number, ftp?: number, pace?: number, cadence?: number, setCadence?: Function }) => {
 
   const paces = ["1M", "5K", "10K", "HM", "M"]  
 
@@ -34,7 +34,7 @@ const Label = (props: { sportType: string, duration: string, distance?: number, 
           {(props.powerStart / props.ftp * 100).toFixed(0)}% FTP - {(props.powerEnd / props.ftp * 100).toFixed(0)}% FTP
         </div>
       }
-      {props.distance && props.sportType === "run" &&
+      {props.sportType === "run" && props.distance &&
         <div>
           <FontAwesomeIcon icon={faRuler} fixedWidth /> {props.distance.toFixed(0)} m
         </div>
@@ -48,7 +48,11 @@ const Label = (props: { sportType: string, duration: string, distance?: number, 
         <div>
           {(props.powerStart / props.ftp * 100).toFixed(0)}% to {(props.powerEnd / props.ftp * 100).toFixed(0)}% {paces[props.pace || 0]} pace
         </div>
-      }
+      }      
+      <div>    
+        <label className="cadenceLabel">Cadence</label>
+        <input type="number" min="40" max="150" step="5" name="cadence" value={props.cadence || ''} onChange={(e) => {if (props.setCadence) props.setCadence(parseInt(e.target.value))}} onClick={(e)=> {e.stopPropagation()}} className="textField" />
+      </div>       
     </div>
   )
 }

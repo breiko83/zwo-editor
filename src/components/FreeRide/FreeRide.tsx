@@ -6,7 +6,7 @@ import 'moment-duration-format'
 import Label from '../Label/Label'
 import helpers from '../helpers'
 
-const FreeRide = (props: { id: string, time: number, sportType: string, onChange: Function, onClick: Function, selected: boolean }) => {
+const FreeRide = (props: { id: string, time: number, cadence: number, sportType: string, onChange: Function, onClick: Function, selected: boolean }) => {
 
   const timeMultiplier = 3
 
@@ -17,16 +17,20 @@ const FreeRide = (props: { id: string, time: number, sportType: string, onChange
 
   const [showLabel, setShowLabel] = useState(false)
 
+  const handleCadenceChange = (cadence: number) => {
+    props.onChange(props.id, { time: props.time, type: 'freeRide', cadence: cadence, id: props.id })
+  }
+
   // standard height
   const height = 100
 
   const handleResizeStop = (dWidth: number) => {
     setWidth(width + dWidth)
-    props.onChange(props.id, { time: helpers.round((width + dWidth) * timeMultiplier, 5), type: 'freeRide', id: props.id })
+    props.onChange(props.id, { time: helpers.round((width + dWidth) * timeMultiplier, 5), type: 'freeRide', cadence: props.cadence, id: props.id })
   }
 
   const handleResize = (dWidth: number) => {
-    props.onChange(props.id, { time: helpers.round((width + dWidth) * timeMultiplier, 5), type: 'freeRide', id: props.id })
+    props.onChange(props.id, { time: helpers.round((width + dWidth) * timeMultiplier, 5), type: 'freeRide', cadence: props.cadence, id: props.id })
   }
 
   function getDuration(seconds: number) {
@@ -41,8 +45,8 @@ const FreeRide = (props: { id: string, time: number, sportType: string, onChange
       style={props.selected ? {zIndex:1}: {}}
       onClick={() => props.onClick(props.id)}
     >
-      {showLabel &&
-        <Label duration={durationLabel} sportType={props.sportType} />
+      {(props.selected || showLabel) &&
+        <Label duration={durationLabel} sportType={props.sportType} cadence={props.cadence} setCadence={(cadence: number)=> handleCadenceChange(cadence)} />
       }
       <Resizable
         className='freeRide'
