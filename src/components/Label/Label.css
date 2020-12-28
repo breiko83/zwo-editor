@@ -21,6 +21,14 @@
   font-size: 14px;
 }
 
-.cadenceLabel {
+.cadence-row {
+  display: flex;
+}
+.cadence-row > .cadenceLabel {
   font-size: 14px;
+  flex: 1;
+}
+.cadence-row > .textField {
+  min-width: 1px;
+  flex: 1;
 }
