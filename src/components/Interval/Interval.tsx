@@ -50,9 +50,6 @@ const Interval = (props: { id: string, repeat: number, onDuration?: number, offD
 
   function handleOnChange(id: string, values: BarInterface) {
 
-    console.log(values);
-    
-  
     const index = bars.findIndex(bar => bar.id === id)
     
     if (index % 2 === 1) {
