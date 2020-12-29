@@ -610,7 +610,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
   }
 
   function upload(file: Blob, parse = false) {
-    fetch('/.netlify/functions/upload', {
+    fetch('https://zwiftworkout.netlify.app/.netlify/functions/upload', {
       method: 'POST',
       body: JSON.stringify(
         {
