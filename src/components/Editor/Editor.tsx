@@ -656,6 +656,9 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
       .then(response => response.text())
       .then(data => {
 
+        // remove xml comments
+        data = data.replace(/<!--(.*?)-->/gm, "")
+
         //now parse file  
         const workout = Converter.xml2js(data)
         const workout_file = workout.elements[0]
@@ -705,7 +708,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
 
               textElements.map((t: { name: string; attributes: { message: string | undefined; timeoffset: string } }) => {
 
-                if (t.name === 'textevent')
+                if (t.name.toLowerCase() === 'textevent')
                   addInstruction(t.attributes.message, totalTime + parseFloat(t.attributes.timeoffset))
 
                 return false
