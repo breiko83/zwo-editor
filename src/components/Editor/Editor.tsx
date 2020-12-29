@@ -315,7 +315,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
     ])
   }
 
-  function addInterval(repeat: number = 3, onDuration: number = 30, offDuration: number = 120, onPower: number = 1, offPower: number = 0.5, cadence: number = 0, pace: number = 0, onLength: number = 200, offLength: number = 200) {
+  function addInterval(repeat: number = 3, onDuration: number = 30, offDuration: number = 120, onPower: number = 1, offPower: number = 0.5, cadence: number = 0, restingCadence: number = 0, pace: number = 0, onLength: number = 200, offLength: number = 200) {
 
     setBars(bars => [...bars, {
       time: durationType === 'time' ? (onDuration + offDuration) * repeat : helpers.round(helpers.calculateTime((onLength + offLength) * repeat, calculateSpeed(pace)), 1),
@@ -323,6 +323,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
       id: uuidv4(),
       type: 'interval',
       cadence: cadence,
+      restingCadence: restingCadence,
       repeat: repeat,
       onDuration: durationType === 'time' ? onDuration : helpers.round(helpers.calculateTime(onLength * 1 / onPower, calculateSpeed(pace)), 1),
       offDuration: durationType === 'time' ? offDuration : helpers.round(helpers.calculateTime(offLength * 1 / offPower, calculateSpeed(pace)), 1),
@@ -444,7 +445,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
     if (element.type === 'bar') addBar(element.power || 80, element.time, element.cadence, element.pace, element.length)
     if (element.type === 'freeRide') addFreeRide(element.time, element.cadence)
     if (element.type === 'trapeze') addTrapeze(element.startPower || 80, element.endPower || 160, element.time, element.pace || 0, element.length, element.cadence)
-    if (element.type === 'interval') addInterval(element.repeat, element.onDuration, element.offDuration, element.onPower, element.offPower, element.cadence, element.pace, element.onLength, element.offLength)
+    if (element.type === 'interval') addInterval(element.repeat, element.onDuration, element.offDuration, element.onPower, element.offPower, element.cadence, element.restingCadence, element.pace, element.onLength, element.offLength)
 
     setActionId(undefined)
   }
@@ -609,7 +610,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
   }
 
   function upload(file: Blob, parse = false) {
-    fetch('https://zwiftworkout.netlify.app/.netlify/functions/upload', {
+    fetch('/.netlify/functions/upload', {
       method: 'POST',
       body: JSON.stringify(
         {
@@ -680,7 +681,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
 
           var totalTime = 0
 
-          workout_file.elements[workoutIndex].elements.map((w: { name: string; attributes: { Power: any; PowerLow: string; Duration: string; PowerHigh: string; Cadence: string; Repeat: string; OnDuration: string; OffDuration: string; OnPower: string, OffPower: string; Pace: string }; elements: any }) => {
+          workout_file.elements[workoutIndex].elements.map((w: { name: string; attributes: { Power: any; PowerLow: string; Duration: string; PowerHigh: string; Cadence: string; CadenceResting: string; Repeat: string; OnDuration: string; OffDuration: string; OnPower: string, OffPower: string; Pace: string }; elements: any }) => {
 
             let duration = parseFloat(w.attributes.Duration)
 
@@ -688,15 +689,15 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
               addBar(parseFloat(w.attributes.Power || w.attributes.PowerLow), parseFloat(w.attributes.Duration), parseFloat(w.attributes.Cadence || '0'), parseInt(w.attributes.Pace || '0'))
 
             if (w.name === 'Ramp' || w.name === 'Warmup' || w.name === 'Cooldown')
-              addTrapeze(parseFloat(w.attributes.PowerLow), parseFloat(w.attributes.PowerHigh), parseFloat(w.attributes.Duration), parseInt(w.attributes.Pace || '0'))
+              addTrapeze(parseFloat(w.attributes.PowerLow), parseFloat(w.attributes.PowerHigh), parseFloat(w.attributes.Duration), parseInt(w.attributes.Pace || '0'), undefined, parseInt(w.attributes.Cadence))
 
             if (w.name === 'IntervalsT'){
-              addInterval(parseFloat(w.attributes.Repeat), parseFloat(w.attributes.OnDuration), parseFloat(w.attributes.OffDuration), parseFloat(w.attributes.OnPower), parseFloat(w.attributes.OffPower), parseFloat(w.attributes.Cadence || '0'), parseInt(w.attributes.Pace || '0'))
+              addInterval(parseFloat(w.attributes.Repeat), parseFloat(w.attributes.OnDuration), parseFloat(w.attributes.OffDuration), parseFloat(w.attributes.OnPower), parseFloat(w.attributes.OffPower), parseInt(w.attributes.Cadence || '0'), parseInt(w.attributes.CadenceResting), parseInt(w.attributes.Pace || '0'))
               duration = (parseFloat(w.attributes.OnDuration) + parseFloat(w.attributes.OffDuration)) * parseFloat(w.attributes.Repeat)
             }              
 
             if (w.name === 'FreeRide')
-              addFreeRide(parseFloat(w.attributes.Duration))
+              addFreeRide(parseFloat(w.attributes.Duration), parseInt(w.attributes.Cadence))
 
             // check for instructions
             const textElements = w.elements
