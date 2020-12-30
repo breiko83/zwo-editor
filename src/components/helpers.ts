@@ -1,6 +1,7 @@
 import moment from 'moment'
 import 'moment-duration-format'
-import { DurationType, Interval } from './Editor/Editor'
+import { DurationType } from './Editor/Editor'
+import { Interval } from './Interval'
 
 const helpers = {
   // calculate total time

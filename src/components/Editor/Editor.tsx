@@ -32,27 +32,8 @@ import LeftRightToggle from './LeftRightToggle'
 import createWorkoutXml from '../../xml/createWorkoutXml'
 import ShareForm from '../Forms/ShareForm'
 import PaceSelector, { PaceType } from './PaceSelector'
+import { Interval } from '../Interval'
 
-
-export interface Interval {
-  id: string,
-  time: number,
-  length?: number,
-  type: string,
-  power?: number,
-  startPower?: number,
-  endPower?: number,
-  cadence: number,
-  restingCadence?: number,
-  onPower?: number,
-  offPower?: number,
-  onDuration?: number,
-  offDuration?: number,
-  repeat?: number,
-  pace?: PaceType,
-  onLength?: number,
-  offLength?: number
-}
 
 export interface Instruction {
   id: string,

@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import Bar from '../Bar/Bar'
 import './Repetition.css'
-
-import { Interval } from '../Editor/Editor'
 import { PaceType } from '../Editor/PaceSelector'
+import { Interval } from '../Interval'
 
 const Repetition = (props: { id: string, repeat: number, onDuration?: number, offDuration?: number, onLength?: number, offLength?: number, onPower: number, offPower: number, cadence: number, restingCadence: number, ftp: number, weight: number, pace: PaceType, speed?: number, sportType: string, durationType: string, handleIntervalChange: Function, handleIntervalClick: Function, selected: boolean }) => {
 
