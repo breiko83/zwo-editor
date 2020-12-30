@@ -15,12 +15,15 @@ exports.handler = function (event, context, callback) {
   const body = JSON.parse(event.body)
   const { fileName, fileType } = body
 
+  //const corsUrl = "https://localhost:8888"
+  const corsUrl = "https://www.zwiftworkout.com"
+
   if (!fileName && !fileType) {
     return {
       statusCode: 400,
       headers: {
         /* Required for CORS support to work */
-        'Access-Control-Allow-Origin': 'https://www.zwiftworkout.com',
+        'Access-Control-Allow-Origin': corsUrl,
         /* Required for cookies, authorization headers with HTTPS */
         'Access-Control-Allow-Credentials': true
       },
@@ -50,7 +53,7 @@ exports.handler = function (event, context, callback) {
     statusCode: 200,
     headers: {
       /* Required for CORS support to work */
-      'Access-Control-Allow-Origin': 'https://www.zwiftworkout.com',
+      'Access-Control-Allow-Origin': corsUrl,
       /* Required for cookies, authorization headers with HTTPS */
       'Access-Control-Allow-Credentials': true
     },

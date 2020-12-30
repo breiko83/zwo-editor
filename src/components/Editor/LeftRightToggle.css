@@ -1,0 +1,11 @@
+.left-right-toggle {
+  display: flex;
+  flex-direction: row;
+  color: lightgray;
+}
+.left-right-toggle > .icon {
+  padding: 5px;
+}
+.left-right-toggle > .icon.active {
+  color: #00C46A;  
+}

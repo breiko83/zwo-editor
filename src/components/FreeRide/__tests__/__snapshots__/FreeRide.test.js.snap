@@ -3,12 +3,13 @@
 exports[`Freeride renders correctly 1`] = `
 <div
   className="segment"
+  onClick={[Function]}
   onMouseEnter={[Function]}
   onMouseLeave={[Function]}
+  style={Object {}}
 >
   <div
     className="freeRide"
-    onClick={[Function]}
     style={
       Object {
         "boxSizing": "border-box",
@@ -20,7 +21,7 @@ exports[`Freeride renders correctly 1`] = `
         "minWidth": 3,
         "position": "relative",
         "userSelect": "auto",
-        "width": "10px",
+        "width": "16.666666666666668px",
       }
     }
   >

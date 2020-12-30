@@ -1,7 +1,7 @@
 .label {
   position: absolute;
   z-index: 100;
-  top: -70px;
+  top: -95px;
   left: 0;
   color: white;
   background-color: rgba(0, 0, 0, 0.7);
@@ -11,4 +11,24 @@
   text-align: center;
   font-size: 14px; 
   padding: 5px;
+}
+
+.textField {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: white;
+  border: 0;
+  border-bottom: 0px solid white;
+  font-size: 14px;
+}
+
+.cadence-row {
+  display: flex;
+}
+.cadence-row > .cadenceLabel {
+  font-size: 14px;
+  flex: 1;
+}
+.cadence-row > .textField {
+  min-width: 1px;
+  flex: 1;
 }
