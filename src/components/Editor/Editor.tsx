@@ -374,13 +374,13 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
     const element = updatedArray[index]
     if (element && durationType === 'time') {
       element.time = element.time + 5
-      element.length = helpers.calculateDistance(element.time, calculateSpeed(element.pace || 0)) * 1 / (element.power || 1)
+      element.length = helpers.calculateDistance(element.time, calculateSpeed(element.pace)) * 1 / (element.power || 1)
       setBars(updatedArray)
     }
 
     if (element && durationType === 'distance') {
       element.length = (element.length || 0) + 200
-      element.time = helpers.calculateTime(element.length, calculateSpeed(element.pace || 0)) * 1 / (element.power || 1)
+      element.time = helpers.calculateTime(element.length, calculateSpeed(element.pace)) * 1 / (element.power || 1)
       setBars(updatedArray)
     }
   }
@@ -392,13 +392,13 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
     const element = updatedArray[index]
     if (element && element.time > 5 && durationType === 'time') {
       element.time = element.time - 5
-      element.length = helpers.calculateDistance(element.time, calculateSpeed(element.pace || 0)) * 1 / (element.power || 1)
+      element.length = helpers.calculateDistance(element.time, calculateSpeed(element.pace)) * 1 / (element.power || 1)
       setBars(updatedArray)
     }
 
     if (element && (element.length || 0) > 200 && durationType === 'distance') {
       element.length = (element.length || 0) - 200
-      element.time = helpers.calculateTime(element.length, calculateSpeed(element.pace || 0)) * 1 / (element.power || 1)
+      element.time = helpers.calculateTime(element.length, calculateSpeed(element.pace)) * 1 / (element.power || 1)
       setBars(updatedArray)
     }
   }
@@ -412,9 +412,9 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
       element.power = parseFloat((element.power + 1 / ftp).toFixed(3))
 
       if (durationType === 'time') {
-        element.length = helpers.calculateDistance(element.time, calculateSpeed(element.pace || 0)) * 1 / element.power
+        element.length = helpers.calculateDistance(element.time, calculateSpeed(element.pace)) * 1 / element.power
       } else {
-        element.time = helpers.calculateTime(element.length, calculateSpeed(element.pace || 0)) * 1 / element.power
+        element.time = helpers.calculateTime(element.length, calculateSpeed(element.pace)) * 1 / element.power
       }
 
       setBars(updatedArray)
@@ -430,9 +430,9 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
       element.power = parseFloat((element.power - 1 / ftp).toFixed(3))
 
       if (durationType === 'time') {
-        element.length = helpers.calculateDistance(element.time, calculateSpeed(element.pace || 0)) * 1 / element.power
+        element.length = helpers.calculateDistance(element.time, calculateSpeed(element.pace)) * 1 / element.power
       } else {
-        element.time = helpers.calculateTime(element.length, calculateSpeed(element.pace || 0)) * 1 / element.power
+        element.time = helpers.calculateTime(element.length, calculateSpeed(element.pace)) * 1 / element.power
       }
 
       setBars(updatedArray)
@@ -754,7 +754,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
       sportType={sportType}
       durationType={durationType}
       pace={bar.pace || 0}
-      speed={calculateSpeed(bar.pace || 0)}
+      speed={calculateSpeed(bar.pace)}
       onChange={(id: string, value: any) => handleOnChange(id, value)} // Change any to Interface Bar?
       onClick={(id: string) => handleOnClick(id)}
       selected={bar.id === actionId}
@@ -775,7 +775,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
       sportType={sportType}
       durationType={durationType}
       pace={bar.pace || 0}
-      speed={calculateSpeed(bar.pace || 0)}
+      speed={calculateSpeed(bar.pace)}
       onChange={(id: string, value: any) => handleOnChange(id, value)} // Change any to Interface Bar?
       onClick={(id: string) => handleOnClick(id)}
       selected={bar.id === actionId}
@@ -813,7 +813,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
       sportType={sportType}
       durationType={durationType}
       pace={bar.pace || 0}
-      speed={calculateSpeed(bar.pace || 0)}
+      speed={calculateSpeed(bar.pace)}
       handleIntervalChange={(id: string, value: any) => handleOnChange(id, value)}
       handleIntervalClick={(id: string) => handleOnClick(id)}
       selected={bar.id === actionId}
@@ -849,9 +849,9 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
       element.pace = pace
 
       if (durationType === 'time') {
-        element.length = helpers.calculateDistance(element.time, calculateSpeed(element.pace || 0)) * 1 / (element.power || 1)
+        element.length = helpers.calculateDistance(element.time, calculateSpeed(element.pace)) * 1 / (element.power || 1)
       } else {
-        element.time = helpers.calculateTime(element.length, calculateSpeed(element.pace || 0)) * 1 / (element.power || 1)
+        element.time = helpers.calculateTime(element.length, calculateSpeed(element.pace)) * 1 / (element.power || 1)
       }
 
       setBars(updatedArray)
