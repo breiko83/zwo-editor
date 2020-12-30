@@ -326,13 +326,13 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
       cadence: cadence,
       restingCadence: restingCadence,
       repeat: repeat,
-      onDuration: durationType === 'time' ? onDuration : helpers.round(helpers.calculateTime(onLength * 1 / onPower, runningSpeed(pace)), 1),
-      offDuration: durationType === 'time' ? offDuration : helpers.round(helpers.calculateTime(offLength * 1 / offPower, runningSpeed(pace)), 1),
+      onDuration: durationType === 'time' ? onDuration : helpers.round(helpers.calculateTime(onLength / onPower, runningSpeed(pace)), 1),
+      offDuration: durationType === 'time' ? offDuration : helpers.round(helpers.calculateTime(offLength / offPower, runningSpeed(pace)), 1),
       onPower: onPower,
       offPower: offPower,
       pace: pace,
-      onLength: durationType === 'time' ? helpers.round(helpers.calculateDistance(onDuration * 1 / onPower, runningSpeed(pace)), 1) : onLength,
-      offLength: durationType === 'time' ? helpers.round(helpers.calculateDistance(offDuration * 1 / offPower, runningSpeed(pace)), 1) : offLength,
+      onLength: durationType === 'time' ? helpers.round(helpers.calculateDistance(onDuration / onPower, runningSpeed(pace)), 1) : onLength,
+      offLength: durationType === 'time' ? helpers.round(helpers.calculateDistance(offDuration / offPower, runningSpeed(pace)), 1) : offLength,
     }
     ])
   }
@@ -374,13 +374,13 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
     const element = updatedArray[index]
     if (element && durationType === 'time') {
       element.time = element.time + 5
-      element.length = helpers.calculateDistance(element.time, runningSpeed(element.pace)) * 1 / (element.power || 1)
+      element.length = helpers.calculateDistance(element.time, runningSpeed(element.pace)) / (element.power || 1)
       setBars(updatedArray)
     }
 
     if (element && durationType === 'distance') {
       element.length = (element.length || 0) + 200
-      element.time = helpers.calculateTime(element.length, runningSpeed(element.pace)) * 1 / (element.power || 1)
+      element.time = helpers.calculateTime(element.length, runningSpeed(element.pace)) / (element.power || 1)
       setBars(updatedArray)
     }
   }
@@ -392,13 +392,13 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
     const element = updatedArray[index]
     if (element && element.time > 5 && durationType === 'time') {
       element.time = element.time - 5
-      element.length = helpers.calculateDistance(element.time, runningSpeed(element.pace)) * 1 / (element.power || 1)
+      element.length = helpers.calculateDistance(element.time, runningSpeed(element.pace)) / (element.power || 1)
       setBars(updatedArray)
     }
 
     if (element && (element.length || 0) > 200 && durationType === 'distance') {
       element.length = (element.length || 0) - 200
-      element.time = helpers.calculateTime(element.length, runningSpeed(element.pace)) * 1 / (element.power || 1)
+      element.time = helpers.calculateTime(element.length, runningSpeed(element.pace)) / (element.power || 1)
       setBars(updatedArray)
     }
   }
@@ -412,9 +412,9 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
       element.power = parseFloat((element.power + 1 / ftp).toFixed(3))
 
       if (durationType === 'time') {
-        element.length = helpers.calculateDistance(element.time, runningSpeed(element.pace)) * 1 / element.power
+        element.length = helpers.calculateDistance(element.time, runningSpeed(element.pace)) / element.power
       } else {
-        element.time = helpers.calculateTime(element.length, runningSpeed(element.pace)) * 1 / element.power
+        element.time = helpers.calculateTime(element.length, runningSpeed(element.pace)) / element.power
       }
 
       setBars(updatedArray)
@@ -430,9 +430,9 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
       element.power = parseFloat((element.power - 1 / ftp).toFixed(3))
 
       if (durationType === 'time') {
-        element.length = helpers.calculateDistance(element.time, runningSpeed(element.pace)) * 1 / element.power
+        element.length = helpers.calculateDistance(element.time, runningSpeed(element.pace)) / element.power
       } else {
-        element.time = helpers.calculateTime(element.length, runningSpeed(element.pace)) * 1 / element.power
+        element.time = helpers.calculateTime(element.length, runningSpeed(element.pace)) / element.power
       }
 
       setBars(updatedArray)
@@ -849,9 +849,9 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
       element.pace = pace
 
       if (durationType === 'time') {
-        element.length = helpers.calculateDistance(element.time, runningSpeed(element.pace)) * 1 / (element.power || 1)
+        element.length = helpers.calculateDistance(element.time, runningSpeed(element.pace)) / (element.power || 1)
       } else {
-        element.time = helpers.calculateTime(element.length, runningSpeed(element.pace)) * 1 / (element.power || 1)
+        element.time = helpers.calculateTime(element.length, runningSpeed(element.pace)) / (element.power || 1)
       }
 
       setBars(updatedArray)
