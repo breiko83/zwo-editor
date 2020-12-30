@@ -29,7 +29,7 @@ import { RouteComponentProps } from 'react-router-dom';
 import ReactGA from 'react-ga';
 import RunningTimesEditor, { RunningTimes } from './RunningTimesEditor'
 import LeftRightToggle from './LeftRightToggle'
-import createWorkoutXml from './createWorkoutXml'
+import createWorkoutXml from '../../xml/createWorkoutXml'
 import ShareForm from '../Forms/ShareForm'
 import PaceSelector, { PaceType } from './PaceSelector'
 
