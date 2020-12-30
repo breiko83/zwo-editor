@@ -2,14 +2,14 @@ import React, { useEffect, useState } from 'react'
 import Bar from '../Bar/Bar'
 import './Repetition.css'
 
-import {Bar as BarInterface} from '../Editor/Editor'
+import { Interval } from '../Editor/Editor'
 import { PaceType } from '../Editor/PaceSelector'
 
 const Repetition = (props: { id: string, repeat: number, onDuration?: number, offDuration?: number, onLength?: number, offLength?: number, onPower: number, offPower: number, cadence: number, restingCadence: number, ftp: number, weight: number, pace: PaceType, speed?: number, sportType: string, durationType: string, handleIntervalChange: Function, handleIntervalClick: Function, selected: boolean }) => {
 
   const { v4: uuidv4 } = require('uuid');
 
-  const [bars, setBars] = useState<Array<BarInterface>>([])
+  const [bars, setBars] = useState<Array<Interval>>([])
   const [nIntervals, setNIntervals] = useState(props.repeat)
 
   const [onDuration, setOnDuration] = useState(props.onDuration)
@@ -49,7 +49,7 @@ const Repetition = (props: { id: string, repeat: number, onDuration?: number, of
     // eslint-disable-next-line
   }, [nIntervals])
 
-  function handleOnChange(id: string, values: BarInterface) {
+  function handleOnChange(id: string, values: Interval) {
 
     const index = bars.findIndex(bar => bar.id === id)
     
@@ -142,7 +142,7 @@ const Repetition = (props: { id: string, repeat: number, onDuration?: number, of
     }
   }
 
-  const renderBar = (bar: BarInterface, withLabel: boolean) => (
+  const renderBar = (bar: Interval, withLabel: boolean) => (
     <Bar
       key={bar.id}
       id={bar.id}
@@ -156,7 +156,7 @@ const Repetition = (props: { id: string, repeat: number, onDuration?: number, of
       durationType={props.durationType}
       pace={props.pace}
       speed={props.speed}
-      onChange={(id: string, value: any) => handleOnChange(id, value)} // Change any to Interface Bar?
+      onChange={(id: string, value: any) => handleOnChange(id, value)} // Change any to Interface Interval?
       onClick={() => props.handleIntervalClick(props.id)}
       selected={props.selected}
       showLabel={withLabel}

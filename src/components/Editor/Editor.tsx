@@ -34,7 +34,7 @@ import ShareForm from '../Forms/ShareForm'
 import PaceSelector, { PaceType } from './PaceSelector'
 
 
-export interface Bar {
+export interface Interval {
   id: string,
   time: number,
   length?: number,
@@ -98,7 +98,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
   const S3_URL = 'https://zwift-workout.s3-eu-west-1.amazonaws.com'
 
   const [id, setId] = useState(match.params.id === "new" ? (localStorage.getItem('id') || generateId()) : match.params.id)
-  const [bars, setBars] = useState<Array<Bar>>(JSON.parse(localStorage.getItem('currentWorkout') || '[]'))
+  const [bars, setBars] = useState<Array<Interval>>(JSON.parse(localStorage.getItem('currentWorkout') || '[]'))
   const [actionId, setActionId] = useState<string | undefined>(undefined)
   const [ftp, setFtp] = useState(parseInt(localStorage.getItem('ftp') || '200'))
   const [weight, setWeight] = useState(parseInt(localStorage.getItem('weight') || '75'))
@@ -226,7 +226,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
 
   }
 
-  function handleOnChange(id: string, values: Bar) {
+  function handleOnChange(id: string, values: Interval) {
     const index = bars.findIndex(bar => bar.id === id)
 
     const updatedArray = [...bars]
@@ -741,7 +741,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
     }
   }
 
-  const renderBar = (bar: Bar) => (
+  const renderBar = (bar: Interval) => (
     <Bar
       key={bar.id}
       id={bar.id}
@@ -755,14 +755,14 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
       durationType={durationType}
       pace={bar.pace || 0}
       speed={runningSpeed(bar.pace)}
-      onChange={(id: string, value: any) => handleOnChange(id, value)} // Change any to Interface Bar?
+      onChange={(id: string, value: any) => handleOnChange(id, value)} // Change any to Interface Interval?
       onClick={(id: string) => handleOnClick(id)}
       selected={bar.id === actionId}
       showLabel={true}
     />
   )
 
-  const renderTrapeze = (bar: Bar) => (
+  const renderTrapeze = (bar: Interval) => (
     <Trapeze
       key={bar.id}
       id={bar.id}
@@ -776,26 +776,26 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
       durationType={durationType}
       pace={bar.pace || 0}
       speed={runningSpeed(bar.pace)}
-      onChange={(id: string, value: any) => handleOnChange(id, value)} // Change any to Interface Bar?
+      onChange={(id: string, value: any) => handleOnChange(id, value)} // Change any to Interface Interval?
       onClick={(id: string) => handleOnClick(id)}
       selected={bar.id === actionId}
     />
   )
 
-  const renderFreeRide = (bar: Bar) => (
+  const renderFreeRide = (bar: Interval) => (
     <FreeRide
       key={bar.id}
       id={bar.id}
       time={bar.time}
       cadence={bar.cadence}
       sportType={sportType}
-      onChange={(id: string, value: any) => handleOnChange(id, value)} // Change any to Interface Bar?
+      onChange={(id: string, value: any) => handleOnChange(id, value)} // Change any to Interface Interval?
       onClick={(id: string) => handleOnClick(id)}
       selected={bar.id === actionId}
     />
   )
 
-  const renderRepetition = (bar: Bar) => (
+  const renderRepetition = (bar: Interval) => (
     <Repetition
       key={bar.id}
       id={bar.id}
