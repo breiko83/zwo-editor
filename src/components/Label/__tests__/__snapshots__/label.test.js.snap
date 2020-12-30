@@ -25,5 +25,25 @@ exports[`Label renders correctly 1`] = `
      
     100
   </div>
+  <div
+    className="cadence-row"
+  >
+    <label
+      className="cadenceLabel"
+    >
+      Cadence
+    </label>
+    <input
+      className="textField cadence"
+      max="150"
+      min="40"
+      name="cadence"
+      onChange={[Function]}
+      onClick={[Function]}
+      step="5"
+      type="number"
+      value=""
+    />
+  </div>
 </div>
 `;
