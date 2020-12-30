@@ -3,26 +3,26 @@ import 'moment-duration-format'
 
 const helpers = {
   // calculate total time
-  getWorkoutLength: function (bars, durationType) {
+  getWorkoutLength: function (intervals, durationType) {
 
     var length = 0
 
-    bars.map((bar) => {
+    intervals.map((interval) => {
       if (durationType === 'time') {
-        length += bar.time  
-      }else{
+        length += interval.time
+      } else {
 
-        if (bar.type === 'bar') {
-          length += bar.time
+        if (interval.type === 'bar') {
+          length += interval.time
         }
 
-        if (bar.type === 'trapeze') {
-          length += bar.time
+        if (interval.type === 'trapeze') {
+          length += interval.time
         }
 
-        if (bar.type === 'interval') {
-          length += bar.repeat * bar.onDuration
-          length += bar.repeat * bar.offDuration         
+        if (interval.type === 'interval') {
+          length += interval.repeat * interval.onDuration
+          length += interval.repeat * interval.offDuration
         }
       }
       return false;
@@ -31,34 +31,34 @@ const helpers = {
     return length
   },
 
-  getStressScore: function (bars, ftp) {
+  getStressScore: function (intervals, ftp) {
 
     // TSS = [(sec x NP x IF)/(FTP x 3600)] x 100
     var tss = 0
 
-    bars.map((bar) => {
-      if (bar.type === 'bar') {
-        const np = bar.power * ftp
-        const iff = bar.power
+    intervals.map((interval) => {
+      if (interval.type === 'bar') {
+        const np = interval.power * ftp
+        const iff = interval.power
 
-        tss += (bar.time * np * iff)
+        tss += (interval.time * np * iff)
       }
-      if (bar.type === 'trapeze') {
-        const np = (bar.startPower + bar.endPower) / 2 * ftp
-        const iff = (bar.startPower + bar.endPower) / 2
+      if (interval.type === 'trapeze') {
+        const np = (interval.startPower + interval.endPower) / 2 * ftp
+        const iff = (interval.startPower + interval.endPower) / 2
 
-        tss += (bar.time * np * iff)
+        tss += (interval.time * np * iff)
       }
-      if (bar.type === 'interval') {
-        const npOn = (bar.onPower * ftp)
-        const iffOn = bar.onPower
+      if (interval.type === 'interval') {
+        const npOn = (interval.onPower * ftp)
+        const iffOn = interval.onPower
 
-        tss += (bar.onDuration * bar.repeat * npOn * iffOn)
+        tss += (interval.onDuration * interval.repeat * npOn * iffOn)
 
-        const npOff = (bar.offPower * ftp)
-        const iffOff = bar.offPower
+        const npOff = (interval.offPower * ftp)
+        const iffOff = interval.offPower
 
-        tss += (bar.offDuration * bar.repeat * npOff * iffOff)
+        tss += (interval.offDuration * interval.repeat * npOff * iffOff)
       }
       return false;
     })
@@ -96,11 +96,11 @@ const helpers = {
     return estimatedTimes;
   },
 
-  getWorkoutDistance: function (bars) {
+  getWorkoutDistance: function (intervals) {
     var distance = 0
-    bars.map((bar) => distance += (bar.length))
+    intervals.map((interval) => distance += (interval.length))
 
-    return (distance/1000).toFixed(1)
+    return (distance / 1000).toFixed(1)
   },
 
   getTimeinSeconds: function (time) {

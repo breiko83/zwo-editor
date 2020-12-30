@@ -98,7 +98,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
   const S3_URL = 'https://zwift-workout.s3-eu-west-1.amazonaws.com'
 
   const [id, setId] = useState(match.params.id === "new" ? (localStorage.getItem('id') || generateId()) : match.params.id)
-  const [bars, setBars] = useState<Array<Interval>>(JSON.parse(localStorage.getItem('currentWorkout') || '[]'))
+  const [intervals, setIntervals] = useState<Array<Interval>>(JSON.parse(localStorage.getItem('currentWorkout') || '[]'))
   const [actionId, setActionId] = useState<string | undefined>(undefined)
   const [ftp, setFtp] = useState(parseInt(localStorage.getItem('ftp') || '200'))
   const [weight, setWeight] = useState(parseInt(localStorage.getItem('weight') || '75'))
@@ -143,7 +143,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
         setAuthor(snapshot.val().author)
         setName(snapshot.val().name)
         setDescription(snapshot.val().description)
-        setBars(snapshot.val().workout || [])
+        setIntervals(snapshot.val().workout || [])
         setInstructions(snapshot.val().instructions || [])
         setTags(snapshot.val().tags || [])
         setDurationType(snapshot.val().durationType)
@@ -158,7 +158,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
           // user refreshed the page
         } else {
           // treat this as new workout
-          setBars([])
+          setIntervals([])
           setInstructions([])
           setName('')
           setDescription('')
@@ -190,7 +190,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
 
   useEffect(() => {
 
-    localStorage.setItem('currentWorkout', JSON.stringify(bars))
+    localStorage.setItem('currentWorkout', JSON.stringify(intervals))
     localStorage.setItem('ftp', ftp.toString())
 
     localStorage.setItem('instructions', JSON.stringify(instructions))
@@ -207,7 +207,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
 
     setSegmentsWidth(segmentsRef.current?.scrollWidth || 1320)    
 
-  }, [segmentsRef, bars, ftp, instructions, weight, name, description, author, tags, sportType, durationType, runningTimes])
+  }, [segmentsRef, intervals, ftp, instructions, weight, name, description, author, tags, sportType, durationType, runningTimes])
 
   function generateId() {
     return Math.random().toString(36).substr(2, 16)
@@ -217,7 +217,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
     console.log('New workout')
 
     setId(generateId())
-    setBars([])
+    setIntervals([])
     setInstructions([])
     setName('')
     setDescription('')
@@ -227,12 +227,12 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
   }
 
   function handleOnChange(id: string, values: Interval) {
-    const index = bars.findIndex(bar => bar.id === id)
+    const index = intervals.findIndex(interval => interval.id === id)
 
-    const updatedArray = [...bars]
+    const updatedArray = [...intervals]
     updatedArray[index] = values
 
-    setBars(updatedArray)
+    setIntervals(updatedArray)
 
   }
 
@@ -280,7 +280,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
   }
 
   function addBar(zone: number, duration: number = 300, cadence: number = 0, pace: PaceType = PaceType.oneMile, length: number = 200) {
-    setBars(bars => [...bars, {
+    setIntervals(intervals => [...intervals, {
       time: durationType === 'time' ? duration : helpers.round(helpers.calculateTime(length, runningSpeed(pace)), 1),
       length: durationType === 'time' ? helpers.round(helpers.calculateDistance(duration, runningSpeed(pace)), 1) : length,
       power: zone,
@@ -293,7 +293,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
   }
 
   function addTrapeze(zone1: number, zone2: number, duration: number = 300, pace: PaceType = PaceType.oneMile, length: number = 1000, cadence: number = 0) {
-    setBars(bars => [...bars, {
+    setIntervals(intervals => [...intervals, {
       time: durationType === 'time' ? duration : helpers.round(helpers.calculateTime(length, runningSpeed(pace)), 1),
       length: durationType === 'time' ? helpers.round(helpers.calculateDistance(duration, runningSpeed(pace)), 1) : length,
       startPower: zone1,
@@ -307,7 +307,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
   }
 
   function addFreeRide(duration = 600, cadence: number = 0) {
-    setBars(bars => [...bars, {
+    setIntervals(intervals => [...intervals, {
       time: duration,
       cadence: cadence,
       type: 'freeRide',
@@ -318,7 +318,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
 
   function addInterval(repeat: number = 3, onDuration: number = 30, offDuration: number = 120, onPower: number = 1, offPower: number = 0.5, cadence: number = 0, restingCadence: number = 0, pace: PaceType = PaceType.oneMile, onLength: number = 200, offLength: number = 200) {
 
-    setBars(bars => [...bars, {
+    setIntervals(intervals => [...intervals, {
       time: durationType === 'time' ? (onDuration + offDuration) * repeat : helpers.round(helpers.calculateTime((onLength + offLength) * repeat, runningSpeed(pace)), 1),
       length: durationType === 'time' ? helpers.round(helpers.calculateDistance((onDuration + offDuration) * repeat, runningSpeed(pace)), 1) : (onLength + offLength) * repeat,
       id: uuidv4(),
@@ -362,51 +362,51 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
   }
 
   function removeBar(id: string) {
-    const updatedArray = [...bars]
-    setBars(updatedArray.filter(item => item.id !== id))
+    const updatedArray = [...intervals]
+    setIntervals(updatedArray.filter(item => item.id !== id))
     setActionId(undefined)
   }
 
   function addTimeToBar(id: string) {
-    const updatedArray = [...bars]
+    const updatedArray = [...intervals]
 
-    const index = updatedArray.findIndex(bar => bar.id === id)
+    const index = updatedArray.findIndex(interval => interval.id === id)
     const element = updatedArray[index]
     if (element && durationType === 'time') {
       element.time = element.time + 5
       element.length = helpers.calculateDistance(element.time, runningSpeed(element.pace)) / (element.power || 1)
-      setBars(updatedArray)
+      setIntervals(updatedArray)
     }
 
     if (element && durationType === 'distance') {
       element.length = (element.length || 0) + 200
       element.time = helpers.calculateTime(element.length, runningSpeed(element.pace)) / (element.power || 1)
-      setBars(updatedArray)
+      setIntervals(updatedArray)
     }
   }
 
   function removeTimeToBar(id: string) {
-    const updatedArray = [...bars]
+    const updatedArray = [...intervals]
 
-    const index = updatedArray.findIndex(bar => bar.id === id)
+    const index = updatedArray.findIndex(interval => interval.id === id)
     const element = updatedArray[index]
     if (element && element.time > 5 && durationType === 'time') {
       element.time = element.time - 5
       element.length = helpers.calculateDistance(element.time, runningSpeed(element.pace)) / (element.power || 1)
-      setBars(updatedArray)
+      setIntervals(updatedArray)
     }
 
     if (element && (element.length || 0) > 200 && durationType === 'distance') {
       element.length = (element.length || 0) - 200
       element.time = helpers.calculateTime(element.length, runningSpeed(element.pace)) / (element.power || 1)
-      setBars(updatedArray)
+      setIntervals(updatedArray)
     }
   }
 
   function addPowerToBar(id: string) {
-    const updatedArray = [...bars]
+    const updatedArray = [...intervals]
 
-    const index = updatedArray.findIndex(bar => bar.id === id)
+    const index = updatedArray.findIndex(interval => interval.id === id)
     const element = updatedArray[index]
     if (element && element.power) {
       element.power = parseFloat((element.power + 1 / ftp).toFixed(3))
@@ -417,14 +417,14 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
         element.time = helpers.calculateTime(element.length, runningSpeed(element.pace)) / element.power
       }
 
-      setBars(updatedArray)
+      setIntervals(updatedArray)
     }
   }
 
   function removePowerToBar(id: string) {
-    const updatedArray = [...bars]
+    const updatedArray = [...intervals]
 
-    const index = updatedArray.findIndex(bar => bar.id === id)
+    const index = updatedArray.findIndex(interval => interval.id === id)
     const element = updatedArray[index]
     if (element && element.power && element.power >= Zones.Z1.min) {
       element.power = parseFloat((element.power - 1 / ftp).toFixed(3))
@@ -435,13 +435,13 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
         element.time = helpers.calculateTime(element.length, runningSpeed(element.pace)) / element.power
       }
 
-      setBars(updatedArray)
+      setIntervals(updatedArray)
     }
   }
 
   function duplicateBar(id: string) {
-    const index = bars.findIndex(bar => bar.id === id)
-    const element = [...bars][index]
+    const index = intervals.findIndex(interval => interval.id === id)
+    const element = [...intervals][index]
 
     if (element.type === 'bar') addBar(element.power || 80, element.time, element.cadence, element.pace, element.length)
     if (element.type === 'freeRide') addFreeRide(element.time, element.cadence)
@@ -452,26 +452,26 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
   }
 
   function moveLeft(id: string) {
-    const index = bars.findIndex(bar => bar.id === id)
+    const index = intervals.findIndex(interval => interval.id === id)
     // not first position of array
     if (index > 0) {
-      const updatedArray = [...bars]
-      const element = [...bars][index]
+      const updatedArray = [...intervals]
+      const element = [...intervals][index]
       updatedArray.splice(index, 1)
       updatedArray.splice(index - 1, 0, element)
-      setBars(updatedArray)
+      setIntervals(updatedArray)
     }
   }
 
   function moveRight(id: string) {
-    const index = bars.findIndex(bar => bar.id === id)
+    const index = intervals.findIndex(interval => interval.id === id)
     // not first position of array
-    if (index < bars.length - 1) {
-      const updatedArray = [...bars]
-      const element = [...bars][index]
+    if (index < intervals.length - 1) {
+      const updatedArray = [...intervals]
+      const element = [...intervals][index]
       updatedArray.splice(index, 1)
       updatedArray.splice(index + 1, 0, element)
-      setBars(updatedArray)
+      setIntervals(updatedArray)
     }
   }
 
@@ -520,7 +520,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
       sportType,
       durationType,
       tags,
-      bars,
+      intervals,
       instructions
     });
 
@@ -535,7 +535,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
         name: name,
         description: description,
         author: author,
-        workout: bars,
+        workout: intervals,
         tags: tags,
         instructions: instructions,
         userId: user.uid,
@@ -550,8 +550,8 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
         updatedAt: Date(),
         sportType: sportType,
         durationType: durationType,
-        workoutTime: helpers.formatDuration(helpers.getWorkoutLength(bars, durationType)),
-        workoutDistance: helpers.getWorkoutDistance(bars)
+        workoutTime: helpers.formatDuration(helpers.getWorkoutLength(intervals, durationType)),
+        workoutDistance: helpers.getWorkoutDistance(intervals)
       }
 
       var updates: any = {}
@@ -600,7 +600,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
   function handleUpload(file: Blob) {
 
     // ask user if they want to overwrite current workout first
-    if (bars.length > 0) {
+    if (intervals.length > 0) {
       if (!window.confirm('Are you sure you want to create a new workout?')) {
         return false
       }
@@ -650,7 +650,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
     // remove previous workout
 
     // TODO fix for running distance based
-    setBars([])
+    setIntervals([])
     setInstructions([])
 
     fetch(`${S3_URL}/${id}.zwo`)
@@ -741,82 +741,82 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
     }
   }
 
-  const renderBar = (bar: Interval) => (
+  const renderBar = (interval: Interval) => (
     <Bar
-      key={bar.id}
-      id={bar.id}
-      time={bar.time}
-      length={bar.length || 200}
-      power={bar.power || 100}
-      cadence={bar.cadence}
+      key={interval.id}
+      id={interval.id}
+      time={interval.time}
+      length={interval.length || 200}
+      power={interval.power || 100}
+      cadence={interval.cadence}
       ftp={ftp}
       weight={weight}
       sportType={sportType}
       durationType={durationType}
-      pace={bar.pace || 0}
-      speed={runningSpeed(bar.pace)}
+      pace={interval.pace || 0}
+      speed={runningSpeed(interval.pace)}
       onChange={(id: string, value: any) => handleOnChange(id, value)} // Change any to Interface Interval?
       onClick={(id: string) => handleOnClick(id)}
-      selected={bar.id === actionId}
+      selected={interval.id === actionId}
       showLabel={true}
     />
   )
 
-  const renderTrapeze = (bar: Interval) => (
+  const renderTrapeze = (interval: Interval) => (
     <Trapeze
-      key={bar.id}
-      id={bar.id}
-      time={bar.time}
-      length={bar.length || 200}
-      cadence={bar.cadence}
-      startPower={bar.startPower || 80}
-      endPower={bar.endPower || 160}
+      key={interval.id}
+      id={interval.id}
+      time={interval.time}
+      length={interval.length || 200}
+      cadence={interval.cadence}
+      startPower={interval.startPower || 80}
+      endPower={interval.endPower || 160}
       ftp={ftp}
       sportType={sportType}
       durationType={durationType}
-      pace={bar.pace || 0}
-      speed={runningSpeed(bar.pace)}
+      pace={interval.pace || 0}
+      speed={runningSpeed(interval.pace)}
       onChange={(id: string, value: any) => handleOnChange(id, value)} // Change any to Interface Interval?
       onClick={(id: string) => handleOnClick(id)}
-      selected={bar.id === actionId}
+      selected={interval.id === actionId}
     />
   )
 
-  const renderFreeRide = (bar: Interval) => (
+  const renderFreeRide = (interval: Interval) => (
     <FreeRide
-      key={bar.id}
-      id={bar.id}
-      time={bar.time}
-      cadence={bar.cadence}
+      key={interval.id}
+      id={interval.id}
+      time={interval.time}
+      cadence={interval.cadence}
       sportType={sportType}
       onChange={(id: string, value: any) => handleOnChange(id, value)} // Change any to Interface Interval?
       onClick={(id: string) => handleOnClick(id)}
-      selected={bar.id === actionId}
+      selected={interval.id === actionId}
     />
   )
 
-  const renderRepetition = (bar: Interval) => (
+  const renderRepetition = (interval: Interval) => (
     <Repetition
-      key={bar.id}
-      id={bar.id}
-      repeat={bar.repeat || 3}
-      onDuration={bar.onDuration || 10}
-      offDuration={bar.offDuration || 50}
-      onPower={bar.onPower || 250}
-      offPower={bar.offPower || 120}
-      onLength={bar.onLength || 200}
-      offLength={bar.offLength || 200}
-      cadence={bar.cadence}
-      restingCadence={bar.restingCadence || 0}
+      key={interval.id}
+      id={interval.id}
+      repeat={interval.repeat || 3}
+      onDuration={interval.onDuration || 10}
+      offDuration={interval.offDuration || 50}
+      onPower={interval.onPower || 250}
+      offPower={interval.offPower || 120}
+      onLength={interval.onLength || 200}
+      offLength={interval.offLength || 200}
+      cadence={interval.cadence}
+      restingCadence={interval.restingCadence || 0}
       ftp={ftp}
       weight={weight}
       sportType={sportType}
       durationType={durationType}
-      pace={bar.pace || 0}
-      speed={runningSpeed(bar.pace)}
+      pace={interval.pace || 0}
+      speed={runningSpeed(interval.pace)}
       handleIntervalChange={(id: string, value: any) => handleOnChange(id, value)}
       handleIntervalClick={(id: string) => handleOnClick(id)}
-      selected={bar.id === actionId}
+      selected={interval.id === actionId}
     />
   )
 
@@ -825,7 +825,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
       key={instruction.id}
       instruction={instruction}
       durationType={durationType}
-      width={durationType === "distance" ? parseInt(helpers.getWorkoutDistance(bars))*100 : helpers.getWorkoutLength(bars, durationType) / 3}
+      width={durationType === "distance" ? parseInt(helpers.getWorkoutDistance(intervals))*100 : helpers.getWorkoutLength(intervals, durationType) / 3}
       onChange={(id: string, values: Instruction) => changeInstruction(id, values)}
       onDelete={(id: string) => deleteInstruction(id)} 
       index={index}
@@ -841,10 +841,10 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
   }
 
   function setPace(pace: PaceType, id: string) {
-    const index = bars.findIndex(bar => bar.id === id)
+    const index = intervals.findIndex(interval => interval.id === id)
 
     if (index !== -1) {
-      const updatedArray = [...bars]
+      const updatedArray = [...intervals]
       const element = [...updatedArray][index]
       element.pace = pace
 
@@ -854,15 +854,15 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
         element.time = helpers.calculateTime(element.length, runningSpeed(element.pace)) / (element.power || 1)
       }
 
-      setBars(updatedArray)
+      setIntervals(updatedArray)
     }
   }
 
   function getPace(id: string): PaceType | undefined {
-    const index = bars.findIndex(bar => bar.id === id)
+    const index = intervals.findIndex(interval => interval.id === id)
 
     if (index !== -1) {
-      const element = [...bars][index]
+      const element = [...intervals][index]
       return element.pace
     }
   }
@@ -941,17 +941,17 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
         <div className="workout">
           <div className="form-input">
             <label>Workout Time</label>
-            <input className="textInput" value={helpers.formatDuration(helpers.getWorkoutLength(bars, durationType))} disabled />
+            <input className="textInput" value={helpers.formatDuration(helpers.getWorkoutLength(intervals, durationType))} disabled />
           </div>
           {sportType === 'run' &&
             <div className="form-input">
               <label>Workout Distance</label>
-              <input className="textInput" value={helpers.getWorkoutDistance(bars)} disabled />
+              <input className="textInput" value={helpers.getWorkoutDistance(intervals)} disabled />
             </div>
           }
           <div className="form-input">
             <label>TSS</label>
-            <input className="textInput" value={helpers.getStressScore(bars, ftp)} disabled />
+            <input className="textInput" value={helpers.getStressScore(intervals, ftp)} disabled />
           </div>
           {sportType === 'run' &&
             <LeftRightToggle<"time","distance">
@@ -994,18 +994,18 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
             <div className='fader' style={{width: canvasRef.current?.scrollWidth}} onClick={() => setActionId(undefined)}></div>
           }
           <div className='segments' ref={segmentsRef}>
-            {bars.map((bar) => {
-              if (bar.type === 'bar') {
-                return (renderBar(bar))
+            {intervals.map((interval) => {
+              if (interval.type === 'bar') {
+                return (renderBar(interval))
               }
-              else if (bar.type === 'trapeze') {
-                return (renderTrapeze(bar))
+              else if (interval.type === 'trapeze') {
+                return (renderTrapeze(interval))
               }
-              else if (bar.type === 'freeRide') {
-                return (renderFreeRide(bar))
+              else if (interval.type === 'freeRide') {
+                return (renderFreeRide(interval))
               }
-              else if (bar.type === 'interval') {
-                return (renderRepetition(bar))
+              else if (interval.type === 'interval') {
+                return (renderRepetition(interval))
               } else {
                 return false
               }

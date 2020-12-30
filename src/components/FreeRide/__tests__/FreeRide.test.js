@@ -7,7 +7,7 @@ import { Zones } from '../../Constants'
 
 test('Freeride renders correctly', () => {
 
-  const bar = {
+  const interval = {
     time: 50,
     power: Zones.Z3.min,
     type: 'bar',
@@ -16,9 +16,9 @@ test('Freeride renders correctly', () => {
 
   const component = renderer.create(
     <FreeRide
-      key={bar.id}
-      id={bar.id}
-      time={bar.time}
+      key={interval.id}
+      id={interval.id}
+      time={interval.time}
       onChange={() => handleOnChange}
       onClick={() => handleOnClick}
     />

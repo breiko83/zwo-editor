@@ -9,7 +9,7 @@ const Repetition = (props: { id: string, repeat: number, onDuration?: number, of
 
   const { v4: uuidv4 } = require('uuid');
 
-  const [bars, setBars] = useState<Array<Interval>>([])
+  const [intervals, setIntervals] = useState<Array<Interval>>([])
   const [nIntervals, setNIntervals] = useState(props.repeat)
 
   const [onDuration, setOnDuration] = useState(props.onDuration)
@@ -19,10 +19,10 @@ const Repetition = (props: { id: string, repeat: number, onDuration?: number, of
   const [offLength, setOffLength] = useState(props.offLength)
 
   useEffect(() => {
-    const bars = []
+    const intervals: Interval[] = []
 
     for (var i = 0; i < nIntervals; i++) {
-      bars.push(
+      intervals.push(
         {
           time: onDuration || 0,
           length: onLength || 0,
@@ -33,7 +33,7 @@ const Repetition = (props: { id: string, repeat: number, onDuration?: number, of
           id: uuidv4()
         })
 
-      bars.push(
+      intervals.push(
         {
           time: offDuration || 0,
           length: offLength || 0,
@@ -44,14 +44,14 @@ const Repetition = (props: { id: string, repeat: number, onDuration?: number, of
           id: uuidv4()
         })
     }
-    setBars(bars)
+    setIntervals(intervals)
 
     // eslint-disable-next-line
   }, [nIntervals])
 
   function handleOnChange(id: string, values: Interval) {
 
-    const index = bars.findIndex(bar => bar.id === id)
+    const index = intervals.findIndex(interval => interval.id === id)
     
     if (index % 2 === 1) {
       setOffDuration(values.time)
@@ -61,35 +61,35 @@ const Repetition = (props: { id: string, repeat: number, onDuration?: number, of
       setOnLength(values.length)
     }
 
-    for (var i = 0; i < bars.length; i++) {
+    for (var i = 0; i < intervals.length; i++) {
       if (index % 2 === i % 2) {       
-        bars[i].time = values.time
-        bars[i].power = values.power
-        bars[i].length = values.length
-        bars[i].cadence = values.cadence        
+        intervals[i].time = values.time
+        intervals[i].power = values.power
+        intervals[i].length = values.length
+        intervals[i].cadence = values.cadence        
       }      
     }
     var time = 0
-    bars.map((bar) => time += bar.time)
+    intervals.map((interval) => time += interval.time)
 
     var length = 0
-    bars.map((bar) => length += (bar.length || 0))
+    intervals.map((interval) => length += (interval.length || 0))
 
     props.handleIntervalChange(props.id, {
       time: time,
       length: length,
       id: props.id,
       type: 'interval',
-      cadence: bars[0].cadence,
-      restingCadence: bars[1].cadence,
+      cadence: intervals[0].cadence,
+      restingCadence: intervals[1].cadence,
       pace: props.pace,
       repeat: nIntervals,
-      onDuration: bars[0].time,
-      offDuration: bars[1].time,
-      onPower: bars[0].power,
-      offPower: bars[1].power,
-      onLength: bars[0].length,
-      offLength: bars[1].length
+      onDuration: intervals[0].time,
+      offDuration: intervals[1].time,
+      onPower: intervals[0].power,
+      offPower: intervals[1].power,
+      onLength: intervals[0].length,
+      offLength: intervals[1].length
     })
 
   }
@@ -97,7 +97,7 @@ const Repetition = (props: { id: string, repeat: number, onDuration?: number, of
   function handleAddInterval() {
     setNIntervals(nIntervals + 1)
     var time = 0
-    bars.map((bar) => time += bar.time)
+    intervals.map((interval) => time += interval.time)
 
     props.handleIntervalChange(props.id, {
       time: ((props.onDuration || 0) + (props.offDuration || 0)) * (nIntervals + 1),
@@ -121,7 +121,7 @@ const Repetition = (props: { id: string, repeat: number, onDuration?: number, of
     if (nIntervals > 1) {
       setNIntervals(nIntervals - 1)
       var time = 0
-      bars.map((bar) => time += bar.time)
+      intervals.map((interval) => time += interval.time)
 
       props.handleIntervalChange(props.id, {
         time: ((props.onDuration || 0) + (props.offDuration || 0)) * (nIntervals - 1),
@@ -142,14 +142,14 @@ const Repetition = (props: { id: string, repeat: number, onDuration?: number, of
     }
   }
 
-  const renderBar = (bar: Interval, withLabel: boolean) => (
+  const renderBar = (interval: Interval, withLabel: boolean) => (
     <Bar
-      key={bar.id}
-      id={bar.id}
-      time={bar.time}
-      length={bar.length}
-      power={bar.power || 100}
-      cadence={bar.cadence}
+      key={interval.id}
+      id={interval.id}
+      time={interval.time}
+      length={interval.length}
+      power={interval.power || 100}
+      cadence={interval.cadence}
       ftp={props.ftp}
       weight={props.weight}
       sportType={props.sportType}
@@ -168,7 +168,7 @@ const Repetition = (props: { id: string, repeat: number, onDuration?: number, of
     <div>
       <div className='buttons'><button onClick={handleAddInterval}>+</button><button onClick={handleRemoveInterval}>-</button></div>
       <div className='intervals'>
-        {bars.map((bar, index) => renderBar(bar, index === 0 || index === bars.length - 1))}
+        {intervals.map((interval, index) => renderBar(interval, index === 0 || index === intervals.length - 1))}
       </div>      
     </div>
   )

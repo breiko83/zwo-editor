@@ -8,7 +8,7 @@ import '@testing-library/jest-dom/extend-expect'
 
 test('Bar renders correctly', () => {
 
-  const bar = {
+  const interval = {
     time: 50,
     power: Zones.Z3.min,
     type: 'bar',
@@ -17,16 +17,16 @@ test('Bar renders correctly', () => {
 
   const ftp = 250
 
-  const component = renderer.create(    
-      <Bar
-        key={bar.id}
-        id={bar.id}
-        time={bar.time}
-        power={bar.power}
-        ftp={ftp}
-        onChange={() => handleOnChange}
-        onClick={() => handleOnClick}
-      />
+  const component = renderer.create(
+    <Bar
+      key={interval.id}
+      id={interval.id}
+      time={interval.time}
+      power={interval.power}
+      ftp={ftp}
+      onChange={() => handleOnChange}
+      onClick={() => handleOnClick}
+    />
   )
 
   let tree = component.toJSON();

@@ -8,7 +8,7 @@ import '@testing-library/jest-dom/extend-expect'
 
 test('Trapeze renders correctly', () => {
 
-  const bar = {
+  const interval = {
     time: 50,
     startPower: Zones.Z2.min,
     endPower: Zones.Z4.min,
@@ -18,17 +18,17 @@ test('Trapeze renders correctly', () => {
 
   const ftp = 250
 
-  const component = renderer.create(    
+  const component = renderer.create(
     <Trapeze
-        key={bar.id}
-        id={bar.id}
-        time={bar.time}
-        startPower={bar.startPower}
-        endPower={bar.endPower}
-        ftp={ftp}
-        onChange={() => handleOnChange}
-        onClick={() => handleOnClick}
-      />
+      key={interval.id}
+      id={interval.id}
+      time={interval.time}
+      startPower={interval.startPower}
+      endPower={interval.endPower}
+      ftp={ftp}
+      onChange={() => handleOnChange}
+      onClick={() => handleOnClick}
+    />
   )
 
   let tree = component.toJSON();
