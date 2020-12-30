@@ -2,8 +2,9 @@ import React from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faBolt, faClock, faRuler } from '@fortawesome/free-solid-svg-icons'
 import './Label.css'
+import { PaceType } from '../Editor/PaceSelector'
 
-const Label = (props: { sportType: string, duration: string, distance?: number, power?: number, powerStart?: number, powerEnd?: number, weight?: number, ftp?: number, pace?: number, cadence?: number, setCadence?: Function }) => {
+const Label = (props: { sportType: string, duration: string, distance?: number, power?: number, powerStart?: number, powerEnd?: number, weight?: number, ftp?: number, pace?: PaceType, cadence?: number, setCadence?: Function }) => {
 
   const paces = ["1M", "5K", "10K", "HM", "M"]  
 

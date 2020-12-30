@@ -4,12 +4,13 @@ import { Colors, Zones, ZonesArray } from '../Constants'
 import { Resizable } from 're-resizable'
 import Label from '../Label/Label'
 import helpers from '../helpers'
+import { PaceType } from '../Editor/PaceSelector'
 
 interface IDictionary {
   [index: string]: number;
 }
 
-const Trapeze = (props: { id: string, time?: number, length?:number, startPower: number, endPower: number, cadence: number, ftp: number, pace: number, sportType: string, durationType: string, speed?: number, onChange: Function, onClick: Function, selected: boolean }) => {
+const Trapeze = (props: { id: string, time?: number, length?:number, startPower: number, endPower: number, cadence: number, ftp: number, pace: PaceType, sportType: string, durationType: string, speed?: number, onChange: Function, onClick: Function, selected: boolean }) => {
 
   const multiplier = 250
   const timeMultiplier = 3

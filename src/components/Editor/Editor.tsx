@@ -31,7 +31,7 @@ import RunningTimesEditor, { RunningTimes } from './RunningTimesEditor'
 import LeftRightToggle from './LeftRightToggle'
 import createWorkoutXml from './createWorkoutXml'
 import ShareForm from '../Forms/ShareForm'
-import PaceSelector from './PaceSelector'
+import PaceSelector, { PaceType } from './PaceSelector'
 
 
 export interface Bar {
@@ -49,7 +49,7 @@ export interface Bar {
   onDuration?: number,
   offDuration?: number,
   repeat?: number,
-  pace?: number,
+  pace?: PaceType,
   onLength?: number,
   offLength?: number
 }
@@ -279,7 +279,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
     }
   }
 
-  function addBar(zone: number, duration: number = 300, cadence: number = 0, pace: number = 0, length: number = 200) {
+  function addBar(zone: number, duration: number = 300, cadence: number = 0, pace: PaceType = PaceType.oneMile, length: number = 200) {
     setBars(bars => [...bars, {
       time: durationType === 'time' ? duration : helpers.round(helpers.calculateTime(length, calculateSpeed(pace)), 1),
       length: durationType === 'time' ? helpers.round(helpers.calculateDistance(duration, calculateSpeed(pace)), 1) : length,
@@ -292,7 +292,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
     ])
   }
 
-  function addTrapeze(zone1: number, zone2: number, duration: number = 300, pace: number = 0, length: number = 1000, cadence: number = 0) {
+  function addTrapeze(zone1: number, zone2: number, duration: number = 300, pace: PaceType = PaceType.oneMile, length: number = 1000, cadence: number = 0) {
     setBars(bars => [...bars, {
       time: durationType === 'time' ? duration : helpers.round(helpers.calculateTime(length, calculateSpeed(pace)), 1),
       length: durationType === 'time' ? helpers.round(helpers.calculateDistance(duration, calculateSpeed(pace)), 1) : length,
@@ -316,7 +316,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
     ])
   }
 
-  function addInterval(repeat: number = 3, onDuration: number = 30, offDuration: number = 120, onPower: number = 1, offPower: number = 0.5, cadence: number = 0, restingCadence: number = 0, pace: number = 0, onLength: number = 200, offLength: number = 200) {
+  function addInterval(repeat: number = 3, onDuration: number = 30, offDuration: number = 120, onPower: number = 1, offPower: number = 0.5, cadence: number = 0, restingCadence: number = 0, pace: PaceType = PaceType.oneMile, onLength: number = 200, offLength: number = 200) {
 
     setBars(bars => [...bars, {
       time: durationType === 'time' ? (onDuration + offDuration) * repeat : helpers.round(helpers.calculateTime((onLength + offLength) * repeat, calculateSpeed(pace)), 1),
@@ -728,8 +728,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
       })
   }
 
-  function calculateSpeed(pace: number = 0) {
-
+  function calculateSpeed(pace: PaceType = PaceType.oneMile) {
     if (sportType === "bike") {
       return 0;
     } else {
@@ -841,7 +840,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
     }
   }
 
-  function setPace(pace: number, id: string) {
+  function setPace(pace: PaceType, id: string) {
     const index = bars.findIndex(bar => bar.id === id)
 
     if (index !== -1) {
@@ -859,7 +858,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
     }
   }
 
-  function getPace(id: string) {
+  function getPace(id: string): PaceType | undefined {
     const index = bars.findIndex(bar => bar.id === id)
 
     if (index !== -1) {

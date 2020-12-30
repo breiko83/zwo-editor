@@ -4,10 +4,11 @@ import { Colors, Zones } from '../Constants'
 import { Resizable } from 're-resizable'
 import Label from '../Label/Label'
 import helpers from '../helpers'
+import { PaceType } from '../Editor/PaceSelector'
 
 
 
-const Bar = (props: { id: string, time?: number, length?:number, power: number, cadence: number, ftp: number, weight: number, pace: number, sportType: string, durationType: string, speed?: number, onChange: Function, onClick: Function, selected: boolean, showLabel: boolean }) => {
+const Bar = (props: { id: string, time?: number, length?:number, power: number, cadence: number, ftp: number, weight: number, pace: PaceType, sportType: string, durationType: string, speed?: number, onChange: Function, onClick: Function, selected: boolean, showLabel: boolean }) => {
 
   const multiplier = 250
   const timeMultiplier = 3
