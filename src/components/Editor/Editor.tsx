@@ -4,7 +4,7 @@ import { Colors, Zones } from '../Constants'
 import Bar from '../Bar/Bar'
 import Trapeze from '../Trapeze/Trapeze'
 import FreeRide from '../FreeRide/FreeRide'
-import Interval from '../Interval/Interval'
+import Repetition from '../Repetition/Repetition'
 import Comment from '../Comment/Comment'
 import Popup from '../Popup/Popup'
 import Footer from '../Footer/Footer'
@@ -795,8 +795,8 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
     />
   )
 
-  const renderInterval = (bar: Bar) => (
-    <Interval
+  const renderRepetition = (bar: Bar) => (
+    <Repetition
       key={bar.id}
       id={bar.id}
       repeat={bar.repeat || 3}
@@ -1005,7 +1005,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
                 return (renderFreeRide(bar))
               }
               else if (bar.type === 'interval') {
-                return (renderInterval(bar))
+                return (renderRepetition(bar))
               } else {
                 return false
               }
