@@ -414,7 +414,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
       if (durationType === 'time') {
         element.length = helpers.calculateDistance(element.time, runningSpeed(element.pace)) / element.power
       } else {
-        element.time = helpers.calculateTime(element.length, runningSpeed(element.pace)) / element.power
+        element.time = helpers.calculateTime(element.length || 0, runningSpeed(element.pace)) / element.power
       }
 
       setIntervals(updatedArray)
@@ -432,7 +432,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
       if (durationType === 'time') {
         element.length = helpers.calculateDistance(element.time, runningSpeed(element.pace)) / element.power
       } else {
-        element.time = helpers.calculateTime(element.length, runningSpeed(element.pace)) / element.power
+        element.time = helpers.calculateTime(element.length || 0, runningSpeed(element.pace)) / element.power
       }
 
       setIntervals(updatedArray)
@@ -851,7 +851,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
       if (durationType === 'time') {
         element.length = helpers.calculateDistance(element.time, runningSpeed(element.pace)) / (element.power || 1)
       } else {
-        element.time = helpers.calculateTime(element.length, runningSpeed(element.pace)) / (element.power || 1)
+        element.time = helpers.calculateTime(element.length || 0, runningSpeed(element.pace)) / (element.power || 1)
       }
 
       setIntervals(updatedArray)

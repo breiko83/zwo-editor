@@ -17,7 +17,7 @@ const Bar = (props: { id: string, time?: number, length?:number, power: number, 
   const powerLabel = Math.round(props.power * props.ftp)
 
   // TIME
-  const duration = helpers.formatDuration(props.time)
+  const duration = helpers.formatDuration(props.time || 0)
 
   // DISTANCE
   const distance = props.length
@@ -52,8 +52,8 @@ const Bar = (props: { id: string, time?: number, length?:number, power: number, 
     setWidth(width + dWidth)
     setHeight(height + dHeight)
 
-    const length = props.durationType === 'time' ? helpers.round(helpers.calculateDistance((width + dWidth) * timeMultiplier * props.power, props.speed),1) : helpers.round((width + dWidth) * lengthMultiplier, 200)
-    const time = props.durationType === 'time' ? helpers.round((width + dWidth) * timeMultiplier, 5) : helpers.round(helpers.calculateTime(props.length, props.speed) * 1 / props.power,1)
+    const length = props.durationType === 'time' ? helpers.round(helpers.calculateDistance((width + dWidth) * timeMultiplier * props.power, props.speed || 0),1) : helpers.round((width + dWidth) * lengthMultiplier, 200)
+    const time = props.durationType === 'time' ? helpers.round((width + dWidth) * timeMultiplier, 5) : helpers.round(helpers.calculateTime(props.length || 0, props.speed || 0) * 1 / props.power,1)
     
 
     props.onChange(props.id, { time: time, length: length, power: (height + dHeight) / multiplier, cadence: props.cadence, type: 'bar', pace: props.pace, id: props.id })
@@ -61,8 +61,8 @@ const Bar = (props: { id: string, time?: number, length?:number, power: number, 
 
   const handleResize = (dWidth: number, dHeight: number) => {       
       
-    const length = props.durationType === 'time' ? helpers.round(helpers.calculateDistance((width + dWidth) * timeMultiplier * props.power, props.speed),1) : helpers.round((width + dWidth) * lengthMultiplier, 200)
-    const time = props.durationType === 'time' ? helpers.round((width + dWidth) * timeMultiplier, 5) : helpers.round(helpers.calculateTime(props.length, props.speed) * 1 / props.power,1)
+    const length = props.durationType === 'time' ? helpers.round(helpers.calculateDistance((width + dWidth) * timeMultiplier * props.power, props.speed || 0),1) : helpers.round((width + dWidth) * lengthMultiplier, 200)
+    const time = props.durationType === 'time' ? helpers.round((width + dWidth) * timeMultiplier, 5) : helpers.round(helpers.calculateTime(props.length || 0, props.speed || 0) * 1 / props.power,1)
 
     props.onChange(props.id, { time: time, length: length, power: (height + dHeight) / multiplier, cadence: props.cadence, type: 'bar', pace: props.pace, id: props.id })
   }

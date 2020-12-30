@@ -1,9 +1,10 @@
 import moment from 'moment'
 import 'moment-duration-format'
+import { DurationType, Interval } from './Editor/Editor'
 
 const helpers = {
   // calculate total time
-  getWorkoutLength: function (intervals, durationType) {
+  getWorkoutLength: function (intervals: Interval[], durationType: DurationType): number {
 
     var length = 0
 
@@ -20,7 +21,7 @@ const helpers = {
           length += interval.time
         }
 
-        if (interval.type === 'interval') {
+        if (interval.type === 'interval' && interval.repeat && interval.onDuration && interval.offDuration) {
           length += interval.repeat * interval.onDuration
           length += interval.repeat * interval.offDuration
         }
@@ -31,25 +32,25 @@ const helpers = {
     return length
   },
 
-  getStressScore: function (intervals, ftp) {
+  getStressScore: function (intervals: Interval[], ftp: number): string {
 
     // TSS = [(sec x NP x IF)/(FTP x 3600)] x 100
     var tss = 0
 
     intervals.map((interval) => {
-      if (interval.type === 'bar') {
+      if (interval.type === 'bar' && interval.power) {
         const np = interval.power * ftp
         const iff = interval.power
 
         tss += (interval.time * np * iff)
       }
-      if (interval.type === 'trapeze') {
+      if (interval.type === 'trapeze' && interval.startPower && interval.endPower) {
         const np = (interval.startPower + interval.endPower) / 2 * ftp
         const iff = (interval.startPower + interval.endPower) / 2
 
         tss += (interval.time * np * iff)
       }
-      if (interval.type === 'interval') {
+      if (interval.type === 'interval' && interval.onPower && interval.offPower && interval.repeat && interval.onDuration && interval.offDuration) {
         const npOn = (interval.onPower * ftp)
         const iffOn = interval.onPower
 
@@ -65,8 +66,8 @@ const helpers = {
     return ((tss / (ftp * 3600)) * 100).toFixed(0);
   },
 
-  calculateEstimatedTimes: function (distances, times) {
-    var estimatedTimes = []
+  calculateEstimatedTimes: function (distances: number[], times: string[]): string[] {
+    var estimatedTimes: string[] = []
 
     times.forEach((value, i) => {
 
@@ -96,29 +97,29 @@ const helpers = {
     return estimatedTimes;
   },
 
-  getWorkoutDistance: function (intervals) {
+  getWorkoutDistance: function (intervals: Interval[]): string {
     var distance = 0
-    intervals.map((interval) => distance += (interval.length))
+    intervals.map((interval) => distance += (interval.length || 0))
 
     return (distance / 1000).toFixed(1)
   },
 
-  getTimeinSeconds: function (time) {
+  getTimeinSeconds: function (time: string): number {
     //convert time 01:00:00 to seconds 3600
     return moment.duration(time).asSeconds()
   },
 
-  formatDuration: function (seconds) {
+  formatDuration: function (seconds: number): string {
     // 1 pixel equals 5 seconds 
     return moment.duration(seconds, "seconds").format("mm:ss", { trim: false })
   },
-  calculateTime: function (distance, speed) {
+  calculateTime: function (distance: number, speed: number): number {
     return distance / speed
   },
-  calculateDistance: function (time, speed) {
+  calculateDistance: function (time: number, speed: number): number {
     return time * speed
   },
-  round: function (x, roundTo) {
+  round: function (x: number, roundTo: number): number {
     return Math.floor(x / roundTo) * roundTo
   }
 }
