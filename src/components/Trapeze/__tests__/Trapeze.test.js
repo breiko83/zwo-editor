@@ -5,9 +5,7 @@ import renderer from 'react-test-renderer';
 import { v4 as uuidv4 } from 'uuid'
 import '@testing-library/jest-dom/extend-expect'
 
-
 test('Trapeze renders correctly', () => {
-
   const interval = {
     time: 50,
     startPower: Zones.Z2.min,
@@ -26,8 +24,8 @@ test('Trapeze renders correctly', () => {
       startPower={interval.startPower}
       endPower={interval.endPower}
       ftp={ftp}
-      onChange={() => handleOnChange}
-      onClick={() => handleOnClick}
+      onChange={() => { }}
+      onClick={() => { }}
     />
   )
 

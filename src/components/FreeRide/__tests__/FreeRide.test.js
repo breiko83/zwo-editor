@@ -6,7 +6,6 @@ import { v4 as uuidv4 } from 'uuid'
 import { Zones } from '../../Constants'
 
 test('Freeride renders correctly', () => {
-
   const interval = {
     time: 50,
     power: Zones.Z3.min,
@@ -19,8 +18,8 @@ test('Freeride renders correctly', () => {
       key={interval.id}
       id={interval.id}
       time={interval.time}
-      onChange={() => handleOnChange}
-      onClick={() => handleOnClick}
+      onChange={() => { }}
+      onClick={() => { }}
     />
   )
 
