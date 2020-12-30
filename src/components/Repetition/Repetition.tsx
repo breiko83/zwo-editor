@@ -2,13 +2,13 @@ import React, { useEffect, useState } from 'react'
 import Bar from '../Bar/Bar'
 import './Repetition.css'
 import { PaceType } from '../Editor/PaceSelector'
-import { Interval } from '../Interval'
+import { SteadyInterval } from '../Interval'
 
 const Repetition = (props: { id: string, repeat: number, onDuration?: number, offDuration?: number, onLength?: number, offLength?: number, onPower: number, offPower: number, cadence: number, restingCadence: number, ftp: number, weight: number, pace: PaceType, speed?: number, sportType: string, durationType: string, handleIntervalChange: Function, handleIntervalClick: Function, selected: boolean }) => {
 
   const { v4: uuidv4 } = require('uuid');
 
-  const [intervals, setIntervals] = useState<Array<Interval>>([])
+  const [intervals, setIntervals] = useState<Array<SteadyInterval>>([])
   const [nIntervals, setNIntervals] = useState(props.repeat)
 
   const [onDuration, setOnDuration] = useState(props.onDuration)
@@ -18,7 +18,7 @@ const Repetition = (props: { id: string, repeat: number, onDuration?: number, of
   const [offLength, setOffLength] = useState(props.offLength)
 
   useEffect(() => {
-    const intervals: Interval[] = []
+    const intervals: SteadyInterval[] = []
 
     for (var i = 0; i < nIntervals; i++) {
       intervals.push(
@@ -48,7 +48,7 @@ const Repetition = (props: { id: string, repeat: number, onDuration?: number, of
     // eslint-disable-next-line
   }, [nIntervals])
 
-  function handleOnChange(id: string, values: Interval) {
+  function handleOnChange(id: string, values: SteadyInterval) {
 
     const index = intervals.findIndex(interval => interval.id === id)
     
@@ -141,7 +141,7 @@ const Repetition = (props: { id: string, repeat: number, onDuration?: number, of
     }
   }
 
-  const renderBar = (interval: Interval, withLabel: boolean) => (
+  const renderBar = (interval: SteadyInterval, withLabel: boolean) => (
     <Bar
       key={interval.id}
       id={interval.id}

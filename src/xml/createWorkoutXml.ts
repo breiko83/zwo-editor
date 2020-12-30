@@ -106,7 +106,7 @@ export default function createWorkoutXml({ author, name, description, sportType,
         segment.ele('textevent', { timeoffset: (i.time - totalTime), message: i.text })
       })
     } else {
-      instructions.filter((instruction) => (instruction.length >= totalLength && instruction.length < (totalLength + (interval.length || 0)))).forEach((i) => {
+      instructions.filter((instruction) => (instruction.length >= totalLength && instruction.length < (totalLength + (interval.type === 'free' ? 0 : interval.length)))).forEach((i) => {
         segment.ele('textevent', { distoffset: (i.length - totalLength), message: i.text })
       })
     }
@@ -114,7 +114,7 @@ export default function createWorkoutXml({ author, name, description, sportType,
     xml.importDocument(segment)
 
     totalTime = totalTime + interval.time
-    totalLength = totalLength + (interval.length || 0)
+    totalLength = totalLength + (interval.type === 'free' ? 0 : interval.length)
   })
 
   return xml.end({ pretty: true });

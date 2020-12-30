@@ -100,7 +100,7 @@ const helpers = {
 
   getWorkoutDistance: function (intervals: Interval[]): string {
     var distance = 0
-    intervals.map((interval) => distance += (interval.length || 0))
+    intervals.map((interval) => distance += (interval.type === 'free' ? 0 : interval.length))
 
     return (distance / 1000).toFixed(1)
   },
