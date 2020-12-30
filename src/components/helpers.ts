@@ -14,15 +14,15 @@ const helpers = {
         length += interval.time
       } else {
 
-        if (interval.type === 'bar') {
+        if (interval.type === 'steady') {
           length += interval.time
         }
 
-        if (interval.type === 'trapeze') {
+        if (interval.type === 'ramp') {
           length += interval.time
         }
 
-        if (interval.type === 'interval' && interval.repeat && interval.onDuration && interval.offDuration) {
+        if (interval.type === 'repetition' && interval.repeat && interval.onDuration && interval.offDuration) {
           length += interval.repeat * interval.onDuration
           length += interval.repeat * interval.offDuration
         }
@@ -39,19 +39,19 @@ const helpers = {
     var tss = 0
 
     intervals.map((interval) => {
-      if (interval.type === 'bar' && interval.power) {
+      if (interval.type === 'steady' && interval.power) {
         const np = interval.power * ftp
         const iff = interval.power
 
         tss += (interval.time * np * iff)
       }
-      if (interval.type === 'trapeze' && interval.startPower && interval.endPower) {
+      if (interval.type === 'ramp' && interval.startPower && interval.endPower) {
         const np = (interval.startPower + interval.endPower) / 2 * ftp
         const iff = (interval.startPower + interval.endPower) / 2
 
         tss += (interval.time * np * iff)
       }
-      if (interval.type === 'interval' && interval.onPower && interval.offPower && interval.repeat && interval.onDuration && interval.offDuration) {
+      if (interval.type === 'repetition' && interval.onPower && interval.offPower && interval.repeat && interval.onDuration && interval.offDuration) {
         const npOn = (interval.onPower * ftp)
         const iffOn = interval.onPower
 

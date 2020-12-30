@@ -27,7 +27,7 @@ const Repetition = (props: { id: string, repeat: number, onDuration?: number, of
           length: onLength || 0,
           power: props.onPower,
           cadence: props.cadence,
-          type: 'bar',
+          type: 'steady',
           pace: props.pace,
           id: uuidv4()
         })
@@ -38,7 +38,7 @@ const Repetition = (props: { id: string, repeat: number, onDuration?: number, of
           length: offLength || 0,
           power: props.offPower,
           cadence: props.restingCadence,
-          type: 'bar',
+          type: 'steady',
           pace: props.pace,
           id: uuidv4()
         })
@@ -78,7 +78,7 @@ const Repetition = (props: { id: string, repeat: number, onDuration?: number, of
       time: time,
       length: length,
       id: props.id,
-      type: 'interval',
+      type: 'repetition',
       cadence: intervals[0].cadence,
       restingCadence: intervals[1].cadence,
       pace: props.pace,
@@ -102,7 +102,7 @@ const Repetition = (props: { id: string, repeat: number, onDuration?: number, of
       time: ((props.onDuration || 0) + (props.offDuration || 0)) * (nIntervals + 1),
       length: ((props.onLength || 0) + (props.offLength || 0)) * (nIntervals + 1),
       id: props.id,
-      type: 'interval',
+      type: 'repetition',
       cadence: props.cadence,
       restingCadence: props.restingCadence,
       pace: props.pace,
@@ -126,7 +126,7 @@ const Repetition = (props: { id: string, repeat: number, onDuration?: number, of
         time: ((props.onDuration || 0) + (props.offDuration || 0)) * (nIntervals - 1),
         length: ((props.onLength || 0) + (props.offLength || 0)) * (nIntervals - 1),
         id: props.id,
-        type: 'interval',
+        type: 'repetition',
         cadence: props.cadence,
         restingCadence: props.restingCadence,
         pace: props.pace,

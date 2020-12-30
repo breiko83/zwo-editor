@@ -10,7 +10,7 @@ test('Trapeze renders correctly', () => {
     time: 50,
     startPower: Zones.Z2.min,
     endPower: Zones.Z4.min,
-    type: 'bar',
+    type: 'steady',
     id: uuidv4()
   }
 

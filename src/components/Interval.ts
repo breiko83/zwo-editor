@@ -4,7 +4,7 @@ export interface Interval {
   id: string,
   time: number,
   length?: number,
-  type: 'bar' | 'trapeze' | 'freeRide' | 'interval',
+  type: 'steady' | 'ramp' | 'free' | 'repetition',
   power?: number,
   startPower?: number,
   endPower?: number,

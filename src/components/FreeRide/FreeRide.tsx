@@ -18,7 +18,7 @@ const FreeRide = (props: { id: string, time: number, cadence: number, sportType:
   const [showLabel, setShowLabel] = useState(false)
 
   const handleCadenceChange = (cadence: number) => {
-    props.onChange(props.id, { time: props.time, type: 'freeRide', cadence: cadence, id: props.id })
+    props.onChange(props.id, { time: props.time, type: 'free', cadence: cadence, id: props.id })
   }
 
   // standard height
@@ -26,11 +26,11 @@ const FreeRide = (props: { id: string, time: number, cadence: number, sportType:
 
   const handleResizeStop = (dWidth: number) => {
     setWidth(width + dWidth)
-    props.onChange(props.id, { time: helpers.round((width + dWidth) * timeMultiplier, 5), type: 'freeRide', cadence: props.cadence, id: props.id })
+    props.onChange(props.id, { time: helpers.round((width + dWidth) * timeMultiplier, 5), type: 'free', cadence: props.cadence, id: props.id })
   }
 
   const handleResize = (dWidth: number) => {
-    props.onChange(props.id, { time: helpers.round((width + dWidth) * timeMultiplier, 5), type: 'freeRide', cadence: props.cadence, id: props.id })
+    props.onChange(props.id, { time: helpers.round((width + dWidth) * timeMultiplier, 5), type: 'free', cadence: props.cadence, id: props.id })
   }
 
   function getDuration(seconds: number) {

@@ -39,7 +39,7 @@ export default function createWorkoutXml({ author, name, description, sportType,
     var segment: Builder.XMLNode
     var ramp
 
-    if (interval.type === 'bar') {
+    if (interval.type === 'steady') {
       segment = Builder.create('SteadyState')
         .att('Duration', durationType === 'time' ? interval.time : interval.length)
         .att('Power', interval.power)
@@ -48,7 +48,7 @@ export default function createWorkoutXml({ author, name, description, sportType,
       // add cadence if not zero
       interval.cadence !== 0 && segment.att('Cadence', interval.cadence)
 
-    } else if (interval.type === 'trapeze' && interval.startPower && interval.endPower) {
+    } else if (interval.type === 'ramp' && interval.startPower && interval.endPower) {
 
       // index 0 is warmup
       // last index is cooldown
@@ -78,7 +78,7 @@ export default function createWorkoutXml({ author, name, description, sportType,
         // add cadence if not zero
         interval.cadence !== 0 && segment.att('Cadence', interval.cadence)
       }
-    } else if (interval.type === 'interval') {
+    } else if (interval.type === 'repetition') {
       // <IntervalsT Repeat="5" OnDuration="60" OffDuration="300" OnPower="0.8844353" OffPower="0.51775455" pace="0"/>
       segment = Builder.create('IntervalsT')
         .att('Repeat', interval.repeat)
@@ -93,7 +93,7 @@ export default function createWorkoutXml({ author, name, description, sportType,
         interval.restingCadence !== 0 && segment.att('CadenceResting', interval.restingCadence)        
     } else {
       // free ride
-      segment = Builder.create('FreeRide')
+      segment = Builder.create('free')
         .att('Duration', interval.time)
         .att('FlatRoad', 0) // Not sure what this is for
       // add cadence if not zero

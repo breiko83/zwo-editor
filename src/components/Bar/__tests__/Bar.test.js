@@ -9,7 +9,7 @@ test('Bar renders correctly', () => {
   const interval = {
     time: 50,
     power: Zones.Z3.min,
-    type: 'bar',
+    type: 'steady',
     id: uuidv4()
   }
 

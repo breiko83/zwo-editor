@@ -266,7 +266,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
       length: durationType === 'time' ? helpers.round(helpers.calculateDistance(duration, runningSpeed(pace)), 1) : length,
       power: zone,
       cadence: cadence,
-      type: 'bar',
+      type: 'steady',
       id: uuidv4(),
       pace: pace
     }
@@ -281,7 +281,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
       endPower: zone2,
       cadence: cadence,
       pace: pace,
-      type: 'trapeze',
+      type: 'ramp',
       id: uuidv4()
     }
     ])
@@ -291,7 +291,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
     setIntervals(intervals => [...intervals, {
       time: duration,
       cadence: cadence,
-      type: 'freeRide',
+      type: 'free',
       id: uuidv4()
     }
     ])
@@ -303,7 +303,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
       time: durationType === 'time' ? (onDuration + offDuration) * repeat : helpers.round(helpers.calculateTime((onLength + offLength) * repeat, runningSpeed(pace)), 1),
       length: durationType === 'time' ? helpers.round(helpers.calculateDistance((onDuration + offDuration) * repeat, runningSpeed(pace)), 1) : (onLength + offLength) * repeat,
       id: uuidv4(),
-      type: 'interval',
+      type: 'repetition',
       cadence: cadence,
       restingCadence: restingCadence,
       repeat: repeat,
@@ -424,10 +424,10 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
     const index = intervals.findIndex(interval => interval.id === id)
     const element = [...intervals][index]
 
-    if (element.type === 'bar') addBar(element.power || 80, element.time, element.cadence, element.pace, element.length)
-    if (element.type === 'freeRide') addFreeRide(element.time, element.cadence)
-    if (element.type === 'trapeze') addTrapeze(element.startPower || 80, element.endPower || 160, element.time, element.pace || 0, element.length, element.cadence)
-    if (element.type === 'interval') addInterval(element.repeat, element.onDuration, element.offDuration, element.onPower, element.offPower, element.cadence, element.restingCadence, element.pace, element.onLength, element.offLength)
+    if (element.type === 'steady') addBar(element.power || 80, element.time, element.cadence, element.pace, element.length)
+    if (element.type === 'free') addFreeRide(element.time, element.cadence)
+    if (element.type === 'ramp') addTrapeze(element.startPower || 80, element.endPower || 160, element.time, element.pace || 0, element.length, element.cadence)
+    if (element.type === 'repetition') addInterval(element.repeat, element.onDuration, element.offDuration, element.onPower, element.offPower, element.cadence, element.restingCadence, element.pace, element.onLength, element.offLength)
 
     setActionId(undefined)
   }
@@ -681,7 +681,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
               duration = (parseFloat(w.attributes.OnDuration) + parseFloat(w.attributes.OffDuration)) * parseFloat(w.attributes.Repeat)
             }              
 
-            if (w.name === 'FreeRide')
+            if (w.name === 'free')
               addFreeRide(parseFloat(w.attributes.Duration), parseInt(w.attributes.Cadence))
 
             // check for instructions
@@ -976,16 +976,16 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
           }
           <div className='segments' ref={segmentsRef}>
             {intervals.map((interval) => {
-              if (interval.type === 'bar') {
+              if (interval.type === 'steady') {
                 return (renderBar(interval))
               }
-              else if (interval.type === 'trapeze') {
+              else if (interval.type === 'ramp') {
                 return (renderTrapeze(interval))
               }
-              else if (interval.type === 'freeRide') {
+              else if (interval.type === 'free') {
                 return (renderFreeRide(interval))
               }
-              else if (interval.type === 'interval') {
+              else if (interval.type === 'repetition') {
                 return (renderRepetition(interval))
               } else {
                 return false
