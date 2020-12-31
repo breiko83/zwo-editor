@@ -292,8 +292,6 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
 
   function addInterval(repeat: number = 3, onDuration: number = 30, offDuration: number = 120, onPower: number = 1, offPower: number = 0.5, cadence: number = 0, restingCadence: number = 0, pace: PaceType = PaceType.oneMile, onDistance: number = 200, offDistance: number = 200) {
     const interval: RepetitionInterval = {
-      duration: durationType === 'time' ? (onDuration + offDuration) * repeat : Math.floor(helpers.calculateTime((onDistance + offDistance) * repeat, runningSpeed(pace))),
-      distance: durationType === 'time' ? Math.floor(helpers.calculateDistance((onDuration + offDuration) * repeat, runningSpeed(pace))) : (onDistance + offDistance) * repeat,
       id: uuidv4(),
       type: 'repetition',
       cadence: cadence,

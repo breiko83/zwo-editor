@@ -30,8 +30,6 @@ export interface FreeInterval {
 
 export interface RepetitionInterval {
   id: string,
-  duration: number,
-  distance: number,
   type: 'repetition',
   cadence: number,
   restingCadence: number,

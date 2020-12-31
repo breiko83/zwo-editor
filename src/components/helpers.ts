@@ -5,29 +5,30 @@ import { DurationType } from './Editor/Editor'
 import { Interval } from './Interval'
 
 const helpers = {
+  getIntervalDuration(interval: Interval): number {
+    switch (interval.type) {
+      case 'free': return interval.duration;
+      case 'steady': return interval.duration;
+      case 'ramp': return interval.duration;
+      case 'repetition': return interval.repeat * (interval.onDuration + interval.offDuration);
+    }
+  },
+
+  getIntervalDistance(interval: Interval): number {
+    switch (interval.type) {
+      case 'free': return 0;
+      case 'steady': return interval.distance;
+      case 'ramp': return interval.distance;
+      case 'repetition': return interval.repeat * (interval.onDistance + interval.offDistance);
+    }
+  },
+
   // calculate total time
   getWorkoutDuration: function (intervals: Interval[], durationType: DurationType): number {
     var duration = 0
 
-    intervals.map((interval) => {
-      if (durationType === 'time') {
-        duration += interval.duration
-      } else {
-
-        if (interval.type === 'steady') {
-          duration += interval.duration
-        }
-
-        if (interval.type === 'ramp') {
-          duration += interval.duration
-        }
-
-        if (interval.type === 'repetition' && interval.repeat && interval.onDuration && interval.offDuration) {
-          duration += interval.repeat * interval.onDuration
-          duration += interval.repeat * interval.offDuration
-        }
-      }
-      return false;
+    intervals.forEach((interval) => {
+      duration += this.getIntervalDuration(interval)
     })
 
     return duration
@@ -100,7 +101,9 @@ const helpers = {
 
   getWorkoutDistance: function (intervals: Interval[]): string {
     var distance = 0
-    intervals.map((interval) => distance += (interval.type === 'free' ? 0 : interval.distance))
+    intervals.forEach((interval) => {
+      distance += this.getIntervalDistance(interval)
+    })
 
     return (distance / 1000).toFixed(1)
   },

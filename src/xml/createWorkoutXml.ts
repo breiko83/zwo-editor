@@ -1,5 +1,6 @@
 import Builder from 'xmlbuilder'
 import { Instruction, SportType, DurationType } from '../components/Editor/Editor'
+import helpers from '../components/helpers'
 import { Interval } from '../components/Interval'
 
 interface Workout {
@@ -102,19 +103,19 @@ export default function createWorkoutXml({ author, name, description, sportType,
 
     // add instructions if present
     if (durationType === 'time') {
-      instructions.filter((instruction) => (instruction.time >= totalDuration && instruction.time < (totalDuration + interval.duration))).forEach((i) => {
+      instructions.filter((instruction) => (instruction.time >= totalDuration && instruction.time < (totalDuration + helpers.getIntervalDuration(interval)))).forEach((i) => {
         segment.ele('textevent', { timeoffset: (i.time - totalDuration), message: i.text })
       })
     } else {
-      instructions.filter((instruction) => (instruction.length >= totalDistance && instruction.length < (totalDistance + (interval.type === 'free' ? 0 : interval.distance)))).forEach((i) => {
+      instructions.filter((instruction) => (instruction.length >= totalDistance && instruction.length < (totalDistance + (interval.type === 'free' ? 0 : helpers.getIntervalDistance(interval))))).forEach((i) => {
         segment.ele('textevent', { distoffset: (i.length - totalDistance), message: i.text })
       })
     }
 
     xml.importDocument(segment)
 
-    totalDuration = totalDuration + interval.duration
-    totalDistance = totalDistance + (interval.type === 'free' ? 0 : interval.distance)
+    totalDuration += helpers.getIntervalDuration(interval)
+    totalDistance += helpers.getIntervalDistance(interval)
   })
 
   return xml.end({ pretty: true });
