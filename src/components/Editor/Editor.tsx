@@ -769,7 +769,6 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
           <Repetition
             key={interval.id}
             interval={interval}
-            repeat={interval.repeat}
             ftp={ftp}
             weight={weight}
             sportType={sportType}

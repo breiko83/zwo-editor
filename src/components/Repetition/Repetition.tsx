@@ -5,7 +5,6 @@ import { RepetitionInterval, SteadyInterval } from '../Interval'
 
 interface RepetitionProps {
   interval: RepetitionInterval;
-  repeat: number;
   ftp: number;
   weight: number;
   speed: number;
@@ -20,7 +19,7 @@ const Repetition = ({interval, ...props}: RepetitionProps) => {
   const { v4: uuidv4 } = require('uuid');
 
   const [subIntervals, setSubIntervals] = useState<Array<SteadyInterval>>([])
-  const [nIntervals, setNIntervals] = useState(props.repeat)
+  const [nIntervals, setNIntervals] = useState(interval.repeat)
 
   const [onDuration, setOnDuration] = useState(interval.onDuration)
   const [offDuration, setOffDuration] = useState(interval.offDuration)
@@ -110,7 +109,7 @@ const Repetition = ({interval, ...props}: RepetitionProps) => {
       ...interval,
       time: ((interval.onDuration) + (interval.offDuration)) * (nIntervals + 1),
       length: ((interval.onLength) + (interval.offLength)) * (nIntervals + 1),
-      repeat: props.repeat + 1,
+      repeat: interval.repeat + 1,
     })
   }
 
@@ -124,7 +123,7 @@ const Repetition = ({interval, ...props}: RepetitionProps) => {
         ...interval,
         time: ((interval.onDuration) + (interval.offDuration)) * (nIntervals - 1),
         length: ((interval.onLength) + (interval.offLength)) * (nIntervals - 1),
-        repeat: props.repeat - 1,
+        repeat: interval.repeat - 1,
       })
     }
   }
