@@ -721,84 +721,89 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
     }
   }
 
-  const renderBar = (interval: SteadyInterval) => (
-    <Bar
-      key={interval.id}
-      id={interval.id}
-      time={interval.time}
-      length={interval.length || 200}
-      power={interval.power || 100}
-      cadence={interval.cadence}
-      ftp={ftp}
-      weight={weight}
-      sportType={sportType}
-      durationType={durationType}
-      pace={interval.pace || 0}
-      speed={runningSpeed(interval.pace)}
-      onChange={(id: string, value: any) => handleOnChange(id, value)} // Change any to Interface Interval?
-      onClick={(id: string) => handleOnClick(id)}
-      selected={interval.id === actionId}
-      showLabel={true}
-    />
-  )
-
-  const renderTrapeze = (interval: RampInterval) => (
-    <Trapeze
-      key={interval.id}
-      id={interval.id}
-      time={interval.time}
-      length={interval.length || 200}
-      cadence={interval.cadence}
-      startPower={interval.startPower || 80}
-      endPower={interval.endPower || 160}
-      ftp={ftp}
-      sportType={sportType}
-      durationType={durationType}
-      pace={interval.pace || 0}
-      speed={runningSpeed(interval.pace)}
-      onChange={(id: string, value: any) => handleOnChange(id, value)} // Change any to Interface Interval?
-      onClick={(id: string) => handleOnClick(id)}
-      selected={interval.id === actionId}
-    />
-  )
-
-  const renderFreeRide = (interval: FreeInterval) => (
-    <FreeRide
-      key={interval.id}
-      id={interval.id}
-      time={interval.time}
-      cadence={interval.cadence}
-      sportType={sportType}
-      onChange={(id: string, value: any) => handleOnChange(id, value)} // Change any to Interface Interval?
-      onClick={(id: string) => handleOnClick(id)}
-      selected={interval.id === actionId}
-    />
-  )
-
-  const renderRepetition = (interval: RepetitionInterval) => (
-    <Repetition
-      key={interval.id}
-      id={interval.id}
-      repeat={interval.repeat || 3}
-      onDuration={interval.onDuration || 10}
-      offDuration={interval.offDuration || 50}
-      onPower={interval.onPower || 250}
-      offPower={interval.offPower || 120}
-      onLength={interval.onLength || 200}
-      offLength={interval.offLength || 200}
-      cadence={interval.cadence}
-      restingCadence={interval.restingCadence || 0}
-      ftp={ftp}
-      weight={weight}
-      sportType={sportType}
-      durationType={durationType}
-      pace={interval.pace || 0}
-      speed={runningSpeed(interval.pace)}
-      handleIntervalChange={(id: string, value: any) => handleOnChange(id, value)}
-      handleIntervalClick={(id: string) => handleOnClick(id)}
-      selected={interval.id === actionId}
-    />
-  )
+  const renderInterval = (interval: Interval) => {
+    switch (interval.type) {
+      case 'steady':
+        return (
+          <Bar
+            key={interval.id}
+            id={interval.id}
+            time={interval.time}
+            length={interval.length || 200}
+            power={interval.power || 100}
+            cadence={interval.cadence}
+            ftp={ftp}
+            weight={weight}
+            sportType={sportType}
+            durationType={durationType}
+            pace={interval.pace || 0}
+            speed={runningSpeed(interval.pace)}
+            onChange={(id: string, value: any) => handleOnChange(id, value)} // Change any to Interface Interval?
+            onClick={(id: string) => handleOnClick(id)}
+            selected={interval.id === actionId}
+            showLabel={true}
+          />
+        );
+      case 'ramp':
+        return (
+          <Trapeze
+            key={interval.id}
+            id={interval.id}
+            time={interval.time}
+            length={interval.length || 200}
+            cadence={interval.cadence}
+            startPower={interval.startPower || 80}
+            endPower={interval.endPower || 160}
+            ftp={ftp}
+            sportType={sportType}
+            durationType={durationType}
+            pace={interval.pace || 0}
+            speed={runningSpeed(interval.pace)}
+            onChange={(id: string, value: any) => handleOnChange(id, value)} // Change any to Interface Interval?
+            onClick={(id: string) => handleOnClick(id)}
+            selected={interval.id === actionId}
+          />
+        );
+      case 'free':
+        return (
+          <FreeRide
+            key={interval.id}
+            id={interval.id}
+            time={interval.time}
+            cadence={interval.cadence}
+            sportType={sportType}
+            onChange={(id: string, value: any) => handleOnChange(id, value)} // Change any to Interface Interval?
+            onClick={(id: string) => handleOnClick(id)}
+            selected={interval.id === actionId}
+          />
+        );
+      case 'repetition':
+        return (
+          <Repetition
+            key={interval.id}
+            id={interval.id}
+            repeat={interval.repeat || 3}
+            onDuration={interval.onDuration || 10}
+            offDuration={interval.offDuration || 50}
+            onPower={interval.onPower || 250}
+            offPower={interval.offPower || 120}
+            onLength={interval.onLength || 200}
+            offLength={interval.offLength || 200}
+            cadence={interval.cadence}
+            restingCadence={interval.restingCadence || 0}
+            ftp={ftp}
+            weight={weight}
+            sportType={sportType}
+            durationType={durationType}
+            pace={interval.pace || 0}
+            speed={runningSpeed(interval.pace)}
+            handleIntervalChange={(id: string, value: any) => handleOnChange(id, value)}
+            handleIntervalClick={(id: string) => handleOnClick(id)}
+            selected={interval.id === actionId}
+          />
+        );
+    }
+  }
 
   const renderComment = (instruction: Instruction, index: number) => (
     <Comment
@@ -977,22 +982,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
             <div className='fader' style={{width: canvasRef.current?.scrollWidth}} onClick={() => setActionId(undefined)}></div>
           }
           <div className='segments' ref={segmentsRef}>
-            {intervals.map((interval) => {
-              if (interval.type === 'steady') {
-                return (renderBar(interval))
-              }
-              else if (interval.type === 'ramp') {
-                return (renderTrapeze(interval))
-              }
-              else if (interval.type === 'free') {
-                return (renderFreeRide(interval))
-              }
-              else if (interval.type === 'repetition') {
-                return (renderRepetition(interval))
-              } else {
-                return false
-              }
-            })}
+            {intervals.map(renderInterval)}
           </div>
 
           <div className='slider'>
