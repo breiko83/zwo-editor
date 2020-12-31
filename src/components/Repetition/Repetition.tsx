@@ -19,7 +19,7 @@ const Repetition = ({interval, ...props}: RepetitionProps) => {
   const { v4: uuidv4 } = require('uuid');
 
   const [subIntervals, setSubIntervals] = useState<Array<SteadyInterval>>([])
-  const [nIntervals, setNIntervals] = useState(interval.repeat)
+  const [repeat, setRepeat] = useState(interval.repeat)
 
   const [onDuration, setOnDuration] = useState(interval.onDuration)
   const [offDuration, setOffDuration] = useState(interval.offDuration)
@@ -30,7 +30,7 @@ const Repetition = ({interval, ...props}: RepetitionProps) => {
   useEffect(() => {
     const subIntervals: SteadyInterval[] = []
 
-    for (var i = 0; i < nIntervals; i++) {
+    for (var i = 0; i < repeat; i++) {
       subIntervals.push(
         {
           time: onDuration,
@@ -56,7 +56,7 @@ const Repetition = ({interval, ...props}: RepetitionProps) => {
     setSubIntervals(subIntervals)
 
     // eslint-disable-next-line
-  }, [nIntervals])
+  }, [repeat])
 
   function handleOnChange(values: SteadyInterval) {
     const index = subIntervals.findIndex(sub => sub.id === values.id)
@@ -89,7 +89,7 @@ const Repetition = ({interval, ...props}: RepetitionProps) => {
       length: length,
       cadence: subIntervals[0].cadence,
       restingCadence: subIntervals[1].cadence,
-      repeat: nIntervals,
+      repeat: repeat,
       onDuration: subIntervals[0].time,
       offDuration: subIntervals[1].time,
       onPower: subIntervals[0].power,
@@ -101,28 +101,28 @@ const Repetition = ({interval, ...props}: RepetitionProps) => {
   }
 
   function handleAddInterval() {
-    setNIntervals(nIntervals + 1)
+    setRepeat(repeat + 1)
     var time = 0
     subIntervals.map((sub) => time += sub.time)
 
     props.onChange({
       ...interval,
-      time: ((interval.onDuration) + (interval.offDuration)) * (nIntervals + 1),
-      length: ((interval.onLength) + (interval.offLength)) * (nIntervals + 1),
+      time: ((interval.onDuration) + (interval.offDuration)) * (repeat + 1),
+      length: ((interval.onLength) + (interval.offLength)) * (repeat + 1),
       repeat: interval.repeat + 1,
     })
   }
 
   function handleRemoveInterval() {
-    if (nIntervals > 1) {
-      setNIntervals(nIntervals - 1)
+    if (repeat > 1) {
+      setRepeat(repeat - 1)
       var time = 0
       subIntervals.map((sub) => time += sub.time)
 
       props.onChange({
         ...interval,
-        time: ((interval.onDuration) + (interval.offDuration)) * (nIntervals - 1),
-        length: ((interval.onLength) + (interval.offLength)) * (nIntervals - 1),
+        time: ((interval.onDuration) + (interval.offDuration)) * (repeat - 1),
+        length: ((interval.onLength) + (interval.offLength)) * (repeat - 1),
         repeat: interval.repeat - 1,
       })
     }
