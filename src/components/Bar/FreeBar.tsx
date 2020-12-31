@@ -34,11 +34,11 @@ const FreeBar = ({interval, ...props}: FreeBarProps) => {
 
   const handleResizeStop = (dWidth: number) => {
     setWidth(width + dWidth)
-    props.onChange({ ...interval, time: helpers.round((width + dWidth) * timeMultiplier, 5) })
+    props.onChange({ ...interval, time: helpers.floor((width + dWidth) * timeMultiplier, 5) })
   }
 
   const handleResize = (dWidth: number) => {
-    props.onChange({ ...interval, time: helpers.round((width + dWidth) * timeMultiplier, 5) })
+    props.onChange({ ...interval, time: helpers.floor((width + dWidth) * timeMultiplier, 5) })
   }
 
   function getDuration(seconds: number) {

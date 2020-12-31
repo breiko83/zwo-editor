@@ -62,15 +62,15 @@ const SteadyBar = ({interval, ...props}: SteadyBarProps) => {
     setWidth(width + dWidth)
     setHeight(height + dHeight)
 
-    const length = props.durationType === 'time' ? Math.floor(helpers.calculateDistance((width + dWidth) * timeMultiplier * interval.power, props.speed)) : helpers.round((width + dWidth) * lengthMultiplier, 200)
-    const time = props.durationType === 'time' ? helpers.round((width + dWidth) * timeMultiplier, 5) : Math.floor(helpers.calculateTime(interval.length, props.speed) * 1 / interval.power)
+    const length = props.durationType === 'time' ? Math.floor(helpers.calculateDistance((width + dWidth) * timeMultiplier * interval.power, props.speed)) : helpers.floor((width + dWidth) * lengthMultiplier, 200)
+    const time = props.durationType === 'time' ? helpers.floor((width + dWidth) * timeMultiplier, 5) : Math.floor(helpers.calculateTime(interval.length, props.speed) * 1 / interval.power)
 
     props.onChange({ ...interval, time, length, power: (height + dHeight) / multiplier })
   }
 
   const handleResize = (dWidth: number, dHeight: number) => {       
-    const length = props.durationType === 'time' ? Math.floor(helpers.calculateDistance((width + dWidth) * timeMultiplier * interval.power, props.speed)) : helpers.round((width + dWidth) * lengthMultiplier, 200)
-    const time = props.durationType === 'time' ? helpers.round((width + dWidth) * timeMultiplier, 5) : Math.floor(helpers.calculateTime(interval.length, props.speed) * 1 / interval.power)
+    const length = props.durationType === 'time' ? Math.floor(helpers.calculateDistance((width + dWidth) * timeMultiplier * interval.power, props.speed)) : helpers.floor((width + dWidth) * lengthMultiplier, 200)
+    const time = props.durationType === 'time' ? helpers.floor((width + dWidth) * timeMultiplier, 5) : Math.floor(helpers.calculateTime(interval.length, props.speed) * 1 / interval.power)
 
     props.onChange({ ...interval, time, length, power: (height + dHeight) / multiplier })
   }

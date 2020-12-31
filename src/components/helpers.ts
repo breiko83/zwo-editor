@@ -120,7 +120,7 @@ const helpers = {
   calculateDistance: function (time: number, speed: number): number {
     return time * speed
   },
-  round: function (x: number, roundTo: number): number {
+  floor: function (x: number, roundTo: number): number {
     return Math.floor(x / roundTo) * roundTo
   }
 }
