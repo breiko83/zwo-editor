@@ -14,8 +14,8 @@ interface LabelProps {
   weight?: number;
   ftp?: number;
   pace?: PaceType;
-  cadence?: number;
-  onCadenceChange?: (cadence: number) => void;
+  cadence: number;
+  onCadenceChange: (cadence: number) => void;
 }
 
 const Label = (props: LabelProps) => {
@@ -72,7 +72,7 @@ const Label = (props: LabelProps) => {
           step="5"
           name="cadence"
           value={props.cadence || ''}
-          onChange={(e) => {if (props.onCadenceChange) props.onCadenceChange(parseInt(e.target.value))}}
+          onChange={(e) => {props.onCadenceChange(parseInt(e.target.value))}}
           onClick={(e)=> {e.stopPropagation()}}
           className="textField cadence"
         />
