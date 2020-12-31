@@ -5,29 +5,28 @@ import moment from 'moment'
 import 'moment-duration-format'
 import Label from '../Label/Label'
 import helpers from '../helpers'
+import { FreeInterval } from '../Interval'
 
 interface FreeRideProps {
-  id: string;
-  time: number;
-  cadence: number;
+  interval: FreeInterval;
   sportType: string;
   onChange: Function;
   onClick: Function;
   selected: boolean;
 }
 
-const FreeRide = (props: FreeRideProps) => {
+const FreeRide = ({interval, ...props}: FreeRideProps) => {
   const timeMultiplier = 3
 
-  const durationLabel = getDuration(props.time)
+  const durationLabel = getDuration(interval.time)
 
 
-  const [width, setWidth] = useState(props.time / timeMultiplier)
+  const [width, setWidth] = useState(interval.time / timeMultiplier)
 
   const [showLabel, setShowLabel] = useState(false)
 
   const handleCadenceChange = (cadence: number) => {
-    props.onChange(props.id, { time: props.time, type: 'free', cadence: cadence, id: props.id })
+    props.onChange(interval.id, { time: interval.time, type: 'free', cadence: cadence, id: interval.id })
   }
 
   // standard height
@@ -35,11 +34,11 @@ const FreeRide = (props: FreeRideProps) => {
 
   const handleResizeStop = (dWidth: number) => {
     setWidth(width + dWidth)
-    props.onChange(props.id, { time: helpers.round((width + dWidth) * timeMultiplier, 5), type: 'free', cadence: props.cadence, id: props.id })
+    props.onChange(interval.id, { time: helpers.round((width + dWidth) * timeMultiplier, 5), type: 'free', cadence: interval.cadence, id: interval.id })
   }
 
   const handleResize = (dWidth: number) => {
-    props.onChange(props.id, { time: helpers.round((width + dWidth) * timeMultiplier, 5), type: 'free', cadence: props.cadence, id: props.id })
+    props.onChange(interval.id, { time: helpers.round((width + dWidth) * timeMultiplier, 5), type: 'free', cadence: interval.cadence, id: interval.id })
   }
 
   function getDuration(seconds: number) {
@@ -52,15 +51,15 @@ const FreeRide = (props: FreeRideProps) => {
       onMouseEnter={() => setShowLabel(true)}
       onMouseLeave={() => setShowLabel(false)}
       style={props.selected ? {zIndex:1}: {}}
-      onClick={() => props.onClick(props.id)}
+      onClick={() => props.onClick(interval.id)}
     >
       {(props.selected || showLabel) &&
-        <Label duration={durationLabel} sportType={props.sportType} cadence={props.cadence} setCadence={(cadence: number)=> handleCadenceChange(cadence)} />
+        <Label duration={durationLabel} sportType={props.sportType} cadence={interval.cadence} setCadence={(cadence: number)=> handleCadenceChange(cadence)} />
       }
       <Resizable
         className='freeRide'
         size={{
-          width: props.time / timeMultiplier,
+          width: interval.time / timeMultiplier,
           height: height,
         }}
         minWidth={timeMultiplier}

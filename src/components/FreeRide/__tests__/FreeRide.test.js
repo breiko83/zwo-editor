@@ -15,9 +15,7 @@ test('Freeride renders correctly', () => {
 
   const component = renderer.create(
     <FreeRide
-      key={interval.id}
-      id={interval.id}
-      time={interval.time}
+      interval={interval}
       onChange={() => { }}
       onClick={() => { }}
     />

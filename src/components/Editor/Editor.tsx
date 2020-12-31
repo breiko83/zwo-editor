@@ -768,9 +768,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
         return (
           <FreeRide
             key={interval.id}
-            id={interval.id}
-            time={interval.time}
-            cadence={interval.cadence}
+            interval={interval}
             sportType={sportType}
             onChange={(id: string, value: any) => handleOnChange(id, value)} // Change any to Interface Interval?
             onClick={(id: string) => handleOnClick(id)}
