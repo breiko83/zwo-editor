@@ -11,8 +11,8 @@ interface RepetitionProps {
   speed: number;
   sportType: string;
   durationType: string;
-  handleIntervalChange: Function;
-  handleIntervalClick: Function;
+  handleIntervalChange: (id: string, interval: RepetitionInterval) => void;
+  handleIntervalClick: (id: string) => void;
   selected: boolean;
 }
 

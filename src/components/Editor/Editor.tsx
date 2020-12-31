@@ -733,8 +733,8 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
             sportType={sportType}
             durationType={durationType}
             speed={runningSpeed(interval.pace)}
-            onChange={(id: string, value: any) => handleOnChange(id, value)} // Change any to Interface Interval?
-            onClick={(id: string) => handleOnClick(id)}
+            onChange={handleOnChange}
+            onClick={handleOnClick}
             selected={interval.id === actionId}
             showLabel={true}
           />
@@ -748,8 +748,8 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
             sportType={sportType}
             durationType={durationType}
             speed={runningSpeed(interval.pace)}
-            onChange={(id: string, value: any) => handleOnChange(id, value)} // Change any to Interface Interval?
-            onClick={(id: string) => handleOnClick(id)}
+            onChange={handleOnChange}
+            onClick={handleOnClick}
             selected={interval.id === actionId}
           />
         );
@@ -759,8 +759,8 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
             key={interval.id}
             interval={interval}
             sportType={sportType}
-            onChange={(id: string, value: any) => handleOnChange(id, value)} // Change any to Interface Interval?
-            onClick={(id: string) => handleOnClick(id)}
+            onChange={handleOnChange}
+            onClick={handleOnClick}
             selected={interval.id === actionId}
           />
         );
@@ -775,8 +775,8 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
             sportType={sportType}
             durationType={durationType}
             speed={runningSpeed(interval.pace)}
-            handleIntervalChange={(id: string, value: any) => handleOnChange(id, value)}
-            handleIntervalClick={(id: string) => handleOnClick(id)}
+            handleIntervalChange={handleOnChange}
+            handleIntervalClick={handleOnClick}
             selected={interval.id === actionId}
           />
         );

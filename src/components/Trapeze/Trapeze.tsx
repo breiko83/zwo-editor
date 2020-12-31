@@ -16,8 +16,8 @@ interface TrapezeProps {
   sportType: string;
   durationType: string;
   speed: number;
-  onChange: Function;
-  onClick: Function;
+  onChange: (id: string, interval: RampInterval) => void;
+  onClick: (id: string) => void;
   selected: boolean;
 }
 

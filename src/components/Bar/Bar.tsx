@@ -13,8 +13,8 @@ interface BarProps {
   sportType: string;
   durationType: string;
   speed: number;
-  onChange: Function;
-  onClick: Function;
+  onChange: (id: string, interval: SteadyInterval) => void;
+  onClick: (id: string) => void;
   selected: boolean;
   showLabel: boolean;
 }

@@ -10,8 +10,8 @@ import { FreeInterval } from '../Interval'
 interface FreeRideProps {
   interval: FreeInterval;
   sportType: string;
-  onChange: Function;
-  onClick: Function;
+  onChange: (id: string, interval: FreeInterval) => void;
+  onClick: (id: string) => void;
   selected: boolean;
 }
 
