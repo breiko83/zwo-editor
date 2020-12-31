@@ -111,29 +111,6 @@ const RampBar
     return bars
   }
 
-  function zwiftStyle(zone: number) {
-
-    if (zone >= 0 && zone < Zones.Z1.max) {
-      // Z1 gray
-      return Colors.GRAY
-    } else if (zone >= Zones.Z2.min && zone < Zones.Z2.max) {
-      // Z2 blue
-      return Colors.BLUE
-    } else if (zone >= Zones.Z3.min && zone < Zones.Z3.max) {
-      // Z3 green
-      return Colors.GREEN
-    } else if (zone >= Zones.Z4.min && zone < Zones.Z4.max) {
-      // Z4 yellow
-      return Colors.YELLOW
-    } else if (zone >= Zones.Z5.min && zone < Zones.Z5.max) {
-      // Z5 orange      
-      return Colors.ORANGE
-    } else {
-      // Z6 red          
-      return Colors.RED
-    }
-  }
-
   return (
     <div className='segment'
       onMouseEnter={() => setShowLabel(true)}
@@ -201,7 +178,7 @@ const RampBar
         >
         </Resizable>
       </div>
-      <div className='trapeze-colors' style={{ height: trapezeHeight, flexDirection: flexDirection, backgroundColor: zwiftStyle(interval.startPower) }}>
+      <div className='trapeze-colors' style={{ height: trapezeHeight, flexDirection: flexDirection, backgroundColor: helpers.zoneColor(interval.startPower) }}>
         <div className='color' style={{ backgroundColor: Colors.GRAY, width: `${(bars['Z1'] * 100 / Math.abs(interval.endPower - interval.startPower))}%` }}></div>
         <div className='color' style={{ backgroundColor: Colors.BLUE, width: `${(bars['Z2'] * 100 / Math.abs(interval.endPower - interval.startPower))}%` }}></div>
         <div className='color' style={{ backgroundColor: Colors.GREEN, width: `${(bars['Z3'] * 100 / Math.abs(interval.endPower - interval.startPower))}%` }}></div>

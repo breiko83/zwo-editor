@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import './SteadyBar.css'
-import { Colors, Zones } from '../Constants'
+import { Zones } from '../Constants'
 import { Resizable } from 're-resizable'
 import Label from '../Label/Label'
 import helpers from '../helpers'
@@ -35,8 +35,7 @@ const SteadyBar = ({interval, ...props}: SteadyBarProps) => {
   // time is set -> calculate distance
   // distance is set -> calculate time
 
-
-  const style = zwiftStyle(interval.power)
+  const style = { backgroundColor: helpers.zoneColor(interval.power) }
 
   // RUN WORKOUTS ON DISTANCE - BIKE WORKOUTS ON TIME
   const [width, setWidth] = useState(props.durationType === 'time' ? (interval.time / timeMultiplier) : (interval.length / lengthMultiplier))  
@@ -70,29 +69,6 @@ const SteadyBar = ({interval, ...props}: SteadyBarProps) => {
     const time = props.durationType === 'time' ? helpers.floor((width + dWidth) * timeMultiplier, 5) : Math.floor(helpers.calculateTime(interval.length, props.speed) * 1 / interval.power)
 
     props.onChange({ ...interval, time, length, power: (height + dHeight) / multiplier })
-  }
-
-  function zwiftStyle(zone: number) {
-
-    if (zone >= 0 && zone < Zones.Z1.max) {
-      // Z1 gray
-      return { backgroundColor: Colors.GRAY }
-    } else if (zone >= Zones.Z2.min && zone < Zones.Z2.max) {
-      // Z2 blue
-      return { backgroundColor: Colors.BLUE }
-    } else if (zone >= Zones.Z3.min && zone < Zones.Z3.max) {
-      // Z3 green
-      return { backgroundColor: Colors.GREEN }
-    } else if (zone >= Zones.Z4.min && zone < Zones.Z4.max) {
-      // Z4 yellow
-      return { backgroundColor: Colors.YELLOW }
-    } else if (zone >= Zones.Z5.min && zone < Zones.Z5.max) {
-      // Z5 orange      
-      return { backgroundColor: Colors.ORANGE }
-    } else {
-      // Z6 red          
-      return { backgroundColor: Colors.RED }
-    }
   }
 
   return (

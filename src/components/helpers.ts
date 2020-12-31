@@ -125,25 +125,19 @@ const helpers = {
     return Math.floor(x / roundTo) * roundTo
   },
 
-  zwiftStyle(zone: number) {
-    if (zone >= 0 && zone < Zones.Z1.max) {
-      // Z1 gray
-      return { backgroundColor: Colors.GRAY }
-    } else if (zone >= Zones.Z2.min && zone < Zones.Z2.max) {
-      // Z2 blue
-      return { backgroundColor: Colors.BLUE }
-    } else if (zone >= Zones.Z3.min && zone < Zones.Z3.max) {
-      // Z3 green
-      return { backgroundColor: Colors.GREEN }
-    } else if (zone >= Zones.Z4.min && zone < Zones.Z4.max) {
-      // Z4 yellow
-      return { backgroundColor: Colors.YELLOW }
-    } else if (zone >= Zones.Z5.min && zone < Zones.Z5.max) {
-      // Z5 orange      
-      return { backgroundColor: Colors.ORANGE }
+  zoneColor(power: number): string {
+    if (power < Zones.Z1.max) {
+      return Colors.GRAY
+    } else if (power < Zones.Z2.max) {
+      return Colors.BLUE
+    } else if (power < Zones.Z3.max) {
+      return Colors.GREEN
+    } else if (power < Zones.Z4.max) {
+      return Colors.YELLOW
+    } else if (power < Zones.Z5.max) {
+      return Colors.ORANGE
     } else {
-      // Z6 red
-      return { backgroundColor: Colors.RED }
+      return Colors.RED
     }
   },
 }
