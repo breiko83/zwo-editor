@@ -6,8 +6,17 @@ import 'moment-duration-format'
 import Label from '../Label/Label'
 import helpers from '../helpers'
 
-const FreeRide = (props: { id: string, time: number, cadence: number, sportType: string, onChange: Function, onClick: Function, selected: boolean }) => {
+interface FreeRideProps {
+  id: string;
+  time: number;
+  cadence: number;
+  sportType: string;
+  onChange: Function;
+  onClick: Function;
+  selected: boolean;
+}
 
+const FreeRide = (props: FreeRideProps) => {
   const timeMultiplier = 3
 
   const durationLabel = getDuration(props.time)

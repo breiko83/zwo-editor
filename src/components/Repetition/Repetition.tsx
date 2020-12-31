@@ -4,8 +4,29 @@ import './Repetition.css'
 import { PaceType } from '../Editor/PaceSelector'
 import { SteadyInterval } from '../Interval'
 
-const Repetition = (props: { id: string, repeat: number, onDuration?: number, offDuration?: number, onLength?: number, offLength?: number, onPower: number, offPower: number, cadence: number, restingCadence: number, ftp: number, weight: number, pace: PaceType, speed?: number, sportType: string, durationType: string, handleIntervalChange: Function, handleIntervalClick: Function, selected: boolean }) => {
+interface RepetitionProps {
+  id: string;
+  repeat: number;
+  onDuration?: number;
+  offDuration?: number;
+  onLength?: number;
+  offLength?: number;
+  onPower: number;
+  offPower: number;
+  cadence: number;
+  restingCadence: number;
+  ftp: number;
+  weight: number;
+  pace: PaceType;
+  speed?: number;
+  sportType: string;
+  durationType: string;
+  handleIntervalChange: Function;
+  handleIntervalClick: Function;
+  selected: boolean;
+}
 
+const Repetition = (props: RepetitionProps) => {
   const { v4: uuidv4 } = require('uuid');
 
   const [intervals, setIntervals] = useState<Array<SteadyInterval>>([])

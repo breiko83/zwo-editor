@@ -10,8 +10,24 @@ interface IDictionary {
   [index: string]: number;
 }
 
-const Trapeze = (props: { id: string, time?: number, length?:number, startPower: number, endPower: number, cadence: number, ftp: number, pace: PaceType, sportType: string, durationType: string, speed?: number, onChange: Function, onClick: Function, selected: boolean }) => {
+interface TrapezeProps {
+  id: string;
+  time?: number;
+  length?:number;
+  startPower: number;
+  endPower: number;
+  cadence: number;
+  ftp: number;
+  pace: PaceType;
+  sportType: string;
+  durationType: string;
+  speed?: number;
+  onChange: Function;
+  onClick: Function;
+  selected: boolean;
+}
 
+const Trapeze = (props: TrapezeProps) => {
   const multiplier = 250
   const timeMultiplier = 3
   const lengthMultiplier = 10

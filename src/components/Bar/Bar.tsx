@@ -6,10 +6,25 @@ import Label from '../Label/Label'
 import helpers from '../helpers'
 import { PaceType } from '../Editor/PaceSelector'
 
+interface BarProps {
+  id: string;
+  time?: number;
+  length?:number;
+  power: number;
+  cadence: number;
+  ftp: number;
+  weight: number;
+  pace: PaceType;
+  sportType: string;
+  durationType: string;
+  speed?: number;
+  onChange: Function;
+  onClick: Function;
+  selected: boolean;
+  showLabel: boolean;
+}
 
-
-const Bar = (props: { id: string, time?: number, length?:number, power: number, cadence: number, ftp: number, weight: number, pace: PaceType, sportType: string, durationType: string, speed?: number, onChange: Function, onClick: Function, selected: boolean, showLabel: boolean }) => {
-
+const Bar = (props: BarProps) => {
   const multiplier = 250
   const timeMultiplier = 3
   const lengthMultiplier = 10
