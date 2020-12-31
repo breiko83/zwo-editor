@@ -729,14 +729,14 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
             key={interval.id}
             id={interval.id}
             time={interval.time}
-            length={interval.length || 200}
-            power={interval.power || 100}
+            length={interval.length}
+            power={interval.power}
             cadence={interval.cadence}
             ftp={ftp}
             weight={weight}
             sportType={sportType}
             durationType={durationType}
-            pace={interval.pace || 0}
+            pace={interval.pace}
             speed={runningSpeed(interval.pace)}
             onChange={(id: string, value: any) => handleOnChange(id, value)} // Change any to Interface Interval?
             onClick={(id: string) => handleOnClick(id)}
@@ -750,14 +750,14 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
             key={interval.id}
             id={interval.id}
             time={interval.time}
-            length={interval.length || 200}
+            length={interval.length}
             cadence={interval.cadence}
-            startPower={interval.startPower || 80}
-            endPower={interval.endPower || 160}
+            startPower={interval.startPower}
+            endPower={interval.endPower}
             ftp={ftp}
             sportType={sportType}
             durationType={durationType}
-            pace={interval.pace || 0}
+            pace={interval.pace}
             speed={runningSpeed(interval.pace)}
             onChange={(id: string, value: any) => handleOnChange(id, value)} // Change any to Interface Interval?
             onClick={(id: string) => handleOnClick(id)}
@@ -782,20 +782,20 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
           <Repetition
             key={interval.id}
             id={interval.id}
-            repeat={interval.repeat || 3}
-            onDuration={interval.onDuration || 10}
-            offDuration={interval.offDuration || 50}
-            onPower={interval.onPower || 250}
-            offPower={interval.offPower || 120}
-            onLength={interval.onLength || 200}
-            offLength={interval.offLength || 200}
+            repeat={interval.repeat}
+            onDuration={interval.onDuration}
+            offDuration={interval.offDuration}
+            onPower={interval.onPower}
+            offPower={interval.offPower}
+            onLength={interval.onLength}
+            offLength={interval.offLength}
             cadence={interval.cadence}
-            restingCadence={interval.restingCadence || 0}
+            restingCadence={interval.restingCadence}
             ftp={ftp}
             weight={weight}
             sportType={sportType}
             durationType={durationType}
-            pace={interval.pace || 0}
+            pace={interval.pace}
             speed={runningSpeed(interval.pace)}
             handleIntervalChange={(id: string, value: any) => handleOnChange(id, value)}
             handleIntervalClick={(id: string) => handleOnClick(id)}
