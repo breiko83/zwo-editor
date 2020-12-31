@@ -330,13 +330,11 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
   }
 
   function deleteInstruction(id: string) {
-    const updatedArray = [...instructions]
-    setInstructions(updatedArray.filter(item => item.id !== id))
+    setInstructions(instructions.filter(item => item.id !== id))
   }
 
   function removeBar(id: string) {
-    const updatedArray = [...intervals]
-    setIntervals(updatedArray.filter(item => item.id !== id))
+    setIntervals(intervals.filter(item => item.id !== id))
     setSelectedId(undefined)
   }
 
@@ -414,7 +412,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
 
   function duplicateBar(id: string) {
     const index = intervals.findIndex(interval => interval.id === id)
-    const interval = [...intervals][index]
+    const interval = intervals[index]
 
     if (interval.type === 'steady') addBar(interval.power || 80, interval.duration, interval.cadence, interval.pace, interval.distance)
     if (interval.type === 'free') addFreeRide(interval.duration, interval.cadence)
@@ -429,7 +427,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
     // not first position of array
     if (index > 0) {
       const updatedArray = [...intervals]
-      const interval = [...intervals][index]
+      const interval = updatedArray[index]
       updatedArray.splice(index, 1)
       updatedArray.splice(index - 1, 0, interval)
       setIntervals(updatedArray)
@@ -441,7 +439,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
     // not first position of array
     if (index < intervals.length - 1) {
       const updatedArray = [...intervals]
-      const interval = [...intervals][index]
+      const interval = updatedArray[index]
       updatedArray.splice(index, 1)
       updatedArray.splice(index + 1, 0, interval)
       setIntervals(updatedArray)
@@ -756,7 +754,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
 
     if (index !== -1) {
       const updatedArray = [...intervals]
-      const interval = [...updatedArray][index]
+      const interval = updatedArray[index]
       if (interval.type !== 'steady') { // TODO: Only steady?
         return;
       }
@@ -776,7 +774,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
     const index = intervals.findIndex(interval => interval.id === id)
 
     if (index !== -1) {
-      const interval = [...intervals][index]
+      const interval = intervals[index]
       return interval.type === 'free' ? undefined : interval.pace
     }
   }
