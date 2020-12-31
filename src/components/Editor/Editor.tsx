@@ -2,10 +2,7 @@ import React, { useState, useEffect, useRef } from 'react'
 import { v4 as uuidv4 } from 'uuid'
 import './Editor.css'
 import { Colors, Zones } from '../Constants'
-import SteadyBar from '../Bar/SteadyBar'
-import RampBar from '../Bar/RampBar'
-import FreeBar from '../Bar/FreeBar'
-import RepetitionBar from '../Bar/RepetitionBar'
+import GenericBar from '../Bar/GenericBar'
 import Comment from '../Comment/Comment'
 import Popup from '../Popup/Popup'
 import Footer from '../Footer/Footer'
@@ -718,64 +715,20 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
   }
 
   const renderInterval = (interval: Interval) => {
-    switch (interval.type) {
-      case 'steady':
-        return (
-          <SteadyBar
-            key={interval.id}
-            interval={interval}
-            ftp={ftp}
-            weight={weight}
-            sportType={sportType}
-            durationType={durationType}
-            speed={runningSpeed(interval.pace)}
-            onChange={updateInterval}
-            onClick={toggleSelection}
-            selected={interval.id === selectedId}
-            showLabel={true}
-          />
-        );
-      case 'ramp':
-        return (
-          <RampBar
-            key={interval.id}
-            interval={interval}
-            ftp={ftp}
-            sportType={sportType}
-            durationType={durationType}
-            speed={runningSpeed(interval.pace)}
-            onChange={updateInterval}
-            onClick={toggleSelection}
-            selected={interval.id === selectedId}
-          />
-        );
-      case 'free':
-        return (
-          <FreeBar
-            key={interval.id}
-            interval={interval}
-            sportType={sportType}
-            onChange={updateInterval}
-            onClick={toggleSelection}
-            selected={interval.id === selectedId}
-          />
-        );
-      case 'repetition':
-        return (
-          <RepetitionBar
-            key={interval.id}
-            interval={interval}
-            ftp={ftp}
-            weight={weight}
-            sportType={sportType}
-            durationType={durationType}
-            speed={runningSpeed(interval.pace)}
-            onChange={updateInterval}
-            onClick={toggleSelection}
-            selected={interval.id === selectedId}
-          />
-        );
-    }
+    return (
+      <GenericBar
+        key={interval.id}
+        interval={interval}
+        ftp={ftp}
+        weight={weight}
+        sportType={sportType}
+        durationType={durationType}
+        speed={interval.type === 'free' ? 0 : runningSpeed(interval.pace)}
+        onChange={updateInterval}
+        onClick={toggleSelection}
+        selected={interval.id === selectedId}
+      />
+    );
   }
 
   const renderComment = (instruction: Instruction, index: number) => (
