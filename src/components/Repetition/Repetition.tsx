@@ -11,8 +11,8 @@ interface RepetitionProps {
   speed: number;
   sportType: string;
   durationType: string;
-  handleIntervalChange: (id: string, interval: RepetitionInterval) => void;
-  handleIntervalClick: (id: string) => void;
+  onChange: (id: string, interval: RepetitionInterval) => void;
+  onClick: (id: string) => void;
   selected: boolean;
 }
 
@@ -85,7 +85,7 @@ const Repetition = ({interval, ...props}: RepetitionProps) => {
     var length = 0
     intervals.map((interval) => length += (interval.length))
 
-    props.handleIntervalChange(interval.id, {
+    props.onChange(interval.id, {
       time: time,
       length: length,
       id: interval.id,
@@ -109,7 +109,7 @@ const Repetition = ({interval, ...props}: RepetitionProps) => {
     var time = 0
     intervals.map((interval) => time += interval.time)
 
-    props.handleIntervalChange(interval.id, {
+    props.onChange(interval.id, {
       time: ((interval.onDuration) + (interval.offDuration)) * (nIntervals + 1),
       length: ((interval.onLength) + (interval.offLength)) * (nIntervals + 1),
       id: interval.id,
@@ -133,7 +133,7 @@ const Repetition = ({interval, ...props}: RepetitionProps) => {
       var time = 0
       intervals.map((interval) => time += interval.time)
 
-      props.handleIntervalChange(interval.id, {
+      props.onChange(interval.id, {
         time: ((interval.onDuration) + (interval.offDuration)) * (nIntervals - 1),
         length: ((interval.onLength) + (interval.offLength)) * (nIntervals - 1),
         id: interval.id,
@@ -162,7 +162,7 @@ const Repetition = ({interval, ...props}: RepetitionProps) => {
       durationType={props.durationType}
       speed={props.speed}
       onChange={(id: string, value: any) => handleOnChange(id, value)} // Change any to Interface Interval?
-      onClick={() => props.handleIntervalClick(interval.id)}
+      onClick={() => props.onClick(interval.id)}
       selected={props.selected}
       showLabel={withLabel}
     />

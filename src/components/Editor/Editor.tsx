@@ -775,8 +775,8 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
             sportType={sportType}
             durationType={durationType}
             speed={runningSpeed(interval.pace)}
-            handleIntervalChange={handleOnChange}
-            handleIntervalClick={handleOnClick}
+            onChange={handleOnChange}
+            onClick={handleOnClick}
             selected={interval.id === actionId}
           />
         );
