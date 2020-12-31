@@ -78,7 +78,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
 
   const [id, setId] = useState(match.params.id === "new" ? (localStorage.getItem('id') || generateId()) : match.params.id)
   const [intervals, setIntervals] = useState<Array<Interval>>(JSON.parse(localStorage.getItem('currentWorkout') || '[]'))
-  const [actionId, setActionId] = useState<string | undefined>(undefined)
+  const [selectedId, setSelectedId] = useState<string | undefined>(undefined)
   const [ftp, setFtp] = useState(parseInt(localStorage.getItem('ftp') || '200'))
   const [weight, setWeight] = useState(parseInt(localStorage.getItem('weight') || '75'))
   const [instructions, setInstructions] = useState<Array<Instruction>>(JSON.parse(localStorage.getItem('instructions') || '[]'))  
@@ -217,10 +217,10 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
 
   function handleOnClick(id: string) {
 
-    if (id === actionId) {
-      setActionId(undefined)
+    if (id === selectedId) {
+      setSelectedId(undefined)
     } else {
-      setActionId(id)
+      setSelectedId(id)
     }
   }
 
@@ -232,25 +232,25 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
 
     switch (event.keyCode) {
       case 8:
-        removeBar(actionId || '')
+        removeBar(selectedId || '')
         // Prevent navigation to previous page
         event.preventDefault()
         break;
       case 37:
         // reduce time
-        removeTimeToBar(actionId || '')
+        removeTimeToBar(selectedId || '')
         break;
       case 39:
         // add time
-        addTimeToBar(actionId || '')
+        addTimeToBar(selectedId || '')
         break;
       case 38:
         // add power
-        addPowerToBar(actionId || '')
+        addPowerToBar(selectedId || '')
         break;
       case 40:
         // add power
-        removePowerToBar(actionId || '')
+        removePowerToBar(selectedId || '')
         break;
       default:
         //console.log(event.keyCode);        
@@ -342,7 +342,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
   function removeBar(id: string) {
     const updatedArray = [...intervals]
     setIntervals(updatedArray.filter(item => item.id !== id))
-    setActionId(undefined)
+    setSelectedId(undefined)
   }
 
   function addTimeToBar(id: string) {
@@ -426,7 +426,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
     if (element.type === 'ramp') addTrapeze(element.startPower || 80, element.endPower || 160, element.time, element.pace || 0, element.length, element.cadence)
     if (element.type === 'repetition') addInterval(element.repeat, element.onDuration, element.offDuration, element.onPower, element.offPower, element.cadence, element.restingCadence, element.pace, element.onLength, element.offLength)
 
-    setActionId(undefined)
+    setSelectedId(undefined)
   }
 
   function moveLeft(id: string) {
@@ -733,7 +733,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
             speed={runningSpeed(interval.pace)}
             onChange={handleOnChange}
             onClick={handleOnClick}
-            selected={interval.id === actionId}
+            selected={interval.id === selectedId}
             showLabel={true}
           />
         );
@@ -748,7 +748,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
             speed={runningSpeed(interval.pace)}
             onChange={handleOnChange}
             onClick={handleOnClick}
-            selected={interval.id === actionId}
+            selected={interval.id === selectedId}
           />
         );
       case 'free':
@@ -759,7 +759,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
             sportType={sportType}
             onChange={handleOnChange}
             onClick={handleOnClick}
-            selected={interval.id === actionId}
+            selected={interval.id === selectedId}
           />
         );
       case 'repetition':
@@ -774,7 +774,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
             speed={runningSpeed(interval.pace)}
             onChange={handleOnChange}
             onClick={handleOnClick}
-            selected={interval.id === actionId}
+            selected={interval.id === selectedId}
           />
         );
     }
@@ -941,20 +941,20 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
       {sportType === "run" && <RunningTimesEditor times={runningTimes} onChange={setRunningTimes} />}
 
       <div id="editor" className='editor'>
-        {actionId &&
+        {selectedId &&
           <div className='actions'>
-            <button onClick={() => moveLeft(actionId)} title='Move Left'><FontAwesomeIcon icon={faArrowLeft} size="lg" fixedWidth /></button>
-            <button onClick={() => moveRight(actionId)} title='Move Right'><FontAwesomeIcon icon={faArrowRight} size="lg" fixedWidth /></button>
-            <button onClick={() => removeBar(actionId)} title='Delete'><FontAwesomeIcon icon={faTrash} size="lg" fixedWidth /></button>
-            <button onClick={() => duplicateBar(actionId)} title='Duplicate'><FontAwesomeIcon icon={faCopy} size="lg" fixedWidth /></button>
+            <button onClick={() => moveLeft(selectedId)} title='Move Left'><FontAwesomeIcon icon={faArrowLeft} size="lg" fixedWidth /></button>
+            <button onClick={() => moveRight(selectedId)} title='Move Right'><FontAwesomeIcon icon={faArrowRight} size="lg" fixedWidth /></button>
+            <button onClick={() => removeBar(selectedId)} title='Delete'><FontAwesomeIcon icon={faTrash} size="lg" fixedWidth /></button>
+            <button onClick={() => duplicateBar(selectedId)} title='Duplicate'><FontAwesomeIcon icon={faCopy} size="lg" fixedWidth /></button>
             {sportType === "run" &&
-              <PaceSelector value={getPace(actionId)} onChange={(pace) => setPace(pace, actionId)} />
+              <PaceSelector value={getPace(selectedId)} onChange={(pace) => setPace(pace, selectedId)} />
             }
           </div>
         }
         <div className='canvas' ref={canvasRef}>          
-          {actionId &&
-            <div className='fader' style={{width: canvasRef.current?.scrollWidth}} onClick={() => setActionId(undefined)}></div>
+          {selectedId &&
+            <div className='fader' style={{width: canvasRef.current?.scrollWidth}} onClick={() => setSelectedId(undefined)}></div>
           }
           <div className='segments' ref={segmentsRef}>
             {intervals.map(renderInterval)}
