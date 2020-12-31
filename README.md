@@ -8,6 +8,9 @@ Zwift Workout editor is a web based tool to edit ZWO files (Zwift workouts). It'
 
 ## Changelog
 
+### V1.8 (31/12/2020)
+- [feature] New workout text editor! For everyone who love typing!
+
 ### V1.7 (28/12/2020)
 - [bugfix] Added missing cadence values to intervals and free ride
 - [bugfix] Moved cadence input field next to segment

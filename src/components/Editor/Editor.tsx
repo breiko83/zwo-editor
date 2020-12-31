@@ -13,7 +13,7 @@ import TimeAxis from './TimeAxis'
 import DistanceAxis from './DistanceAxis'
 import ZoneAxis from './ZoneAxis'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faTrash, faArrowRight, faArrowLeft, faFile, faSave, faUpload, faDownload, faComment, faBicycle, faCopy, faClock, faShareAlt, faTimesCircle, faList, faBiking, faRunning, faRuler } from '@fortawesome/free-solid-svg-icons'
+import { faTrash, faArrowRight, faArrowLeft, faFile, faSave, faUpload, faDownload, faComment, faBicycle, faCopy, faClock, faShareAlt, faTimesCircle, faList, faBiking, faRunning, faRuler, faPen } from '@fortawesome/free-solid-svg-icons'
 import { ReactComponent as WarmdownLogo } from '../../assets/warmdown.svg'
 import { ReactComponent as WarmupLogo } from '../../assets/warmup.svg'
 import { ReactComponent as IntervalLogo } from '../../assets/interval.svg'
@@ -31,6 +31,7 @@ import RunningTimesEditor, { RunningTimes } from './RunningTimesEditor'
 import LeftRightToggle from './LeftRightToggle'
 import createWorkoutXml from './createWorkoutXml'
 import ShareForm from '../Forms/ShareForm'
+import ReactTooltip from 'react-tooltip';
 
 
 export interface Bar {
@@ -129,6 +130,8 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
   const [durationType, setDurationType] = useState<DurationType>(localStorage.getItem('durationType') as DurationType || 'time')
 
   const [runningTimes, setRunningTimes] = useState(loadRunningTimes())
+
+  const [textEditorIsVisible, setTextEditorIsVisible] = useState(false)
 
   const db = firebase.database();
 
@@ -247,6 +250,11 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
   function handleKeyPress(event: React.KeyboardEvent<HTMLDivElement>) {
     if (event.target instanceof HTMLInputElement) {
       // Ignore key presses coming from input elements
+      return;
+    }
+
+    if (event.target instanceof HTMLTextAreaElement) {
+      // Ignore key presses coming from textarea elements
       return;
     }
 
@@ -872,10 +880,20 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
     setDurationType(newSportType === "bike" ? "time" : "distance");
   }
 
+  function toggleTextEditor() {
+    if (bars.length > 0 && !textEditorIsVisible) {
+      if (window.confirm('Editing a workout from the text editor will overwrite current workout'))
+        setTextEditorIsVisible(!textEditorIsVisible)
+    }else{
+      setTextEditorIsVisible(!textEditorIsVisible)
+    }
+  }
+
   function transformTextToWorkout(textValue: string) {
 
     // reset each time
     setBars([])
+    setInstructions([])
 
     // 2 minutes block at 112% FTP
     // 2 minutes block at 330 W
@@ -885,10 +903,137 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
 
     const workoutBlocks = textValue.split('\n')
     workoutBlocks.forEach((workoutBlock) => {
-      if(workoutBlock.includes("block")){
+      if(workoutBlock.includes("steady")){
         // generate a steady state block
-        addBar(1, 300)
         
+        // extract watts
+        const powerInWatts = workoutBlock.match(/([0-9]\d*w)/)
+        const powerInWattsPerKg = workoutBlock.match(/([0-9]*.?[0-9]wkg)/)
+        
+        let power = powerInWatts ? parseInt(powerInWatts[0])/ftp : 1
+        power = powerInWattsPerKg ? parseFloat(powerInWattsPerKg[0])*weight/ftp : power
+
+        // extract duration in seconds
+        console.log(workoutBlock);
+        
+        const durationInSeconds = workoutBlock.match(/([0-9]\d*s)/)        
+        const durationInMinutes = workoutBlock.match(/([0-9]*:?[0-9][0-9]*m)/)
+
+        let duration = durationInSeconds && parseInt(durationInSeconds[0])        
+        duration = durationInMinutes ? parseInt(durationInMinutes[0].split(":")[0]) * 60 + (parseInt(durationInMinutes[0].split(":")[1]) || 0) : duration
+              
+        // extract cadence in rpm
+        const cadence = workoutBlock.match(/([0-9]\d*rpm)/)
+        const rpm = cadence ? parseInt(cadence[0]) : undefined
+
+        // extract multiplier
+        // const multiplier = workoutBlock.match(/([0-9]\d*x)/) 
+        // const nTimes = multiplier ? Array(parseInt(multiplier[0])) : Array(1)
+        // for (var i = 0; i < nTimes.length; i++)
+        
+        addBar(power, duration || 300, rpm)          
+        
+      }
+
+      if(workoutBlock.includes("ramp") || workoutBlock.includes("warmup") || workoutBlock.includes("cooldown")){
+        // generate a steady ramp block
+
+        // extract watts
+        const startPowerInWatts = workoutBlock.match(/([0-9]\d*w)/)
+        const startPowerInWattsPerKg = workoutBlock.match(/([0-9]*.?[0-9]wkg)/)
+        
+        let startPower = startPowerInWatts ? parseInt(startPowerInWatts[0])/ftp : 1
+        startPower = startPowerInWattsPerKg ? parseFloat(startPowerInWattsPerKg[0])*weight/ftp : startPower
+
+        // extract watts
+        const endPowerInWatts = workoutBlock.match(/(-[0-9]\d*w)/)
+        const endPowerInWattsPerKg = workoutBlock.match(/(-[0-9]*.?[0-9]wkg)/)
+        
+        let endPower = endPowerInWatts ? Math.abs(parseInt(endPowerInWatts[0]))/ftp : 1
+        endPower = endPowerInWattsPerKg ? Math.abs(parseFloat(endPowerInWattsPerKg[0]))*weight/ftp : endPower
+        
+        const durationInSeconds = workoutBlock.match(/([0-9]\d*s)/)        
+        const durationInMinutes = workoutBlock.match(/([0-9]*:?[0-9][0-9]*m)/)
+
+        let duration = durationInSeconds && parseInt(durationInSeconds[0])        
+        duration = durationInMinutes ? parseInt(durationInMinutes[0].split(":")[0]) * 60 + (parseInt(durationInMinutes[0].split(":")[1]) || 0) : duration
+
+        // extract cadence in rpm
+        const cadence = workoutBlock.match(/([0-9]\d*rpm)/)
+        const rpm = cadence ? parseInt(cadence[0]) : undefined
+
+        addTrapeze(startPower, endPower, duration || 300, undefined, undefined, rpm)
+      }
+
+      if(workoutBlock.includes("freeride")){
+
+        const durationInSeconds = workoutBlock.match(/([0-9]\d*s)/)        
+        const durationInMinutes = workoutBlock.match(/([0-9]*:?[0-9][0-9]*m)/)
+
+        let duration = durationInSeconds && parseInt(durationInSeconds[0])        
+        duration = durationInMinutes ? parseInt(durationInMinutes[0].split(":")[0]) * 60 + (parseInt(durationInMinutes[0].split(":")[1]) || 0) : duration
+
+        // extract cadence in rpm
+        const cadence = workoutBlock.match(/([0-9]\d*rpm)/)
+        const rpm = cadence ? parseInt(cadence[0]) : undefined
+
+        addFreeRide(duration || 600, rpm)
+      }
+
+      if(workoutBlock.includes("interval")){
+
+        const multiplier = workoutBlock.match(/([0-9]\d*x)/)
+        const nTimes = multiplier ? parseInt(multiplier[0]) : 3
+
+        const durationInSeconds = workoutBlock.match(/([0-9]\d*s)/)        
+        const durationInMinutes = workoutBlock.match(/([0-9]*:?[0-9][0-9]*m)/)
+
+        let duration = durationInSeconds && parseInt(durationInSeconds[0])        
+        duration = durationInMinutes ? parseInt(durationInMinutes[0].split(":")[0]) * 60 + (parseInt(durationInMinutes[0].split(":")[1]) || 0) : duration
+
+        const offDurationInSeconds = workoutBlock.match(/(-[0-9]\d*s)/)        
+        const offDurationInMinutes = workoutBlock.match(/(-[0-9]*:?[0-9][0-9]*m)/)
+
+        let offDuration = offDurationInSeconds && Math.abs(parseInt(offDurationInSeconds[0]))
+        offDuration = offDurationInMinutes ? Math.abs(parseInt(offDurationInMinutes[0].split(":")[0])) * 60 + (parseInt(offDurationInMinutes[0].split(":")[1]) || 0) : offDuration
+
+        // extract watts
+        const startPowerInWatts = workoutBlock.match(/([0-9]\d*w)/)
+        const startPowerInWattsPerKg = workoutBlock.match(/([0-9]*.?[0-9]wkg)/)
+        
+        let startPower = startPowerInWatts ? parseInt(startPowerInWatts[0])/ftp : 1
+        startPower = startPowerInWattsPerKg ? parseFloat(startPowerInWattsPerKg[0])*weight/ftp : startPower
+
+        // extract watts
+        const endPowerInWatts = workoutBlock.match(/(-[0-9]\d*w)/)
+        const endPowerInWattsPerKg = workoutBlock.match(/(-[0-9]*.?[0-9]wkg)/)
+        
+        let endPower = endPowerInWatts ? Math.abs(parseInt(endPowerInWatts[0]))/ftp : 0.5
+        endPower = endPowerInWattsPerKg ? Math.abs(parseFloat(endPowerInWattsPerKg[0]))*weight/ftp : endPower
+
+        // extract cadence in rpm
+        const cadence = workoutBlock.match(/([0-9]\d*rpm)/)
+        const rpm = cadence ? parseInt(cadence[0]) : undefined
+
+        const restingCadence = workoutBlock.match(/(-[0-9]\d*rpm)/)
+        const restingRpm = restingCadence ? Math.abs(parseInt(restingCadence[0])) : undefined
+
+        addInterval(nTimes, duration || 30, offDuration || 120, startPower, endPower, rpm, restingRpm)
+      }
+
+      if(workoutBlock.includes("message")){
+
+        // extract message
+        const message = workoutBlock.match(/["'](.*?)["']/)
+        const text = message ? message[0] : ''
+
+        const durationInSeconds = workoutBlock.match(/([0-9]\d*s)/)        
+        const durationInMinutes = workoutBlock.match(/([0-9]*:?[0-9][0-9]*m)/)
+
+        let duration = durationInSeconds && parseInt(durationInSeconds[0])        
+        duration = durationInMinutes ? parseInt(durationInMinutes[0].split(":")[0]) * 60 + (parseInt(durationInMinutes[0].split(":")[1]) || 0) : duration
+
+        addInstruction(text, duration || 0)
       }
       
     })
@@ -999,8 +1144,49 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
         </div>
       </div>
       {sportType === "run" && <RunningTimesEditor times={runningTimes} onChange={setRunningTimes} />}
-
-      <div id="editor" className='editor'>
+      { textEditorIsVisible && sportType === "bike" &&
+        <div className="text-editor">
+          <textarea onChange={(e) => transformTextToWorkout(e.target.value)} rows={10} spellCheck={false} className="text-editor-textarea" placeholder="Add blocks here: &#10;steady 3.0wkg 30s"></textarea>
+          <div className="text-editor-instructions">
+            <h2>Instructions</h2>
+            <p>Every row correspond to a workout block. Scroll down to see some examples.</p>
+            <h3>Blocks</h3>
+            <p><span>steady</span> <span>warmup</span> <span>cooldown</span> <span>ramp</span> <span>intervals</span> <span>freeride</span> <span>message</span></p>
+            <h3>Time</h3>
+            <p><span>30s</span> or <span>0:30m</span></p>
+            <h3>Power</h3>
+            <p><span>250w</span> or <span>3.0wkg</span></p>
+            <h3>Cadence</h3>
+            <p><span>120rpm</span></p>
+            <h2>Examples</h2>
+            <h3>Steady block</h3>
+            <p>
+              <code>steady 3.0wkg 30s</code>
+              <code>steady 120w 10m 85rpm</code>
+            </p>
+            <h3>Warmup / Cooldown / Ramp block</h3>
+            <p>
+              <code>warmup 2.0wkg-3.5wkg 10m</code>
+              <code>cooldown 180w-100w 5m 110rpm</code>
+            </p>
+            <h3>Intervals</h3>
+            <p>
+              <code>interval 10x 30s-30s 4.0wkg-1.0wkg 110rpm-85rpm</code>
+              <code>interval 3x 1:00m-5:00m 300w-180w</code>
+            </p>    
+            <h3>Free Ride</h3>
+            <p>
+              <code>freeride 10m 85rpm</code>            
+            </p>  
+            <h3>Text Event</h3>
+            <p>
+              <code>message "Get ready to your first set!" 30s</code>            
+              <code>message "Last one!" 20:00m</code>            
+            </p>      
+          </div>
+        </div>
+      }
+      <div id="editor" className='editor'>        
         {actionId &&
           <div className='actions'>
             <button onClick={() => moveLeft(actionId)} title='Move Left'><FontAwesomeIcon icon={faArrowLeft} size="lg" fixedWidth /></button>
@@ -1053,6 +1239,8 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
       <div className='cta'>
         {sportType === "bike" ?
           <div>
+            <ReactTooltip effect="solid" />
+            <button className="btn btn-square" onClick={() => toggleTextEditor()} style={{ backgroundColor: "palevioletred" }} data-tip="New! Workout text editor!"><FontAwesomeIcon icon={faPen} fixedWidth /></button>
             <button className="btn btn-square" onClick={() => addBar(0.5)} style={{ backgroundColor: Colors.GRAY }}>Z1</button>
             <button className="btn btn-square" onClick={() => addBar(Zones.Z2.min)} style={{ backgroundColor: Colors.BLUE }}>Z2</button>
             <button className="btn btn-square" onClick={() => addBar(Zones.Z3.min)} style={{ backgroundColor: Colors.GREEN }}>Z3</button>
