@@ -253,7 +253,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
     }
   }
 
-  function addBar(power: number, duration: number = 300, cadence: number = 0, pace: PaceType = PaceType.oneMile, distance: number = 200) {
+  function addSteadyInterval(power: number, duration: number = 300, cadence: number = 0, pace: PaceType = PaceType.oneMile, distance: number = 200) {
     const interval: SteadyInterval = {
       duration: durationType === 'time' ? duration : Math.floor(helpers.calculateTime(distance, runningSpeed(pace))),
       distance: durationType === 'time' ? Math.floor(helpers.calculateDistance(duration, runningSpeed(pace))) : distance,
@@ -266,7 +266,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
     setIntervals(intervals => [...intervals, interval])
   }
 
-  function addTrapeze(startPower: number, endPower: number, duration: number = 300, pace: PaceType = PaceType.oneMile, distance: number = 1000, cadence: number = 0) {
+  function addRampInterval(startPower: number, endPower: number, duration: number = 300, pace: PaceType = PaceType.oneMile, distance: number = 1000, cadence: number = 0) {
     const interval: RampInterval = {
       duration: durationType === 'time' ? duration : Math.floor(helpers.calculateTime(distance, runningSpeed(pace))),
       distance: durationType === 'time' ? Math.floor(helpers.calculateDistance(duration, runningSpeed(pace))) : distance,
@@ -280,7 +280,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
     setIntervals(intervals => [...intervals, interval])
   }
 
-  function addFreeRide(duration = 600, cadence: number = 0) {
+  function addFreeInterval(duration = 600, cadence: number = 0) {
     const interval: FreeInterval = {
       duration: duration,
       cadence: cadence,
@@ -290,7 +290,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
     setIntervals(intervals => [...intervals, interval])
   }
 
-  function addInterval(repeat: number = 3, onDuration: number = 30, offDuration: number = 120, onPower: number = 1, offPower: number = 0.5, cadence: number = 0, restingCadence: number = 0, pace: PaceType = PaceType.oneMile, onDistance: number = 200, offDistance: number = 200) {
+  function addRepetitionInterval(repeat: number = 3, onDuration: number = 30, offDuration: number = 120, onPower: number = 1, offPower: number = 0.5, cadence: number = 0, restingCadence: number = 0, pace: PaceType = PaceType.oneMile, onDistance: number = 200, offDistance: number = 200) {
     const interval: RepetitionInterval = {
       id: uuidv4(),
       type: 'repetition',
@@ -412,10 +412,10 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
     const index = intervals.findIndex(interval => interval.id === id)
     const interval = intervals[index]
 
-    if (interval.type === 'steady') addBar(interval.power || 80, interval.duration, interval.cadence, interval.pace, interval.distance)
-    if (interval.type === 'free') addFreeRide(interval.duration, interval.cadence)
-    if (interval.type === 'ramp') addTrapeze(interval.startPower || 80, interval.endPower || 160, interval.duration, interval.pace || 0, interval.distance, interval.cadence)
-    if (interval.type === 'repetition') addInterval(interval.repeat, interval.onDuration, interval.offDuration, interval.onPower, interval.offPower, interval.cadence, interval.restingCadence, interval.pace, interval.onDistance, interval.offDistance)
+    if (interval.type === 'steady') addSteadyInterval(interval.power || 80, interval.duration, interval.cadence, interval.pace, interval.distance)
+    if (interval.type === 'free') addFreeInterval(interval.duration, interval.cadence)
+    if (interval.type === 'ramp') addRampInterval(interval.startPower || 80, interval.endPower || 160, interval.duration, interval.pace || 0, interval.distance, interval.cadence)
+    if (interval.type === 'repetition') addRepetitionInterval(interval.repeat, interval.onDuration, interval.offDuration, interval.onPower, interval.offPower, interval.cadence, interval.restingCadence, interval.pace, interval.onDistance, interval.offDistance)
 
     setSelectedId(undefined)
   }
@@ -659,18 +659,18 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
             let duration = parseFloat(w.attributes.Duration)
 
             if (w.name === 'SteadyState')
-              addBar(parseFloat(w.attributes.Power || w.attributes.PowerLow), parseFloat(w.attributes.Duration), parseFloat(w.attributes.Cadence || '0'), parseInt(w.attributes.Pace || '0'))
+              addSteadyInterval(parseFloat(w.attributes.Power || w.attributes.PowerLow), parseFloat(w.attributes.Duration), parseFloat(w.attributes.Cadence || '0'), parseInt(w.attributes.Pace || '0'))
 
             if (w.name === 'Ramp' || w.name === 'Warmup' || w.name === 'Cooldown')
-              addTrapeze(parseFloat(w.attributes.PowerLow), parseFloat(w.attributes.PowerHigh), parseFloat(w.attributes.Duration), parseInt(w.attributes.Pace || '0'), undefined, parseInt(w.attributes.Cadence))
+              addRampInterval(parseFloat(w.attributes.PowerLow), parseFloat(w.attributes.PowerHigh), parseFloat(w.attributes.Duration), parseInt(w.attributes.Pace || '0'), undefined, parseInt(w.attributes.Cadence))
 
             if (w.name === 'IntervalsT'){
-              addInterval(parseFloat(w.attributes.Repeat), parseFloat(w.attributes.OnDuration), parseFloat(w.attributes.OffDuration), parseFloat(w.attributes.OnPower), parseFloat(w.attributes.OffPower), parseInt(w.attributes.Cadence || '0'), parseInt(w.attributes.CadenceResting), parseInt(w.attributes.Pace || '0'))
+              addRepetitionInterval(parseFloat(w.attributes.Repeat), parseFloat(w.attributes.OnDuration), parseFloat(w.attributes.OffDuration), parseFloat(w.attributes.OnPower), parseFloat(w.attributes.OffPower), parseInt(w.attributes.Cadence || '0'), parseInt(w.attributes.CadenceResting), parseInt(w.attributes.Pace || '0'))
               duration = (parseFloat(w.attributes.OnDuration) + parseFloat(w.attributes.OffDuration)) * parseFloat(w.attributes.Repeat)
             }              
 
             if (w.name === 'free')
-              addFreeRide(parseFloat(w.attributes.Duration), parseInt(w.attributes.Cadence))
+              addFreeInterval(parseFloat(w.attributes.Duration), parseInt(w.attributes.Cadence))
 
             // check for instructions
             const textElements = w.elements
@@ -912,22 +912,22 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
       <div className='cta'>
         {sportType === "bike" ?
           <div>
-            <button className="btn btn-square" onClick={() => addBar(0.5)} style={{ backgroundColor: Colors.GRAY }}>Z1</button>
-            <button className="btn btn-square" onClick={() => addBar(Zones.Z2.min)} style={{ backgroundColor: Colors.BLUE }}>Z2</button>
-            <button className="btn btn-square" onClick={() => addBar(Zones.Z3.min)} style={{ backgroundColor: Colors.GREEN }}>Z3</button>
-            <button className="btn btn-square" onClick={() => addBar(Zones.Z4.min)} style={{ backgroundColor: Colors.YELLOW }}>Z4</button>
-            <button className="btn btn-square" onClick={() => addBar(Zones.Z5.min)} style={{ backgroundColor: Colors.ORANGE }}>Z5</button>
-            <button className="btn btn-square" onClick={() => addBar(Zones.Z6.min)} style={{ backgroundColor: Colors.RED }}>Z6</button>
+            <button className="btn btn-square" onClick={() => addSteadyInterval(0.5)} style={{ backgroundColor: Colors.GRAY }}>Z1</button>
+            <button className="btn btn-square" onClick={() => addSteadyInterval(Zones.Z2.min)} style={{ backgroundColor: Colors.BLUE }}>Z2</button>
+            <button className="btn btn-square" onClick={() => addSteadyInterval(Zones.Z3.min)} style={{ backgroundColor: Colors.GREEN }}>Z3</button>
+            <button className="btn btn-square" onClick={() => addSteadyInterval(Zones.Z4.min)} style={{ backgroundColor: Colors.YELLOW }}>Z4</button>
+            <button className="btn btn-square" onClick={() => addSteadyInterval(Zones.Z5.min)} style={{ backgroundColor: Colors.ORANGE }}>Z5</button>
+            <button className="btn btn-square" onClick={() => addSteadyInterval(Zones.Z6.min)} style={{ backgroundColor: Colors.RED }}>Z6</button>
           </div>
           :
-          <button className="btn" onClick={() => addBar(1, 300, 0, 0, 1000)} style={{ backgroundColor: Colors.WHITE }}><SteadyLogo className="btn-icon" /> Steady Pace</button>
+          <button className="btn" onClick={() => addSteadyInterval(1, 300, 0, 0, 1000)} style={{ backgroundColor: Colors.WHITE }}><SteadyLogo className="btn-icon" /> Steady Pace</button>
         }
 
-        <button className="btn" onClick={() => addTrapeze(0.25, 0.75)} style={{ backgroundColor: Colors.WHITE }}><WarmupLogo className="btn-icon" /> Warm up</button>
-        <button className="btn" onClick={() => addTrapeze(0.75, 0.25)} style={{ backgroundColor: Colors.WHITE }}><WarmdownLogo className="btn-icon" /> Cool down</button>
-        <button className="btn" onClick={() => addInterval()} style={{ backgroundColor: Colors.WHITE }}><IntervalLogo className="btn-icon" /> Interval</button>
+        <button className="btn" onClick={() => addRampInterval(0.25, 0.75)} style={{ backgroundColor: Colors.WHITE }}><WarmupLogo className="btn-icon" /> Warm up</button>
+        <button className="btn" onClick={() => addRampInterval(0.75, 0.25)} style={{ backgroundColor: Colors.WHITE }}><WarmdownLogo className="btn-icon" /> Cool down</button>
+        <button className="btn" onClick={() => addRepetitionInterval()} style={{ backgroundColor: Colors.WHITE }}><IntervalLogo className="btn-icon" /> Interval</button>
         {sportType === "bike" &&
-          <button className="btn" onClick={() => addFreeRide()} style={{ backgroundColor: Colors.WHITE }}><FontAwesomeIcon icon={faBicycle} size="lg" fixedWidth /> Free Ride</button>
+          <button className="btn" onClick={() => addFreeInterval()} style={{ backgroundColor: Colors.WHITE }}><FontAwesomeIcon icon={faBicycle} size="lg" fixedWidth /> Free Ride</button>
         }
         <button className="btn" onClick={() => addInstruction()} style={{ backgroundColor: Colors.WHITE }}><FontAwesomeIcon icon={faComment} size="lg" fixedWidth /> Text Event</button>
         {sportType === "bike" &&
