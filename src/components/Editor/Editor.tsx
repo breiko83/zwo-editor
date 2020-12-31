@@ -253,10 +253,10 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
     }
   }
 
-  function addBar(zone: number, duration: number = 300, cadence: number = 0, pace: PaceType = PaceType.oneMile, length: number = 200) {
+  function addBar(zone: number, duration: number = 300, cadence: number = 0, pace: PaceType = PaceType.oneMile, distance: number = 200) {
     const interval: SteadyInterval = {
-      time: durationType === 'time' ? duration : Math.floor(helpers.calculateTime(length, runningSpeed(pace))),
-      length: durationType === 'time' ? Math.floor(helpers.calculateDistance(duration, runningSpeed(pace))) : length,
+      time: durationType === 'time' ? duration : Math.floor(helpers.calculateTime(distance, runningSpeed(pace))),
+      distance: durationType === 'time' ? Math.floor(helpers.calculateDistance(duration, runningSpeed(pace))) : distance,
       power: zone,
       cadence: cadence,
       type: 'steady',
@@ -266,10 +266,10 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
     setIntervals(intervals => [...intervals, interval])
   }
 
-  function addTrapeze(zone1: number, zone2: number, duration: number = 300, pace: PaceType = PaceType.oneMile, length: number = 1000, cadence: number = 0) {
+  function addTrapeze(zone1: number, zone2: number, duration: number = 300, pace: PaceType = PaceType.oneMile, distance: number = 1000, cadence: number = 0) {
     const interval: RampInterval = {
-      time: durationType === 'time' ? duration : Math.floor(helpers.calculateTime(length, runningSpeed(pace))),
-      length: durationType === 'time' ? Math.floor(helpers.calculateDistance(duration, runningSpeed(pace))) : length,
+      time: durationType === 'time' ? duration : Math.floor(helpers.calculateTime(distance, runningSpeed(pace))),
+      distance: durationType === 'time' ? Math.floor(helpers.calculateDistance(duration, runningSpeed(pace))) : distance,
       startPower: zone1,
       endPower: zone2,
       cadence: cadence,
@@ -290,22 +290,22 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
     setIntervals(intervals => [...intervals, interval])
   }
 
-  function addInterval(repeat: number = 3, onDuration: number = 30, offDuration: number = 120, onPower: number = 1, offPower: number = 0.5, cadence: number = 0, restingCadence: number = 0, pace: PaceType = PaceType.oneMile, onLength: number = 200, offLength: number = 200) {
+  function addInterval(repeat: number = 3, onDuration: number = 30, offDuration: number = 120, onPower: number = 1, offPower: number = 0.5, cadence: number = 0, restingCadence: number = 0, pace: PaceType = PaceType.oneMile, onDistance: number = 200, offDistance: number = 200) {
     const interval: RepetitionInterval = {
-      time: durationType === 'time' ? (onDuration + offDuration) * repeat : Math.floor(helpers.calculateTime((onLength + offLength) * repeat, runningSpeed(pace))),
-      length: durationType === 'time' ? Math.floor(helpers.calculateDistance((onDuration + offDuration) * repeat, runningSpeed(pace))) : (onLength + offLength) * repeat,
+      time: durationType === 'time' ? (onDuration + offDuration) * repeat : Math.floor(helpers.calculateTime((onDistance + offDistance) * repeat, runningSpeed(pace))),
+      distance: durationType === 'time' ? Math.floor(helpers.calculateDistance((onDuration + offDuration) * repeat, runningSpeed(pace))) : (onDistance + offDistance) * repeat,
       id: uuidv4(),
       type: 'repetition',
       cadence: cadence,
       restingCadence: restingCadence,
       repeat: repeat,
-      onDuration: durationType === 'time' ? onDuration : Math.floor(helpers.calculateTime(onLength / onPower, runningSpeed(pace))),
-      offDuration: durationType === 'time' ? offDuration : Math.floor(helpers.calculateTime(offLength / offPower, runningSpeed(pace))),
+      onDuration: durationType === 'time' ? onDuration : Math.floor(helpers.calculateTime(onDistance / onPower, runningSpeed(pace))),
+      offDuration: durationType === 'time' ? offDuration : Math.floor(helpers.calculateTime(offDistance / offPower, runningSpeed(pace))),
       onPower: onPower,
       offPower: offPower,
       pace: pace,
-      onLength: durationType === 'time' ? Math.floor(helpers.calculateDistance(onDuration / onPower, runningSpeed(pace))) : onLength,
-      offLength: durationType === 'time' ? Math.floor(helpers.calculateDistance(offDuration / offPower, runningSpeed(pace))) : offLength,
+      onDistance: durationType === 'time' ? Math.floor(helpers.calculateDistance(onDuration / onPower, runningSpeed(pace))) : onDistance,
+      offDistance: durationType === 'time' ? Math.floor(helpers.calculateDistance(offDuration / offPower, runningSpeed(pace))) : offDistance,
     };
     setIntervals(intervals => [...intervals, interval])
   }
@@ -347,13 +347,13 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
     const element = updatedArray[index]
     if (element && element.type === 'steady' && durationType === 'time') {
       element.time = element.time + 5
-      element.length = helpers.calculateDistance(element.time, runningSpeed(element.pace)) / (element.power || 1)
+      element.distance = helpers.calculateDistance(element.time, runningSpeed(element.pace)) / (element.power || 1)
       setIntervals(updatedArray)
     }
 
     if (element && element.type === 'steady' && durationType === 'distance') {
-      element.length = (element.length || 0) + 200
-      element.time = helpers.calculateTime(element.length, runningSpeed(element.pace)) / (element.power || 1)
+      element.distance = (element.distance || 0) + 200
+      element.time = helpers.calculateTime(element.distance, runningSpeed(element.pace)) / (element.power || 1)
       setIntervals(updatedArray)
     }
   }
@@ -365,13 +365,13 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
     const element = updatedArray[index]
     if (element && element.type === 'steady' && element.time > 5 && durationType === 'time') {
       element.time = element.time - 5
-      element.length = helpers.calculateDistance(element.time, runningSpeed(element.pace)) / (element.power || 1)
+      element.distance = helpers.calculateDistance(element.time, runningSpeed(element.pace)) / (element.power || 1)
       setIntervals(updatedArray)
     }
 
-    if (element && element.type === 'steady' && (element.length || 0) > 200 && durationType === 'distance') {
-      element.length = (element.length || 0) - 200
-      element.time = helpers.calculateTime(element.length, runningSpeed(element.pace)) / (element.power || 1)
+    if (element && element.type === 'steady' && (element.distance || 0) > 200 && durationType === 'distance') {
+      element.distance = (element.distance || 0) - 200
+      element.time = helpers.calculateTime(element.distance, runningSpeed(element.pace)) / (element.power || 1)
       setIntervals(updatedArray)
     }
   }
@@ -385,9 +385,9 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
       element.power = parseFloat((element.power + 1 / ftp).toFixed(3))
 
       if (durationType === 'time') {
-        element.length = helpers.calculateDistance(element.time, runningSpeed(element.pace)) / element.power
+        element.distance = helpers.calculateDistance(element.time, runningSpeed(element.pace)) / element.power
       } else {
-        element.time = helpers.calculateTime(element.length || 0, runningSpeed(element.pace)) / element.power
+        element.time = helpers.calculateTime(element.distance || 0, runningSpeed(element.pace)) / element.power
       }
 
       setIntervals(updatedArray)
@@ -403,9 +403,9 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
       element.power = parseFloat((element.power - 1 / ftp).toFixed(3))
 
       if (durationType === 'time') {
-        element.length = helpers.calculateDistance(element.time, runningSpeed(element.pace)) / element.power
+        element.distance = helpers.calculateDistance(element.time, runningSpeed(element.pace)) / element.power
       } else {
-        element.time = helpers.calculateTime(element.length || 0, runningSpeed(element.pace)) / element.power
+        element.time = helpers.calculateTime(element.distance || 0, runningSpeed(element.pace)) / element.power
       }
 
       setIntervals(updatedArray)
@@ -416,10 +416,10 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
     const index = intervals.findIndex(interval => interval.id === id)
     const element = [...intervals][index]
 
-    if (element.type === 'steady') addBar(element.power || 80, element.time, element.cadence, element.pace, element.length)
+    if (element.type === 'steady') addBar(element.power || 80, element.time, element.cadence, element.pace, element.distance)
     if (element.type === 'free') addFreeRide(element.time, element.cadence)
-    if (element.type === 'ramp') addTrapeze(element.startPower || 80, element.endPower || 160, element.time, element.pace || 0, element.length, element.cadence)
-    if (element.type === 'repetition') addInterval(element.repeat, element.onDuration, element.offDuration, element.onPower, element.offPower, element.cadence, element.restingCadence, element.pace, element.onLength, element.offLength)
+    if (element.type === 'ramp') addTrapeze(element.startPower || 80, element.endPower || 160, element.time, element.pace || 0, element.distance, element.cadence)
+    if (element.type === 'repetition') addInterval(element.repeat, element.onDuration, element.offDuration, element.onPower, element.offPower, element.cadence, element.restingCadence, element.pace, element.onDistance, element.offDistance)
 
     setSelectedId(undefined)
   }
@@ -763,9 +763,9 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
       element.pace = pace
 
       if (durationType === 'time') {
-        element.length = helpers.calculateDistance(element.time, runningSpeed(element.pace)) / (element.power || 1)
+        element.distance = helpers.calculateDistance(element.time, runningSpeed(element.pace)) / (element.power || 1)
       } else {
-        element.time = helpers.calculateTime(element.length || 0, runningSpeed(element.pace)) / (element.power || 1)
+        element.time = helpers.calculateTime(element.distance || 0, runningSpeed(element.pace)) / (element.power || 1)
       }
 
       setIntervals(updatedArray)
