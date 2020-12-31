@@ -14,14 +14,14 @@ interface Instruction {
 
 const Comment = (props: { instruction: Instruction, durationType: string, width: number, onChange: Function, onDelete: Function, index: number }) => {
 
-  const timeMultiplier = 3
-  const lengthMultiplier = 10
+  const durationMultiplier = 3
+  const distanceMultiplier = 10
 
   const [text, setText] = useState(props.instruction.text)
-  const [time, setTime] = useState(props.instruction.time / timeMultiplier)
+  const [time, setTime] = useState(props.instruction.time / durationMultiplier)
 
   // FOR RUN WORKOUTS
-  const [length, setLength] = useState(props.instruction.length / lengthMultiplier)
+  const [length, setLength] = useState(props.instruction.length / distanceMultiplier)
 
   const [showInput, setShowInput] = useState(false)
 
@@ -31,8 +31,8 @@ const Comment = (props: { instruction: Instruction, durationType: string, width:
       {
         id: props.instruction.id,
         text: text,
-        time: position * timeMultiplier,
-        length: position * lengthMultiplier
+        time: position * durationMultiplier,
+        length: position * distanceMultiplier
       })
   }
 
@@ -51,8 +51,8 @@ const Comment = (props: { instruction: Instruction, durationType: string, width:
       {
         id: props.instruction.id,
         text: value,
-        time: time * timeMultiplier,
-        length: length * lengthMultiplier
+        time: time * durationMultiplier,
+        length: length * distanceMultiplier
       })
   }
 
@@ -80,9 +80,9 @@ const Comment = (props: { instruction: Instruction, durationType: string, width:
         <div className="edit">
           <FontAwesomeIcon icon={faTrashAlt} fixedWidth className="delete" style={{ color: 'gray' }} onClick={() => handleDelete()} />
           {props.durationType === 'time' ?
-            <span style={{fontSize:'13px'}} data-testid='time'>{helpers.formatDuration(time * timeMultiplier)}</span>                  
+            <span style={{fontSize:'13px'}} data-testid='time'>{helpers.formatDuration(time * durationMultiplier)}</span>                  
           :
-            <span style={{fontSize:'13px'}} data-testid='time'>{length * lengthMultiplier} m</span>                  
+            <span style={{fontSize:'13px'}} data-testid='time'>{length * distanceMultiplier} m</span>                  
           }
           
           <textarea name="comment" value={text} style={{display:'block', padding:'5px', width:'250px',backgroundColor:'white'}} onChange={e => handleInputChange(e.target.value)} />        

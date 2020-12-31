@@ -23,8 +23,8 @@ interface RampBarProps {
 
 const RampBar
  = ({interval, ...props}: RampBarProps) => {
-  const multiplier = 250
-  const timeMultiplier = 3
+  const powerMultiplier = 250
+  const durationMultiplier = 3
   const distanceMultiplier = 10
 
   const powerLabelStart = Math.round(interval.startPower * props.ftp)
@@ -39,11 +39,11 @@ const RampBar
   }
 
   // RUN WORKOUTS ON DISTANCE - BIKE WORKOUTS ON TIME
-  const [width, setWidth] = useState(props.durationType === 'time' ? Math.round((interval.duration) / timeMultiplier / 3 ) : ((interval.distance) / distanceMultiplier / 3))
+  const [width, setWidth] = useState(props.durationType === 'time' ? Math.round((interval.duration) / durationMultiplier / 3 ) : ((interval.distance) / distanceMultiplier / 3))
 
-  const [height1, setHeight1] = useState(interval.startPower * multiplier)
-  const [height2, setHeight2] = useState(((interval.endPower + interval.startPower) * multiplier) / 2)
-  const [height3, setHeight3] = useState(interval.endPower * multiplier)
+  const [height1, setHeight1] = useState(interval.startPower * powerMultiplier)
+  const [height2, setHeight2] = useState(((interval.endPower + interval.startPower) * powerMultiplier) / 2)
+  const [height3, setHeight3] = useState(interval.endPower * powerMultiplier)
 
   const trapezeHeight = height3 > height1 ? height3 : height1
   const trapezeTop = height3 > height1 ? (height3 - height1) : (height1 - height3)
@@ -71,24 +71,24 @@ const RampBar
   }
 
   const handleResize1 = (dHeight: number) => {
-    const duration = props.durationType === 'time' ? helpers.floor(width * timeMultiplier * 3, 5) : Math.floor(helpers.calculateTime(interval.distance, props.speed) * 1 / avgPower)
-    const distance = props.durationType === 'time' ? Math.floor(helpers.calculateDistance(width * timeMultiplier, props.speed) * 1 / avgPower) : helpers.floor(width * distanceMultiplier * 3, 200)
+    const duration = props.durationType === 'time' ? helpers.floor(width * durationMultiplier * 3, 5) : Math.floor(helpers.calculateTime(interval.distance, props.speed) * 1 / avgPower)
+    const distance = props.durationType === 'time' ? Math.floor(helpers.calculateDistance(width * durationMultiplier, props.speed) * 1 / avgPower) : helpers.floor(width * distanceMultiplier * 3, 200)
 
-    props.onChange({ ...interval, duration, distance, startPower: (height1 + dHeight) / multiplier, endPower: height3 / multiplier })
+    props.onChange({ ...interval, duration, distance, startPower: (height1 + dHeight) / powerMultiplier, endPower: height3 / powerMultiplier })
   }
   const handleResize2 = (dHeight: number) => {    
-    const duration = props.durationType === 'time' ? helpers.floor(width * timeMultiplier * 3, 5) : Math.floor(helpers.calculateTime(interval.distance, props.speed) * 1 / avgPower)
-    const distance = props.durationType === 'time' ? Math.floor(helpers.calculateDistance(width * timeMultiplier, props.speed) * 1 / avgPower) : helpers.floor(width * distanceMultiplier * 3, 200)
+    const duration = props.durationType === 'time' ? helpers.floor(width * durationMultiplier * 3, 5) : Math.floor(helpers.calculateTime(interval.distance, props.speed) * 1 / avgPower)
+    const distance = props.durationType === 'time' ? Math.floor(helpers.calculateDistance(width * durationMultiplier, props.speed) * 1 / avgPower) : helpers.floor(width * distanceMultiplier * 3, 200)
 
-    props.onChange({ ...interval, duration, distance, startPower: (height1 + dHeight) / multiplier, endPower: (height3 + dHeight) / multiplier })
+    props.onChange({ ...interval, duration, distance, startPower: (height1 + dHeight) / powerMultiplier, endPower: (height3 + dHeight) / powerMultiplier })
   }
   const handleResize3 = (dWidth: number, dHeight: number) => {    
     const newWidth = width + (dWidth / 3)    
 
-    const distance = props.durationType === 'time' ? Math.floor(helpers.calculateDistance(newWidth * timeMultiplier, props.speed) * 1 / avgPower) : helpers.floor(newWidth * distanceMultiplier * 3, 200)
-    const duration = props.durationType === 'time' ? helpers.floor(newWidth * timeMultiplier * 3, 5) : Math.floor(helpers.calculateTime(interval.distance, props.speed) * 1 / avgPower)
+    const distance = props.durationType === 'time' ? Math.floor(helpers.calculateDistance(newWidth * durationMultiplier, props.speed) * 1 / avgPower) : helpers.floor(newWidth * distanceMultiplier * 3, 200)
+    const duration = props.durationType === 'time' ? helpers.floor(newWidth * durationMultiplier * 3, 5) : Math.floor(helpers.calculateTime(interval.distance, props.speed) * 1 / avgPower)
 
-    props.onChange({ ...interval, duration, distance, startPower: height1 / multiplier, endPower: (height3 + dHeight) / multiplier })
+    props.onChange({ ...interval, duration, distance, startPower: height1 / powerMultiplier, endPower: (height3 + dHeight) / powerMultiplier })
   }
 
   function calculateColors(start: number, end: number) {
@@ -139,8 +139,8 @@ const RampBar
             height: height1,
           }}
           minWidth={3}
-          minHeight={multiplier * Zones.Z1.min}
-          maxHeight={multiplier * Zones.Z6.max}
+          minHeight={powerMultiplier * Zones.Z1.min}
+          maxHeight={powerMultiplier * Zones.Z6.max}
           enable={{ top: true, right: true }}
           grid={[1, 1]}
           onResizeStop={(e, direction, ref, d) => handleResizeStop1(d.height)}
@@ -154,8 +154,8 @@ const RampBar
             height: height2,
           }}
           minWidth={3}
-          minHeight={multiplier * Zones.Z1.min}
-          maxHeight={multiplier * Zones.Z6.max}
+          minHeight={powerMultiplier * Zones.Z1.min}
+          maxHeight={powerMultiplier * Zones.Z6.max}
           enable={{ top: true }}
           grid={[1, 1]}
           onResizeStop={(e, direction, ref, d) => handleResizeStop2(d.height)}
@@ -169,8 +169,8 @@ const RampBar
             height: height3,
           }}
           minWidth={3}
-          minHeight={multiplier * Zones.Z1.min}
-          maxHeight={multiplier * Zones.Z6.max}
+          minHeight={powerMultiplier * Zones.Z1.min}
+          maxHeight={powerMultiplier * Zones.Z6.max}
           enable={{ top: true, right: true }}
           grid={[1, 1]}
           onResizeStop={(e, direction, ref, d) => handleResizeStop3(d.width, d.height)}

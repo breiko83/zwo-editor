@@ -20,8 +20,8 @@ interface SteadyBarProps {
 }
 
 const SteadyBar = ({interval, ...props}: SteadyBarProps) => {
-  const multiplier = 250
-  const timeMultiplier = 3
+  const powerMultiplier = 250
+  const durationMultiplier = 3
   const distanceMultiplier = 10
 
   const powerLabel = Math.round(interval.power * props.ftp)
@@ -38,9 +38,9 @@ const SteadyBar = ({interval, ...props}: SteadyBarProps) => {
   const style = { backgroundColor: helpers.zoneColor(interval.power) }
 
   // RUN WORKOUTS ON DISTANCE - BIKE WORKOUTS ON TIME
-  const [width, setWidth] = useState(props.durationType === 'time' ? (interval.duration / timeMultiplier) : (interval.distance / distanceMultiplier))  
+  const [width, setWidth] = useState(props.durationType === 'time' ? (interval.duration / durationMultiplier) : (interval.distance / distanceMultiplier))  
 
-  const [height, setHeight] = useState(interval.power * multiplier)  
+  const [height, setHeight] = useState(interval.power * powerMultiplier)  
 
   const [showLabel, setShowLabel] = useState(false)
 
@@ -58,17 +58,17 @@ const SteadyBar = ({interval, ...props}: SteadyBarProps) => {
     setWidth(width + dWidth)
     setHeight(height + dHeight)
 
-    const distance = props.durationType === 'time' ? Math.floor(helpers.calculateDistance((width + dWidth) * timeMultiplier * interval.power, props.speed)) : helpers.floor((width + dWidth) * distanceMultiplier, 200)
-    const duration = props.durationType === 'time' ? helpers.floor((width + dWidth) * timeMultiplier, 5) : Math.floor(helpers.calculateTime(interval.distance, props.speed) * 1 / interval.power)
+    const distance = props.durationType === 'time' ? Math.floor(helpers.calculateDistance((width + dWidth) * durationMultiplier * interval.power, props.speed)) : helpers.floor((width + dWidth) * distanceMultiplier, 200)
+    const duration = props.durationType === 'time' ? helpers.floor((width + dWidth) * durationMultiplier, 5) : Math.floor(helpers.calculateTime(interval.distance, props.speed) * 1 / interval.power)
 
-    props.onChange({ ...interval, duration, distance, power: (height + dHeight) / multiplier })
+    props.onChange({ ...interval, duration, distance, power: (height + dHeight) / powerMultiplier })
   }
 
   const handleResize = (dWidth: number, dHeight: number) => {       
-    const distance = props.durationType === 'time' ? Math.floor(helpers.calculateDistance((width + dWidth) * timeMultiplier * interval.power, props.speed)) : helpers.floor((width + dWidth) * distanceMultiplier, 200)
-    const duration = props.durationType === 'time' ? helpers.floor((width + dWidth) * timeMultiplier, 5) : Math.floor(helpers.calculateTime(interval.distance, props.speed) * 1 / interval.power)
+    const distance = props.durationType === 'time' ? Math.floor(helpers.calculateDistance((width + dWidth) * durationMultiplier * interval.power, props.speed)) : helpers.floor((width + dWidth) * distanceMultiplier, 200)
+    const duration = props.durationType === 'time' ? helpers.floor((width + dWidth) * durationMultiplier, 5) : Math.floor(helpers.calculateTime(interval.distance, props.speed) * 1 / interval.power)
 
-    props.onChange({ ...interval, duration, distance, power: (height + dHeight) / multiplier })
+    props.onChange({ ...interval, duration, distance, power: (height + dHeight) / powerMultiplier })
   }
 
   return (
@@ -94,12 +94,12 @@ const SteadyBar = ({interval, ...props}: SteadyBarProps) => {
       <Resizable
         className='bar'
         size={{
-          width: props.durationType === 'time' ? (interval.duration) / timeMultiplier : (interval.distance) / distanceMultiplier,
-          height: interval.power * multiplier,
+          width: props.durationType === 'time' ? (interval.duration) / durationMultiplier : (interval.distance) / distanceMultiplier,
+          height: interval.power * powerMultiplier,
         }}
         minWidth={3}
-        minHeight={multiplier * Zones.Z1.min}
-        maxHeight={multiplier * Zones.Z6.max}
+        minHeight={powerMultiplier * Zones.Z1.min}
+        maxHeight={powerMultiplier * Zones.Z6.max}
         enable={{ top: true, right: true }}
         grid={[1, 1]}
         onResizeStop={(e, direction, ref, d) => handleResizeStop(d.width, d.height)}
