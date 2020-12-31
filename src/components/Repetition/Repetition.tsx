@@ -19,7 +19,7 @@ interface RepetitionProps {
 const Repetition = ({interval, ...props}: RepetitionProps) => {
   const { v4: uuidv4 } = require('uuid');
 
-  const [intervals, setIntervals] = useState<Array<SteadyInterval>>([])
+  const [subIntervals, setSubIntervals] = useState<Array<SteadyInterval>>([])
   const [nIntervals, setNIntervals] = useState(props.repeat)
 
   const [onDuration, setOnDuration] = useState(interval.onDuration)
@@ -29,10 +29,10 @@ const Repetition = ({interval, ...props}: RepetitionProps) => {
   const [offLength, setOffLength] = useState(interval.offLength)
 
   useEffect(() => {
-    const intervals: SteadyInterval[] = []
+    const subIntervals: SteadyInterval[] = []
 
     for (var i = 0; i < nIntervals; i++) {
-      intervals.push(
+      subIntervals.push(
         {
           time: onDuration,
           length: onLength,
@@ -43,7 +43,7 @@ const Repetition = ({interval, ...props}: RepetitionProps) => {
           id: uuidv4()
         })
 
-      intervals.push(
+      subIntervals.push(
         {
           time: offDuration,
           length: offLength,
@@ -54,13 +54,13 @@ const Repetition = ({interval, ...props}: RepetitionProps) => {
           id: uuidv4()
         })
     }
-    setIntervals(intervals)
+    setSubIntervals(subIntervals)
 
     // eslint-disable-next-line
   }, [nIntervals])
 
   function handleOnChange(values: SteadyInterval) {
-    const index = intervals.findIndex(interval => interval.id === values.id)
+    const index = subIntervals.findIndex(sub => sub.id === values.id)
     
     if (index % 2 === 1) {
       setOffDuration(values.time)
@@ -70,33 +70,33 @@ const Repetition = ({interval, ...props}: RepetitionProps) => {
       setOnLength(values.length)
     }
 
-    for (var i = 0; i < intervals.length; i++) {
+    for (var i = 0; i < subIntervals.length; i++) {
       if (index % 2 === i % 2) {       
-        intervals[i].time = values.time
-        intervals[i].power = values.power
-        intervals[i].length = values.length
-        intervals[i].cadence = values.cadence        
+        subIntervals[i].time = values.time
+        subIntervals[i].power = values.power
+        subIntervals[i].length = values.length
+        subIntervals[i].cadence = values.cadence        
       }      
     }
     var time = 0
-    intervals.map((interval) => time += interval.time)
+    subIntervals.map((sub) => time += sub.time)
 
     var length = 0
-    intervals.map((interval) => length += (interval.length))
+    subIntervals.map((sub) => length += (sub.length))
 
     props.onChange({
       ...interval,
       time: time,
       length: length,
-      cadence: intervals[0].cadence,
-      restingCadence: intervals[1].cadence,
+      cadence: subIntervals[0].cadence,
+      restingCadence: subIntervals[1].cadence,
       repeat: nIntervals,
-      onDuration: intervals[0].time,
-      offDuration: intervals[1].time,
-      onPower: intervals[0].power,
-      offPower: intervals[1].power,
-      onLength: intervals[0].length,
-      offLength: intervals[1].length
+      onDuration: subIntervals[0].time,
+      offDuration: subIntervals[1].time,
+      onPower: subIntervals[0].power,
+      offPower: subIntervals[1].power,
+      onLength: subIntervals[0].length,
+      offLength: subIntervals[1].length
     })
 
   }
@@ -104,7 +104,7 @@ const Repetition = ({interval, ...props}: RepetitionProps) => {
   function handleAddInterval() {
     setNIntervals(nIntervals + 1)
     var time = 0
-    intervals.map((interval) => time += interval.time)
+    subIntervals.map((sub) => time += sub.time)
 
     props.onChange({
       ...interval,
@@ -118,7 +118,7 @@ const Repetition = ({interval, ...props}: RepetitionProps) => {
     if (nIntervals > 1) {
       setNIntervals(nIntervals - 1)
       var time = 0
-      intervals.map((interval) => time += interval.time)
+      subIntervals.map((sub) => time += sub.time)
 
       props.onChange({
         ...interval,
@@ -150,7 +150,7 @@ const Repetition = ({interval, ...props}: RepetitionProps) => {
     <div>
       <div className='buttons'><button onClick={handleAddInterval}>+</button><button onClick={handleRemoveInterval}>-</button></div>
       <div className='intervals'>
-        {intervals.map((interval, index) => renderBar(interval, index === 0 || index === intervals.length - 1))}
+        {subIntervals.map((sub, index) => renderBar(sub, index === 0 || index === subIntervals.length - 1))}
       </div>      
     </div>
   )
