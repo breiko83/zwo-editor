@@ -129,10 +129,10 @@ const Repetition = ({interval, ...props}: RepetitionProps) => {
     }
   }
 
-  const renderBar = (interval: SteadyInterval, withLabel: boolean) => (
+  const renderBar = (subInterval: SteadyInterval, withLabel: boolean) => (
     <Bar
-      key={interval.id}
-      interval={interval}
+      key={subInterval.id}
+      interval={subInterval}
       ftp={props.ftp}
       weight={props.weight}
       sportType={props.sportType}
