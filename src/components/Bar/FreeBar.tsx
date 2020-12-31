@@ -5,6 +5,7 @@ import 'moment-duration-format'
 import Label from '../Label/Label'
 import helpers from '../helpers'
 import { FreeInterval } from '../Interval'
+import { durationMultiplier } from './multipliers'
 
 interface FreeBarProps {
   interval: FreeInterval;
@@ -15,8 +16,6 @@ interface FreeBarProps {
 }
 
 const FreeBar = ({interval, ...props}: FreeBarProps) => {
-  const durationMultiplier = 3
-
   const [width, setWidth] = useState(interval.duration / durationMultiplier)
 
   const [showLabel, setShowLabel] = useState(false)

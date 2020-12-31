@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faComment, faTrashAlt } from '@fortawesome/free-solid-svg-icons'
 import './Comment.css'
 import helpers from '../helpers'
+import { distanceMultiplier, durationMultiplier } from '../Bar/multipliers'
 
 interface Instruction {
   id: string,
@@ -13,10 +14,6 @@ interface Instruction {
 }
 
 const Comment = (props: { instruction: Instruction, durationType: string, width: number, onChange: Function, onDelete: Function, index: number }) => {
-
-  const durationMultiplier = 3
-  const distanceMultiplier = 10
-
   const [text, setText] = useState(props.instruction.text)
   const [time, setTime] = useState(props.instruction.time / durationMultiplier)
 

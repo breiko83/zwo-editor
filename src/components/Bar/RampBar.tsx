@@ -5,6 +5,7 @@ import { Resizable } from 're-resizable'
 import Label from '../Label/Label'
 import helpers from '../helpers'
 import { RampInterval } from '../Interval'
+import { distanceMultiplier, durationMultiplier, powerMultiplier } from './multipliers'
 
 interface IDictionary {
   [index: string]: number;
@@ -21,12 +22,7 @@ interface RampBarProps {
   selected: boolean;
 }
 
-const RampBar
- = ({interval, ...props}: RampBarProps) => {
-  const powerMultiplier = 250
-  const durationMultiplier = 3
-  const distanceMultiplier = 10
-
+const RampBar = ({interval, ...props}: RampBarProps) => {
   const powerLabelStart = Math.round(interval.startPower * props.ftp)
   const powerLabelEnd = Math.round(interval.endPower * props.ftp)
 

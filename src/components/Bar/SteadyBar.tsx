@@ -5,6 +5,7 @@ import { Resizable } from 're-resizable'
 import Label from '../Label/Label'
 import helpers from '../helpers'
 import { SteadyInterval } from '../Interval'
+import { distanceMultiplier, durationMultiplier, powerMultiplier } from './multipliers'
 
 interface SteadyBarProps {
   interval: SteadyInterval;
@@ -20,10 +21,6 @@ interface SteadyBarProps {
 }
 
 const SteadyBar = ({interval, ...props}: SteadyBarProps) => {
-  const powerMultiplier = 250
-  const durationMultiplier = 3
-  const distanceMultiplier = 10
-
   const powerLabel = Math.round(interval.power * props.ftp)
 
   // DISTANCE
