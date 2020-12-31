@@ -144,7 +144,7 @@ const RampBar
       onClick={() => props.onClick(interval.id)}
     >
       {(props.selected || showLabel) &&
-        <Label duration={durationLabel} powerStart={powerLabelStart} powerEnd={powerLabelEnd} ftp={props.ftp} sportType={props.sportType} pace={interval.pace} distance={interval.length} cadence={interval.cadence} setCadence={(cadence: number)=> handleCadenceChange(cadence)} />
+        <Label duration={durationLabel} powerStart={powerLabelStart} powerEnd={powerLabelEnd} ftp={props.ftp} sportType={props.sportType} pace={interval.pace} distance={interval.length} cadence={interval.cadence} onCadenceChange={(cadence: number)=> handleCadenceChange(cadence)} />
       }
       <div className='trapeze' onClick={() => props.onClick(interval.id)}>
         <Resizable
