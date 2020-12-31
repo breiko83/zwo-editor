@@ -165,16 +165,11 @@ const Repetition = (props: RepetitionProps) => {
   const renderBar = (interval: SteadyInterval, withLabel: boolean) => (
     <Bar
       key={interval.id}
-      id={interval.id}
-      time={interval.time}
-      length={interval.length}
-      power={interval.power || 100}
-      cadence={interval.cadence}
+      interval={interval}
       ftp={props.ftp}
       weight={props.weight}
       sportType={props.sportType}
       durationType={props.durationType}
-      pace={props.pace}
       speed={props.speed}
       onChange={(id: string, value: any) => handleOnChange(id, value)} // Change any to Interface Interval?
       onClick={() => props.handleIntervalClick(props.id)}

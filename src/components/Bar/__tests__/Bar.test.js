@@ -18,11 +18,7 @@ test('Bar renders correctly', () => {
 
   const component = renderer.create(
     <Bar
-      key={interval.id}
-      id={interval.id}
-      time={interval.time}
-      length={interval.length}
-      power={interval.power}
+      interval={interval}
       ftp={ftp}
       onChange={() => { }}
       onClick={() => { }}

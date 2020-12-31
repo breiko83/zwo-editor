@@ -727,16 +727,11 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
         return (
           <Bar
             key={interval.id}
-            id={interval.id}
-            time={interval.time}
-            length={interval.length}
-            power={interval.power}
-            cadence={interval.cadence}
+            interval={interval}
             ftp={ftp}
             weight={weight}
             sportType={sportType}
             durationType={durationType}
-            pace={interval.pace}
             speed={runningSpeed(interval.pace)}
             onChange={(id: string, value: any) => handleOnChange(id, value)} // Change any to Interface Interval?
             onClick={(id: string) => handleOnClick(id)}
