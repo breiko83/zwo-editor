@@ -205,14 +205,13 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
 
   }
 
-  function handleOnChange(values: Interval) {
-    const index = intervals.findIndex(interval => interval.id === values.id)
+  function updateInterval(updatedInterval: Interval) {
+    const index = intervals.findIndex(interval => interval.id === updatedInterval.id)
 
     const updatedArray = [...intervals]
-    updatedArray[index] = values
+    updatedArray[index] = updatedInterval
 
     setIntervals(updatedArray)
-
   }
 
   function toggleSelection(id: string) {
@@ -730,7 +729,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
             sportType={sportType}
             durationType={durationType}
             speed={runningSpeed(interval.pace)}
-            onChange={handleOnChange}
+            onChange={updateInterval}
             onClick={toggleSelection}
             selected={interval.id === selectedId}
             showLabel={true}
@@ -745,7 +744,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
             sportType={sportType}
             durationType={durationType}
             speed={runningSpeed(interval.pace)}
-            onChange={handleOnChange}
+            onChange={updateInterval}
             onClick={toggleSelection}
             selected={interval.id === selectedId}
           />
@@ -756,7 +755,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
             key={interval.id}
             interval={interval}
             sportType={sportType}
-            onChange={handleOnChange}
+            onChange={updateInterval}
             onClick={toggleSelection}
             selected={interval.id === selectedId}
           />
@@ -771,7 +770,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
             sportType={sportType}
             durationType={durationType}
             speed={runningSpeed(interval.pace)}
-            onChange={handleOnChange}
+            onChange={updateInterval}
             onClick={toggleSelection}
             selected={interval.id === selectedId}
           />
