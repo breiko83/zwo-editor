@@ -207,8 +207,8 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
 
   }
 
-  function handleOnChange(id: string, values: Interval) {
-    const index = intervals.findIndex(interval => interval.id === id)
+  function handleOnChange(values: Interval) {
+    const index = intervals.findIndex(interval => interval.id === values.id)
 
     const updatedArray = [...intervals]
     updatedArray[index] = values

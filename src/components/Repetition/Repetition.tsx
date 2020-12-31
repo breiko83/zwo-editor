@@ -11,7 +11,7 @@ interface RepetitionProps {
   speed: number;
   sportType: string;
   durationType: string;
-  onChange: (id: string, interval: RepetitionInterval) => void;
+  onChange: (interval: RepetitionInterval) => void;
   onClick: (id: string) => void;
   selected: boolean;
 }
@@ -59,9 +59,8 @@ const Repetition = ({interval, ...props}: RepetitionProps) => {
     // eslint-disable-next-line
   }, [nIntervals])
 
-  function handleOnChange(id: string, values: SteadyInterval) {
-
-    const index = intervals.findIndex(interval => interval.id === id)
+  function handleOnChange(values: SteadyInterval) {
+    const index = intervals.findIndex(interval => interval.id === values.id)
     
     if (index % 2 === 1) {
       setOffDuration(values.time)
@@ -85,7 +84,7 @@ const Repetition = ({interval, ...props}: RepetitionProps) => {
     var length = 0
     intervals.map((interval) => length += (interval.length))
 
-    props.onChange(interval.id, {
+    props.onChange({
       time: time,
       length: length,
       id: interval.id,
@@ -109,7 +108,7 @@ const Repetition = ({interval, ...props}: RepetitionProps) => {
     var time = 0
     intervals.map((interval) => time += interval.time)
 
-    props.onChange(interval.id, {
+    props.onChange({
       time: ((interval.onDuration) + (interval.offDuration)) * (nIntervals + 1),
       length: ((interval.onLength) + (interval.offLength)) * (nIntervals + 1),
       id: interval.id,
@@ -133,7 +132,7 @@ const Repetition = ({interval, ...props}: RepetitionProps) => {
       var time = 0
       intervals.map((interval) => time += interval.time)
 
-      props.onChange(interval.id, {
+      props.onChange({
         time: ((interval.onDuration) + (interval.offDuration)) * (nIntervals - 1),
         length: ((interval.onLength) + (interval.offLength)) * (nIntervals - 1),
         id: interval.id,
@@ -161,7 +160,7 @@ const Repetition = ({interval, ...props}: RepetitionProps) => {
       sportType={props.sportType}
       durationType={props.durationType}
       speed={props.speed}
-      onChange={(id: string, value: any) => handleOnChange(id, value)} // Change any to Interface Interval?
+      onChange={handleOnChange}
       onClick={() => props.onClick(interval.id)}
       selected={props.selected}
       showLabel={withLabel}

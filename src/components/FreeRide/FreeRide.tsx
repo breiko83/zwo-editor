@@ -10,7 +10,7 @@ import { FreeInterval } from '../Interval'
 interface FreeRideProps {
   interval: FreeInterval;
   sportType: string;
-  onChange: (id: string, interval: FreeInterval) => void;
+  onChange: (interval: FreeInterval) => void;
   onClick: (id: string) => void;
   selected: boolean;
 }
@@ -26,7 +26,7 @@ const FreeRide = ({interval, ...props}: FreeRideProps) => {
   const [showLabel, setShowLabel] = useState(false)
 
   const handleCadenceChange = (cadence: number) => {
-    props.onChange(interval.id, { time: interval.time, type: 'free', cadence: cadence, id: interval.id })
+    props.onChange({ time: interval.time, type: 'free', cadence: cadence, id: interval.id })
   }
 
   // standard height
@@ -34,11 +34,11 @@ const FreeRide = ({interval, ...props}: FreeRideProps) => {
 
   const handleResizeStop = (dWidth: number) => {
     setWidth(width + dWidth)
-    props.onChange(interval.id, { time: helpers.round((width + dWidth) * timeMultiplier, 5), type: 'free', cadence: interval.cadence, id: interval.id })
+    props.onChange({ time: helpers.round((width + dWidth) * timeMultiplier, 5), type: 'free', cadence: interval.cadence, id: interval.id })
   }
 
   const handleResize = (dWidth: number) => {
-    props.onChange(interval.id, { time: helpers.round((width + dWidth) * timeMultiplier, 5), type: 'free', cadence: interval.cadence, id: interval.id })
+    props.onChange({ time: helpers.round((width + dWidth) * timeMultiplier, 5), type: 'free', cadence: interval.cadence, id: interval.id })
   }
 
   function getDuration(seconds: number) {

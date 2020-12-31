@@ -16,7 +16,7 @@ interface TrapezeProps {
   sportType: string;
   durationType: string;
   speed: number;
-  onChange: (id: string, interval: RampInterval) => void;
+  onChange: (interval: RampInterval) => void;
   onClick: (id: string) => void;
   selected: boolean;
 }
@@ -36,7 +36,7 @@ const Trapeze = ({interval, ...props}: TrapezeProps) => {
   const [showLabel, setShowLabel] = useState(false)
 
   const handleCadenceChange = (cadence: number) => {
-    props.onChange(interval.id, { time: interval.time, length: interval.length, startPower: interval.startPower, endPower: interval.endPower, cadence: cadence, type: 'ramp', pace: interval.pace, id: interval.id })
+    props.onChange({ time: interval.time, length: interval.length, startPower: interval.startPower, endPower: interval.endPower, cadence: cadence, type: 'ramp', pace: interval.pace, id: interval.id })
   }
 
   // RUN WORKOUTS ON DISTANCE - BIKE WORKOUTS ON TIME
@@ -76,14 +76,14 @@ const Trapeze = ({interval, ...props}: TrapezeProps) => {
     const time = props.durationType === 'time' ? helpers.round(width * timeMultiplier * 3, 5) : helpers.round(helpers.calculateTime(interval.length, props.speed) * 1 / avgPower, 1)
     const length = props.durationType === 'time' ? helpers.round(helpers.calculateDistance(width * timeMultiplier, props.speed) * 1 / avgPower ,1) : helpers.round(width * lengthMultiplier * 3, 200)
 
-    props.onChange(interval.id, { time: time, length: length, startPower: (height1 + dHeight) / multiplier, endPower: height3 / multiplier, cadence: interval.cadence, type: 'ramp', pace: interval.pace, id: interval.id })
+    props.onChange({ time: time, length: length, startPower: (height1 + dHeight) / multiplier, endPower: height3 / multiplier, cadence: interval.cadence, type: 'ramp', pace: interval.pace, id: interval.id })
   }
   const handleResize2 = (dHeight: number) => {    
     
     const time = props.durationType === 'time' ? helpers.round(width * timeMultiplier * 3, 5) : helpers.round(helpers.calculateTime(interval.length, props.speed) * 1 / avgPower, 1)
     const length = props.durationType === 'time' ? helpers.round(helpers.calculateDistance(width * timeMultiplier, props.speed) * 1 / avgPower ,1) : helpers.round(width * lengthMultiplier * 3, 200)
 
-    props.onChange(interval.id, { time: time, length: length, startPower: (height1 + dHeight) / multiplier, endPower: (height3 + dHeight) / multiplier, cadence: interval.cadence, type: 'ramp', pace: interval.pace, id: interval.id })
+    props.onChange({ time: time, length: length, startPower: (height1 + dHeight) / multiplier, endPower: (height3 + dHeight) / multiplier, cadence: interval.cadence, type: 'ramp', pace: interval.pace, id: interval.id })
   }
   const handleResize3 = (dWidth: number, dHeight: number) => {    
     const newWidth = width + (dWidth / 3)    
@@ -92,7 +92,7 @@ const Trapeze = ({interval, ...props}: TrapezeProps) => {
     const time = props.durationType === 'time' ? helpers.round(newWidth * timeMultiplier * 3, 5) : helpers.round(helpers.calculateTime(interval.length, props.speed) * 1 / avgPower, 1)
 
 
-    props.onChange(interval.id, { time: time, length: length, startPower: height1 / multiplier, endPower: (height3 + dHeight) / multiplier, cadence: interval.cadence, type: 'ramp', pace: interval.pace, id: interval.id })
+    props.onChange({ time: time, length: length, startPower: height1 / multiplier, endPower: (height3 + dHeight) / multiplier, cadence: interval.cadence, type: 'ramp', pace: interval.pace, id: interval.id })
   }
 
   function calculateColors(start: number, end: number) {

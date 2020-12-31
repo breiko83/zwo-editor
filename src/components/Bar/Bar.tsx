@@ -13,7 +13,7 @@ interface BarProps {
   sportType: string;
   durationType: string;
   speed: number;
-  onChange: (id: string, interval: SteadyInterval) => void;
+  onChange: (interval: SteadyInterval) => void;
   onClick: (id: string) => void;
   selected: boolean;
   showLabel: boolean;
@@ -55,7 +55,7 @@ const Bar = ({interval, ...props}: BarProps) => {
   },[props.selected])  
 
   const handleCadenceChange = (cadence: number) => {
-    props.onChange(interval.id, { time: interval.time, length: interval.length, power: interval.power, cadence: cadence, type: 'steady', pace: interval.pace, id: interval.id })
+    props.onChange({ time: interval.time, length: interval.length, power: interval.power, cadence: cadence, type: 'steady', pace: interval.pace, id: interval.id })
   }
 
   const handleResizeStop = (dWidth: number, dHeight: number) => {
@@ -66,7 +66,7 @@ const Bar = ({interval, ...props}: BarProps) => {
     const time = props.durationType === 'time' ? helpers.round((width + dWidth) * timeMultiplier, 5) : helpers.round(helpers.calculateTime(interval.length, props.speed) * 1 / interval.power,1)
     
 
-    props.onChange(interval.id, { time: time, length: length, power: (height + dHeight) / multiplier, cadence: interval.cadence, type: 'steady', pace: interval.pace, id: interval.id })
+    props.onChange({ time: time, length: length, power: (height + dHeight) / multiplier, cadence: interval.cadence, type: 'steady', pace: interval.pace, id: interval.id })
   }
 
   const handleResize = (dWidth: number, dHeight: number) => {       
@@ -74,7 +74,7 @@ const Bar = ({interval, ...props}: BarProps) => {
     const length = props.durationType === 'time' ? helpers.round(helpers.calculateDistance((width + dWidth) * timeMultiplier * interval.power, props.speed),1) : helpers.round((width + dWidth) * lengthMultiplier, 200)
     const time = props.durationType === 'time' ? helpers.round((width + dWidth) * timeMultiplier, 5) : helpers.round(helpers.calculateTime(interval.length, props.speed) * 1 / interval.power,1)
 
-    props.onChange(interval.id, { time: time, length: length, power: (height + dHeight) / multiplier, cadence: interval.cadence, type: 'steady', pace: interval.pace, id: interval.id })
+    props.onChange({ time: time, length: length, power: (height + dHeight) / multiplier, cadence: interval.cadence, type: 'steady', pace: interval.pace, id: interval.id })
   }
 
   function zwiftStyle(zone: number) {
