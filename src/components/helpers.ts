@@ -1,5 +1,6 @@
 import moment from 'moment'
 import 'moment-duration-format'
+import { Colors, Zones } from './Constants'
 import { DurationType } from './Editor/Editor'
 import { Interval } from './Interval'
 
@@ -122,7 +123,29 @@ const helpers = {
   },
   floor: function (x: number, roundTo: number): number {
     return Math.floor(x / roundTo) * roundTo
-  }
+  },
+
+  zwiftStyle(zone: number) {
+    if (zone >= 0 && zone < Zones.Z1.max) {
+      // Z1 gray
+      return { backgroundColor: Colors.GRAY }
+    } else if (zone >= Zones.Z2.min && zone < Zones.Z2.max) {
+      // Z2 blue
+      return { backgroundColor: Colors.BLUE }
+    } else if (zone >= Zones.Z3.min && zone < Zones.Z3.max) {
+      // Z3 green
+      return { backgroundColor: Colors.GREEN }
+    } else if (zone >= Zones.Z4.min && zone < Zones.Z4.max) {
+      // Z4 yellow
+      return { backgroundColor: Colors.YELLOW }
+    } else if (zone >= Zones.Z5.min && zone < Zones.Z5.max) {
+      // Z5 orange      
+      return { backgroundColor: Colors.ORANGE }
+    } else {
+      // Z6 red
+      return { backgroundColor: Colors.RED }
+    }
+  },
 }
 
 export default helpers;
