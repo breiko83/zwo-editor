@@ -215,8 +215,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
 
   }
 
-  function handleOnClick(id: string) {
-
+  function toggleSelection(id: string) {
     if (id === selectedId) {
       setSelectedId(undefined)
     } else {
@@ -732,7 +731,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
             durationType={durationType}
             speed={runningSpeed(interval.pace)}
             onChange={handleOnChange}
-            onClick={handleOnClick}
+            onClick={toggleSelection}
             selected={interval.id === selectedId}
             showLabel={true}
           />
@@ -747,7 +746,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
             durationType={durationType}
             speed={runningSpeed(interval.pace)}
             onChange={handleOnChange}
-            onClick={handleOnClick}
+            onClick={toggleSelection}
             selected={interval.id === selectedId}
           />
         );
@@ -758,7 +757,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
             interval={interval}
             sportType={sportType}
             onChange={handleOnChange}
-            onClick={handleOnClick}
+            onClick={toggleSelection}
             selected={interval.id === selectedId}
           />
         );
@@ -773,7 +772,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
             durationType={durationType}
             speed={runningSpeed(interval.pace)}
             onChange={handleOnChange}
-            onClick={handleOnClick}
+            onClick={toggleSelection}
             selected={interval.id === selectedId}
           />
         );
