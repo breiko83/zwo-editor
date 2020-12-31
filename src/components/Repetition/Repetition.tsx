@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import { v4 as uuidv4 } from 'uuid'
 import Bar from '../Bar/Bar'
 import './Repetition.css'
 import { RepetitionInterval, SteadyInterval } from '../Interval'
@@ -16,8 +17,6 @@ interface RepetitionProps {
 }
 
 const Repetition = ({interval, ...props}: RepetitionProps) => {
-  const { v4: uuidv4 } = require('uuid');
-
   const [subIntervals, setSubIntervals] = useState<Array<SteadyInterval>>([])
   const [repeat, setRepeat] = useState(interval.repeat)
 

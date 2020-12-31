@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
+import { v4 as uuidv4 } from 'uuid'
 import './Editor.css'
 import { Colors, Zones } from '../Constants'
 import Bar from '../Bar/Bar'
@@ -73,9 +74,6 @@ export type SportType = "bike" | "run";
 export type DurationType = "time" | "distance";
 
 const Editor = ({ match }: RouteComponentProps<TParams>) => {
-
-  const { v4: uuidv4 } = require('uuid');
-
   const S3_URL = 'https://zwift-workout.s3-eu-west-1.amazonaws.com'
 
   const [id, setId] = useState(match.params.id === "new" ? (localStorage.getItem('id') || generateId()) : match.params.id)
