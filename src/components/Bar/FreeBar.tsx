@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
 import './FreeBar.css'
 import { Resizable } from 're-resizable'
-import moment from 'moment'
 import 'moment-duration-format'
 import Label from '../Label/Label'
 import helpers from '../helpers'
@@ -18,8 +17,7 @@ interface FreeBarProps {
 const FreeBar = ({interval, ...props}: FreeBarProps) => {
   const timeMultiplier = 3
 
-  const durationLabel = getDuration(interval.time)
-
+  const durationLabel = helpers.formatDuration(interval.time)
 
   const [width, setWidth] = useState(interval.time / timeMultiplier)
 
@@ -39,11 +37,6 @@ const FreeBar = ({interval, ...props}: FreeBarProps) => {
 
   const handleResize = (dWidth: number) => {
     props.onChange({ ...interval, time: helpers.floor((width + dWidth) * timeMultiplier, 5) })
-  }
-
-  function getDuration(seconds: number) {
-    // 1 pixel equals 5 seconds 
-    return moment.duration(seconds, "seconds").format("mm:ss", { trim: false })
   }
 
   return (
