@@ -1,5 +1,5 @@
 import React from 'react';
-import Trapeze from '../../Trapeze/Trapeze';
+import Trapeze from '../Trapeze';
 import { Zones } from '../../Constants'
 import renderer from 'react-test-renderer';
 import { v4 as uuidv4 } from 'uuid'

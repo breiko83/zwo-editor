@@ -1,5 +1,5 @@
 import React from 'react';
-import FreeRide from '../../FreeRide/FreeRide';
+import FreeRide from '../FreeRide';
 import renderer from 'react-test-renderer';
 import '@testing-library/jest-dom/extend-expect'
 import { v4 as uuidv4 } from 'uuid'

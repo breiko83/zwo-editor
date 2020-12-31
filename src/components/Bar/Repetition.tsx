@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { v4 as uuidv4 } from 'uuid'
-import Bar from '../Bar/Bar'
+import Bar from './Bar'
 import './Repetition.css'
 import { RepetitionInterval, SteadyInterval } from '../Interval'
 
