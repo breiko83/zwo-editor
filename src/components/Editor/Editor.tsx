@@ -255,8 +255,8 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
 
   function addBar(zone: number, duration: number = 300, cadence: number = 0, pace: PaceType = PaceType.oneMile, length: number = 200) {
     const interval: SteadyInterval = {
-      time: durationType === 'time' ? duration : helpers.round(helpers.calculateTime(length, runningSpeed(pace)), 1),
-      length: durationType === 'time' ? helpers.round(helpers.calculateDistance(duration, runningSpeed(pace)), 1) : length,
+      time: durationType === 'time' ? duration : Math.floor(helpers.calculateTime(length, runningSpeed(pace))),
+      length: durationType === 'time' ? Math.floor(helpers.calculateDistance(duration, runningSpeed(pace))) : length,
       power: zone,
       cadence: cadence,
       type: 'steady',
@@ -268,8 +268,8 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
 
   function addTrapeze(zone1: number, zone2: number, duration: number = 300, pace: PaceType = PaceType.oneMile, length: number = 1000, cadence: number = 0) {
     const interval: RampInterval = {
-      time: durationType === 'time' ? duration : helpers.round(helpers.calculateTime(length, runningSpeed(pace)), 1),
-      length: durationType === 'time' ? helpers.round(helpers.calculateDistance(duration, runningSpeed(pace)), 1) : length,
+      time: durationType === 'time' ? duration : Math.floor(helpers.calculateTime(length, runningSpeed(pace))),
+      length: durationType === 'time' ? Math.floor(helpers.calculateDistance(duration, runningSpeed(pace))) : length,
       startPower: zone1,
       endPower: zone2,
       cadence: cadence,
@@ -292,20 +292,20 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
 
   function addInterval(repeat: number = 3, onDuration: number = 30, offDuration: number = 120, onPower: number = 1, offPower: number = 0.5, cadence: number = 0, restingCadence: number = 0, pace: PaceType = PaceType.oneMile, onLength: number = 200, offLength: number = 200) {
     const interval: RepetitionInterval = {
-      time: durationType === 'time' ? (onDuration + offDuration) * repeat : helpers.round(helpers.calculateTime((onLength + offLength) * repeat, runningSpeed(pace)), 1),
-      length: durationType === 'time' ? helpers.round(helpers.calculateDistance((onDuration + offDuration) * repeat, runningSpeed(pace)), 1) : (onLength + offLength) * repeat,
+      time: durationType === 'time' ? (onDuration + offDuration) * repeat : Math.floor(helpers.calculateTime((onLength + offLength) * repeat, runningSpeed(pace))),
+      length: durationType === 'time' ? Math.floor(helpers.calculateDistance((onDuration + offDuration) * repeat, runningSpeed(pace))) : (onLength + offLength) * repeat,
       id: uuidv4(),
       type: 'repetition',
       cadence: cadence,
       restingCadence: restingCadence,
       repeat: repeat,
-      onDuration: durationType === 'time' ? onDuration : helpers.round(helpers.calculateTime(onLength / onPower, runningSpeed(pace)), 1),
-      offDuration: durationType === 'time' ? offDuration : helpers.round(helpers.calculateTime(offLength / offPower, runningSpeed(pace)), 1),
+      onDuration: durationType === 'time' ? onDuration : Math.floor(helpers.calculateTime(onLength / onPower, runningSpeed(pace))),
+      offDuration: durationType === 'time' ? offDuration : Math.floor(helpers.calculateTime(offLength / offPower, runningSpeed(pace))),
       onPower: onPower,
       offPower: offPower,
       pace: pace,
-      onLength: durationType === 'time' ? helpers.round(helpers.calculateDistance(onDuration / onPower, runningSpeed(pace)), 1) : onLength,
-      offLength: durationType === 'time' ? helpers.round(helpers.calculateDistance(offDuration / offPower, runningSpeed(pace)), 1) : offLength,
+      onLength: durationType === 'time' ? Math.floor(helpers.calculateDistance(onDuration / onPower, runningSpeed(pace))) : onLength,
+      offLength: durationType === 'time' ? Math.floor(helpers.calculateDistance(offDuration / offPower, runningSpeed(pace))) : offLength,
     };
     setIntervals(intervals => [...intervals, interval])
   }

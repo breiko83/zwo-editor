@@ -73,22 +73,22 @@ const RampBar
   }
 
   const handleResize1 = (dHeight: number) => {
-    const time = props.durationType === 'time' ? helpers.round(width * timeMultiplier * 3, 5) : helpers.round(helpers.calculateTime(interval.length, props.speed) * 1 / avgPower, 1)
-    const length = props.durationType === 'time' ? helpers.round(helpers.calculateDistance(width * timeMultiplier, props.speed) * 1 / avgPower ,1) : helpers.round(width * lengthMultiplier * 3, 200)
+    const time = props.durationType === 'time' ? helpers.round(width * timeMultiplier * 3, 5) : Math.floor(helpers.calculateTime(interval.length, props.speed) * 1 / avgPower)
+    const length = props.durationType === 'time' ? Math.floor(helpers.calculateDistance(width * timeMultiplier, props.speed) * 1 / avgPower) : helpers.round(width * lengthMultiplier * 3, 200)
 
     props.onChange({ ...interval, time, length, startPower: (height1 + dHeight) / multiplier, endPower: height3 / multiplier })
   }
   const handleResize2 = (dHeight: number) => {    
-    const time = props.durationType === 'time' ? helpers.round(width * timeMultiplier * 3, 5) : helpers.round(helpers.calculateTime(interval.length, props.speed) * 1 / avgPower, 1)
-    const length = props.durationType === 'time' ? helpers.round(helpers.calculateDistance(width * timeMultiplier, props.speed) * 1 / avgPower ,1) : helpers.round(width * lengthMultiplier * 3, 200)
+    const time = props.durationType === 'time' ? helpers.round(width * timeMultiplier * 3, 5) : Math.floor(helpers.calculateTime(interval.length, props.speed) * 1 / avgPower)
+    const length = props.durationType === 'time' ? Math.floor(helpers.calculateDistance(width * timeMultiplier, props.speed) * 1 / avgPower) : helpers.round(width * lengthMultiplier * 3, 200)
 
     props.onChange({ ...interval, time, length, startPower: (height1 + dHeight) / multiplier, endPower: (height3 + dHeight) / multiplier })
   }
   const handleResize3 = (dWidth: number, dHeight: number) => {    
     const newWidth = width + (dWidth / 3)    
 
-    const length = props.durationType === 'time' ? helpers.round(helpers.calculateDistance(newWidth * timeMultiplier, props.speed) * 1 / avgPower ,1) : helpers.round(newWidth * lengthMultiplier * 3, 200)
-    const time = props.durationType === 'time' ? helpers.round(newWidth * timeMultiplier * 3, 5) : helpers.round(helpers.calculateTime(interval.length, props.speed) * 1 / avgPower, 1)
+    const length = props.durationType === 'time' ? Math.floor(helpers.calculateDistance(newWidth * timeMultiplier, props.speed) * 1 / avgPower) : helpers.round(newWidth * lengthMultiplier * 3, 200)
+    const time = props.durationType === 'time' ? helpers.round(newWidth * timeMultiplier * 3, 5) : Math.floor(helpers.calculateTime(interval.length, props.speed) * 1 / avgPower)
 
     props.onChange({ ...interval, time, length, startPower: height1 / multiplier, endPower: (height3 + dHeight) / multiplier })
   }
