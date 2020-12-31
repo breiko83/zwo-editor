@@ -412,9 +412,9 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
     const index = intervals.findIndex(interval => interval.id === id)
     const interval = intervals[index]
 
-    if (interval.type === 'steady') addSteadyInterval(interval.power || 80, interval.duration, interval.cadence, interval.pace, interval.distance)
+    if (interval.type === 'steady') addSteadyInterval(interval.power, interval.duration, interval.cadence, interval.pace, interval.distance)
     if (interval.type === 'free') addFreeInterval(interval.duration, interval.cadence)
-    if (interval.type === 'ramp') addRampInterval(interval.startPower || 80, interval.endPower || 160, interval.duration, interval.pace || 0, interval.distance, interval.cadence)
+    if (interval.type === 'ramp') addRampInterval(interval.startPower, interval.endPower, interval.duration, interval.pace, interval.distance, interval.cadence)
     if (interval.type === 'repetition') addRepetitionInterval(interval.repeat, interval.onDuration, interval.offDuration, interval.onPower, interval.offPower, interval.cadence, interval.restingCadence, interval.pace, interval.onDistance, interval.offDistance)
 
     setSelectedId(undefined)
