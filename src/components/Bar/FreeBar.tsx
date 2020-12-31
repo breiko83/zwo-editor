@@ -17,8 +17,6 @@ interface FreeBarProps {
 const FreeBar = ({interval, ...props}: FreeBarProps) => {
   const timeMultiplier = 3
 
-  const durationLabel = helpers.formatDuration(interval.time)
-
   const [width, setWidth] = useState(interval.time / timeMultiplier)
 
   const [showLabel, setShowLabel] = useState(false)
@@ -48,7 +46,7 @@ const FreeBar = ({interval, ...props}: FreeBarProps) => {
     >
       {(props.selected || showLabel) &&
         <Label
-          duration={durationLabel}
+          time={interval.time}
           sportType={props.sportType}
           cadence={interval.cadence}
           onCadenceChange={(cadence: number)=> handleCadenceChange(cadence)}

@@ -26,9 +26,6 @@ const SteadyBar = ({interval, ...props}: SteadyBarProps) => {
 
   const powerLabel = Math.round(interval.power * props.ftp)
 
-  // TIME
-  const duration = helpers.formatDuration(interval.time)
-
   // DISTANCE
   const distance = interval.length
   
@@ -108,7 +105,7 @@ const SteadyBar = ({interval, ...props}: SteadyBarProps) => {
       {((selected || showLabel) && (props.showLabel)) &&
         <Label
           sportType={props.sportType}
-          duration={duration}
+          time={interval.time}
           power={powerLabel}
           weight={props.weight}
           ftp={props.ftp}

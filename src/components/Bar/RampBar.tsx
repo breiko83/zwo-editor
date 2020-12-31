@@ -32,8 +32,6 @@ const RampBar
 
   const avgPower = Math.abs((interval.endPower + interval.startPower) / 2)
 
-  const durationLabel = helpers.formatDuration(interval.time)
-
   const [showLabel, setShowLabel] = useState(false)
 
   const handleCadenceChange = (cadence: number) => {
@@ -145,7 +143,7 @@ const RampBar
     >
       {(props.selected || showLabel) &&
         <Label
-          duration={durationLabel}
+          time={interval.time}
           powerStart={powerLabelStart}
           powerEnd={powerLabelEnd}
           ftp={props.ftp}
