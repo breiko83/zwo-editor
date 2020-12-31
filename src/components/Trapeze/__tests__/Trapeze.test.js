@@ -19,12 +19,7 @@ test('Trapeze renders correctly', () => {
 
   const component = renderer.create(
     <Trapeze
-      key={interval.id}
-      id={interval.id}
-      time={interval.time}
-      length={interval.length}
-      startPower={interval.startPower}
-      endPower={interval.endPower}
+      interval={interval}
       ftp={ftp}
       onChange={() => { }}
       onClick={() => { }}
