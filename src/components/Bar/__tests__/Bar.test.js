@@ -8,6 +8,7 @@ import '@testing-library/jest-dom/extend-expect'
 test('Bar renders correctly', () => {
   const interval = {
     time: 50,
+    length: 0,
     power: Zones.Z3.min,
     type: 'steady',
     id: uuidv4()
@@ -20,6 +21,7 @@ test('Bar renders correctly', () => {
       key={interval.id}
       id={interval.id}
       time={interval.time}
+      length={interval.length}
       power={interval.power}
       ftp={ftp}
       onChange={() => { }}

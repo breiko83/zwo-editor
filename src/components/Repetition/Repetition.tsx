@@ -7,10 +7,10 @@ import { SteadyInterval } from '../Interval'
 interface RepetitionProps {
   id: string;
   repeat: number;
-  onDuration?: number;
-  offDuration?: number;
-  onLength?: number;
-  offLength?: number;
+  onDuration: number;
+  offDuration: number;
+  onLength: number;
+  offLength: number;
   onPower: number;
   offPower: number;
   cadence: number;
@@ -18,7 +18,7 @@ interface RepetitionProps {
   ftp: number;
   weight: number;
   pace: PaceType;
-  speed?: number;
+  speed: number;
   sportType: string;
   durationType: string;
   handleIntervalChange: Function;
@@ -44,8 +44,8 @@ const Repetition = (props: RepetitionProps) => {
     for (var i = 0; i < nIntervals; i++) {
       intervals.push(
         {
-          time: onDuration || 0,
-          length: onLength || 0,
+          time: onDuration,
+          length: onLength,
           power: props.onPower,
           cadence: props.cadence,
           type: 'steady',
@@ -55,8 +55,8 @@ const Repetition = (props: RepetitionProps) => {
 
       intervals.push(
         {
-          time: offDuration || 0,
-          length: offLength || 0,
+          time: offDuration,
+          length: offLength,
           power: props.offPower,
           cadence: props.restingCadence,
           type: 'steady',
@@ -93,7 +93,7 @@ const Repetition = (props: RepetitionProps) => {
     intervals.map((interval) => time += interval.time)
 
     var length = 0
-    intervals.map((interval) => length += (interval.length || 0))
+    intervals.map((interval) => length += (interval.length))
 
     props.handleIntervalChange(props.id, {
       time: time,
@@ -120,8 +120,8 @@ const Repetition = (props: RepetitionProps) => {
     intervals.map((interval) => time += interval.time)
 
     props.handleIntervalChange(props.id, {
-      time: ((props.onDuration || 0) + (props.offDuration || 0)) * (nIntervals + 1),
-      length: ((props.onLength || 0) + (props.offLength || 0)) * (nIntervals + 1),
+      time: ((props.onDuration) + (props.offDuration)) * (nIntervals + 1),
+      length: ((props.onLength) + (props.offLength)) * (nIntervals + 1),
       id: props.id,
       type: 'repetition',
       cadence: props.cadence,
@@ -144,8 +144,8 @@ const Repetition = (props: RepetitionProps) => {
       intervals.map((interval) => time += interval.time)
 
       props.handleIntervalChange(props.id, {
-        time: ((props.onDuration || 0) + (props.offDuration || 0)) * (nIntervals - 1),
-        length: ((props.onLength || 0) + (props.offLength || 0)) * (nIntervals - 1),
+        time: ((props.onDuration) + (props.offDuration)) * (nIntervals - 1),
+        length: ((props.onLength) + (props.offLength)) * (nIntervals - 1),
         id: props.id,
         type: 'repetition',
         cadence: props.cadence,

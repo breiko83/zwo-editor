@@ -8,8 +8,8 @@ import { PaceType } from '../Editor/PaceSelector'
 
 interface BarProps {
   id: string;
-  time?: number;
-  length?:number;
+  time: number;
+  length:number;
   power: number;
   cadence: number;
   ftp: number;
@@ -17,7 +17,7 @@ interface BarProps {
   pace: PaceType;
   sportType: string;
   durationType: string;
-  speed?: number;
+  speed: number;
   onChange: Function;
   onClick: Function;
   selected: boolean;
@@ -32,7 +32,7 @@ const Bar = (props: BarProps) => {
   const powerLabel = Math.round(props.power * props.ftp)
 
   // TIME
-  const duration = helpers.formatDuration(props.time || 0)
+  const duration = helpers.formatDuration(props.time)
 
   // DISTANCE
   const distance = props.length
@@ -47,7 +47,7 @@ const Bar = (props: BarProps) => {
   const style = zwiftStyle(props.power)
 
   // RUN WORKOUTS ON DISTANCE - BIKE WORKOUTS ON TIME
-  const [width, setWidth] = useState(props.durationType === 'time' ? ((props.time || 0) / timeMultiplier) : ((props.length || 0) / lengthMultiplier))  
+  const [width, setWidth] = useState(props.durationType === 'time' ? (props.time / timeMultiplier) : (props.length / lengthMultiplier))  
 
   const [height, setHeight] = useState(props.power * multiplier)  
 
@@ -67,8 +67,8 @@ const Bar = (props: BarProps) => {
     setWidth(width + dWidth)
     setHeight(height + dHeight)
 
-    const length = props.durationType === 'time' ? helpers.round(helpers.calculateDistance((width + dWidth) * timeMultiplier * props.power, props.speed || 0),1) : helpers.round((width + dWidth) * lengthMultiplier, 200)
-    const time = props.durationType === 'time' ? helpers.round((width + dWidth) * timeMultiplier, 5) : helpers.round(helpers.calculateTime(props.length || 0, props.speed || 0) * 1 / props.power,1)
+    const length = props.durationType === 'time' ? helpers.round(helpers.calculateDistance((width + dWidth) * timeMultiplier * props.power, props.speed),1) : helpers.round((width + dWidth) * lengthMultiplier, 200)
+    const time = props.durationType === 'time' ? helpers.round((width + dWidth) * timeMultiplier, 5) : helpers.round(helpers.calculateTime(props.length, props.speed) * 1 / props.power,1)
     
 
     props.onChange(props.id, { time: time, length: length, power: (height + dHeight) / multiplier, cadence: props.cadence, type: 'steady', pace: props.pace, id: props.id })
@@ -76,8 +76,8 @@ const Bar = (props: BarProps) => {
 
   const handleResize = (dWidth: number, dHeight: number) => {       
       
-    const length = props.durationType === 'time' ? helpers.round(helpers.calculateDistance((width + dWidth) * timeMultiplier * props.power, props.speed || 0),1) : helpers.round((width + dWidth) * lengthMultiplier, 200)
-    const time = props.durationType === 'time' ? helpers.round((width + dWidth) * timeMultiplier, 5) : helpers.round(helpers.calculateTime(props.length || 0, props.speed || 0) * 1 / props.power,1)
+    const length = props.durationType === 'time' ? helpers.round(helpers.calculateDistance((width + dWidth) * timeMultiplier * props.power, props.speed),1) : helpers.round((width + dWidth) * lengthMultiplier, 200)
+    const time = props.durationType === 'time' ? helpers.round((width + dWidth) * timeMultiplier, 5) : helpers.round(helpers.calculateTime(props.length, props.speed) * 1 / props.power,1)
 
     props.onChange(props.id, { time: time, length: length, power: (height + dHeight) / multiplier, cadence: props.cadence, type: 'steady', pace: props.pace, id: props.id })
   }
@@ -118,7 +118,7 @@ const Bar = (props: BarProps) => {
       <Resizable
         className='bar'
         size={{
-          width: props.durationType === 'time' ? (props.time || 0) / timeMultiplier : (props.length || 0) / lengthMultiplier,
+          width: props.durationType === 'time' ? (props.time) / timeMultiplier : (props.length) / lengthMultiplier,
           height: props.power * multiplier,
         }}
         minWidth={3}

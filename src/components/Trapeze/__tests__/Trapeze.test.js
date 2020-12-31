@@ -8,6 +8,7 @@ import '@testing-library/jest-dom/extend-expect'
 test('Trapeze renders correctly', () => {
   const interval = {
     time: 50,
+    length: 0,
     startPower: Zones.Z2.min,
     endPower: Zones.Z4.min,
     type: 'steady',
@@ -21,6 +22,7 @@ test('Trapeze renders correctly', () => {
       key={interval.id}
       id={interval.id}
       time={interval.time}
+      length={interval.length}
       startPower={interval.startPower}
       endPower={interval.endPower}
       ftp={ftp}
