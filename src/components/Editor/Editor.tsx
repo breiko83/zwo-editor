@@ -253,11 +253,11 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
     }
   }
 
-  function addBar(zone: number, duration: number = 300, cadence: number = 0, pace: PaceType = PaceType.oneMile, distance: number = 200) {
+  function addBar(power: number, duration: number = 300, cadence: number = 0, pace: PaceType = PaceType.oneMile, distance: number = 200) {
     const interval: SteadyInterval = {
       duration: durationType === 'time' ? duration : Math.floor(helpers.calculateTime(distance, runningSpeed(pace))),
       distance: durationType === 'time' ? Math.floor(helpers.calculateDistance(duration, runningSpeed(pace))) : distance,
-      power: zone,
+      power: power,
       cadence: cadence,
       type: 'steady',
       id: uuidv4(),
@@ -266,12 +266,12 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
     setIntervals(intervals => [...intervals, interval])
   }
 
-  function addTrapeze(zone1: number, zone2: number, duration: number = 300, pace: PaceType = PaceType.oneMile, distance: number = 1000, cadence: number = 0) {
+  function addTrapeze(startPower: number, endPower: number, duration: number = 300, pace: PaceType = PaceType.oneMile, distance: number = 1000, cadence: number = 0) {
     const interval: RampInterval = {
       duration: durationType === 'time' ? duration : Math.floor(helpers.calculateTime(distance, runningSpeed(pace))),
       distance: durationType === 'time' ? Math.floor(helpers.calculateDistance(duration, runningSpeed(pace))) : distance,
-      startPower: zone1,
-      endPower: zone2,
+      startPower: startPower,
+      endPower: endPower,
       cadence: cadence,
       pace: pace,
       type: 'ramp',
