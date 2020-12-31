@@ -1,23 +1,13 @@
 import React, { useEffect, useState } from 'react'
 import Bar from '../Bar/Bar'
 import './Repetition.css'
-import { PaceType } from '../Editor/PaceSelector'
-import { SteadyInterval } from '../Interval'
+import { RepetitionInterval, SteadyInterval } from '../Interval'
 
 interface RepetitionProps {
-  id: string;
+  interval: RepetitionInterval;
   repeat: number;
-  onDuration: number;
-  offDuration: number;
-  onLength: number;
-  offLength: number;
-  onPower: number;
-  offPower: number;
-  cadence: number;
-  restingCadence: number;
   ftp: number;
   weight: number;
-  pace: PaceType;
   speed: number;
   sportType: string;
   durationType: string;
@@ -26,17 +16,17 @@ interface RepetitionProps {
   selected: boolean;
 }
 
-const Repetition = (props: RepetitionProps) => {
+const Repetition = ({interval, ...props}: RepetitionProps) => {
   const { v4: uuidv4 } = require('uuid');
 
   const [intervals, setIntervals] = useState<Array<SteadyInterval>>([])
   const [nIntervals, setNIntervals] = useState(props.repeat)
 
-  const [onDuration, setOnDuration] = useState(props.onDuration)
-  const [offDuration, setOffDuration] = useState(props.offDuration)
+  const [onDuration, setOnDuration] = useState(interval.onDuration)
+  const [offDuration, setOffDuration] = useState(interval.offDuration)
 
-  const [onLength, setOnLength] = useState(props.onLength)
-  const [offLength, setOffLength] = useState(props.offLength)
+  const [onLength, setOnLength] = useState(interval.onLength)
+  const [offLength, setOffLength] = useState(interval.offLength)
 
   useEffect(() => {
     const intervals: SteadyInterval[] = []
@@ -46,10 +36,10 @@ const Repetition = (props: RepetitionProps) => {
         {
           time: onDuration,
           length: onLength,
-          power: props.onPower,
-          cadence: props.cadence,
+          power: interval.onPower,
+          cadence: interval.cadence,
           type: 'steady',
-          pace: props.pace,
+          pace: interval.pace,
           id: uuidv4()
         })
 
@@ -57,10 +47,10 @@ const Repetition = (props: RepetitionProps) => {
         {
           time: offDuration,
           length: offLength,
-          power: props.offPower,
-          cadence: props.restingCadence,
+          power: interval.offPower,
+          cadence: interval.restingCadence,
           type: 'steady',
-          pace: props.pace,
+          pace: interval.pace,
           id: uuidv4()
         })
     }
@@ -95,14 +85,14 @@ const Repetition = (props: RepetitionProps) => {
     var length = 0
     intervals.map((interval) => length += (interval.length))
 
-    props.handleIntervalChange(props.id, {
+    props.handleIntervalChange(interval.id, {
       time: time,
       length: length,
-      id: props.id,
+      id: interval.id,
       type: 'repetition',
       cadence: intervals[0].cadence,
       restingCadence: intervals[1].cadence,
-      pace: props.pace,
+      pace: interval.pace,
       repeat: nIntervals,
       onDuration: intervals[0].time,
       offDuration: intervals[1].time,
@@ -119,21 +109,21 @@ const Repetition = (props: RepetitionProps) => {
     var time = 0
     intervals.map((interval) => time += interval.time)
 
-    props.handleIntervalChange(props.id, {
-      time: ((props.onDuration) + (props.offDuration)) * (nIntervals + 1),
-      length: ((props.onLength) + (props.offLength)) * (nIntervals + 1),
-      id: props.id,
+    props.handleIntervalChange(interval.id, {
+      time: ((interval.onDuration) + (interval.offDuration)) * (nIntervals + 1),
+      length: ((interval.onLength) + (interval.offLength)) * (nIntervals + 1),
+      id: interval.id,
       type: 'repetition',
-      cadence: props.cadence,
-      restingCadence: props.restingCadence,
-      pace: props.pace,
+      cadence: interval.cadence,
+      restingCadence: interval.restingCadence,
+      pace: interval.pace,
       repeat: props.repeat + 1,
-      onDuration: props.onDuration,
-      offDuration: props.offDuration,
-      onPower: props.onPower,
-      offPower: props.offPower,
-      onLength: props.onLength,
-      offLength: props.offLength
+      onDuration: interval.onDuration,
+      offDuration: interval.offDuration,
+      onPower: interval.onPower,
+      offPower: interval.offPower,
+      onLength: interval.onLength,
+      offLength: interval.offLength
     })
   }
 
@@ -143,21 +133,21 @@ const Repetition = (props: RepetitionProps) => {
       var time = 0
       intervals.map((interval) => time += interval.time)
 
-      props.handleIntervalChange(props.id, {
-        time: ((props.onDuration) + (props.offDuration)) * (nIntervals - 1),
-        length: ((props.onLength) + (props.offLength)) * (nIntervals - 1),
-        id: props.id,
+      props.handleIntervalChange(interval.id, {
+        time: ((interval.onDuration) + (interval.offDuration)) * (nIntervals - 1),
+        length: ((interval.onLength) + (interval.offLength)) * (nIntervals - 1),
+        id: interval.id,
         type: 'repetition',
-        cadence: props.cadence,
-        restingCadence: props.restingCadence,
-        pace: props.pace,
+        cadence: interval.cadence,
+        restingCadence: interval.restingCadence,
+        pace: interval.pace,
         repeat: props.repeat - 1,
-        onDuration: props.onDuration,
-        offDuration: props.offDuration,
-        onPower: props.onPower,
-        offPower: props.offPower,
-        onLength: props.onLength,
-        offLength: props.offLength
+        onDuration: interval.onDuration,
+        offDuration: interval.offDuration,
+        onPower: interval.onPower,
+        offPower: interval.offPower,
+        onLength: interval.onLength,
+        offLength: interval.offLength
       })
     }
   }
@@ -172,7 +162,7 @@ const Repetition = (props: RepetitionProps) => {
       durationType={props.durationType}
       speed={props.speed}
       onChange={(id: string, value: any) => handleOnChange(id, value)} // Change any to Interface Interval?
-      onClick={() => props.handleIntervalClick(props.id)}
+      onClick={() => props.handleIntervalClick(interval.id)}
       selected={props.selected}
       showLabel={withLabel}
     />

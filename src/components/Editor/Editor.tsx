@@ -768,21 +768,12 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
         return (
           <Repetition
             key={interval.id}
-            id={interval.id}
+            interval={interval}
             repeat={interval.repeat}
-            onDuration={interval.onDuration}
-            offDuration={interval.offDuration}
-            onPower={interval.onPower}
-            offPower={interval.offPower}
-            onLength={interval.onLength}
-            offLength={interval.offLength}
-            cadence={interval.cadence}
-            restingCadence={interval.restingCadence}
             ftp={ftp}
             weight={weight}
             sportType={sportType}
             durationType={durationType}
-            pace={interval.pace}
             speed={runningSpeed(interval.pace)}
             handleIntervalChange={(id: string, value: any) => handleOnChange(id, value)}
             handleIntervalClick={(id: string) => handleOnClick(id)}
