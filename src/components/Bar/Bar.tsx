@@ -55,7 +55,7 @@ const Bar = ({interval, ...props}: BarProps) => {
   },[props.selected])  
 
   const handleCadenceChange = (cadence: number) => {
-    props.onChange({ time: interval.time, length: interval.length, power: interval.power, cadence: cadence, type: 'steady', pace: interval.pace, id: interval.id })
+    props.onChange({ ...interval, cadence })
   }
 
   const handleResizeStop = (dWidth: number, dHeight: number) => {
@@ -64,17 +64,15 @@ const Bar = ({interval, ...props}: BarProps) => {
 
     const length = props.durationType === 'time' ? helpers.round(helpers.calculateDistance((width + dWidth) * timeMultiplier * interval.power, props.speed),1) : helpers.round((width + dWidth) * lengthMultiplier, 200)
     const time = props.durationType === 'time' ? helpers.round((width + dWidth) * timeMultiplier, 5) : helpers.round(helpers.calculateTime(interval.length, props.speed) * 1 / interval.power,1)
-    
 
-    props.onChange({ time: time, length: length, power: (height + dHeight) / multiplier, cadence: interval.cadence, type: 'steady', pace: interval.pace, id: interval.id })
+    props.onChange({ ...interval, time, length, power: (height + dHeight) / multiplier })
   }
 
   const handleResize = (dWidth: number, dHeight: number) => {       
-      
     const length = props.durationType === 'time' ? helpers.round(helpers.calculateDistance((width + dWidth) * timeMultiplier * interval.power, props.speed),1) : helpers.round((width + dWidth) * lengthMultiplier, 200)
     const time = props.durationType === 'time' ? helpers.round((width + dWidth) * timeMultiplier, 5) : helpers.round(helpers.calculateTime(interval.length, props.speed) * 1 / interval.power,1)
 
-    props.onChange({ time: time, length: length, power: (height + dHeight) / multiplier, cadence: interval.cadence, type: 'steady', pace: interval.pace, id: interval.id })
+    props.onChange({ ...interval, time, length, power: (height + dHeight) / multiplier })
   }
 
   function zwiftStyle(zone: number) {

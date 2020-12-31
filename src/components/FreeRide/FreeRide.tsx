@@ -26,7 +26,7 @@ const FreeRide = ({interval, ...props}: FreeRideProps) => {
   const [showLabel, setShowLabel] = useState(false)
 
   const handleCadenceChange = (cadence: number) => {
-    props.onChange({ time: interval.time, type: 'free', cadence: cadence, id: interval.id })
+    props.onChange({ ...interval, cadence })
   }
 
   // standard height
@@ -34,11 +34,11 @@ const FreeRide = ({interval, ...props}: FreeRideProps) => {
 
   const handleResizeStop = (dWidth: number) => {
     setWidth(width + dWidth)
-    props.onChange({ time: helpers.round((width + dWidth) * timeMultiplier, 5), type: 'free', cadence: interval.cadence, id: interval.id })
+    props.onChange({ ...interval, time: helpers.round((width + dWidth) * timeMultiplier, 5) })
   }
 
   const handleResize = (dWidth: number) => {
-    props.onChange({ time: helpers.round((width + dWidth) * timeMultiplier, 5), type: 'free', cadence: interval.cadence, id: interval.id })
+    props.onChange({ ...interval, time: helpers.round((width + dWidth) * timeMultiplier, 5) })
   }
 
   function getDuration(seconds: number) {

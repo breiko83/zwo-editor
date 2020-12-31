@@ -85,13 +85,11 @@ const Repetition = ({interval, ...props}: RepetitionProps) => {
     intervals.map((interval) => length += (interval.length))
 
     props.onChange({
+      ...interval,
       time: time,
       length: length,
-      id: interval.id,
-      type: 'repetition',
       cadence: intervals[0].cadence,
       restingCadence: intervals[1].cadence,
-      pace: interval.pace,
       repeat: nIntervals,
       onDuration: intervals[0].time,
       offDuration: intervals[1].time,
@@ -109,20 +107,10 @@ const Repetition = ({interval, ...props}: RepetitionProps) => {
     intervals.map((interval) => time += interval.time)
 
     props.onChange({
+      ...interval,
       time: ((interval.onDuration) + (interval.offDuration)) * (nIntervals + 1),
       length: ((interval.onLength) + (interval.offLength)) * (nIntervals + 1),
-      id: interval.id,
-      type: 'repetition',
-      cadence: interval.cadence,
-      restingCadence: interval.restingCadence,
-      pace: interval.pace,
       repeat: props.repeat + 1,
-      onDuration: interval.onDuration,
-      offDuration: interval.offDuration,
-      onPower: interval.onPower,
-      offPower: interval.offPower,
-      onLength: interval.onLength,
-      offLength: interval.offLength
     })
   }
 
@@ -133,20 +121,10 @@ const Repetition = ({interval, ...props}: RepetitionProps) => {
       intervals.map((interval) => time += interval.time)
 
       props.onChange({
+        ...interval,
         time: ((interval.onDuration) + (interval.offDuration)) * (nIntervals - 1),
         length: ((interval.onLength) + (interval.offLength)) * (nIntervals - 1),
-        id: interval.id,
-        type: 'repetition',
-        cadence: interval.cadence,
-        restingCadence: interval.restingCadence,
-        pace: interval.pace,
         repeat: props.repeat - 1,
-        onDuration: interval.onDuration,
-        offDuration: interval.offDuration,
-        onPower: interval.onPower,
-        offPower: interval.offPower,
-        onLength: interval.onLength,
-        offLength: interval.offLength
       })
     }
   }
