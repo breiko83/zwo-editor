@@ -32,7 +32,7 @@ const RepetitionBar = ({interval, ...props}: RepetitionBarProps) => {
     for (var i = 0; i < repeat; i++) {
       subIntervals.push(
         {
-          time: onDuration,
+          duration: onDuration,
           distance: onDistance,
           power: interval.onPower,
           cadence: interval.cadence,
@@ -43,7 +43,7 @@ const RepetitionBar = ({interval, ...props}: RepetitionBarProps) => {
 
       subIntervals.push(
         {
-          time: offDuration,
+          duration: offDuration,
           distance: offDistance,
           power: interval.offPower,
           cadence: interval.restingCadence,
@@ -61,36 +61,36 @@ const RepetitionBar = ({interval, ...props}: RepetitionBarProps) => {
     const index = subIntervals.findIndex(sub => sub.id === values.id)
     
     if (index % 2 === 1) {
-      setOffDuration(values.time)
+      setOffDuration(values.duration)
       setOffDistance(values.distance)
     }else{
-      setOnDuration(values.time)
+      setOnDuration(values.duration)
       setOnDistance(values.distance)
     }
 
     for (var i = 0; i < subIntervals.length; i++) {
       if (index % 2 === i % 2) {       
-        subIntervals[i].time = values.time
+        subIntervals[i].duration = values.duration
         subIntervals[i].power = values.power
         subIntervals[i].distance = values.distance
         subIntervals[i].cadence = values.cadence        
       }      
     }
     var time = 0
-    subIntervals.map((sub) => time += sub.time)
+    subIntervals.map((sub) => time += sub.duration)
 
     var distance = 0
     subIntervals.map((sub) => distance += (sub.distance))
 
     props.onChange({
       ...interval,
-      time: time,
+      duration: time,
       distance: distance,
       cadence: subIntervals[0].cadence,
       restingCadence: subIntervals[1].cadence,
       repeat: repeat,
-      onDuration: subIntervals[0].time,
-      offDuration: subIntervals[1].time,
+      onDuration: subIntervals[0].duration,
+      offDuration: subIntervals[1].duration,
       onPower: subIntervals[0].power,
       offPower: subIntervals[1].power,
       onDistance: subIntervals[0].distance,
@@ -102,11 +102,11 @@ const RepetitionBar = ({interval, ...props}: RepetitionBarProps) => {
   function handleAddInterval() {
     setRepeat(repeat + 1)
     var time = 0
-    subIntervals.map((sub) => time += sub.time)
+    subIntervals.map((sub) => time += sub.duration)
 
     props.onChange({
       ...interval,
-      time: ((interval.onDuration) + (interval.offDuration)) * (repeat + 1),
+      duration: ((interval.onDuration) + (interval.offDuration)) * (repeat + 1),
       distance: ((interval.onDistance) + (interval.offDistance)) * (repeat + 1),
       repeat: interval.repeat + 1,
     })
@@ -116,11 +116,11 @@ const RepetitionBar = ({interval, ...props}: RepetitionBarProps) => {
     if (repeat > 1) {
       setRepeat(repeat - 1)
       var time = 0
-      subIntervals.map((sub) => time += sub.time)
+      subIntervals.map((sub) => time += sub.duration)
 
       props.onChange({
         ...interval,
-        time: ((interval.onDuration) + (interval.offDuration)) * (repeat - 1),
+        duration: ((interval.onDuration) + (interval.offDuration)) * (repeat - 1),
         distance: ((interval.onDistance) + (interval.offDistance)) * (repeat - 1),
         repeat: interval.repeat - 1,
       })

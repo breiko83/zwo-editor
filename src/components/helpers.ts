@@ -6,32 +6,31 @@ import { Interval } from './Interval'
 
 const helpers = {
   // calculate total time
-  getWorkoutLength: function (intervals: Interval[], durationType: DurationType): number {
-
-    var length = 0
+  getWorkoutDuration: function (intervals: Interval[], durationType: DurationType): number {
+    var duration = 0
 
     intervals.map((interval) => {
       if (durationType === 'time') {
-        length += interval.time
+        duration += interval.duration
       } else {
 
         if (interval.type === 'steady') {
-          length += interval.time
+          duration += interval.duration
         }
 
         if (interval.type === 'ramp') {
-          length += interval.time
+          duration += interval.duration
         }
 
         if (interval.type === 'repetition' && interval.repeat && interval.onDuration && interval.offDuration) {
-          length += interval.repeat * interval.onDuration
-          length += interval.repeat * interval.offDuration
+          duration += interval.repeat * interval.onDuration
+          duration += interval.repeat * interval.offDuration
         }
       }
       return false;
     })
 
-    return length
+    return duration
   },
 
   getStressScore: function (intervals: Interval[], ftp: number): string {
@@ -44,13 +43,13 @@ const helpers = {
         const np = interval.power * ftp
         const iff = interval.power
 
-        tss += (interval.time * np * iff)
+        tss += (interval.duration * np * iff)
       }
       if (interval.type === 'ramp' && interval.startPower && interval.endPower) {
         const np = (interval.startPower + interval.endPower) / 2 * ftp
         const iff = (interval.startPower + interval.endPower) / 2
 
-        tss += (interval.time * np * iff)
+        tss += (interval.duration * np * iff)
       }
       if (interval.type === 'repetition' && interval.onPower && interval.offPower && interval.repeat && interval.onDuration && interval.offDuration) {
         const npOn = (interval.onPower * ftp)
@@ -118,8 +117,8 @@ const helpers = {
   calculateTime: function (distance: number, speed: number): number {
     return distance / speed
   },
-  calculateDistance: function (time: number, speed: number): number {
-    return time * speed
+  calculateDistance: function (duration: number, speed: number): number {
+    return duration * speed
   },
   floor: function (x: number, roundTo: number): number {
     return Math.floor(x / roundTo) * roundTo

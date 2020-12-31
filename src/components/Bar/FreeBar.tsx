@@ -17,7 +17,7 @@ interface FreeBarProps {
 const FreeBar = ({interval, ...props}: FreeBarProps) => {
   const timeMultiplier = 3
 
-  const [width, setWidth] = useState(interval.time / timeMultiplier)
+  const [width, setWidth] = useState(interval.duration / timeMultiplier)
 
   const [showLabel, setShowLabel] = useState(false)
 
@@ -30,11 +30,11 @@ const FreeBar = ({interval, ...props}: FreeBarProps) => {
 
   const handleResizeStop = (dWidth: number) => {
     setWidth(width + dWidth)
-    props.onChange({ ...interval, time: helpers.floor((width + dWidth) * timeMultiplier, 5) })
+    props.onChange({ ...interval, duration: helpers.floor((width + dWidth) * timeMultiplier, 5) })
   }
 
   const handleResize = (dWidth: number) => {
-    props.onChange({ ...interval, time: helpers.floor((width + dWidth) * timeMultiplier, 5) })
+    props.onChange({ ...interval, duration: helpers.floor((width + dWidth) * timeMultiplier, 5) })
   }
 
   return (
@@ -46,7 +46,7 @@ const FreeBar = ({interval, ...props}: FreeBarProps) => {
     >
       {(props.selected || showLabel) &&
         <Label
-          time={interval.time}
+          duration={interval.duration}
           sportType={props.sportType}
           cadence={interval.cadence}
           onCadenceChange={(cadence: number)=> handleCadenceChange(cadence)}
@@ -55,7 +55,7 @@ const FreeBar = ({interval, ...props}: FreeBarProps) => {
       <Resizable
         className='freeRide'
         size={{
-          width: interval.time / timeMultiplier,
+          width: interval.duration / timeMultiplier,
           height: height,
         }}
         minWidth={timeMultiplier}

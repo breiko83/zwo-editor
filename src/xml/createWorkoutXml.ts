@@ -14,7 +14,7 @@ interface Workout {
 }
 
 export default function createWorkoutXml({ author, name, description, sportType, durationType, tags, intervals, instructions }: Workout): string {
-  var totalTime = 0
+  var totalDuration = 0
   var totalDistance = 0
 
   let xml = Builder.begin()
@@ -41,7 +41,7 @@ export default function createWorkoutXml({ author, name, description, sportType,
 
     if (interval.type === 'steady') {
       segment = Builder.create('SteadyState')
-        .att('Duration', durationType === 'time' ? interval.time : interval.distance)
+        .att('Duration', durationType === 'time' ? interval.duration : interval.distance)
         .att('Power', interval.power)
         .att('pace', interval.pace)
 
@@ -61,7 +61,7 @@ export default function createWorkoutXml({ author, name, description, sportType,
       if (interval.startPower < interval.endPower) {
         // warmup
         segment = Builder.create(ramp)
-          .att('Duration', durationType === 'time' ? interval.time : interval.distance)
+          .att('Duration', durationType === 'time' ? interval.duration : interval.distance)
           .att('PowerLow', interval.startPower)
           .att('PowerHigh', interval.endPower)
           .att('pace', interval.pace)
@@ -71,7 +71,7 @@ export default function createWorkoutXml({ author, name, description, sportType,
       } else {
         // cooldown
         segment = Builder.create(ramp)
-          .att('Duration', durationType === 'time' ? interval.time : interval.distance)
+          .att('Duration', durationType === 'time' ? interval.duration : interval.distance)
           .att('PowerLow', interval.startPower) // these 2 values are inverted
           .att('PowerHigh', interval.endPower) // looks like a bug on zwift editor            
           .att('pace', interval.pace)
@@ -94,7 +94,7 @@ export default function createWorkoutXml({ author, name, description, sportType,
     } else {
       // free ride
       segment = Builder.create('free')
-        .att('Duration', interval.time)
+        .att('Duration', interval.duration)
         .att('FlatRoad', 0) // Not sure what this is for
       // add cadence if not zero
       interval.cadence !== 0 && segment.att('Cadence', interval.cadence)
@@ -102,8 +102,8 @@ export default function createWorkoutXml({ author, name, description, sportType,
 
     // add instructions if present
     if (durationType === 'time') {
-      instructions.filter((instruction) => (instruction.time >= totalTime && instruction.time < (totalTime + interval.time))).forEach((i) => {
-        segment.ele('textevent', { timeoffset: (i.time - totalTime), message: i.text })
+      instructions.filter((instruction) => (instruction.time >= totalDuration && instruction.time < (totalDuration + interval.duration))).forEach((i) => {
+        segment.ele('textevent', { timeoffset: (i.time - totalDuration), message: i.text })
       })
     } else {
       instructions.filter((instruction) => (instruction.length >= totalDistance && instruction.length < (totalDistance + (interval.type === 'free' ? 0 : interval.distance)))).forEach((i) => {
@@ -113,7 +113,7 @@ export default function createWorkoutXml({ author, name, description, sportType,
 
     xml.importDocument(segment)
 
-    totalTime = totalTime + interval.time
+    totalDuration = totalDuration + interval.duration
     totalDistance = totalDistance + (interval.type === 'free' ? 0 : interval.distance)
   })
 

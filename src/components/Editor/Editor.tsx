@@ -255,7 +255,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
 
   function addBar(zone: number, duration: number = 300, cadence: number = 0, pace: PaceType = PaceType.oneMile, distance: number = 200) {
     const interval: SteadyInterval = {
-      time: durationType === 'time' ? duration : Math.floor(helpers.calculateTime(distance, runningSpeed(pace))),
+      duration: durationType === 'time' ? duration : Math.floor(helpers.calculateTime(distance, runningSpeed(pace))),
       distance: durationType === 'time' ? Math.floor(helpers.calculateDistance(duration, runningSpeed(pace))) : distance,
       power: zone,
       cadence: cadence,
@@ -268,7 +268,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
 
   function addTrapeze(zone1: number, zone2: number, duration: number = 300, pace: PaceType = PaceType.oneMile, distance: number = 1000, cadence: number = 0) {
     const interval: RampInterval = {
-      time: durationType === 'time' ? duration : Math.floor(helpers.calculateTime(distance, runningSpeed(pace))),
+      duration: durationType === 'time' ? duration : Math.floor(helpers.calculateTime(distance, runningSpeed(pace))),
       distance: durationType === 'time' ? Math.floor(helpers.calculateDistance(duration, runningSpeed(pace))) : distance,
       startPower: zone1,
       endPower: zone2,
@@ -282,7 +282,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
 
   function addFreeRide(duration = 600, cadence: number = 0) {
     const interval: FreeInterval = {
-      time: duration,
+      duration: duration,
       cadence: cadence,
       type: 'free',
       id: uuidv4()
@@ -292,7 +292,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
 
   function addInterval(repeat: number = 3, onDuration: number = 30, offDuration: number = 120, onPower: number = 1, offPower: number = 0.5, cadence: number = 0, restingCadence: number = 0, pace: PaceType = PaceType.oneMile, onDistance: number = 200, offDistance: number = 200) {
     const interval: RepetitionInterval = {
-      time: durationType === 'time' ? (onDuration + offDuration) * repeat : Math.floor(helpers.calculateTime((onDistance + offDistance) * repeat, runningSpeed(pace))),
+      duration: durationType === 'time' ? (onDuration + offDuration) * repeat : Math.floor(helpers.calculateTime((onDistance + offDistance) * repeat, runningSpeed(pace))),
       distance: durationType === 'time' ? Math.floor(helpers.calculateDistance((onDuration + offDuration) * repeat, runningSpeed(pace))) : (onDistance + offDistance) * repeat,
       id: uuidv4(),
       type: 'repetition',
@@ -346,14 +346,14 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
     const index = updatedArray.findIndex(interval => interval.id === id)
     const element = updatedArray[index]
     if (element && element.type === 'steady' && durationType === 'time') {
-      element.time = element.time + 5
-      element.distance = helpers.calculateDistance(element.time, runningSpeed(element.pace)) / (element.power || 1)
+      element.duration = element.duration + 5
+      element.distance = helpers.calculateDistance(element.duration, runningSpeed(element.pace)) / (element.power || 1)
       setIntervals(updatedArray)
     }
 
     if (element && element.type === 'steady' && durationType === 'distance') {
       element.distance = (element.distance || 0) + 200
-      element.time = helpers.calculateTime(element.distance, runningSpeed(element.pace)) / (element.power || 1)
+      element.duration = helpers.calculateTime(element.distance, runningSpeed(element.pace)) / (element.power || 1)
       setIntervals(updatedArray)
     }
   }
@@ -363,15 +363,15 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
 
     const index = updatedArray.findIndex(interval => interval.id === id)
     const element = updatedArray[index]
-    if (element && element.type === 'steady' && element.time > 5 && durationType === 'time') {
-      element.time = element.time - 5
-      element.distance = helpers.calculateDistance(element.time, runningSpeed(element.pace)) / (element.power || 1)
+    if (element && element.type === 'steady' && element.duration > 5 && durationType === 'time') {
+      element.duration = element.duration - 5
+      element.distance = helpers.calculateDistance(element.duration, runningSpeed(element.pace)) / (element.power || 1)
       setIntervals(updatedArray)
     }
 
     if (element && element.type === 'steady' && (element.distance || 0) > 200 && durationType === 'distance') {
       element.distance = (element.distance || 0) - 200
-      element.time = helpers.calculateTime(element.distance, runningSpeed(element.pace)) / (element.power || 1)
+      element.duration = helpers.calculateTime(element.distance, runningSpeed(element.pace)) / (element.power || 1)
       setIntervals(updatedArray)
     }
   }
@@ -385,9 +385,9 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
       element.power = parseFloat((element.power + 1 / ftp).toFixed(3))
 
       if (durationType === 'time') {
-        element.distance = helpers.calculateDistance(element.time, runningSpeed(element.pace)) / element.power
+        element.distance = helpers.calculateDistance(element.duration, runningSpeed(element.pace)) / element.power
       } else {
-        element.time = helpers.calculateTime(element.distance || 0, runningSpeed(element.pace)) / element.power
+        element.duration = helpers.calculateTime(element.distance || 0, runningSpeed(element.pace)) / element.power
       }
 
       setIntervals(updatedArray)
@@ -403,9 +403,9 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
       element.power = parseFloat((element.power - 1 / ftp).toFixed(3))
 
       if (durationType === 'time') {
-        element.distance = helpers.calculateDistance(element.time, runningSpeed(element.pace)) / element.power
+        element.distance = helpers.calculateDistance(element.duration, runningSpeed(element.pace)) / element.power
       } else {
-        element.time = helpers.calculateTime(element.distance || 0, runningSpeed(element.pace)) / element.power
+        element.duration = helpers.calculateTime(element.distance || 0, runningSpeed(element.pace)) / element.power
       }
 
       setIntervals(updatedArray)
@@ -416,9 +416,9 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
     const index = intervals.findIndex(interval => interval.id === id)
     const element = [...intervals][index]
 
-    if (element.type === 'steady') addBar(element.power || 80, element.time, element.cadence, element.pace, element.distance)
-    if (element.type === 'free') addFreeRide(element.time, element.cadence)
-    if (element.type === 'ramp') addTrapeze(element.startPower || 80, element.endPower || 160, element.time, element.pace || 0, element.distance, element.cadence)
+    if (element.type === 'steady') addBar(element.power || 80, element.duration, element.cadence, element.pace, element.distance)
+    if (element.type === 'free') addFreeRide(element.duration, element.cadence)
+    if (element.type === 'ramp') addTrapeze(element.startPower || 80, element.endPower || 160, element.duration, element.pace || 0, element.distance, element.cadence)
     if (element.type === 'repetition') addInterval(element.repeat, element.onDuration, element.offDuration, element.onPower, element.offPower, element.cadence, element.restingCadence, element.pace, element.onDistance, element.offDistance)
 
     setSelectedId(undefined)
@@ -523,7 +523,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
         updatedAt: Date(),
         sportType: sportType,
         durationType: durationType,
-        workoutTime: helpers.formatDuration(helpers.getWorkoutLength(intervals, durationType)),
+        workoutTime: helpers.formatDuration(helpers.getWorkoutDuration(intervals, durationType)),
         workoutDistance: helpers.getWorkoutDistance(intervals)
       }
 
@@ -736,7 +736,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
       key={instruction.id}
       instruction={instruction}
       durationType={durationType}
-      width={durationType === "distance" ? parseInt(helpers.getWorkoutDistance(intervals))*100 : helpers.getWorkoutLength(intervals, durationType) / 3}
+      width={durationType === "distance" ? parseInt(helpers.getWorkoutDistance(intervals))*100 : helpers.getWorkoutDuration(intervals, durationType) / 3}
       onChange={(id: string, values: Instruction) => changeInstruction(id, values)}
       onDelete={(id: string) => deleteInstruction(id)} 
       index={index}
@@ -763,9 +763,9 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
       element.pace = pace
 
       if (durationType === 'time') {
-        element.distance = helpers.calculateDistance(element.time, runningSpeed(element.pace)) / (element.power || 1)
+        element.distance = helpers.calculateDistance(element.duration, runningSpeed(element.pace)) / (element.power || 1)
       } else {
-        element.time = helpers.calculateTime(element.distance || 0, runningSpeed(element.pace)) / (element.power || 1)
+        element.duration = helpers.calculateTime(element.distance || 0, runningSpeed(element.pace)) / (element.power || 1)
       }
 
       setIntervals(updatedArray)
@@ -848,7 +848,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
         <div className="workout">
           <div className="form-input">
             <label>Workout Time</label>
-            <input className="textInput" value={helpers.formatDuration(helpers.getWorkoutLength(intervals, durationType))} disabled />
+            <input className="textInput" value={helpers.formatDuration(helpers.getWorkoutDuration(intervals, durationType))} disabled />
           </div>
           {sportType === 'run' &&
             <div className="form-input">

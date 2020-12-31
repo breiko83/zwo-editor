@@ -38,7 +38,7 @@ const SteadyBar = ({interval, ...props}: SteadyBarProps) => {
   const style = { backgroundColor: helpers.zoneColor(interval.power) }
 
   // RUN WORKOUTS ON DISTANCE - BIKE WORKOUTS ON TIME
-  const [width, setWidth] = useState(props.durationType === 'time' ? (interval.time / timeMultiplier) : (interval.distance / distanceMultiplier))  
+  const [width, setWidth] = useState(props.durationType === 'time' ? (interval.duration / timeMultiplier) : (interval.distance / distanceMultiplier))  
 
   const [height, setHeight] = useState(interval.power * multiplier)  
 
@@ -59,16 +59,16 @@ const SteadyBar = ({interval, ...props}: SteadyBarProps) => {
     setHeight(height + dHeight)
 
     const distance = props.durationType === 'time' ? Math.floor(helpers.calculateDistance((width + dWidth) * timeMultiplier * interval.power, props.speed)) : helpers.floor((width + dWidth) * distanceMultiplier, 200)
-    const time = props.durationType === 'time' ? helpers.floor((width + dWidth) * timeMultiplier, 5) : Math.floor(helpers.calculateTime(interval.distance, props.speed) * 1 / interval.power)
+    const duration = props.durationType === 'time' ? helpers.floor((width + dWidth) * timeMultiplier, 5) : Math.floor(helpers.calculateTime(interval.distance, props.speed) * 1 / interval.power)
 
-    props.onChange({ ...interval, time, distance, power: (height + dHeight) / multiplier })
+    props.onChange({ ...interval, duration, distance, power: (height + dHeight) / multiplier })
   }
 
   const handleResize = (dWidth: number, dHeight: number) => {       
     const distance = props.durationType === 'time' ? Math.floor(helpers.calculateDistance((width + dWidth) * timeMultiplier * interval.power, props.speed)) : helpers.floor((width + dWidth) * distanceMultiplier, 200)
-    const time = props.durationType === 'time' ? helpers.floor((width + dWidth) * timeMultiplier, 5) : Math.floor(helpers.calculateTime(interval.distance, props.speed) * 1 / interval.power)
+    const duration = props.durationType === 'time' ? helpers.floor((width + dWidth) * timeMultiplier, 5) : Math.floor(helpers.calculateTime(interval.distance, props.speed) * 1 / interval.power)
 
-    props.onChange({ ...interval, time, distance, power: (height + dHeight) / multiplier })
+    props.onChange({ ...interval, duration, distance, power: (height + dHeight) / multiplier })
   }
 
   return (
@@ -81,7 +81,7 @@ const SteadyBar = ({interval, ...props}: SteadyBarProps) => {
       {((selected || showLabel) && (props.showLabel)) &&
         <Label
           sportType={props.sportType}
-          time={interval.time}
+          duration={interval.duration}
           power={powerLabel}
           weight={props.weight}
           ftp={props.ftp}
@@ -94,7 +94,7 @@ const SteadyBar = ({interval, ...props}: SteadyBarProps) => {
       <Resizable
         className='bar'
         size={{
-          width: props.durationType === 'time' ? (interval.time) / timeMultiplier : (interval.distance) / distanceMultiplier,
+          width: props.durationType === 'time' ? (interval.duration) / timeMultiplier : (interval.distance) / distanceMultiplier,
           height: interval.power * multiplier,
         }}
         minWidth={3}

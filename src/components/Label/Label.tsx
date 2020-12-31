@@ -7,7 +7,7 @@ import helpers from '../helpers'
 
 interface LabelProps {
   sportType: string;
-  time: number;
+  duration: number;
   distance?: number;
   power?: number;
   powerStart?: number;
@@ -25,7 +25,7 @@ const Label = (props: LabelProps) => {
   return (
     <div className='label'>
       <div>
-        <FontAwesomeIcon icon={faClock} fixedWidth /> {helpers.formatDuration(props.time)}
+        <FontAwesomeIcon icon={faClock} fixedWidth /> {helpers.formatDuration(props.duration)}
       </div>
       {props.power && props.sportType === "bike" &&
         <div>
