@@ -25,7 +25,7 @@ import firebase, { auth } from '../firebase'
 import SaveForm from '../Forms/SaveForm'
 import SignupForm from '../Forms/SignupForm'
 import LoginForm from '../Forms/LoginForm'
-import { Helmet } from "react-helmet";
+import Head from '../Head/Head'
 import { RouteComponentProps } from 'react-router-dom';
 import ReactGA from 'react-ga';
 import RunningTimesEditor, { RunningTimes } from './RunningTimesEditor'
@@ -836,14 +836,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
   return (
     // Adding tabIndex allows div element to receive keyboard events
     <div className="container" onKeyDown={handleKeyPress} tabIndex={0}>
-      <Helmet>
-        <title>{name ? `${name} - Zwift Workout Editor` : "My Workout - Zwift Workout Editor"}</title>
-        <meta name="description" content={description} />
-        <meta property="og:title" content={name ? `${name} - Zwift Workout Editor` : "My Workout - Zwift Workout Editor"} />
-        <meta property="og:description" content={description} />
-        <link rel="canonical" href={`https://www.zwiftworkout.com/editor/${id}`} />
-        <meta property="og:url" content={`https://www.zwiftworkout.com/editor/${id}`} />
-      </Helmet>
+      <Head id={id} name={name} description={description} />
 
       {message?.visible &&
         <div className={`message ${message.class}`}>
