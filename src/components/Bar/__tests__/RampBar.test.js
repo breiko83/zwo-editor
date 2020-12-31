@@ -1,11 +1,11 @@
 import React from 'react';
-import Trapeze from '../Trapeze';
+import RampBar from '../RampBar';
 import { Zones } from '../../Constants'
 import renderer from 'react-test-renderer';
 import { v4 as uuidv4 } from 'uuid'
 import '@testing-library/jest-dom/extend-expect'
 
-test('Trapeze renders correctly', () => {
+test('RampBar renders correctly', () => {
   const interval = {
     time: 50,
     length: 0,
@@ -18,7 +18,7 @@ test('Trapeze renders correctly', () => {
   const ftp = 250
 
   const component = renderer.create(
-    <Trapeze
+    <RampBar
       interval={interval}
       ftp={ftp}
       onChange={() => { }}

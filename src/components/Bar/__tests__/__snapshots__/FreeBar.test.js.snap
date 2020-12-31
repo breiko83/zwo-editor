@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Freeride renders correctly 1`] = `
+exports[`FreeBar renders correctly 1`] = `
 <div
   className="segment"
   onClick={[Function]}

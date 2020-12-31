@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Trapeze renders correctly 1`] = `
+exports[`RampBar renders correctly 1`] = `
 <div
   className="segment"
   onClick={[Function]}

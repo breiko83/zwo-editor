@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import './Trapeze.css'
+import './RampBar.css'
 import { Colors, Zones, ZonesArray } from '../Constants'
 import { Resizable } from 're-resizable'
 import Label from '../Label/Label'
@@ -10,7 +10,7 @@ interface IDictionary {
   [index: string]: number;
 }
 
-interface TrapezeProps {
+interface RampBarProps {
   interval: RampInterval;
   ftp: number;
   sportType: string;
@@ -21,7 +21,8 @@ interface TrapezeProps {
   selected: boolean;
 }
 
-const Trapeze = ({interval, ...props}: TrapezeProps) => {
+const RampBar
+ = ({interval, ...props}: RampBarProps) => {
   const multiplier = 250
   const timeMultiplier = 3
   const lengthMultiplier = 10
@@ -211,4 +212,4 @@ const Trapeze = ({interval, ...props}: TrapezeProps) => {
   );
 }
 
-export default Trapeze
+export default RampBar

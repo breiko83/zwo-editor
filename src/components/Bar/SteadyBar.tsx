@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react'
-import './Bar.css'
+import './SteadyBar.css'
 import { Colors, Zones } from '../Constants'
 import { Resizable } from 're-resizable'
 import Label from '../Label/Label'
 import helpers from '../helpers'
 import { SteadyInterval } from '../Interval'
 
-interface BarProps {
+interface SteadyBarProps {
   interval: SteadyInterval;
   ftp: number;
   weight: number;
@@ -19,7 +19,7 @@ interface BarProps {
   showLabel: boolean;
 }
 
-const Bar = ({interval, ...props}: BarProps) => {
+const SteadyBar = ({interval, ...props}: SteadyBarProps) => {
   const multiplier = 250
   const timeMultiplier = 3
   const lengthMultiplier = 10
@@ -129,4 +129,4 @@ const Bar = ({interval, ...props}: BarProps) => {
   );
 }
 
-export default Bar
+export default SteadyBar

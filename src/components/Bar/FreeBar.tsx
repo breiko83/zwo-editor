@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import './FreeRide.css'
+import './FreeBar.css'
 import { Resizable } from 're-resizable'
 import moment from 'moment'
 import 'moment-duration-format'
@@ -7,7 +7,7 @@ import Label from '../Label/Label'
 import helpers from '../helpers'
 import { FreeInterval } from '../Interval'
 
-interface FreeRideProps {
+interface FreeBarProps {
   interval: FreeInterval;
   sportType: string;
   onChange: (interval: FreeInterval) => void;
@@ -15,7 +15,7 @@ interface FreeRideProps {
   selected: boolean;
 }
 
-const FreeRide = ({interval, ...props}: FreeRideProps) => {
+const FreeBar = ({interval, ...props}: FreeBarProps) => {
   const timeMultiplier = 3
 
   const durationLabel = getDuration(interval.time)
@@ -76,5 +76,4 @@ const FreeRide = ({interval, ...props}: FreeRideProps) => {
 
 }
 
-
-export default FreeRide
+export default FreeBar

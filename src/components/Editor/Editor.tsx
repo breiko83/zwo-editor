@@ -2,10 +2,10 @@ import React, { useState, useEffect, useRef } from 'react'
 import { v4 as uuidv4 } from 'uuid'
 import './Editor.css'
 import { Colors, Zones } from '../Constants'
-import Bar from '../Bar/Bar'
-import Trapeze from '../Bar/Trapeze'
-import FreeRide from '../Bar/FreeRide'
-import Repetition from '../Bar/Repetition'
+import SteadyBar from '../Bar/SteadyBar'
+import RampBar from '../Bar/RampBar'
+import FreeBar from '../Bar/FreeBar'
+import RepetitionBar from '../Bar/RepetitionBar'
 import Comment from '../Comment/Comment'
 import Popup from '../Popup/Popup'
 import Footer from '../Footer/Footer'
@@ -721,7 +721,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
     switch (interval.type) {
       case 'steady':
         return (
-          <Bar
+          <SteadyBar
             key={interval.id}
             interval={interval}
             ftp={ftp}
@@ -737,7 +737,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
         );
       case 'ramp':
         return (
-          <Trapeze
+          <RampBar
             key={interval.id}
             interval={interval}
             ftp={ftp}
@@ -751,7 +751,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
         );
       case 'free':
         return (
-          <FreeRide
+          <FreeBar
             key={interval.id}
             interval={interval}
             sportType={sportType}
@@ -762,7 +762,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
         );
       case 'repetition':
         return (
-          <Repetition
+          <RepetitionBar
             key={interval.id}
             interval={interval}
             ftp={ftp}

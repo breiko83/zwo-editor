@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react'
 import { v4 as uuidv4 } from 'uuid'
-import Bar from './Bar'
-import './Repetition.css'
+import SteadyBar from './SteadyBar'
+import './RepetitionBar.css'
 import { RepetitionInterval, SteadyInterval } from '../Interval'
 
-interface RepetitionProps {
+interface RepetitionBarProps {
   interval: RepetitionInterval;
   ftp: number;
   weight: number;
@@ -16,7 +16,7 @@ interface RepetitionProps {
   selected: boolean;
 }
 
-const Repetition = ({interval, ...props}: RepetitionProps) => {
+const RepetitionBar = ({interval, ...props}: RepetitionBarProps) => {
   const [subIntervals, setSubIntervals] = useState<Array<SteadyInterval>>([])
   const [repeat, setRepeat] = useState(interval.repeat)
 
@@ -128,7 +128,7 @@ const Repetition = ({interval, ...props}: RepetitionProps) => {
   }
 
   const renderBar = (subInterval: SteadyInterval, withLabel: boolean) => (
-    <Bar
+    <SteadyBar
       key={subInterval.id}
       interval={subInterval}
       ftp={props.ftp}
@@ -154,4 +154,4 @@ const Repetition = ({interval, ...props}: RepetitionProps) => {
   )
 }
 
-export default Repetition
+export default RepetitionBar
