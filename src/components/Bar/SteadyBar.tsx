@@ -106,7 +106,17 @@ const SteadyBar = ({interval, ...props}: SteadyBarProps) => {
       style={props.selected ? { zIndex: 10 } : {}}
     >
       {((selected || showLabel) && (props.showLabel)) &&
-        <Label sportType={props.sportType} duration={duration} power={powerLabel} weight={props.weight} ftp={props.ftp} pace={interval.pace} distance={distance} cadence={interval.cadence} onCadenceChange={(cadence: number)=> handleCadenceChange(cadence)} />
+        <Label
+          sportType={props.sportType}
+          duration={duration}
+          power={powerLabel}
+          weight={props.weight}
+          ftp={props.ftp}
+          pace={interval.pace}
+          distance={distance}
+          cadence={interval.cadence}
+          onCadenceChange={(cadence: number)=> handleCadenceChange(cadence)}
+        />
       }
       <Resizable
         className='bar'

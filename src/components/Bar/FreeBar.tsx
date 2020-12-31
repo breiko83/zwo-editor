@@ -54,7 +54,12 @@ const FreeBar = ({interval, ...props}: FreeBarProps) => {
       onClick={() => props.onClick(interval.id)}
     >
       {(props.selected || showLabel) &&
-        <Label duration={durationLabel} sportType={props.sportType} cadence={interval.cadence} onCadenceChange={(cadence: number)=> handleCadenceChange(cadence)} />
+        <Label
+          duration={durationLabel}
+          sportType={props.sportType}
+          cadence={interval.cadence}
+          onCadenceChange={(cadence: number)=> handleCadenceChange(cadence)}
+        />
       }
       <Resizable
         className='freeRide'
