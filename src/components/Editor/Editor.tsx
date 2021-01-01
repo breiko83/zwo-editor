@@ -38,6 +38,7 @@ import loadFirebaseWorkout from '../../network/loadFirebaseWorkout'
 import { createEmptyWorkout, Workout } from '../../xml/Workout'
 import { moveInterval, updateIntervalDuration, updateIntervalPower } from '../intervalUtils'
 import Keyboard from '../Keyboard/Keyboard'
+import Stats from './Stats'
 
 interface Message {
   visible: boolean,
@@ -507,14 +508,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
           <p>{author ? `by ${author}` : ''}</p>
         </div>
         <div className="workout">
-          <div className="form-input">
-            <label>Workout Time</label>
-            <input className="textInput" value={helpers.formatDuration(helpers.getWorkoutDuration(intervals))} disabled />
-          </div>
-          <div className="form-input">
-            <label>TSS</label>
-            <input className="textInput" value={helpers.getStressScore(intervals, ftp)} disabled />
-          </div>
+          <Stats intervals={intervals} ftp={ftp} />
           <LeftRightToggle<"bike","run">
             label="Sport Type"
             leftValue="bike"
