@@ -244,14 +244,6 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
     setSelectedId(undefined)
   }
 
-  function moveLeft(id: string) {
-    setIntervals(moveInterval(id, -1, intervals));
-  }
-
-  function moveRight(id: string) {
-    setIntervals(moveInterval(id, +1, intervals));
-  }
-
   function saveWorkout() {
     setSavePopupVisibility(true)
   }
@@ -528,8 +520,8 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
       <div id="editor" className='editor'>
         {selectedId &&
           <div className='actions'>
-            <ActionButton title='Move Left' icon={faArrowLeft} onClick={() => moveLeft(selectedId)} />
-            <ActionButton title='Move Right' icon={faArrowRight} onClick={() => moveRight(selectedId)} />
+            <ActionButton title='Move Left' icon={faArrowLeft} onClick={() => selectedId && setIntervals(moveInterval(selectedId, -1, intervals))} />
+            <ActionButton title='Move Right' icon={faArrowRight} onClick={() => selectedId && setIntervals(moveInterval(selectedId, +1, intervals))} />
             <ActionButton title='Delete' icon={faTrash} onClick={() => removeBar(selectedId)} />
             <ActionButton title='Duplicate' icon={faCopy} onClick={() => duplicateBar(selectedId)} />
             {sportType === "run" &&
