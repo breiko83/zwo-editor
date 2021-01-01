@@ -40,6 +40,7 @@ import { moveInterval, updateIntervalDuration, updateIntervalPower } from '../in
 import Keyboard from '../Keyboard/Keyboard'
 import Stats from './Stats'
 import Title from './Title'
+import NumberField from './NumberField'
 
 interface Message {
   visible: boolean,
@@ -569,17 +570,11 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
         }
         <button className="btn" onClick={() => addInstruction()} style={{ backgroundColor: Colors.WHITE }}><FontAwesomeIcon icon={faComment} size="lg" fixedWidth /> Text Event</button>
         {sportType === "bike" &&
-          <div className="form-input">
-            <label htmlFor="ftp">FTP (W)</label>
-            <input className="textInput" type="number" name="ftp" value={ftp} onChange={(e) => setFtp(parseInt(e.target.value))} />
-          </div>
+          <NumberField name="ftp" label={"FTP (W)"} value={ftp} onChange={setFtp} />
         }
 
         {sportType === "bike" &&
-          <div className="form-input">
-            <label htmlFor="weight">Body Weight (Kg)</label>
-            <input className="textInput" type="number" name="weight" value={weight} onChange={(e) => setWeight(parseInt(e.target.value))} />
-          </div>
+          <NumberField name="weight" label={"Body Weight (kg)"} value={weight} onChange={setWeight} />
         }
 
         <button className="btn" onClick={() => { if (window.confirm('Are you sure you want to create a new workout?')) newWorkout() }}><FontAwesomeIcon icon={faFile} size="lg" fixedWidth /> New</button>
