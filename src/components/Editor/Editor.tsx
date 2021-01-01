@@ -30,13 +30,7 @@ import createWorkoutXml from '../../xml/createWorkoutXml'
 import ShareForm from '../Forms/ShareForm'
 import PaceSelector, { PaceType } from './PaceSelector'
 import { FreeInterval, Interval, RampInterval, RepetitionInterval, SteadyInterval } from '../Interval'
-
-
-export interface Instruction {
-  id: string,
-  text: string,
-  time: number,
-}
+import { Instruction } from '../Instruction'
 
 interface Message {
   visible: boolean,

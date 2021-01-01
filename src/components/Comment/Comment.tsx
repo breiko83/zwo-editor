@@ -5,12 +5,7 @@ import { faComment, faTrashAlt } from '@fortawesome/free-solid-svg-icons'
 import './Comment.css'
 import helpers from '../helpers'
 import { distanceMultiplier, durationMultiplier } from '../Bar/multipliers'
-
-interface Instruction {
-  id: string,
-  text: string,
-  time: number,
-}
+import { Instruction } from '../Instruction'
 
 const Comment = (props: { instruction: Instruction, width: number, onChange: Function, onDelete: Function, index: number }) => {
   const [text, setText] = useState(props.instruction.text)

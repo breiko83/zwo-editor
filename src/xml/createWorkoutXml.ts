@@ -1,6 +1,7 @@
 import Builder from 'xmlbuilder'
-import { Instruction, SportType } from '../components/Editor/Editor'
+import { SportType } from '../components/Editor/Editor'
 import helpers from '../components/helpers'
+import { Instruction } from '../components/Instruction'
 import { Interval } from '../components/Interval'
 
 interface Workout {
