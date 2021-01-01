@@ -35,7 +35,7 @@ import parseWorkoutXml from '../../xml/parseWorkoutXml'
 import upload from '../../network/upload'
 import download from '../../network/download'
 import loadFirebaseWorkout from '../../network/loadFirebaseWorkout'
-import { Workout } from '../../xml/Workout'
+import { createEmptyWorkout, Workout } from '../../xml/Workout'
 
 interface Message {
   visible: boolean,
@@ -115,12 +115,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
           // user refreshed the page
         } else {
           // treat this as new workout
-          setIntervals([])
-          setInstructions([])
-          setName('')
-          setDescription('')
-          setAuthor('')
-          setTags([])
+          loadWorkout(createEmptyWorkout())
         }
 
         localStorage.setItem('id', id)
@@ -179,16 +174,8 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
   }
 
   function newWorkout() {
-    console.log('New workout')
-
     setId(generateId())
-    setIntervals([])
-    setInstructions([])
-    setName('')
-    setDescription('')
-    setAuthor('')
-    setTags([])
-
+    loadWorkout(createEmptyWorkout())
   }
 
   function updateInterval(updatedInterval: Interval) {

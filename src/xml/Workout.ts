@@ -11,3 +11,15 @@ export interface Workout {
   intervals: Array<Interval>;
   instructions: Array<Instruction>;
 }
+
+export function createEmptyWorkout(): Workout {
+  return {
+    author: "",
+    name: "",
+    description: "",
+    sportType: "bike",
+    tags: [],
+    intervals: [],
+    instructions: [],
+  };
+}

@@ -1,18 +1,13 @@
 import Converter from 'xml-js';
 import { v4 as uuidv4 } from 'uuid'
 import intervalFactory from '../components/intervalFactory';
-import { Workout } from './Workout';
+import { createEmptyWorkout, Workout } from './Workout';
 
 export default function parseWorkoutXml(data: string): Workout {
-  const workout: Workout = {
-    author: "",
-    name: "",
-    description: "",
-    sportType: "bike", // TODO: not detected from XML
-    tags: [], // TODO: not detected from XML
-    intervals: [],
-    instructions: [],
-  };
+  // TODO:
+  // - sportType not detected from XML
+  // - tags not detected from XML
+  const workout: Workout = createEmptyWorkout();
 
   data = data.replace(/<!--(.*?)-->/gm, "")
 
