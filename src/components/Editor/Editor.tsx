@@ -10,7 +10,7 @@ import Workouts from '../Workouts/Workouts'
 import TimeAxis from '../Axis/TimeAxis'
 import ZoneAxis from '../Axis/ZoneAxis'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faTrash, faArrowRight, faArrowLeft, faFile, faSave, faUpload, faDownload, faComment, faBicycle, faCopy, faShareAlt, faTimesCircle, faList, faBiking, faRunning } from '@fortawesome/free-solid-svg-icons'
+import { faTrash, faArrowRight, faArrowLeft, faFile, faSave, faDownload, faComment, faBicycle, faCopy, faShareAlt, faTimesCircle, faList, faBiking, faRunning } from '@fortawesome/free-solid-svg-icons'
 import { ReactComponent as WarmdownLogo } from '../../assets/warmdown.svg'
 import { ReactComponent as WarmupLogo } from '../../assets/warmup.svg'
 import { ReactComponent as IntervalLogo } from '../../assets/interval.svg'
@@ -42,6 +42,7 @@ import Stats from './Stats'
 import Title from './Title'
 import NumberField from './NumberField'
 import UploadButton from '../Button/UploadButton'
+import IconButton from '../Button/IconButton'
 
 interface Message {
   visible: boolean,
@@ -567,24 +568,22 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
         <button className="btn" onClick={() => addInterval(intervalFactory.ramp({ startPower: 0.75, endPower: 0.25 }))} style={{ backgroundColor: Colors.WHITE }}><WarmdownLogo className="btn-icon" /> Cool down</button>
         <button className="btn" onClick={() => addInterval(intervalFactory.repetition({}))} style={{ backgroundColor: Colors.WHITE }}><IntervalLogo className="btn-icon" /> Interval</button>
         {sportType === "bike" &&
-          <button className="btn" onClick={() => addInterval(intervalFactory.free({}))} style={{ backgroundColor: Colors.WHITE }}><FontAwesomeIcon icon={faBicycle} size="lg" fixedWidth /> Free Ride</button>
+          <IconButton label="Free Ride" icon={faBicycle} onClick={() => addInterval(intervalFactory.free({}))} />
         }
-        <button className="btn" onClick={() => addInstruction()} style={{ backgroundColor: Colors.WHITE }}><FontAwesomeIcon icon={faComment} size="lg" fixedWidth /> Text Event</button>
+        <IconButton label="Text Event" icon={faComment} onClick={addInstruction} />
         {sportType === "bike" &&
           <NumberField name="ftp" label={"FTP (W)"} value={ftp} onChange={setFtp} />
         }
-
         {sportType === "bike" &&
           <NumberField name="weight" label={"Body Weight (kg)"} value={weight} onChange={setWeight} />
         }
-
-        <button className="btn" onClick={() => { if (window.confirm('Are you sure you want to create a new workout?')) newWorkout() }}><FontAwesomeIcon icon={faFile} size="lg" fixedWidth /> New</button>
-        <button className="btn" onClick={() => saveWorkout()}><FontAwesomeIcon icon={faSave} size="lg" fixedWidth /> Save</button>
-        <button className="btn" onClick={() => { if (window.confirm('Are you sure you want to delete this workout?')) deleteWorkout() }}><FontAwesomeIcon icon={faTrash} size="lg" fixedWidth /> Delete</button>
-        <button className="btn" onClick={() => downloadWorkout()} ><FontAwesomeIcon icon={faDownload} size="lg" fixedWidth /> Download</button>
+        <IconButton label="New" icon={faFile} onClick={() => { if (window.confirm('Are you sure you want to create a new workout?')) newWorkout() }} />
+        <IconButton label="Save" icon={faSave} onClick={saveWorkout} />
+        <IconButton label="Delete" icon={faTrash} onClick={() => { if (window.confirm('Are you sure you want to delete this workout?')) deleteWorkout() }} />
+        <IconButton label="Download" icon={faDownload} onClick={downloadWorkout} />
         <UploadButton onUpload={handleUpload} />
-        <button className="btn" onClick={() => setShowWorkouts(true)}><FontAwesomeIcon icon={faList} size="lg" fixedWidth /> Workouts</button>
-        <button className="btn" onClick={() => shareWorkout()} ><FontAwesomeIcon icon={faShareAlt} size="lg" fixedWidth /> Share</button>
+        <IconButton label="Workouts" icon={faList} onClick={() => setShowWorkouts(true)} />
+        <IconButton label="Share" icon={faShareAlt} onClick={shareWorkout} />
       </div>
       <Footer />
     </Keyboard>
