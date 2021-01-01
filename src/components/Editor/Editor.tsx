@@ -321,26 +321,10 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
   }
 
   function duplicateBar(id: string) {
-    const index = intervals.findIndex(interval => interval.id === id)
-    const interval = intervals[index]
-
-    if (interval.type === 'steady') {
-      const { id: _ignore, ...rest } = interval;
-      addInterval(intervalFactory.steady(rest));
+    const interval = intervals.find(interval => interval.id === id)
+    if (interval) {
+      addInterval(intervalFactory.clone(interval));
     }
-    if (interval.type === 'free') {
-      const { id: _ignore, ...rest } = interval;
-      addInterval(intervalFactory.free(rest));
-    }
-    if (interval.type === 'ramp') {
-      const { id: _ignore, ...rest } = interval;
-      addInterval(intervalFactory.ramp(rest));
-    }
-    if (interval.type === 'repetition') {
-      const { id: _ignore, ...rest } = interval;
-      addInterval(intervalFactory.repetition(rest));
-    }
-
     setSelectedId(undefined)
   }
 

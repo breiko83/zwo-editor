@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from 'uuid'
 import { PaceType } from './Editor/PaceSelector';
-import { FreeInterval, RampInterval, RepetitionInterval, SteadyInterval } from "./Interval";
+import { FreeInterval, Interval, RampInterval, RepetitionInterval, SteadyInterval } from "./Interval";
 
 const defaultDuration = 300;
 const defaultPower = 1.0;
@@ -57,5 +57,10 @@ export default {
       pace: defaultPace,
       ...interval,
     };
+  },
+
+  // Creates a copy of the interval, with a new ID
+  clone(interval: Interval): Interval {
+    return { ...interval, id: uuidv4() };
   },
 };
