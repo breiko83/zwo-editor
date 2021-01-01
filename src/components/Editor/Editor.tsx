@@ -32,6 +32,8 @@ import { Interval } from '../Interval'
 import { Instruction } from '../Instruction'
 import intervalFactory from '../intervalFactory'
 import parseWorkoutXml from '../../xml/parseWorkoutXml'
+import upload from '../../network/upload'
+import download from '../../network/download'
 
 interface Message {
   visible: boolean,
@@ -63,8 +65,6 @@ const loadRunningTimes = (): RunningTimes => {
 export type SportType = "bike" | "run";
 
 const Editor = ({ match }: RouteComponentProps<TParams>) => {
-  const S3_URL = 'https://zwift-workout.s3-eu-west-1.amazonaws.com'
-
   const [id, setId] = useState(match.params.id === "new" ? (localStorage.getItem('id') || generateId()) : match.params.id)
   const [intervals, setIntervals] = useState<Array<Interval>>(JSON.parse(localStorage.getItem('currentWorkout') || '[]'))
   const [selectedId, setSelectedId] = useState<string | undefined>(undefined)
@@ -435,7 +435,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
       // save to firebase      
       itemsRef.update(updates).then(() => {
         //upload to s3  
-        upload(file, false)
+        upload(id, file)
         setMessage({ visible: false })
 
       }).catch((error) => {
@@ -470,8 +470,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
     window.URL.revokeObjectURL(url)
   }
 
-  function handleUpload(file: Blob) {
-
+  async function handleUpload(file: Blob) {
     // ask user if they want to overwrite current workout first
     if (intervals.length > 0) {
       if (!window.confirm('Are you sure you want to create a new workout?')) {
@@ -480,62 +479,20 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
     }
 
     newWorkout()
-    upload(file, true)
-  }
 
-  function upload(file: Blob, parse = false) {
-    fetch('https://zwiftworkout.netlify.app/.netlify/functions/upload', {
-      method: 'POST',
-      body: JSON.stringify(
-        {
-          fileType: 'zwo',
-          fileName: `${id}.zwo`
-        })
-    })
-      .then(res => res.json())
-      .then(function (data) {
-        const signedUrl = data.uploadURL
+    try {
+      await upload(id, file);
+      const workout = parseWorkoutXml(await download(id));
 
-        // upload to S3
-        fetch(signedUrl, {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'zwo'
-          },
-          body: file
-        })
-          .then(response => response.text())
-          .then(data => {
-            console.log('File uploaded')
-
-            // can parse now
-
-            if (parse) fetchAndParse(id)
-          })
-          .catch(error => {
-            console.error(error)
-          })
-      })
-  }
-
-  function fetchAndParse(id: string) {
-    setIntervals([])
-    setInstructions([])
-
-    fetch(`${S3_URL}/${id}.zwo`)
-      .then(response => response.text())
-      .then(data => {
-        const workout = parseWorkoutXml(data);
-        setName(workout.name);
-        setAuthor(workout.author);
-        setTags(workout.tags);
-        setSportType(workout.sportType);
-        setDescription(workout.description);
-        setInstructions(workout.instructions);
-      })
-      .catch(error => {
-        console.error(error)
-      })
+      setName(workout.name);
+      setAuthor(workout.author);
+      setTags(workout.tags);
+      setSportType(workout.sportType);
+      setDescription(workout.description);
+      setInstructions(workout.instructions);
+    } catch (e) {
+      console.error(e);
+    }
   }
 
   const renderInterval = (interval: Interval) => {
