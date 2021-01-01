@@ -98,12 +98,6 @@ const helpers = {
     // 1 pixel equals 5 seconds 
     return moment.duration(seconds, "seconds").format("mm:ss", { trim: false })
   },
-  calculateTime: function (distance: number, speed: number): number {
-    return distance / speed
-  },
-  calculateDistance: function (duration: number, speed: number): number {
-    return duration * speed
-  },
   floor: function (x: number, roundTo: number): number {
     return Math.floor(x / roundTo) * roundTo
   },
