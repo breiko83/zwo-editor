@@ -29,10 +29,10 @@ const FreeBar = ({interval, ...props}: FreeBarProps) => {
 
   const handleResizeStop = (dWidth: number) => {
     setWidth(width + dWidth)
-    props.onChange({ ...interval, duration: helpers.floor((width + dWidth) * durationMultiplier, 5) })
+    notifyChange(dWidth)
   }
 
-  const handleResize = (dWidth: number) => {
+  const notifyChange = (dWidth: number) => {
     props.onChange({ ...interval, duration: helpers.floor((width + dWidth) * durationMultiplier, 5) })
   }
 
@@ -63,7 +63,7 @@ const FreeBar = ({interval, ...props}: FreeBarProps) => {
         enable={{ right: true }}
         grid={[1, 1]}
         onResizeStop={(e, direction, ref, d) => handleResizeStop(d.width)}
-        onResize={(e, direction, ref, d) => handleResize(d.width)}        
+        onResize={(e, direction, ref, d) => notifyChange(d.width)}        
       >
       </Resizable>
     </div>

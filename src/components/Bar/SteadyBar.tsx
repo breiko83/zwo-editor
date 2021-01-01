@@ -43,14 +43,10 @@ const SteadyBar = ({interval, ...props}: SteadyBarProps) => {
     setWidth(width + dWidth)
     setHeight(height + dHeight)
 
-    props.onChange({
-      ...interval,
-      duration: helpers.floor((width + dWidth) * durationMultiplier, 5),
-      power: (height + dHeight) / powerMultiplier,
-    })
+    notifyChange(dWidth, dHeight)
   }
 
-  const handleResize = (dWidth: number, dHeight: number) => {
+  const notifyChange = (dWidth: number, dHeight: number) => {
     props.onChange({
       ...interval,
       duration: helpers.floor((width + dWidth) * durationMultiplier, 5),
@@ -89,7 +85,7 @@ const SteadyBar = ({interval, ...props}: SteadyBarProps) => {
         enable={{ top: true, right: true }}
         grid={[1, 1]}
         onResizeStop={(e, direction, ref, d) => handleResizeStop(d.width, d.height)}
-        onResize={(e, direction, ref, d) => handleResize(d.width, d.height)}
+        onResize={(e, direction, ref, d) => notifyChange(d.width, d.height)}
         style={style}
       >
       </Resizable>
