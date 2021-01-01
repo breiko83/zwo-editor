@@ -324,10 +324,38 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
     const index = intervals.findIndex(interval => interval.id === id)
     const interval = intervals[index]
 
-    if (interval.type === 'steady') addInterval(intervalFactory.steady(interval.power, interval.duration, interval.cadence, interval.pace))
-    if (interval.type === 'free') addInterval(intervalFactory.free(interval.duration, interval.cadence))
-    if (interval.type === 'ramp') addInterval(intervalFactory.ramp(interval.startPower, interval.endPower, interval.duration, interval.pace, interval.cadence))
-    if (interval.type === 'repetition') addInterval(intervalFactory.repetition(interval.repeat, interval.onDuration, interval.offDuration, interval.onPower, interval.offPower, interval.cadence, interval.restingCadence, interval.pace))
+    if (interval.type === 'steady') {
+      addInterval(intervalFactory.steady(
+        interval.power,
+        interval.duration,
+        interval.cadence,
+        interval.pace
+      ))
+    }
+    if (interval.type === 'free') {
+      addInterval(intervalFactory.free(interval.duration, interval.cadence))
+    }
+    if (interval.type === 'ramp') {
+      addInterval(intervalFactory.ramp(
+        interval.startPower,
+        interval.endPower,
+        interval.duration,
+        interval.pace,
+        interval.cadence
+      ))
+    }
+    if (interval.type === 'repetition') {
+      addInterval(intervalFactory.repetition(
+        interval.repeat,
+        interval.onDuration,
+        interval.offDuration,
+        interval.onPower,
+        interval.offPower,
+        interval.cadence,
+        interval.restingCadence,
+        interval.pace
+      ))
+    }
 
     setSelectedId(undefined)
   }
@@ -562,19 +590,42 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
 
             let duration = parseFloat(w.attributes.Duration)
 
-            if (w.name === 'SteadyState')
-              addInterval(intervalFactory.steady(parseFloat(w.attributes.Power || w.attributes.PowerLow), parseFloat(w.attributes.Duration), parseFloat(w.attributes.Cadence || '0'), parseInt(w.attributes.Pace || '0')))
-
-            if (w.name === 'Ramp' || w.name === 'Warmup' || w.name === 'Cooldown')
-              addInterval(intervalFactory.ramp(parseFloat(w.attributes.PowerLow), parseFloat(w.attributes.PowerHigh), parseFloat(w.attributes.Duration), parseInt(w.attributes.Pace || '0'), parseInt(w.attributes.Cadence)))
-
-            if (w.name === 'IntervalsT'){
-              addInterval(intervalFactory.repetition(parseFloat(w.attributes.Repeat), parseFloat(w.attributes.OnDuration), parseFloat(w.attributes.OffDuration), parseFloat(w.attributes.OnPower), parseFloat(w.attributes.OffPower), parseInt(w.attributes.Cadence || '0'), parseInt(w.attributes.CadenceResting), parseInt(w.attributes.Pace || '0')))
+            if (w.name === 'SteadyState') {
+              addInterval(intervalFactory.steady(
+                parseFloat(w.attributes.Power || w.attributes.PowerLow),
+                parseFloat(w.attributes.Duration),
+                parseFloat(w.attributes.Cadence || '0'),
+                parseInt(w.attributes.Pace || '0')
+              ))
+            }
+            if (w.name === 'Ramp' || w.name === 'Warmup' || w.name === 'Cooldown') {
+              addInterval(intervalFactory.ramp(
+                parseFloat(w.attributes.PowerLow),
+                parseFloat(w.attributes.PowerHigh),
+                parseFloat(w.attributes.Duration),
+                parseInt(w.attributes.Pace || '0'),
+                parseInt(w.attributes.Cadence)
+              ))
+            }
+            if (w.name === 'IntervalsT') {
+              addInterval(intervalFactory.repetition(
+                parseFloat(w.attributes.Repeat),
+                parseFloat(w.attributes.OnDuration),
+                parseFloat(w.attributes.OffDuration),
+                parseFloat(w.attributes.OnPower),
+                parseFloat(w.attributes.OffPower),
+                parseInt(w.attributes.Cadence || '0'),
+                parseInt(w.attributes.CadenceResting),
+                parseInt(w.attributes.Pace || '0')
+              ))
               duration = (parseFloat(w.attributes.OnDuration) + parseFloat(w.attributes.OffDuration)) * parseFloat(w.attributes.Repeat)
-            }              
-
-            if (w.name === 'free')
-              addInterval(intervalFactory.free(parseFloat(w.attributes.Duration), parseInt(w.attributes.Cadence)))
+            }
+            if (w.name === 'free') {
+              addInterval(intervalFactory.free(
+                parseFloat(w.attributes.Duration),
+                parseInt(w.attributes.Cadence)
+              ))
+            }
 
             // check for instructions
             const textElements = w.elements
