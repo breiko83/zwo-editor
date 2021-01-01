@@ -34,6 +34,7 @@ import intervalFactory from '../intervalFactory'
 import parseWorkoutXml from '../../xml/parseWorkoutXml'
 import upload from '../../network/upload'
 import download from '../../network/download'
+import loadFirebaseWorkout from '../../network/loadFirebaseWorkout'
 
 interface Message {
   visible: boolean,
@@ -102,21 +103,19 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
 
     setMessage({ visible: true, class: 'loading', text: 'Loading..' })
 
-    db.ref('workouts/' + id).once('value').then(function (snapshot) {
-      if (snapshot.val()) {
+    loadFirebaseWorkout(db, id).then((workout) => {
+      if (workout) {
         // workout exist on server
-        setAuthor(snapshot.val().author)
-        setName(snapshot.val().name)
-        setDescription(snapshot.val().description)
-        setIntervals(snapshot.val().workout || [])
-        setInstructions(snapshot.val().instructions || [])
-        setTags(snapshot.val().tags || [])
-        setSportType(snapshot.val().sportType)
+        setAuthor(workout.author)
+        setName(workout.name)
+        setDescription(workout.description)
+        setIntervals(workout.intervals)
+        setInstructions(workout.instructions)
+        setTags(workout.tags)
+        setSportType(workout.sportType)
 
         localStorage.setItem('id', id)
-
       } else {
-
         // workout doesn't exist on cloud 
         if (id === localStorage.getItem('id')) {
           // user refreshed the page
@@ -131,7 +130,6 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
         }
 
         localStorage.setItem('id', id)
-
       }
       console.log('useEffect firebase');
 
