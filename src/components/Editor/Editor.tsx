@@ -44,6 +44,7 @@ import NumberField from './NumberField'
 import UploadButton from '../Button/UploadButton'
 import IconButton from '../Button/IconButton'
 import ColorButton from '../Button/ColorButton'
+import Button from '../Button/Button'
 
 interface Message {
   visible: boolean,
@@ -562,12 +563,12 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
             <ColorButton label="Z6" color={Colors.RED} onClick={() => addInterval(intervalFactory.steady({ power: Zones.Z6.min }))} />
           </div>
           :
-          <button className="btn" onClick={() => addInterval(intervalFactory.steady({}))} style={{ backgroundColor: Colors.WHITE }}><SteadyLogo className="btn-icon" /> Steady Pace</button>
+          <Button onClick={() => addInterval(intervalFactory.steady({}))}><SteadyLogo className="btn-icon" /> Steady Pace</Button>
         }
 
-        <button className="btn" onClick={() => addInterval(intervalFactory.ramp({ startPower: 0.25, endPower: 0.75 }))} style={{ backgroundColor: Colors.WHITE }}><WarmupLogo className="btn-icon" /> Warm up</button>
-        <button className="btn" onClick={() => addInterval(intervalFactory.ramp({ startPower: 0.75, endPower: 0.25 }))} style={{ backgroundColor: Colors.WHITE }}><WarmdownLogo className="btn-icon" /> Cool down</button>
-        <button className="btn" onClick={() => addInterval(intervalFactory.repetition({}))} style={{ backgroundColor: Colors.WHITE }}><IntervalLogo className="btn-icon" /> Interval</button>
+        <Button onClick={() => addInterval(intervalFactory.ramp({ startPower: 0.25, endPower: 0.75 }))}><WarmupLogo className="btn-icon" /> Warm up</Button>
+        <Button onClick={() => addInterval(intervalFactory.ramp({ startPower: 0.75, endPower: 0.25 }))}><WarmdownLogo className="btn-icon" /> Cool down</Button>
+        <Button onClick={() => addInterval(intervalFactory.repetition({}))}><IntervalLogo className="btn-icon" /> Interval</Button>
         {sportType === "bike" &&
           <IconButton label="Free Ride" icon={faBicycle} onClick={() => addInterval(intervalFactory.free({}))} />
         }
