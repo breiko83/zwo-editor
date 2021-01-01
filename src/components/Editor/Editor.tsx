@@ -37,6 +37,7 @@ import download from '../../network/download'
 import loadFirebaseWorkout from '../../network/loadFirebaseWorkout'
 import { createEmptyWorkout, Workout } from '../../xml/Workout'
 import { moveInterval, updateIntervalDuration, updateIntervalPower } from '../intervalUtils'
+import Keyboard from '../Keyboard/Keyboard'
 
 interface Message {
   visible: boolean,
@@ -196,40 +197,6 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
     }
   }
 
-  function handleKeyPress(event: React.KeyboardEvent<HTMLDivElement>) {
-    if (event.target instanceof HTMLInputElement) {
-      // Ignore key presses coming from input elements
-      return;
-    }
-
-    switch (event.keyCode) {
-      case 8:
-        removeBar(selectedId || '')
-        // Prevent navigation to previous page
-        event.preventDefault()
-        break;
-      case 37:
-        // reduce time
-        removeTimeToBar(selectedId || '')
-        break;
-      case 39:
-        // add time
-        addTimeToBar(selectedId || '')
-        break;
-      case 38:
-        // add power
-        addPowerToBar(selectedId || '')
-        break;
-      case 40:
-        // add power
-        removePowerToBar(selectedId || '')
-        break;
-      default:
-        //console.log(event.keyCode);        
-        break;
-    }
-  }
-
   function addInterval(interval: Interval) {
     setIntervals(intervals => [...intervals, interval]);
   }
@@ -259,22 +226,6 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
   function removeBar(id: string) {
     setIntervals(intervals.filter(item => item.id !== id))
     setSelectedId(undefined)
-  }
-
-  function addTimeToBar(id: string) {
-    setIntervals(updateIntervalDuration(id, 5, intervals));
-  }
-
-  function removeTimeToBar(id: string) {
-    setIntervals(updateIntervalDuration(id, -5, intervals));
-  }
-
-  function addPowerToBar(id: string) {
-    setIntervals(updateIntervalPower(id, 0.01, intervals));
-  }
-
-  function removePowerToBar(id: string) {
-    setIntervals(updateIntervalPower(id, -0.01, intervals));
   }
 
   function duplicateBar(id: string) {
@@ -491,8 +442,14 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
   }
 
   return (
-    // Adding tabIndex allows div element to receive keyboard events
-    <div className="container" onKeyDown={handleKeyPress} tabIndex={0}>
+    <Keyboard
+      className="container"
+      onBackspacePress={() => selectedId && removeBar(selectedId)}
+      onUpPress={() => selectedId && setIntervals(updateIntervalPower(selectedId, 0.01, intervals))}
+      onDownPress={() => selectedId && setIntervals(updateIntervalPower(selectedId, -0.01, intervals))}
+      onLeftPress={() => selectedId && setIntervals(updateIntervalDuration(selectedId, -5, intervals))}
+      onRightPress={() => selectedId && setIntervals(updateIntervalDuration(selectedId, 5, intervals))}
+    >
       <Head id={id} name={name} description={description} />
 
       {message?.visible &&
@@ -650,8 +607,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
         <button className="btn" onClick={() => shareWorkout()} ><FontAwesomeIcon icon={faShareAlt} size="lg" fixedWidth /> Share</button>
       </div>
       <Footer />
-    </div>
-
+    </Keyboard>
   )
 }
 
