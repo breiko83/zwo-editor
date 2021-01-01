@@ -909,13 +909,13 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
         // extract watts
         const powerInWatts = workoutBlock.match(/([0-9]\d*w)/)
         const powerInWattsPerKg = workoutBlock.match(/([0-9]*.?[0-9]wkg)/)
-        
+        const powerInPercentageFtp = workoutBlock.match(/([0-9]\d*%)/)
+
         let power = powerInWatts ? parseInt(powerInWatts[0])/ftp : 1
         power = powerInWattsPerKg ? parseFloat(powerInWattsPerKg[0])*weight/ftp : power
-
-        // extract duration in seconds
-        console.log(workoutBlock);
+        power = powerInPercentageFtp ? parseInt(powerInPercentageFtp[0])/100 : power
         
+        // extract duration in seconds                
         const durationInSeconds = workoutBlock.match(/([0-9]\d*s)/)        
         const durationInMinutes = workoutBlock.match(/([0-9]*:?[0-9][0-9]*m)/)
 
@@ -941,16 +941,20 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
         // extract watts
         const startPowerInWatts = workoutBlock.match(/([0-9]\d*w)/)
         const startPowerInWattsPerKg = workoutBlock.match(/([0-9]*.?[0-9]wkg)/)
+        const startPowerInPercentageFtp = workoutBlock.match(/([0-9]\d*%)/)
         
         let startPower = startPowerInWatts ? parseInt(startPowerInWatts[0])/ftp : 1
         startPower = startPowerInWattsPerKg ? parseFloat(startPowerInWattsPerKg[0])*weight/ftp : startPower
+        startPower = startPowerInPercentageFtp ? parseInt(startPowerInPercentageFtp[0])/100 : startPower
 
         // extract watts
         const endPowerInWatts = workoutBlock.match(/(-[0-9]\d*w)/)
         const endPowerInWattsPerKg = workoutBlock.match(/(-[0-9]*.?[0-9]wkg)/)
+        const endPowerInPercentageFtp = workoutBlock.match(/-([0-9]\d*%)/)
         
         let endPower = endPowerInWatts ? Math.abs(parseInt(endPowerInWatts[0]))/ftp : 1
         endPower = endPowerInWattsPerKg ? Math.abs(parseFloat(endPowerInWattsPerKg[0]))*weight/ftp : endPower
+        endPower = endPowerInPercentageFtp ? Math.abs(parseInt(endPowerInPercentageFtp[0]))/100 : endPower
         
         const durationInSeconds = workoutBlock.match(/([0-9]\d*s)/)        
         const durationInMinutes = workoutBlock.match(/([0-9]*:?[0-9][0-9]*m)/)
@@ -1000,16 +1004,20 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
         // extract watts
         const startPowerInWatts = workoutBlock.match(/([0-9]\d*w)/)
         const startPowerInWattsPerKg = workoutBlock.match(/([0-9]*.?[0-9]wkg)/)
-        
+        const startPowerInPercentageFtp = workoutBlock.match(/([0-9]\d*%)/)
+
         let startPower = startPowerInWatts ? parseInt(startPowerInWatts[0])/ftp : 1
         startPower = startPowerInWattsPerKg ? parseFloat(startPowerInWattsPerKg[0])*weight/ftp : startPower
+        startPower = startPowerInPercentageFtp ? parseInt(startPowerInPercentageFtp[0])/100 : startPower
 
         // extract watts
         const endPowerInWatts = workoutBlock.match(/(-[0-9]\d*w)/)
         const endPowerInWattsPerKg = workoutBlock.match(/(-[0-9]*.?[0-9]wkg)/)
+        const endPowerInPercentageFtp = workoutBlock.match(/-([0-9]\d*%)/)
         
         let endPower = endPowerInWatts ? Math.abs(parseInt(endPowerInWatts[0]))/ftp : 0.5
         endPower = endPowerInWattsPerKg ? Math.abs(parseFloat(endPowerInWattsPerKg[0]))*weight/ftp : endPower
+        endPower = endPowerInPercentageFtp ? Math.abs(parseInt(endPowerInPercentageFtp[0]))/100 : endPower
 
         // extract cadence in rpm
         const cadence = workoutBlock.match(/([0-9]\d*rpm)/)
@@ -1146,7 +1154,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
       {sportType === "run" && <RunningTimesEditor times={runningTimes} onChange={setRunningTimes} />}
       { textEditorIsVisible && sportType === "bike" &&
         <div className="text-editor">
-          <textarea onChange={(e) => transformTextToWorkout(e.target.value)} rows={10} spellCheck={false} className="text-editor-textarea" placeholder="Add blocks here: &#10;steady 3.0wkg 30s"></textarea>
+          <textarea onChange={(e) => transformTextToWorkout(e.target.value)} rows={10} spellCheck={false} className="text-editor-textarea" placeholder="Add one block per line here: &#10;steady 3.0wkg 30s"></textarea>
           <div className="text-editor-instructions">
             <h2>Instructions</h2>
             <p>Every row correspond to a workout block. Scroll down to see some examples.</p>
@@ -1155,7 +1163,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
             <h3>Time</h3>
             <p><span>30s</span> or <span>0:30m</span></p>
             <h3>Power</h3>
-            <p><span>250w</span> or <span>3.0wkg</span></p>
+            <p><span>250w</span> or <span>3.0wkg</span> or <span>75%</span> (FTP)</p>
             <h3>Cadence</h3>
             <p><span>120rpm</span></p>
             <h2>Examples</h2>
