@@ -336,76 +336,83 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
     setSelectedId(undefined)
   }
 
+  function replaceInterval(id: string, transform: (interval: Interval) => Interval) {
+    const index = intervals.findIndex(interval => interval.id === id);
+    if (index === -1) {
+      return;
+    }
+
+    setIntervals([
+      ...intervals.slice(0, index),
+      ...[transform(intervals[index])],
+      ...intervals.slice(index + 1),
+    ]);
+  }
+
   function addTimeToBar(id: string) {
-    const updatedArray = [...intervals]
-
-    const index = updatedArray.findIndex(interval => interval.id === id)
-    const interval = updatedArray[index]
-    if (interval && interval.type === 'steady' && durationType === 'time') {
-      interval.duration = interval.duration + 5
-      interval.distance = helpers.calculateDistance(interval.duration, runningSpeed(interval.pace)) / (interval.power || 1)
-      setIntervals(updatedArray)
-    }
-
-    if (interval && interval.type === 'steady' && durationType === 'distance') {
-      interval.distance = (interval.distance || 0) + 200
-      interval.duration = helpers.calculateTime(interval.distance, runningSpeed(interval.pace)) / (interval.power || 1)
-      setIntervals(updatedArray)
-    }
+    replaceInterval(id, (interval) => {
+      if (interval.type === 'steady' && durationType === 'time') {
+        const duration = interval.duration + 5;
+        const distance = helpers.calculateDistance(duration, runningSpeed(interval.pace)) / (interval.power || 1);
+        return { ...interval, duration, distance };
+      }
+      if (interval.type === 'steady' && durationType === 'distance') {
+        const distance = interval.distance + 200;
+        const duration = helpers.calculateTime(distance, runningSpeed(interval.pace)) / (interval.power || 1);
+        return { ...interval, duration, distance };
+      }
+      return interval;
+    });
   }
 
   function removeTimeToBar(id: string) {
-    const updatedArray = [...intervals]
-
-    const index = updatedArray.findIndex(interval => interval.id === id)
-    const interval = updatedArray[index]
-    if (interval && interval.type === 'steady' && interval.duration > 5 && durationType === 'time') {
-      interval.duration = interval.duration - 5
-      interval.distance = helpers.calculateDistance(interval.duration, runningSpeed(interval.pace)) / (interval.power || 1)
-      setIntervals(updatedArray)
-    }
-
-    if (interval && interval.type === 'steady' && (interval.distance || 0) > 200 && durationType === 'distance') {
-      interval.distance = (interval.distance || 0) - 200
-      interval.duration = helpers.calculateTime(interval.distance, runningSpeed(interval.pace)) / (interval.power || 1)
-      setIntervals(updatedArray)
-    }
+    replaceInterval(id, (interval) => {
+      if (interval.type === 'steady' && interval.duration > 5 && durationType === 'time') {
+        const duration = interval.duration - 5
+        const distance = helpers.calculateDistance(duration, runningSpeed(interval.pace)) / (interval.power || 1)
+        return { ...interval, duration, distance };
+      }
+      if (interval.type === 'steady' && interval.distance > 200 && durationType === 'distance') {
+        const distance = interval.distance - 200
+        const duration = helpers.calculateTime(distance, runningSpeed(interval.pace)) / (interval.power || 1)
+        return { ...interval, duration, distance };
+      }
+      return interval;
+    });
   }
 
   function addPowerToBar(id: string) {
-    const updatedArray = [...intervals]
-
-    const index = updatedArray.findIndex(interval => interval.id === id)
-    const interval = updatedArray[index]
-    if (interval && interval.type === 'steady' && interval.power) {
-      interval.power = parseFloat((interval.power + 1 / ftp).toFixed(3))
-
-      if (durationType === 'time') {
-        interval.distance = helpers.calculateDistance(interval.duration, runningSpeed(interval.pace)) / interval.power
-      } else {
-        interval.duration = helpers.calculateTime(interval.distance || 0, runningSpeed(interval.pace)) / interval.power
+    replaceInterval(id, (interval) => {
+      if (interval.type === 'steady') {
+        const power = parseFloat((interval.power + 1 / ftp).toFixed(3))
+  
+        if (durationType === 'time') {
+          const distance = helpers.calculateDistance(interval.duration, runningSpeed(interval.pace)) / power
+          return { ...interval, power, distance }
+        } else {
+          const duration = helpers.calculateTime(interval.distance, runningSpeed(interval.pace)) / power
+          return { ...interval, power, duration }
+        }
       }
-
-      setIntervals(updatedArray)
-    }
+      return interval;
+    });
   }
 
   function removePowerToBar(id: string) {
-    const updatedArray = [...intervals]
-
-    const index = updatedArray.findIndex(interval => interval.id === id)
-    const interval = updatedArray[index]
-    if (interval && interval.type === 'steady' && interval.power >= Zones.Z1.min) {
-      interval.power = parseFloat((interval.power - 1 / ftp).toFixed(3))
-
-      if (durationType === 'time') {
-        interval.distance = helpers.calculateDistance(interval.duration, runningSpeed(interval.pace)) / interval.power
-      } else {
-        interval.duration = helpers.calculateTime(interval.distance || 0, runningSpeed(interval.pace)) / interval.power
+    replaceInterval(id, (interval) => {
+      if (interval.type === 'steady' && interval.power >= Zones.Z1.min) {
+        const power = parseFloat((interval.power - 1 / ftp).toFixed(3))
+  
+        if (durationType === 'time') {
+          const distance = helpers.calculateDistance(interval.duration, runningSpeed(interval.pace)) / power
+          return { ...interval, power, distance }
+        } else {
+          const duration = helpers.calculateTime(interval.distance, runningSpeed(interval.pace)) / power
+          return { ...interval, power, duration }
+        }
       }
-
-      setIntervals(updatedArray)
-    }
+      return interval;
+    });
   }
 
   function duplicateBar(id: string) {
