@@ -39,6 +39,7 @@ import { createEmptyWorkout, Workout } from '../../xml/Workout'
 import { moveInterval, updateIntervalDuration, updateIntervalPower } from '../intervalUtils'
 import Keyboard from '../Keyboard/Keyboard'
 import Stats from './Stats'
+import Title from './Title'
 
 interface Message {
   visible: boolean,
@@ -502,11 +503,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
         </Popup>
       }
       <div className="info">
-        <div className="title">
-          <h1>{name}</h1>
-          <div className="description">{description}</div>
-          <p>{author ? `by ${author}` : ''}</p>
-        </div>
+        <Title name={name} author={author} description={description} />
         <div className="workout">
           <Stats intervals={intervals} ftp={ftp} />
           <LeftRightToggle<"bike","run">
