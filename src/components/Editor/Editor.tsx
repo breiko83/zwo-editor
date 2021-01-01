@@ -45,6 +45,7 @@ import UploadButton from '../Button/UploadButton'
 import IconButton from '../Button/IconButton'
 import ColorButton from '../Button/ColorButton'
 import Button from '../Button/Button'
+import ActionButton from '../Button/ActionButton'
 
 interface Message {
   visible: boolean,
@@ -527,10 +528,10 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
       <div id="editor" className='editor'>
         {selectedId &&
           <div className='actions'>
-            <button onClick={() => moveLeft(selectedId)} title='Move Left'><FontAwesomeIcon icon={faArrowLeft} size="lg" fixedWidth /></button>
-            <button onClick={() => moveRight(selectedId)} title='Move Right'><FontAwesomeIcon icon={faArrowRight} size="lg" fixedWidth /></button>
-            <button onClick={() => removeBar(selectedId)} title='Delete'><FontAwesomeIcon icon={faTrash} size="lg" fixedWidth /></button>
-            <button onClick={() => duplicateBar(selectedId)} title='Duplicate'><FontAwesomeIcon icon={faCopy} size="lg" fixedWidth /></button>
+            <ActionButton title='Move Left' icon={faArrowLeft} onClick={() => moveLeft(selectedId)} />
+            <ActionButton title='Move Right' icon={faArrowRight} onClick={() => moveRight(selectedId)} />
+            <ActionButton title='Delete' icon={faTrash} onClick={() => removeBar(selectedId)} />
+            <ActionButton title='Duplicate' icon={faCopy} onClick={() => duplicateBar(selectedId)} />
             {sportType === "run" &&
               <PaceSelector value={getPace(selectedId)} onChange={(pace) => setPace(pace, selectedId)} />
             }
