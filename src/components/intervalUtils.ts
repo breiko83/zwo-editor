@@ -39,3 +39,17 @@ export function updateIntervalPower(id: string, dPower: number, intervals: Inter
     return interval;
   }, intervals);
 }
+
+export function moveInterval(id: string, direction: -1 | 1, intervals: Interval[]): Interval[] {
+  const oldIndex = intervals.findIndex(interval => interval.id === id);
+  const newIndex = oldIndex + direction;
+
+  if (newIndex < 0 || newIndex >= intervals.length) {
+    return intervals;
+  }
+
+  const newArray = [...intervals];
+  newArray[newIndex] = intervals[oldIndex];
+  newArray[oldIndex] = intervals[newIndex];
+  return newArray;
+}

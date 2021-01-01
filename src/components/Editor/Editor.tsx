@@ -36,7 +36,7 @@ import upload from '../../network/upload'
 import download from '../../network/download'
 import loadFirebaseWorkout from '../../network/loadFirebaseWorkout'
 import { createEmptyWorkout, Workout } from '../../xml/Workout'
-import { updateIntervalDuration, updateIntervalPower } from '../intervalUtils'
+import { moveInterval, updateIntervalDuration, updateIntervalPower } from '../intervalUtils'
 
 interface Message {
   visible: boolean,
@@ -286,27 +286,11 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
   }
 
   function moveLeft(id: string) {
-    const index = intervals.findIndex(interval => interval.id === id)
-    // not first position of array
-    if (index > 0) {
-      const updatedArray = [...intervals]
-      const interval = updatedArray[index]
-      updatedArray.splice(index, 1)
-      updatedArray.splice(index - 1, 0, interval)
-      setIntervals(updatedArray)
-    }
+    setIntervals(moveInterval(id, -1, intervals));
   }
 
   function moveRight(id: string) {
-    const index = intervals.findIndex(interval => interval.id === id)
-    // not first position of array
-    if (index < intervals.length - 1) {
-      const updatedArray = [...intervals]
-      const interval = updatedArray[index]
-      updatedArray.splice(index, 1)
-      updatedArray.splice(index + 1, 0, interval)
-      setIntervals(updatedArray)
-    }
+    setIntervals(moveInterval(id, +1, intervals));
   }
 
   function saveWorkout() {
