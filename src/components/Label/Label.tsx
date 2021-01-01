@@ -1,6 +1,6 @@
 import React from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faBolt, faClock, faRuler } from '@fortawesome/free-solid-svg-icons'
+import { faBolt, faClock } from '@fortawesome/free-solid-svg-icons'
 import './Label.css'
 import { PaceType } from '../Editor/PaceSelector'
 import helpers from '../helpers'
@@ -8,7 +8,6 @@ import helpers from '../helpers'
 interface LabelProps {
   sportType: string;
   duration: number;
-  distance?: number;
   power?: number;
   powerStart?: number;
   powerEnd?: number;
@@ -45,11 +44,6 @@ const Label = (props: LabelProps) => {
       {props.powerStart && props.powerEnd && props.ftp && props.sportType === "bike" &&
         <div>
           {(props.powerStart / props.ftp * 100).toFixed(0)}% FTP - {(props.powerEnd / props.ftp * 100).toFixed(0)}% FTP
-        </div>
-      }
-      {props.sportType === "run" && props.distance &&
-        <div>
-          <FontAwesomeIcon icon={faRuler} fixedWidth /> {props.distance.toFixed(0)} m
         </div>
       }
       {props.power && props.ftp && props.pace !== undefined && props.sportType === "run" &&

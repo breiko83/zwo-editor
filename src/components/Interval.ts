@@ -3,7 +3,6 @@ import { PaceType } from "./Editor/PaceSelector";
 export interface SteadyInterval {
   id: string,
   duration: number,
-  distance: number,
   type: 'steady',
   power: number,
   cadence: number,
@@ -13,7 +12,6 @@ export interface SteadyInterval {
 export interface RampInterval {
   id: string,
   duration: number,
-  distance: number,
   type: 'ramp',
   startPower: number,
   endPower: number,
@@ -39,8 +37,6 @@ export interface RepetitionInterval {
   offDuration: number,
   repeat: number,
   pace: PaceType,
-  onDistance: number,
-  offDistance: number
 }
 
 export type Interval = SteadyInterval | RampInterval | FreeInterval | RepetitionInterval;

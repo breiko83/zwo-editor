@@ -5,7 +5,7 @@ import { Resizable } from 're-resizable'
 import Label from '../Label/Label'
 import helpers from '../helpers'
 import { RampInterval } from '../Interval'
-import { distanceMultiplier, durationMultiplier, powerMultiplier } from './multipliers'
+import { durationMultiplier, powerMultiplier } from './multipliers'
 
 interface IDictionary {
   [index: string]: number;
@@ -15,7 +15,6 @@ interface RampBarProps {
   interval: RampInterval;
   ftp: number;
   sportType: string;
-  durationType: string;
   speed: number;
   onChange: (interval: RampInterval) => void;
   onClick: (id: string) => void;
@@ -26,8 +25,6 @@ const RampBar = ({interval, ...props}: RampBarProps) => {
   const powerLabelStart = Math.round(interval.startPower * props.ftp)
   const powerLabelEnd = Math.round(interval.endPower * props.ftp)
 
-  const avgPower = Math.abs((interval.endPower + interval.startPower) / 2)
-
   const [showLabel, setShowLabel] = useState(false)
 
   const handleCadenceChange = (cadence: number) => {
@@ -35,7 +32,7 @@ const RampBar = ({interval, ...props}: RampBarProps) => {
   }
 
   // RUN WORKOUTS ON DISTANCE - BIKE WORKOUTS ON TIME
-  const [width, setWidth] = useState(props.durationType === 'time' ? Math.round((interval.duration) / durationMultiplier / 3 ) : ((interval.distance) / distanceMultiplier / 3))
+  const [width, setWidth] = useState(Math.round(interval.duration / durationMultiplier / 3 ))
 
   const [height1, setHeight1] = useState(interval.startPower * powerMultiplier)
   const [height2, setHeight2] = useState(((interval.endPower + interval.startPower) * powerMultiplier) / 2)
@@ -67,28 +64,33 @@ const RampBar = ({interval, ...props}: RampBarProps) => {
   }
 
   const handleResize1 = (dHeight: number) => {
-    const duration = props.durationType === 'time' ? helpers.floor(width * durationMultiplier * 3, 5) : Math.floor(helpers.calculateTime(interval.distance, props.speed) * 1 / avgPower)
-    const distance = props.durationType === 'time' ? Math.floor(helpers.calculateDistance(width * durationMultiplier, props.speed) * 1 / avgPower) : helpers.floor(width * distanceMultiplier * 3, 200)
-
-    props.onChange({ ...interval, duration, distance, startPower: (height1 + dHeight) / powerMultiplier, endPower: height3 / powerMultiplier })
+    props.onChange({
+      ...interval,
+      duration: helpers.floor(width * durationMultiplier * 3, 5),
+      startPower: (height1 + dHeight) / powerMultiplier,
+      endPower: height3 / powerMultiplier,
+    })
   }
-  const handleResize2 = (dHeight: number) => {    
-    const duration = props.durationType === 'time' ? helpers.floor(width * durationMultiplier * 3, 5) : Math.floor(helpers.calculateTime(interval.distance, props.speed) * 1 / avgPower)
-    const distance = props.durationType === 'time' ? Math.floor(helpers.calculateDistance(width * durationMultiplier, props.speed) * 1 / avgPower) : helpers.floor(width * distanceMultiplier * 3, 200)
-
-    props.onChange({ ...interval, duration, distance, startPower: (height1 + dHeight) / powerMultiplier, endPower: (height3 + dHeight) / powerMultiplier })
+  const handleResize2 = (dHeight: number) => {
+    props.onChange({
+      ...interval,
+      duration: helpers.floor(width * durationMultiplier * 3, 5),
+      startPower: (height1 + dHeight) / powerMultiplier,
+      endPower: (height3 + dHeight) / powerMultiplier,
+    })
   }
-  const handleResize3 = (dWidth: number, dHeight: number) => {    
-    const newWidth = width + (dWidth / 3)    
+  const handleResize3 = (dWidth: number, dHeight: number) => {
+    const newWidth = width + (dWidth / 3)
 
-    const distance = props.durationType === 'time' ? Math.floor(helpers.calculateDistance(newWidth * durationMultiplier, props.speed) * 1 / avgPower) : helpers.floor(newWidth * distanceMultiplier * 3, 200)
-    const duration = props.durationType === 'time' ? helpers.floor(newWidth * durationMultiplier * 3, 5) : Math.floor(helpers.calculateTime(interval.distance, props.speed) * 1 / avgPower)
-
-    props.onChange({ ...interval, duration, distance, startPower: height1 / powerMultiplier, endPower: (height3 + dHeight) / powerMultiplier })
+    props.onChange({
+      ...interval,
+      duration: helpers.floor(newWidth * durationMultiplier * 3, 5),
+      startPower: height1 / powerMultiplier,
+      endPower: (height3 + dHeight) / powerMultiplier
+    })
   }
 
   function calculateColors(start: number, end: number) {
-
     const bars = {} as IDictionary;
 
     ZonesArray.forEach((zone, index) => {
@@ -122,7 +124,6 @@ const RampBar = ({interval, ...props}: RampBarProps) => {
           ftp={props.ftp}
           sportType={props.sportType}
           pace={interval.pace}
-          distance={interval.distance}
           cadence={interval.cadence}
           onCadenceChange={(cadence: number)=> handleCadenceChange(cadence)}
         />

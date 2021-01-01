@@ -13,7 +13,7 @@ interface Instruction {
   length: number
 }
 
-const Comment = (props: { instruction: Instruction, durationType: string, width: number, onChange: Function, onDelete: Function, index: number }) => {
+const Comment = (props: { instruction: Instruction, width: number, onChange: Function, onDelete: Function, index: number }) => {
   const [text, setText] = useState(props.instruction.text)
   const [time, setTime] = useState(props.instruction.time / durationMultiplier)
 
@@ -76,12 +76,7 @@ const Comment = (props: { instruction: Instruction, durationType: string, width:
         {showInput &&
         <div className="edit">
           <FontAwesomeIcon icon={faTrashAlt} fixedWidth className="delete" style={{ color: 'gray' }} onClick={() => handleDelete()} />
-          {props.durationType === 'time' ?
-            <span style={{fontSize:'13px'}} data-testid='time'>{helpers.formatDuration(time * durationMultiplier)}</span>                  
-          :
-            <span style={{fontSize:'13px'}} data-testid='time'>{length * distanceMultiplier} m</span>                  
-          }
-          
+          <span style={{fontSize:'13px'}} data-testid='time'>{helpers.formatDuration(time * durationMultiplier)}</span>                  
           <textarea name="comment" value={text} style={{display:'block', padding:'5px', width:'250px',backgroundColor:'white'}} onChange={e => handleInputChange(e.target.value)} />        
         </div>
         }

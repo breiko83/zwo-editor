@@ -1,5 +1,5 @@
 import React from 'react';
-import { DurationType, SportType } from '../Editor/Editor';
+import { SportType } from '../Editor/Editor';
 import { Interval } from '../Interval';
 import FreeBar from './FreeBar';
 import SteadyBar from './SteadyBar';
@@ -11,14 +11,13 @@ interface GenericBarProps {
   sportType: SportType;
   ftp: number;
   weight: number;
-  durationType: DurationType;
   speed: number;
   selected: boolean;
   onChange: (interval: Interval) => void;
   onClick: (id: string) => void;
 }
 
-const GenericBar = ({ interval, sportType, ftp, weight, durationType, speed, selected, onChange, onClick }: GenericBarProps) => {
+const GenericBar = ({ interval, sportType, ftp, weight, speed, selected, onChange, onClick }: GenericBarProps) => {
   switch (interval.type) {
     case 'steady':
       return (
@@ -27,7 +26,6 @@ const GenericBar = ({ interval, sportType, ftp, weight, durationType, speed, sel
           ftp={ftp}
           weight={weight}
           sportType={sportType}
-          durationType={durationType}
           speed={speed}
           onChange={onChange}
           onClick={onClick}
@@ -41,7 +39,6 @@ const GenericBar = ({ interval, sportType, ftp, weight, durationType, speed, sel
           interval={interval}
           ftp={ftp}
           sportType={sportType}
-          durationType={durationType}
           speed={speed}
           onChange={onChange}
           onClick={onClick}
@@ -65,7 +62,6 @@ const GenericBar = ({ interval, sportType, ftp, weight, durationType, speed, sel
           ftp={ftp}
           weight={weight}
           sportType={sportType}
-          durationType={durationType}
           speed={speed}
           onChange={onChange}
           onClick={onClick}

@@ -1,7 +1,6 @@
 import moment from 'moment'
 import 'moment-duration-format'
 import { Colors, Zones } from './Constants'
-import { DurationType } from './Editor/Editor'
 import { Interval } from './Interval'
 
 const helpers = {
@@ -14,17 +13,8 @@ const helpers = {
     }
   },
 
-  getIntervalDistance(interval: Interval): number {
-    switch (interval.type) {
-      case 'free': return 0;
-      case 'steady': return interval.distance;
-      case 'ramp': return interval.distance;
-      case 'repetition': return interval.repeat * (interval.onDistance + interval.offDistance);
-    }
-  },
-
   // calculate total time
-  getWorkoutDuration: function (intervals: Interval[], durationType: DurationType): number {
+  getWorkoutDuration: function (intervals: Interval[]): number {
     var duration = 0
 
     intervals.forEach((interval) => {
@@ -97,15 +87,6 @@ const helpers = {
       }
     })
     return estimatedTimes;
-  },
-
-  getWorkoutDistance: function (intervals: Interval[]): string {
-    var distance = 0
-    intervals.forEach((interval) => {
-      distance += this.getIntervalDistance(interval)
-    })
-
-    return (distance / 1000).toFixed(1)
   },
 
   getTimeinSeconds: function (time: string): number {

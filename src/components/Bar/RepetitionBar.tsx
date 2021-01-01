@@ -10,7 +10,6 @@ interface RepetitionBarProps {
   weight: number;
   speed: number;
   sportType: string;
-  durationType: string;
   onChange: (interval: RepetitionInterval) => void;
   onClick: (id: string) => void;
   selected: boolean;
@@ -23,9 +22,6 @@ const RepetitionBar = ({interval, ...props}: RepetitionBarProps) => {
   const [onDuration, setOnDuration] = useState(interval.onDuration)
   const [offDuration, setOffDuration] = useState(interval.offDuration)
 
-  const [onDistance, setOnDistance] = useState(interval.onDistance)
-  const [offDistance, setOffDistance] = useState(interval.offDistance)
-
   useEffect(() => {
     const subIntervals: SteadyInterval[] = []
 
@@ -33,7 +29,6 @@ const RepetitionBar = ({interval, ...props}: RepetitionBarProps) => {
       subIntervals.push(
         {
           duration: onDuration,
-          distance: onDistance,
           power: interval.onPower,
           cadence: interval.cadence,
           type: 'steady',
@@ -44,7 +39,6 @@ const RepetitionBar = ({interval, ...props}: RepetitionBarProps) => {
       subIntervals.push(
         {
           duration: offDuration,
-          distance: offDistance,
           power: interval.offPower,
           cadence: interval.restingCadence,
           type: 'steady',
@@ -62,17 +56,14 @@ const RepetitionBar = ({interval, ...props}: RepetitionBarProps) => {
     
     if (index % 2 === 1) {
       setOffDuration(values.duration)
-      setOffDistance(values.distance)
     }else{
       setOnDuration(values.duration)
-      setOnDistance(values.distance)
     }
 
     for (var i = 0; i < subIntervals.length; i++) {
       if (index % 2 === i % 2) {       
         subIntervals[i].duration = values.duration
         subIntervals[i].power = values.power
-        subIntervals[i].distance = values.distance
         subIntervals[i].cadence = values.cadence        
       }      
     }
@@ -86,8 +77,6 @@ const RepetitionBar = ({interval, ...props}: RepetitionBarProps) => {
       offDuration: subIntervals[1].duration,
       onPower: subIntervals[0].power,
       offPower: subIntervals[1].power,
-      onDistance: subIntervals[0].distance,
-      offDistance: subIntervals[1].distance
     })
 
   }
@@ -117,7 +106,6 @@ const RepetitionBar = ({interval, ...props}: RepetitionBarProps) => {
       ftp={props.ftp}
       weight={props.weight}
       sportType={props.sportType}
-      durationType={props.durationType}
       speed={props.speed}
       onChange={handleOnChange}
       onClick={() => props.onClick(interval.id)}
