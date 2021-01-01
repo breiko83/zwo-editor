@@ -15,7 +15,6 @@ import { ReactComponent as WarmdownLogo } from '../../assets/warmdown.svg'
 import { ReactComponent as WarmupLogo } from '../../assets/warmup.svg'
 import { ReactComponent as IntervalLogo } from '../../assets/interval.svg'
 import { ReactComponent as SteadyLogo } from '../../assets/steady.svg'
-import Converter from 'xml-js'
 import helpers from '../helpers'
 import firebase, { auth } from '../firebase'
 import SaveForm from '../Forms/SaveForm'
@@ -32,6 +31,7 @@ import PaceSelector, { PaceType } from './PaceSelector'
 import { Interval } from '../Interval'
 import { Instruction } from '../Instruction'
 import intervalFactory from '../intervalFactory'
+import parseWorkoutXml from '../../xml/parseWorkoutXml'
 
 interface Message {
   visible: boolean,
@@ -525,95 +525,13 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
     fetch(`${S3_URL}/${id}.zwo`)
       .then(response => response.text())
       .then(data => {
-
-        // remove xml comments
-        data = data.replace(/<!--(.*?)-->/gm, "")
-
-        //now parse file  
-        const workout = Converter.xml2js(data)
-        const workout_file = workout.elements[0]
-
-        if (workout_file.name === 'workout_file') {
-          // file is valid
-          const authorIndex = workout_file.elements.findIndex((element: { name: string }) => element.name === 'author')
-          if (authorIndex !== -1 && workout_file.elements[authorIndex].elements) {
-            setAuthor(workout_file.elements[authorIndex].elements[0].text)
-          }
-
-          const nameIndex = workout_file.elements.findIndex((element: { name: string }) => element.name === 'name')
-          if (nameIndex !== -1 && workout_file.elements[nameIndex].elements) {
-            setName(workout_file.elements[nameIndex].elements[0].text)
-          }
-
-          const descriptionIndex = workout_file.elements.findIndex((element: { name: string }) => element.name === 'description')
-          if (descriptionIndex !== -1 && workout_file.elements[descriptionIndex].elements) {
-            setDescription(workout_file.elements[descriptionIndex].elements[0].text)
-          }
-
-          const workoutIndex = workout_file.elements.findIndex((element: { name: string }) => element.name === 'workout')
-
-          var totalTime = 0
-
-          workout_file.elements[workoutIndex].elements.map((w: { name: string; attributes: { Power: any; PowerLow: string; Duration: string; PowerHigh: string; Cadence: string; CadenceResting: string; Repeat: string; OnDuration: string; OffDuration: string; OnPower: string, OffPower: string; Pace: string }; elements: any }) => {
-
-            let duration = parseFloat(w.attributes.Duration)
-
-            if (w.name === 'SteadyState') {
-              addInterval(intervalFactory.steady({
-                power: parseFloat(w.attributes.Power || w.attributes.PowerLow),
-                duration: parseFloat(w.attributes.Duration),
-                cadence: parseFloat(w.attributes.Cadence || '0'),
-                pace: parseInt(w.attributes.Pace || '0'),
-              }))
-            }
-            if (w.name === 'Ramp' || w.name === 'Warmup' || w.name === 'Cooldown') {
-              addInterval(intervalFactory.ramp({
-                startPower: parseFloat(w.attributes.PowerLow),
-                endPower: parseFloat(w.attributes.PowerHigh),
-                duration: parseFloat(w.attributes.Duration),
-                pace: parseInt(w.attributes.Pace || '0'),
-                cadence: parseInt(w.attributes.Cadence),
-              }))
-            }
-            if (w.name === 'IntervalsT') {
-              addInterval(intervalFactory.repetition({
-                repeat: parseFloat(w.attributes.Repeat),
-                onDuration: parseFloat(w.attributes.OnDuration),
-                offDuration: parseFloat(w.attributes.OffDuration),
-                onPower: parseFloat(w.attributes.OnPower),
-                offPower: parseFloat(w.attributes.OffPower),
-                cadence: parseInt(w.attributes.Cadence || '0'),
-                restingCadence: parseInt(w.attributes.CadenceResting),
-                pace: parseInt(w.attributes.Pace || '0'),
-              }))
-              duration = (parseFloat(w.attributes.OnDuration) + parseFloat(w.attributes.OffDuration)) * parseFloat(w.attributes.Repeat)
-            }
-            if (w.name === 'free') {
-              addInterval(intervalFactory.free({
-                duration: parseFloat(w.attributes.Duration),
-                cadence: parseInt(w.attributes.Cadence),
-              }))
-            }
-
-            // check for instructions
-            const textElements = w.elements
-            if (textElements && textElements.length > 0) {
-
-              textElements.map((t: { name: string; attributes: { message: string | undefined; timeoffset: string } }) => {
-
-                if (t.name.toLowerCase() === 'textevent')
-                  addInstruction(t.attributes.message, totalTime + parseFloat(t.attributes.timeoffset))
-
-                return false
-              })
-
-            }
-
-            totalTime = totalTime + duration
-            // map functions expect return value
-            return false
-          })
-        }
+        const workout = parseWorkoutXml(data);
+        setName(workout.name);
+        setAuthor(workout.author);
+        setTags(workout.tags);
+        setSportType(workout.sportType);
+        setDescription(workout.description);
+        setInstructions(workout.instructions);
       })
       .catch(error => {
         console.error(error)
