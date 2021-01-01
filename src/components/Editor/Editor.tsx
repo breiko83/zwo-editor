@@ -36,7 +36,6 @@ export interface Instruction {
   id: string,
   text: string,
   time: number,
-  length: number
 }
 
 interface Message {
@@ -297,11 +296,10 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
     setIntervals(intervals => [...intervals, interval])
   }
 
-  function addInstruction(text = '', time = 0, length = 0) {
+  function addInstruction(text = '', time = 0) {
     setInstructions(instructions => [...instructions, {
       text: text,
       time: time,
-      length: length,
       id: uuidv4()
     }])
   }

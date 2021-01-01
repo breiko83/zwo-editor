@@ -10,15 +10,11 @@ interface Instruction {
   id: string,
   text: string,
   time: number,
-  length: number
 }
 
 const Comment = (props: { instruction: Instruction, width: number, onChange: Function, onDelete: Function, index: number }) => {
   const [text, setText] = useState(props.instruction.text)
   const [time, setTime] = useState(props.instruction.time / durationMultiplier)
-
-  // FOR RUN WORKOUTS
-  const [length, setLength] = useState(props.instruction.length / distanceMultiplier)
 
   const [showInput, setShowInput] = useState(false)
 
@@ -36,7 +32,6 @@ const Comment = (props: { instruction: Instruction, width: number, onChange: Fun
   function handleDragging(position: number) { 
     setShowInput(false)  
     setTime(position)
-    setLength(position)
   }
 
   function handleInputChange(value: string) {
@@ -49,7 +44,6 @@ const Comment = (props: { instruction: Instruction, width: number, onChange: Fun
         id: props.instruction.id,
         text: value,
         time: time * durationMultiplier,
-        length: length * distanceMultiplier
       })
   }
 
