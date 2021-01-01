@@ -12,7 +12,6 @@ interface SteadyBarProps {
   ftp: number;
   weight: number;
   sportType: string;
-  speed: number;
   onChange: (interval: SteadyInterval) => void;
   onClick: (id: string) => void;
   selected: boolean;

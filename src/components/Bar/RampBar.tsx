@@ -15,7 +15,6 @@ interface RampBarProps {
   interval: RampInterval;
   ftp: number;
   sportType: string;
-  speed: number;
   onChange: (interval: RampInterval) => void;
   onClick: (id: string) => void;
   selected: boolean;

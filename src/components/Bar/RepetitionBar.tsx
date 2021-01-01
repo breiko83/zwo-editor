@@ -8,7 +8,6 @@ interface RepetitionBarProps {
   interval: RepetitionInterval;
   ftp: number;
   weight: number;
-  speed: number;
   sportType: string;
   onChange: (interval: RepetitionInterval) => void;
   onClick: (id: string) => void;
@@ -106,7 +105,6 @@ const RepetitionBar = ({interval, ...props}: RepetitionBarProps) => {
       ftp={props.ftp}
       weight={props.weight}
       sportType={props.sportType}
-      speed={props.speed}
       onChange={handleOnChange}
       onClick={() => props.onClick(interval.id)}
       selected={props.selected}

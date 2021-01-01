@@ -655,19 +655,6 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
       })
   }
 
-  function runningSpeed(pace: PaceType = PaceType.oneMile) {
-    if (sportType === "bike") {
-      return 0;
-    } else {
-      // return speed in m/s
-      // speed  = distance / time
-      const distances = [1.60934, 5, 10, 21.0975, 42.195]
-      const times = [runningTimes.oneMile, runningTimes.fiveKm, runningTimes.tenKm, runningTimes.halfMarathon, runningTimes.marathon]
-
-      return distances[pace] * 1000 / helpers.getTimeinSeconds(times[pace])
-    }
-  }
-
   const renderInterval = (interval: Interval) => {
     return (
       <GenericBar
@@ -676,7 +663,6 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
         ftp={ftp}
         weight={weight}
         sportType={sportType}
-        speed={interval.type === 'free' ? 0 : runningSpeed(interval.pace)}
         onChange={updateInterval}
         onClick={toggleSelection}
         selected={interval.id === selectedId}

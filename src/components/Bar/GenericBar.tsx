@@ -11,13 +11,12 @@ interface GenericBarProps {
   sportType: SportType;
   ftp: number;
   weight: number;
-  speed: number;
   selected: boolean;
   onChange: (interval: Interval) => void;
   onClick: (id: string) => void;
 }
 
-const GenericBar = ({ interval, sportType, ftp, weight, speed, selected, onChange, onClick }: GenericBarProps) => {
+const GenericBar = ({ interval, sportType, ftp, weight, selected, onChange, onClick }: GenericBarProps) => {
   switch (interval.type) {
     case 'steady':
       return (
@@ -26,7 +25,6 @@ const GenericBar = ({ interval, sportType, ftp, weight, speed, selected, onChang
           ftp={ftp}
           weight={weight}
           sportType={sportType}
-          speed={speed}
           onChange={onChange}
           onClick={onClick}
           selected={selected}
@@ -39,7 +37,6 @@ const GenericBar = ({ interval, sportType, ftp, weight, speed, selected, onChang
           interval={interval}
           ftp={ftp}
           sportType={sportType}
-          speed={speed}
           onChange={onChange}
           onClick={onClick}
           selected={selected}
@@ -62,7 +59,6 @@ const GenericBar = ({ interval, sportType, ftp, weight, speed, selected, onChang
           ftp={ftp}
           weight={weight}
           sportType={sportType}
-          speed={speed}
           onChange={onChange}
           onClick={onClick}
           selected={selected}
