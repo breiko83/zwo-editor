@@ -41,6 +41,7 @@ import Keyboard from '../Keyboard/Keyboard'
 import Stats from './Stats'
 import Title from './Title'
 import NumberField from './NumberField'
+import UploadButton from '../Button/UploadButton'
 
 interface Message {
   visible: boolean,
@@ -581,14 +582,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
         <button className="btn" onClick={() => saveWorkout()}><FontAwesomeIcon icon={faSave} size="lg" fixedWidth /> Save</button>
         <button className="btn" onClick={() => { if (window.confirm('Are you sure you want to delete this workout?')) deleteWorkout() }}><FontAwesomeIcon icon={faTrash} size="lg" fixedWidth /> Delete</button>
         <button className="btn" onClick={() => downloadWorkout()} ><FontAwesomeIcon icon={faDownload} size="lg" fixedWidth /> Download</button>
-        <input
-          accept=".xml,.zwo"
-          id="contained-button-file"
-          type="file"
-          style={{ display: 'none' }}
-          onChange={(e) => handleUpload(e.target.files![0])}
-        />
-        <button className="btn" onClick={() => document.getElementById("contained-button-file")!.click()}><FontAwesomeIcon icon={faUpload} size="lg" fixedWidth /> Upload</button>
+        <UploadButton onUpload={handleUpload} />
         <button className="btn" onClick={() => setShowWorkouts(true)}><FontAwesomeIcon icon={faList} size="lg" fixedWidth /> Workouts</button>
         <button className="btn" onClick={() => shareWorkout()} ><FontAwesomeIcon icon={faShareAlt} size="lg" fixedWidth /> Share</button>
       </div>
