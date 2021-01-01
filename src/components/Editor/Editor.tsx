@@ -29,8 +29,9 @@ import LeftRightToggle from './LeftRightToggle'
 import createWorkoutXml from '../../xml/createWorkoutXml'
 import ShareForm from '../Forms/ShareForm'
 import PaceSelector, { PaceType } from './PaceSelector'
-import { FreeInterval, Interval, RampInterval, RepetitionInterval, SteadyInterval } from '../Interval'
+import { Interval } from '../Interval'
 import { Instruction } from '../Instruction'
+import intervalFactory from '../intervalFactory'
 
 interface Message {
   visible: boolean,
@@ -239,55 +240,8 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
     }
   }
 
-  function addSteadyInterval(power: number, duration: number = 300, cadence: number = 0, pace: PaceType = PaceType.oneMile) {
-    const interval: SteadyInterval = {
-      duration: duration,
-      power: power,
-      cadence: cadence,
-      type: 'steady',
-      id: uuidv4(),
-      pace: pace
-    };
-    setIntervals(intervals => [...intervals, interval])
-  }
-
-  function addRampInterval(startPower: number, endPower: number, duration: number = 300, pace: PaceType = PaceType.oneMile, cadence: number = 0) {
-    const interval: RampInterval = {
-      duration: duration,
-      startPower: startPower,
-      endPower: endPower,
-      cadence: cadence,
-      pace: pace,
-      type: 'ramp',
-      id: uuidv4()
-    };
-    setIntervals(intervals => [...intervals, interval])
-  }
-
-  function addFreeInterval(duration = 600, cadence: number = 0) {
-    const interval: FreeInterval = {
-      duration: duration,
-      cadence: cadence,
-      type: 'free',
-      id: uuidv4()
-    };
-    setIntervals(intervals => [...intervals, interval])
-  }
-
-  function addRepetitionInterval(repeat: number = 3, onDuration: number = 30, offDuration: number = 120, onPower: number = 1, offPower: number = 0.5, cadence: number = 0, restingCadence: number = 0, pace: PaceType = PaceType.oneMile) {
-    const interval: RepetitionInterval = {
-      id: uuidv4(),
-      type: 'repetition',
-      cadence: cadence,
-      restingCadence: restingCadence,
-      repeat: repeat,
-      onDuration: onDuration,
-      offDuration: offDuration,
-      onPower: onPower,
-      offPower: offPower,
-      pace: pace,
-    };
-    setIntervals(intervals => [...intervals, interval])
+  function addInterval(interval: Interval) {
+    setIntervals(intervals => [...intervals, interval]);
   }
 
   function addInstruction(text = '', time = 0) {
@@ -370,10 +324,10 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
     const index = intervals.findIndex(interval => interval.id === id)
     const interval = intervals[index]
 
-    if (interval.type === 'steady') addSteadyInterval(interval.power, interval.duration, interval.cadence, interval.pace)
-    if (interval.type === 'free') addFreeInterval(interval.duration, interval.cadence)
-    if (interval.type === 'ramp') addRampInterval(interval.startPower, interval.endPower, interval.duration, interval.pace, interval.cadence)
-    if (interval.type === 'repetition') addRepetitionInterval(interval.repeat, interval.onDuration, interval.offDuration, interval.onPower, interval.offPower, interval.cadence, interval.restingCadence, interval.pace)
+    if (interval.type === 'steady') addInterval(intervalFactory.steady(interval.power, interval.duration, interval.cadence, interval.pace))
+    if (interval.type === 'free') addInterval(intervalFactory.free(interval.duration, interval.cadence))
+    if (interval.type === 'ramp') addInterval(intervalFactory.ramp(interval.startPower, interval.endPower, interval.duration, interval.pace, interval.cadence))
+    if (interval.type === 'repetition') addInterval(intervalFactory.repetition(interval.repeat, interval.onDuration, interval.offDuration, interval.onPower, interval.offPower, interval.cadence, interval.restingCadence, interval.pace))
 
     setSelectedId(undefined)
   }
@@ -609,18 +563,18 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
             let duration = parseFloat(w.attributes.Duration)
 
             if (w.name === 'SteadyState')
-              addSteadyInterval(parseFloat(w.attributes.Power || w.attributes.PowerLow), parseFloat(w.attributes.Duration), parseFloat(w.attributes.Cadence || '0'), parseInt(w.attributes.Pace || '0'))
+              addInterval(intervalFactory.steady(parseFloat(w.attributes.Power || w.attributes.PowerLow), parseFloat(w.attributes.Duration), parseFloat(w.attributes.Cadence || '0'), parseInt(w.attributes.Pace || '0')))
 
             if (w.name === 'Ramp' || w.name === 'Warmup' || w.name === 'Cooldown')
-              addRampInterval(parseFloat(w.attributes.PowerLow), parseFloat(w.attributes.PowerHigh), parseFloat(w.attributes.Duration), parseInt(w.attributes.Pace || '0'), parseInt(w.attributes.Cadence))
+              addInterval(intervalFactory.ramp(parseFloat(w.attributes.PowerLow), parseFloat(w.attributes.PowerHigh), parseFloat(w.attributes.Duration), parseInt(w.attributes.Pace || '0'), parseInt(w.attributes.Cadence)))
 
             if (w.name === 'IntervalsT'){
-              addRepetitionInterval(parseFloat(w.attributes.Repeat), parseFloat(w.attributes.OnDuration), parseFloat(w.attributes.OffDuration), parseFloat(w.attributes.OnPower), parseFloat(w.attributes.OffPower), parseInt(w.attributes.Cadence || '0'), parseInt(w.attributes.CadenceResting), parseInt(w.attributes.Pace || '0'))
+              addInterval(intervalFactory.repetition(parseFloat(w.attributes.Repeat), parseFloat(w.attributes.OnDuration), parseFloat(w.attributes.OffDuration), parseFloat(w.attributes.OnPower), parseFloat(w.attributes.OffPower), parseInt(w.attributes.Cadence || '0'), parseInt(w.attributes.CadenceResting), parseInt(w.attributes.Pace || '0')))
               duration = (parseFloat(w.attributes.OnDuration) + parseFloat(w.attributes.OffDuration)) * parseFloat(w.attributes.Repeat)
             }              
 
             if (w.name === 'free')
-              addFreeInterval(parseFloat(w.attributes.Duration), parseInt(w.attributes.Cadence))
+              addInterval(intervalFactory.free(parseFloat(w.attributes.Duration), parseInt(w.attributes.Cadence)))
 
             // check for instructions
             const textElements = w.elements
@@ -820,22 +774,22 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
       <div className='cta'>
         {sportType === "bike" ?
           <div>
-            <button className="btn btn-square" onClick={() => addSteadyInterval(0.5)} style={{ backgroundColor: Colors.GRAY }}>Z1</button>
-            <button className="btn btn-square" onClick={() => addSteadyInterval(Zones.Z2.min)} style={{ backgroundColor: Colors.BLUE }}>Z2</button>
-            <button className="btn btn-square" onClick={() => addSteadyInterval(Zones.Z3.min)} style={{ backgroundColor: Colors.GREEN }}>Z3</button>
-            <button className="btn btn-square" onClick={() => addSteadyInterval(Zones.Z4.min)} style={{ backgroundColor: Colors.YELLOW }}>Z4</button>
-            <button className="btn btn-square" onClick={() => addSteadyInterval(Zones.Z5.min)} style={{ backgroundColor: Colors.ORANGE }}>Z5</button>
-            <button className="btn btn-square" onClick={() => addSteadyInterval(Zones.Z6.min)} style={{ backgroundColor: Colors.RED }}>Z6</button>
+            <button className="btn btn-square" onClick={() => addInterval(intervalFactory.steady(0.5))} style={{ backgroundColor: Colors.GRAY }}>Z1</button>
+            <button className="btn btn-square" onClick={() => addInterval(intervalFactory.steady(Zones.Z2.min))} style={{ backgroundColor: Colors.BLUE }}>Z2</button>
+            <button className="btn btn-square" onClick={() => addInterval(intervalFactory.steady(Zones.Z3.min))} style={{ backgroundColor: Colors.GREEN }}>Z3</button>
+            <button className="btn btn-square" onClick={() => addInterval(intervalFactory.steady(Zones.Z4.min))} style={{ backgroundColor: Colors.YELLOW }}>Z4</button>
+            <button className="btn btn-square" onClick={() => addInterval(intervalFactory.steady(Zones.Z5.min))} style={{ backgroundColor: Colors.ORANGE }}>Z5</button>
+            <button className="btn btn-square" onClick={() => addInterval(intervalFactory.steady(Zones.Z6.min))} style={{ backgroundColor: Colors.RED }}>Z6</button>
           </div>
           :
-          <button className="btn" onClick={() => addSteadyInterval(1, 300, 0, 0)} style={{ backgroundColor: Colors.WHITE }}><SteadyLogo className="btn-icon" /> Steady Pace</button>
+          <button className="btn" onClick={() => addInterval(intervalFactory.steady(1, 300, 0, 0))} style={{ backgroundColor: Colors.WHITE }}><SteadyLogo className="btn-icon" /> Steady Pace</button>
         }
 
-        <button className="btn" onClick={() => addRampInterval(0.25, 0.75)} style={{ backgroundColor: Colors.WHITE }}><WarmupLogo className="btn-icon" /> Warm up</button>
-        <button className="btn" onClick={() => addRampInterval(0.75, 0.25)} style={{ backgroundColor: Colors.WHITE }}><WarmdownLogo className="btn-icon" /> Cool down</button>
-        <button className="btn" onClick={() => addRepetitionInterval()} style={{ backgroundColor: Colors.WHITE }}><IntervalLogo className="btn-icon" /> Interval</button>
+        <button className="btn" onClick={() => addInterval(intervalFactory.ramp(0.25, 0.75))} style={{ backgroundColor: Colors.WHITE }}><WarmupLogo className="btn-icon" /> Warm up</button>
+        <button className="btn" onClick={() => addInterval(intervalFactory.ramp(0.75, 0.25))} style={{ backgroundColor: Colors.WHITE }}><WarmdownLogo className="btn-icon" /> Cool down</button>
+        <button className="btn" onClick={() => addInterval(intervalFactory.repetition())} style={{ backgroundColor: Colors.WHITE }}><IntervalLogo className="btn-icon" /> Interval</button>
         {sportType === "bike" &&
-          <button className="btn" onClick={() => addFreeInterval()} style={{ backgroundColor: Colors.WHITE }}><FontAwesomeIcon icon={faBicycle} size="lg" fixedWidth /> Free Ride</button>
+          <button className="btn" onClick={() => addInterval(intervalFactory.free())} style={{ backgroundColor: Colors.WHITE }}><FontAwesomeIcon icon={faBicycle} size="lg" fixedWidth /> Free Ride</button>
         }
         <button className="btn" onClick={() => addInstruction()} style={{ backgroundColor: Colors.WHITE }}><FontAwesomeIcon icon={faComment} size="lg" fixedWidth /> Text Event</button>
         {sportType === "bike" &&
