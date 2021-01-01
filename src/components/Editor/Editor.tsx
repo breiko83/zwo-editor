@@ -23,7 +23,7 @@ import LoginForm from '../Forms/LoginForm'
 import Head from '../Head/Head'
 import { RouteComponentProps } from 'react-router-dom';
 import ReactGA from 'react-ga';
-import RunningTimesEditor, { RunningTimes } from './RunningTimesEditor'
+import RunningTimesEditor from './RunningTimesEditor'
 import LeftRightToggle from './LeftRightToggle'
 import createWorkoutXml from '../../xml/createWorkoutXml'
 import ShareForm from '../Forms/ShareForm'
@@ -46,6 +46,7 @@ import IconButton from '../Button/IconButton'
 import ColorButton from '../Button/ColorButton'
 import Button from '../Button/Button'
 import ActionButton from '../Button/ActionButton'
+import * as storage from '../../storage/storage';
 
 interface Message {
   visible: boolean,
@@ -55,39 +56,24 @@ interface Message {
 
 type TParams = { id: string };
 
-const loadRunningTimes = (): RunningTimes => {
-  const missingRunningTimes: RunningTimes = { oneMile: "", fiveKm: "", tenKm: "", halfMarathon: "", marathon: "" }
-  const runningTimesJson = localStorage.getItem('runningTimes')
-  if (runningTimesJson) {
-    return JSON.parse(runningTimesJson)
-  }
-
-  // Fallback to old localStorage keys
-  const oneMile = localStorage.getItem('oneMileTime') || ''
-  const fiveKm = localStorage.getItem('fiveKmTime') || ''
-  const tenKm = localStorage.getItem('tenKmTime') || ''
-  const halfMarathon = localStorage.getItem('halfMarathonTime') || ''
-  const marathon = localStorage.getItem('marathonTime') || ''
-  if (oneMile || fiveKm || tenKm || halfMarathon || marathon) {
-    return { oneMile, fiveKm, tenKm, halfMarathon, marathon }
-  }
-
-  return missingRunningTimes
-}
 export type SportType = "bike" | "run";
 
 const Editor = ({ match }: RouteComponentProps<TParams>) => {
-  const [id, setId] = useState(match.params.id === "new" ? (localStorage.getItem('id') || generateId()) : match.params.id)
-  const [intervals, setIntervals] = useState<Array<Interval>>(JSON.parse(localStorage.getItem('currentWorkout') || '[]'))
-  const [selectedId, setSelectedId] = useState<string | undefined>(undefined)
-  const [ftp, setFtp] = useState(parseInt(localStorage.getItem('ftp') || '200'))
-  const [weight, setWeight] = useState(parseInt(localStorage.getItem('weight') || '75'))
-  const [instructions, setInstructions] = useState<Array<Instruction>>(JSON.parse(localStorage.getItem('instructions') || '[]'))  
-  const [tags, setTags] = useState(JSON.parse(localStorage.getItem('tags') || '[]'))
+  const [id, setId] = useState(match.params.id === "new" ? (storage.getId() || generateId()) : match.params.id)
 
-  const [name, setName] = useState(localStorage.getItem('name') || '')
-  const [description, setDescription] = useState(localStorage.getItem('description') || '')
-  const [author, setAuthor] = useState(localStorage.getItem('author') || '')
+  const [name, setName] = useState(storage.getName())
+  const [description, setDescription] = useState(storage.getDescription())
+  const [author, setAuthor] = useState(storage.getAuthor())
+  const [tags, setTags] = useState(storage.getTags())
+  const [sportType, setSportType] = useState(storage.getSportType())
+  const [intervals, setIntervals] = useState(storage.getIntervals())
+  const [instructions, setInstructions] = useState(storage.getInstructions())
+
+  const [ftp, setFtp] = useState(storage.getFtp())
+  const [weight, setWeight] = useState(storage.getWeight())
+  const [runningTimes, setRunningTimes] = useState(storage.getRunningTimes())
+
+  const [selectedId, setSelectedId] = useState<string | undefined>(undefined)
 
   const [savePopupIsVisile, setSavePopupVisibility] = useState(false)
   const [sharePopupIsVisile, setSharePopupVisibility] = useState(false)
@@ -103,11 +89,6 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
 
   const [showWorkouts, setShowWorkouts] = useState(false)
 
-  // bike or run
-  const [sportType, setSportType] = useState<SportType>(localStorage.getItem('sportType') as SportType || 'bike')
-
-  const [runningTimes, setRunningTimes] = useState(loadRunningTimes())
-
   const db = firebase.database();
 
   useEffect(() => {
@@ -118,17 +99,17 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
       if (workout) {
         // workout exist on server
         loadWorkout(workout)
-        localStorage.setItem('id', id)
+        storage.setId(id)
       } else {
         // workout doesn't exist on cloud 
-        if (id === localStorage.getItem('id')) {
+        if (id === storage.getId()) {
           // user refreshed the page
         } else {
           // treat this as new workout
           loadWorkout(createEmptyWorkout())
         }
 
-        localStorage.setItem('id', id)
+        storage.setId(id)
       }
       console.log('useEffect firebase');
 
@@ -150,23 +131,19 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
   }, [id, db])
 
   useEffect(() => {
+    storage.setName(name)
+    storage.setDescription(description)
+    storage.setAuthor(author)
+    storage.setTags(tags)
+    storage.setSportType(sportType)
+    storage.setIntervals(intervals)
+    storage.setInstructions(instructions)
 
-    localStorage.setItem('currentWorkout', JSON.stringify(intervals))
-    localStorage.setItem('ftp', ftp.toString())
+    storage.setFtp(ftp)
+    storage.setWeight(weight)
+    storage.setRunningTimes(runningTimes)
 
-    localStorage.setItem('instructions', JSON.stringify(instructions))
-    localStorage.setItem('weight', weight.toString())
-
-    localStorage.setItem('name', name)
-    localStorage.setItem('description', description)
-    localStorage.setItem('author', author)
-    localStorage.setItem('tags', JSON.stringify(tags))
-    localStorage.setItem('sportType', sportType)
-
-    localStorage.setItem('runningTimes', JSON.stringify(runningTimes))
-
-    setSegmentsWidth(segmentsRef.current?.scrollWidth || 1320)    
-
+    setSegmentsWidth(segmentsRef.current?.scrollWidth || 1320)
   }, [segmentsRef, intervals, ftp, instructions, weight, name, description, author, tags, sportType, runningTimes])
 
   function generateId() {
@@ -231,12 +208,12 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
     setInstructions(instructions.filter(item => item.id !== id))
   }
 
-  function removeBar(id: string) {
+  function removeInterval(id: string) {
     setIntervals(intervals.filter(item => item.id !== id))
     setSelectedId(undefined)
   }
 
-  function duplicateBar(id: string) {
+  function duplicateInterval(id: string) {
     const interval = intervals.find(interval => interval.id === id)
     if (interval) {
       addInterval(intervalFactory.clone(interval));
@@ -444,7 +421,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
   return (
     <Keyboard
       className="container"
-      onBackspacePress={() => selectedId && removeBar(selectedId)}
+      onBackspacePress={() => selectedId && removeInterval(selectedId)}
       onUpPress={() => selectedId && setIntervals(updateIntervalPower(selectedId, 0.01, intervals))}
       onDownPress={() => selectedId && setIntervals(updateIntervalPower(selectedId, -0.01, intervals))}
       onLeftPress={() => selectedId && setIntervals(updateIntervalDuration(selectedId, -5, intervals))}
@@ -522,8 +499,8 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
           <div className='actions'>
             <ActionButton title='Move Left' icon={faArrowLeft} onClick={() => selectedId && setIntervals(moveInterval(selectedId, -1, intervals))} />
             <ActionButton title='Move Right' icon={faArrowRight} onClick={() => selectedId && setIntervals(moveInterval(selectedId, +1, intervals))} />
-            <ActionButton title='Delete' icon={faTrash} onClick={() => removeBar(selectedId)} />
-            <ActionButton title='Duplicate' icon={faCopy} onClick={() => duplicateBar(selectedId)} />
+            <ActionButton title='Delete' icon={faTrash} onClick={() => selectedId && removeInterval(selectedId)} />
+            <ActionButton title='Duplicate' icon={faCopy} onClick={() => selectedId && duplicateInterval(selectedId)} />
             {sportType === "run" &&
               <PaceSelector value={getPace(selectedId)} onChange={(pace) => setPace(pace, selectedId)} />
             }
