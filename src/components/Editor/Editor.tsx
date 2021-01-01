@@ -35,6 +35,7 @@ import parseWorkoutXml from '../../xml/parseWorkoutXml'
 import upload from '../../network/upload'
 import download from '../../network/download'
 import loadFirebaseWorkout from '../../network/loadFirebaseWorkout'
+import { Workout } from '../../xml/Workout'
 
 interface Message {
   visible: boolean,
@@ -106,14 +107,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
     loadFirebaseWorkout(db, id).then((workout) => {
       if (workout) {
         // workout exist on server
-        setAuthor(workout.author)
-        setName(workout.name)
-        setDescription(workout.description)
-        setIntervals(workout.intervals)
-        setInstructions(workout.instructions)
-        setTags(workout.tags)
-        setSportType(workout.sportType)
-
+        loadWorkout(workout)
         localStorage.setItem('id', id)
       } else {
         // workout doesn't exist on cloud 
@@ -172,6 +166,16 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
 
   function generateId() {
     return Math.random().toString(36).substr(2, 16)
+  }
+
+  function loadWorkout(workout: Workout) {
+    setAuthor(workout.author)
+    setName(workout.name)
+    setDescription(workout.description)
+    setIntervals(workout.intervals)
+    setInstructions(workout.instructions)
+    setTags(workout.tags)
+    setSportType(workout.sportType)
   }
 
   function newWorkout() {
@@ -480,14 +484,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
 
     try {
       await upload(id, file);
-      const workout = parseWorkoutXml(await download(id));
-
-      setName(workout.name);
-      setAuthor(workout.author);
-      setTags(workout.tags);
-      setSportType(workout.sportType);
-      setDescription(workout.description);
-      setInstructions(workout.instructions);
+      loadWorkout(parseWorkoutXml(await download(id)));
     } catch (e) {
       console.error(e);
     }
