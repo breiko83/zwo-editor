@@ -2,51 +2,60 @@ import { v4 as uuidv4 } from 'uuid'
 import { PaceType } from './Editor/PaceSelector';
 import { FreeInterval, RampInterval, RepetitionInterval, SteadyInterval } from "./Interval";
 
+const defaultDuration = 300;
+const defaultPower = 1.0;
+const defaultPace = PaceType.oneMile;
+const defaultCadence = 0;
+
 export default {
-  steady(power: number, duration: number = 300, cadence: number = 0, pace: PaceType = PaceType.oneMile): SteadyInterval {
+  steady(interval: Partial<SteadyInterval>): SteadyInterval {
     return {
-      duration: duration,
-      power: power,
-      cadence: cadence,
       type: 'steady',
       id: uuidv4(),
-      pace: pace,
+      duration: defaultDuration,
+      power: defaultPower,
+      cadence: defaultCadence,
+      pace: defaultPace,
+      ...interval,
     };
   },
 
-  ramp(startPower: number, endPower: number, duration: number = 300, pace: PaceType = PaceType.oneMile, cadence: number = 0): RampInterval {
+  ramp(interval: Partial<RampInterval>): RampInterval {
     return {
-      duration: duration,
-      startPower: startPower,
-      endPower: endPower,
-      cadence: cadence,
-      pace: pace,
       type: 'ramp',
       id: uuidv4(),
+      duration: defaultDuration,
+      startPower: defaultPower / 2,
+      endPower: defaultPower,
+      cadence: defaultCadence,
+      pace: defaultPace,
+      ...interval,
     };
   },
 
-  free(duration = 600, cadence: number = 0): FreeInterval {
+  free(interval: Partial<FreeInterval>): FreeInterval {
     return {
-      duration: duration,
-      cadence: cadence,
       type: 'free',
       id: uuidv4(),
+      duration: defaultDuration,
+      cadence: defaultCadence,
+      ...interval
     };
   },
 
-  repetition(repeat: number = 3, onDuration: number = 30, offDuration: number = 120, onPower: number = 1, offPower: number = 0.5, cadence: number = 0, restingCadence: number = 0, pace: PaceType = PaceType.oneMile): RepetitionInterval {
+  repetition(interval: Partial<RepetitionInterval>): RepetitionInterval {
     return {
-      id: uuidv4(),
       type: 'repetition',
-      cadence: cadence,
-      restingCadence: restingCadence,
-      repeat: repeat,
-      onDuration: onDuration,
-      offDuration: offDuration,
-      onPower: onPower,
-      offPower: offPower,
-      pace: pace,
+      id: uuidv4(),
+      cadence: defaultCadence,
+      restingCadence: defaultCadence,
+      repeat: 3,
+      onDuration: 30,
+      offDuration: 120,
+      onPower: defaultPower,
+      offPower: defaultPower / 2,
+      pace: defaultPace,
+      ...interval,
     };
   },
 };

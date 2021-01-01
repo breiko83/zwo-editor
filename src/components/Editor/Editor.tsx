@@ -325,36 +325,20 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
     const interval = intervals[index]
 
     if (interval.type === 'steady') {
-      addInterval(intervalFactory.steady(
-        interval.power,
-        interval.duration,
-        interval.cadence,
-        interval.pace
-      ))
+      const { id: _ignore, ...rest } = interval;
+      addInterval(intervalFactory.steady(rest));
     }
     if (interval.type === 'free') {
-      addInterval(intervalFactory.free(interval.duration, interval.cadence))
+      const { id: _ignore, ...rest } = interval;
+      addInterval(intervalFactory.free(rest));
     }
     if (interval.type === 'ramp') {
-      addInterval(intervalFactory.ramp(
-        interval.startPower,
-        interval.endPower,
-        interval.duration,
-        interval.pace,
-        interval.cadence
-      ))
+      const { id: _ignore, ...rest } = interval;
+      addInterval(intervalFactory.ramp(rest));
     }
     if (interval.type === 'repetition') {
-      addInterval(intervalFactory.repetition(
-        interval.repeat,
-        interval.onDuration,
-        interval.offDuration,
-        interval.onPower,
-        interval.offPower,
-        interval.cadence,
-        interval.restingCadence,
-        interval.pace
-      ))
+      const { id: _ignore, ...rest } = interval;
+      addInterval(intervalFactory.repetition(rest));
     }
 
     setSelectedId(undefined)
@@ -591,40 +575,40 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
             let duration = parseFloat(w.attributes.Duration)
 
             if (w.name === 'SteadyState') {
-              addInterval(intervalFactory.steady(
-                parseFloat(w.attributes.Power || w.attributes.PowerLow),
-                parseFloat(w.attributes.Duration),
-                parseFloat(w.attributes.Cadence || '0'),
-                parseInt(w.attributes.Pace || '0')
-              ))
+              addInterval(intervalFactory.steady({
+                power: parseFloat(w.attributes.Power || w.attributes.PowerLow),
+                duration: parseFloat(w.attributes.Duration),
+                cadence: parseFloat(w.attributes.Cadence || '0'),
+                pace: parseInt(w.attributes.Pace || '0'),
+              }))
             }
             if (w.name === 'Ramp' || w.name === 'Warmup' || w.name === 'Cooldown') {
-              addInterval(intervalFactory.ramp(
-                parseFloat(w.attributes.PowerLow),
-                parseFloat(w.attributes.PowerHigh),
-                parseFloat(w.attributes.Duration),
-                parseInt(w.attributes.Pace || '0'),
-                parseInt(w.attributes.Cadence)
-              ))
+              addInterval(intervalFactory.ramp({
+                startPower: parseFloat(w.attributes.PowerLow),
+                endPower: parseFloat(w.attributes.PowerHigh),
+                duration: parseFloat(w.attributes.Duration),
+                pace: parseInt(w.attributes.Pace || '0'),
+                cadence: parseInt(w.attributes.Cadence),
+              }))
             }
             if (w.name === 'IntervalsT') {
-              addInterval(intervalFactory.repetition(
-                parseFloat(w.attributes.Repeat),
-                parseFloat(w.attributes.OnDuration),
-                parseFloat(w.attributes.OffDuration),
-                parseFloat(w.attributes.OnPower),
-                parseFloat(w.attributes.OffPower),
-                parseInt(w.attributes.Cadence || '0'),
-                parseInt(w.attributes.CadenceResting),
-                parseInt(w.attributes.Pace || '0')
-              ))
+              addInterval(intervalFactory.repetition({
+                repeat: parseFloat(w.attributes.Repeat),
+                onDuration: parseFloat(w.attributes.OnDuration),
+                offDuration: parseFloat(w.attributes.OffDuration),
+                onPower: parseFloat(w.attributes.OnPower),
+                offPower: parseFloat(w.attributes.OffPower),
+                cadence: parseInt(w.attributes.Cadence || '0'),
+                restingCadence: parseInt(w.attributes.CadenceResting),
+                pace: parseInt(w.attributes.Pace || '0'),
+              }))
               duration = (parseFloat(w.attributes.OnDuration) + parseFloat(w.attributes.OffDuration)) * parseFloat(w.attributes.Repeat)
             }
             if (w.name === 'free') {
-              addInterval(intervalFactory.free(
-                parseFloat(w.attributes.Duration),
-                parseInt(w.attributes.Cadence)
-              ))
+              addInterval(intervalFactory.free({
+                duration: parseFloat(w.attributes.Duration),
+                cadence: parseInt(w.attributes.Cadence),
+              }))
             }
 
             // check for instructions
@@ -825,22 +809,22 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
       <div className='cta'>
         {sportType === "bike" ?
           <div>
-            <button className="btn btn-square" onClick={() => addInterval(intervalFactory.steady(0.5))} style={{ backgroundColor: Colors.GRAY }}>Z1</button>
-            <button className="btn btn-square" onClick={() => addInterval(intervalFactory.steady(Zones.Z2.min))} style={{ backgroundColor: Colors.BLUE }}>Z2</button>
-            <button className="btn btn-square" onClick={() => addInterval(intervalFactory.steady(Zones.Z3.min))} style={{ backgroundColor: Colors.GREEN }}>Z3</button>
-            <button className="btn btn-square" onClick={() => addInterval(intervalFactory.steady(Zones.Z4.min))} style={{ backgroundColor: Colors.YELLOW }}>Z4</button>
-            <button className="btn btn-square" onClick={() => addInterval(intervalFactory.steady(Zones.Z5.min))} style={{ backgroundColor: Colors.ORANGE }}>Z5</button>
-            <button className="btn btn-square" onClick={() => addInterval(intervalFactory.steady(Zones.Z6.min))} style={{ backgroundColor: Colors.RED }}>Z6</button>
+            <button className="btn btn-square" onClick={() => addInterval(intervalFactory.steady({ power: 0.5 }))} style={{ backgroundColor: Colors.GRAY }}>Z1</button>
+            <button className="btn btn-square" onClick={() => addInterval(intervalFactory.steady({ power: Zones.Z2.min }))} style={{ backgroundColor: Colors.BLUE }}>Z2</button>
+            <button className="btn btn-square" onClick={() => addInterval(intervalFactory.steady({ power: Zones.Z3.min }))} style={{ backgroundColor: Colors.GREEN }}>Z3</button>
+            <button className="btn btn-square" onClick={() => addInterval(intervalFactory.steady({ power: Zones.Z4.min }))} style={{ backgroundColor: Colors.YELLOW }}>Z4</button>
+            <button className="btn btn-square" onClick={() => addInterval(intervalFactory.steady({ power: Zones.Z5.min }))} style={{ backgroundColor: Colors.ORANGE }}>Z5</button>
+            <button className="btn btn-square" onClick={() => addInterval(intervalFactory.steady({ power: Zones.Z6.min }))} style={{ backgroundColor: Colors.RED }}>Z6</button>
           </div>
           :
-          <button className="btn" onClick={() => addInterval(intervalFactory.steady(1, 300, 0, 0))} style={{ backgroundColor: Colors.WHITE }}><SteadyLogo className="btn-icon" /> Steady Pace</button>
+          <button className="btn" onClick={() => addInterval(intervalFactory.steady({}))} style={{ backgroundColor: Colors.WHITE }}><SteadyLogo className="btn-icon" /> Steady Pace</button>
         }
 
-        <button className="btn" onClick={() => addInterval(intervalFactory.ramp(0.25, 0.75))} style={{ backgroundColor: Colors.WHITE }}><WarmupLogo className="btn-icon" /> Warm up</button>
-        <button className="btn" onClick={() => addInterval(intervalFactory.ramp(0.75, 0.25))} style={{ backgroundColor: Colors.WHITE }}><WarmdownLogo className="btn-icon" /> Cool down</button>
-        <button className="btn" onClick={() => addInterval(intervalFactory.repetition())} style={{ backgroundColor: Colors.WHITE }}><IntervalLogo className="btn-icon" /> Interval</button>
+        <button className="btn" onClick={() => addInterval(intervalFactory.ramp({ startPower: 0.25, endPower: 0.75 }))} style={{ backgroundColor: Colors.WHITE }}><WarmupLogo className="btn-icon" /> Warm up</button>
+        <button className="btn" onClick={() => addInterval(intervalFactory.ramp({ startPower: 0.75, endPower: 0.25 }))} style={{ backgroundColor: Colors.WHITE }}><WarmdownLogo className="btn-icon" /> Cool down</button>
+        <button className="btn" onClick={() => addInterval(intervalFactory.repetition({}))} style={{ backgroundColor: Colors.WHITE }}><IntervalLogo className="btn-icon" /> Interval</button>
         {sportType === "bike" &&
-          <button className="btn" onClick={() => addInterval(intervalFactory.free())} style={{ backgroundColor: Colors.WHITE }}><FontAwesomeIcon icon={faBicycle} size="lg" fixedWidth /> Free Ride</button>
+          <button className="btn" onClick={() => addInterval(intervalFactory.free({}))} style={{ backgroundColor: Colors.WHITE }}><FontAwesomeIcon icon={faBicycle} size="lg" fixedWidth /> Free Ride</button>
         }
         <button className="btn" onClick={() => addInstruction()} style={{ backgroundColor: Colors.WHITE }}><FontAwesomeIcon icon={faComment} size="lg" fixedWidth /> Text Event</button>
         {sportType === "bike" &&
