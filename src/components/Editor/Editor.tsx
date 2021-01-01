@@ -36,6 +36,7 @@ import upload from '../../network/upload'
 import download from '../../network/download'
 import loadFirebaseWorkout from '../../network/loadFirebaseWorkout'
 import { createEmptyWorkout, Workout } from '../../xml/Workout'
+import { updateIntervalDuration, updateIntervalPower } from '../intervalUtils'
 
 interface Message {
   visible: boolean,
@@ -260,53 +261,20 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
     setSelectedId(undefined)
   }
 
-  function replaceInterval(id: string, transform: (interval: Interval) => Interval) {
-    const index = intervals.findIndex(interval => interval.id === id);
-    if (index === -1) {
-      return;
-    }
-
-    setIntervals([
-      ...intervals.slice(0, index),
-      ...[transform(intervals[index])],
-      ...intervals.slice(index + 1),
-    ]);
-  }
-
   function addTimeToBar(id: string) {
-    replaceInterval(id, (interval) => {
-      if (interval.type === 'steady') {
-        return { ...interval, duration: interval.duration + 5 };
-      }
-      return interval;
-    });
+    setIntervals(updateIntervalDuration(id, 5, intervals));
   }
 
   function removeTimeToBar(id: string) {
-    replaceInterval(id, (interval) => {
-      if (interval.type === 'steady' && interval.duration > 5) {
-        return { ...interval, duration: interval.duration - 5 };
-      }
-      return interval;
-    });
+    setIntervals(updateIntervalDuration(id, -5, intervals));
   }
 
   function addPowerToBar(id: string) {
-    replaceInterval(id, (interval) => {
-      if (interval.type === 'steady') {
-        return { ...interval, power: parseFloat((interval.power + 1 / ftp).toFixed(3)) }
-      }
-      return interval;
-    });
+    setIntervals(updateIntervalPower(id, 0.01, intervals));
   }
 
   function removePowerToBar(id: string) {
-    replaceInterval(id, (interval) => {
-      if (interval.type === 'steady' && interval.power >= Zones.Z1.min) {
-        return { ...interval, power: parseFloat((interval.power - 1 / ftp).toFixed(3)) }
-      }
-      return interval;
-    });
+    setIntervals(updateIntervalPower(id, -0.01, intervals));
   }
 
   function duplicateBar(id: string) {
