@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import './RampBar.css'
-import { ZoneColor, Zones, ZonesArray } from '../Constants'
+import { ZoneColor, Zones, ZonesArray } from '../Zones'
 import { Resizable } from 're-resizable'
 import Label from '../Label/Label'
 import helpers from '../helpers'

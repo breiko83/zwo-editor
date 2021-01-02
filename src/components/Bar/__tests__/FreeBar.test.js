@@ -3,7 +3,7 @@ import FreeBar from '../FreeBar';
 import renderer from 'react-test-renderer';
 import '@testing-library/jest-dom/extend-expect'
 import { v4 as uuidv4 } from 'uuid'
-import { Zones } from '../../Constants'
+import { Zones } from '../../Zones'
 
 test('FreeBar renders correctly', () => {
   const interval = {

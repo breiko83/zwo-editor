@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { v4 as uuidv4 } from 'uuid'
 import './Editor.css'
-import { ZoneColor, Zones } from '../Constants'
+import { ZoneColor, Zones } from '../Zones'
 import GenericBar from '../Bar/GenericBar'
 import Comment from '../Comment/Comment'
 import Popup from '../Popup/Popup'

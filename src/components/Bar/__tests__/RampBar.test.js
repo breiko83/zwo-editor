@@ -1,6 +1,6 @@
 import React from 'react';
 import RampBar from '../RampBar';
-import { Zones } from '../../Constants'
+import { Zones } from '../../Zones'
 import renderer from 'react-test-renderer';
 import { v4 as uuidv4 } from 'uuid'
 import '@testing-library/jest-dom/extend-expect'

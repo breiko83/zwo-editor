@@ -1,6 +1,6 @@
 import moment from 'moment'
 import 'moment-duration-format'
-import { ZoneColor, Zones } from './Constants'
+import { ZoneColor, Zones } from './Zones'
 import { Interval } from '../types/Interval'
 
 const helpers = {
