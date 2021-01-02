@@ -86,8 +86,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
   const db = firebase.database();
 
   useEffect(() => {
-
-    setMessage({ visible: true, className: 'loading', text: 'Loading..' })
+    showMessage({ className: 'loading', text: 'Loading..' })
 
     loadFirebaseWorkout(db, id).then((workout) => {
       if (workout) {
@@ -108,7 +107,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
       console.log('useEffect firebase');
 
       //finished loading
-      setMessage((message) => ({ ...message, visible: false }))
+      hideMessage()
     })
 
     auth.onAuthStateChanged(user => {
@@ -157,6 +156,14 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
   function newWorkout() {
     setId(generateId())
     loadWorkout(createEmptyWorkout())
+  }
+
+  function showMessage({ text, className }: NotificationMessage) {
+    setMessage({ text, className, visible: true })
+  }
+
+  function hideMessage() {
+    setMessage((message) => ({ ...message, visible: false }))
   }
 
   function updateInterval(updatedInterval: Interval) {
@@ -234,7 +241,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
         newWorkout()
       }).catch((error) => {
         console.log(error);
-        setMessage({ visible: true, className: 'error', text: 'Cannot delete workout' })
+        showMessage({ className: 'error', text: 'Cannot delete workout' })
       });
     }
   }
@@ -251,7 +258,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
 
   function save() {
 
-    setMessage({ visible: true, className: 'loading', text: 'Saving..' })
+    showMessage({ className: 'loading', text: 'Saving..' })
 
     const xml = createWorkoutXml({
       author,
@@ -299,15 +306,15 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
       itemsRef.update(updates).then(() => {
         //upload to s3  
         upload(id, file)
-        setMessage((message) => ({ ...message, visible: false }))
+        hideMessage()
 
       }).catch((error) => {
         console.log(error);
-        setMessage({ visible: true, className: 'error', text: 'Cannot save this' })
+        showMessage({ className: 'error', text: 'Cannot save this' })
       });
     } else {
       // download workout without saving
-      setMessage((message) => ({ ...message, visible: false }))
+      hideMessage()
     }
 
     return file
@@ -423,7 +430,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
     >
       <Head id={id} name={name} description={description} />
 
-      <Notification {...message} onClose={() => setMessage({ ...message, visible: false })} />
+      <Notification {...message} onClose={hideMessage} />
 
       {showWorkouts &&
         <Popup width="500px" dismiss={() => setShowWorkouts(false)}>
