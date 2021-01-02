@@ -1,6 +1,6 @@
 import Converter from 'xml-js';
 import { v4 as uuidv4 } from 'uuid'
-import intervalFactory from '../components/intervalFactory';
+import intervalFactory from '../interval/intervalFactory';
 import { createEmptyWorkout, Workout } from '../types/Workout';
 
 export default function parseWorkoutXml(data: string): Workout {

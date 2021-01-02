@@ -1,4 +1,4 @@
-import { Zones } from "./Zones";
+import { Zones } from "../components/Zones";
 import { Interval } from "../types/Interval";
 
 // Helpers for transforming intervals array
