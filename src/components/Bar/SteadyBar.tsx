@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import './SteadyBar.css'
-import { zoneColor, Zones } from '../Zones'
+import { zoneColor, Zones } from '../../types/Zones'
 import { Resizable } from 're-resizable'
 import Label from '../Label/Label'
 import helpers from '../helpers'

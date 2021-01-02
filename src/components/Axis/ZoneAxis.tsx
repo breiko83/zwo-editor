@@ -1,5 +1,5 @@
 import React from "react";
-import { Zones } from "../Zones";
+import { Zones } from "../../types/Zones";
 import "./ZoneAxis.css";
 
 const ZoneAxis = () => (
