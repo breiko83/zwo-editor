@@ -58,36 +58,6 @@ const helpers = {
     return ((tss / (ftp * 3600)) * 100).toFixed(0);
   },
 
-  calculateEstimatedTimes: function (distances: number[], times: string[]): string[] {
-    var estimatedTimes: string[] = []
-
-    times.forEach((value, i) => {
-
-      if (!value) {
-
-        for (let index = 0; index < times.length; index++) {
-
-          // found a time
-          if (times[index]) {
-
-            // Predictions calculated using Riegel's formula: T2 = T1 x (D2/D1) x 1.06
-            // T1 = T2 / (1.06 * (D2/D1))
-            const t = moment.duration(times[index]).asSeconds()
-
-
-            let et = t * (distances[i] / distances[index]) * 1.06
-
-
-            estimatedTimes[i] = moment.utc(et * 1000).format('HH:mm:ss')
-
-            break;
-
-          }
-        }
-      }
-    })
-    return estimatedTimes;
-  },
 
   getTimeinSeconds: function (time: string): number {
     //convert time 01:00:00 to seconds 3600

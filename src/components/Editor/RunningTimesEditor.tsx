@@ -2,7 +2,6 @@ import React, { useCallback } from 'react';
 import './RunningTimesEditor.css';
 import TimePicker from 'rc-time-picker';
 import 'rc-time-picker/assets/index.css'
-import helpers from '../helpers';
 import moment from 'moment'
 import { RunningTimes } from '../../types/RunningTimes';
 
@@ -14,7 +13,7 @@ interface RunningTimesEditorProps {
 export default function RunningTimesEditor({ times, onChange }: RunningTimesEditorProps) {
   const estimateRunningTimes = useCallback(() => {
     const distances = [1.60934, 5, 10, 21.0975, 42.195, 1.60934]
-    const estimatedTimes = helpers.calculateEstimatedTimes(distances, [times.oneMile, times.fiveKm, times.tenKm, times.halfMarathon, times.marathon, '00:11:20'])
+    const estimatedTimes = calculateEstimatedTimes(distances, [times.oneMile, times.fiveKm, times.tenKm, times.halfMarathon, times.marathon, '00:11:20'])
   
     onChange({
       oneMile: times.oneMile || estimatedTimes[0],
@@ -61,3 +60,24 @@ const RunTimeInput: React.FC<{time: string, onChange: (time: string) => void}> =
     />
   </div>
 );
+
+function calculateEstimatedTimes(distances: number[], times: string[]): string[] {
+  let estimatedTimes: string[] = []
+
+  times.forEach((value, i) => {
+    if (!value) {
+      for (let index = 0; index < times.length; index++) {
+        // found a time
+        if (times[index]) {
+          // Predictions calculated using Riegel's formula: T2 = T1 x (D2/D1) x 1.06
+          // T1 = T2 / (1.06 * (D2/D1))
+          const t = moment.duration(times[index]).asSeconds()
+          let et = t * (distances[i] / distances[index]) * 1.06
+          estimatedTimes[i] = moment.utc(et * 1000).format('HH:mm:ss')
+          break;
+        }
+      }
+    }
+  })
+  return estimatedTimes;
+}
