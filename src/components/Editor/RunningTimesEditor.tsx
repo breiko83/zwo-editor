@@ -4,14 +4,7 @@ import TimePicker from 'rc-time-picker';
 import 'rc-time-picker/assets/index.css'
 import helpers from '../helpers';
 import moment from 'moment'
-
-export interface RunningTimes {
-  oneMile: string;
-  fiveKm: string;
-  tenKm: string;
-  halfMarathon: string;
-  marathon: string;
-}
+import { RunningTimes } from '../../types/RunningTimes';
 
 interface RunningTimesEditorProps {
   times: RunningTimes;
