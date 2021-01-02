@@ -2,24 +2,22 @@ import React from 'react';
 import FreeBar from '../FreeBar';
 import renderer from 'react-test-renderer';
 import '@testing-library/jest-dom/extend-expect'
-import { v4 as uuidv4 } from 'uuid'
-import { Zones } from '../../../types/Zones'
+import intervalFactory from '../../../interval/intervalFactory';
 
 test('FreeBar renders correctly', () => {
-  const interval = {
+  const interval = intervalFactory.free({
     duration: 50,
-    power: Zones.Z3.min,
-    type: 'steady',
-    id: uuidv4()
-  }
+  });
 
   const component = renderer.create(
     <FreeBar
       interval={interval}
+      sportType="bike"
+      selected={false}
       onChange={() => { }}
       onClick={() => { }}
     />
-  )
+  );
 
   expect(component).toMatchSnapshot();
-})
+});

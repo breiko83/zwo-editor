@@ -1,24 +1,23 @@
 import React from 'react';
-import SteadyBar from '../SteadyBar';
+import RampBar from '../RampBar';
 import { Zones } from '../../../types/Zones'
 import renderer from 'react-test-renderer';
-import { v4 as uuidv4 } from 'uuid'
 import '@testing-library/jest-dom/extend-expect'
+import intervalFactory from '../../../interval/intervalFactory';
 
-test('SteadyBar renders correctly', () => {
-  const interval = {
+test('RampBar renders correctly', () => {
+  const interval = intervalFactory.ramp({
     duration: 50,
-    power: Zones.Z3.min,
-    type: 'steady',
-    id: uuidv4()
-  }
-
-  const ftp = 250
+    startPower: Zones.Z2.min,
+    endPower: Zones.Z4.min,
+  });
 
   const component = renderer.create(
-    <SteadyBar
+    <RampBar
       interval={interval}
-      ftp={ftp}
+      ftp={250}
+      sportType="bike"
+      selected={false}
       onChange={() => { }}
       onClick={() => { }}
     />
