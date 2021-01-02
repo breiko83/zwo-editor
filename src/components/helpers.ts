@@ -1,6 +1,6 @@
 import moment from 'moment'
 import 'moment-duration-format'
-import { Colors, Zones } from './Constants'
+import { ZoneColor, Zones } from './Constants'
 import { Interval } from '../types/Interval'
 
 const helpers = {
@@ -102,19 +102,19 @@ const helpers = {
     return Math.floor(x / roundTo) * roundTo
   },
 
-  zoneColor(power: number): string {
+  zoneColor(power: number): ZoneColor {
     if (power < Zones.Z1.max) {
-      return Colors.GRAY
+      return ZoneColor.GRAY
     } else if (power < Zones.Z2.max) {
-      return Colors.BLUE
+      return ZoneColor.BLUE
     } else if (power < Zones.Z3.max) {
-      return Colors.GREEN
+      return ZoneColor.GREEN
     } else if (power < Zones.Z4.max) {
-      return Colors.YELLOW
+      return ZoneColor.YELLOW
     } else if (power < Zones.Z5.max) {
-      return Colors.ORANGE
+      return ZoneColor.ORANGE
     } else {
-      return Colors.RED
+      return ZoneColor.RED
     }
   },
 }

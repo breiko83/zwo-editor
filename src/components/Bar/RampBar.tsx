@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import './RampBar.css'
-import { Colors, Zones, ZonesArray } from '../Constants'
+import { ZoneColor, Zones, ZonesArray } from '../Constants'
 import { Resizable } from 're-resizable'
 import Label from '../Label/Label'
 import helpers from '../helpers'
@@ -175,12 +175,12 @@ const RampBar = ({interval, ...props}: RampBarProps) => {
         </Resizable>
       </div>
       <div className='trapeze-colors' style={{ height: trapezeHeight, flexDirection: flexDirection, backgroundColor: helpers.zoneColor(interval.startPower) }}>
-        <div className='color' style={{ backgroundColor: Colors.GRAY, width: `${(bars['Z1'] * 100 / Math.abs(interval.endPower - interval.startPower))}%` }}></div>
-        <div className='color' style={{ backgroundColor: Colors.BLUE, width: `${(bars['Z2'] * 100 / Math.abs(interval.endPower - interval.startPower))}%` }}></div>
-        <div className='color' style={{ backgroundColor: Colors.GREEN, width: `${(bars['Z3'] * 100 / Math.abs(interval.endPower - interval.startPower))}%` }}></div>
-        <div className='color' style={{ backgroundColor: Colors.YELLOW, width: `${(bars['Z4'] * 100 / Math.abs(interval.endPower - interval.startPower))}%` }}></div>
-        <div className='color' style={{ backgroundColor: Colors.ORANGE, width: `${(bars['Z5'] * 100 / Math.abs(interval.endPower - interval.startPower))}%` }}></div>
-        <div className='color' style={{ backgroundColor: Colors.RED, width: `${(bars['Z6'] * 100 / Math.abs(interval.endPower - interval.startPower))}%` }}></div>
+        <div className='color' style={{ backgroundColor: ZoneColor.GRAY, width: `${(bars['Z1'] * 100 / Math.abs(interval.endPower - interval.startPower))}%` }}></div>
+        <div className='color' style={{ backgroundColor: ZoneColor.BLUE, width: `${(bars['Z2'] * 100 / Math.abs(interval.endPower - interval.startPower))}%` }}></div>
+        <div className='color' style={{ backgroundColor: ZoneColor.GREEN, width: `${(bars['Z3'] * 100 / Math.abs(interval.endPower - interval.startPower))}%` }}></div>
+        <div className='color' style={{ backgroundColor: ZoneColor.YELLOW, width: `${(bars['Z4'] * 100 / Math.abs(interval.endPower - interval.startPower))}%` }}></div>
+        <div className='color' style={{ backgroundColor: ZoneColor.ORANGE, width: `${(bars['Z5'] * 100 / Math.abs(interval.endPower - interval.startPower))}%` }}></div>
+        <div className='color' style={{ backgroundColor: ZoneColor.RED, width: `${(bars['Z6'] * 100 / Math.abs(interval.endPower - interval.startPower))}%` }}></div>
       </div>
       <svg height={`${trapezeHeight}`} width={`${width * 3}`} className='trapeze-svg-container'>
         <polygon points={`0,${vertexA} 0,${trapezeHeight} ${width * 3},${trapezeHeight} ${width * 3},${vertexD}`} className='trapeze-svg' />

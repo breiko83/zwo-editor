@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { v4 as uuidv4 } from 'uuid'
 import './Editor.css'
-import { Colors, Zones } from '../Constants'
+import { ZoneColor, Zones } from '../Constants'
 import GenericBar from '../Bar/GenericBar'
 import Comment from '../Comment/Comment'
 import Popup from '../Popup/Popup'
@@ -519,12 +519,12 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
       <div className='cta'>
         {sportType === "bike" ?
           <div>
-            <ColorButton label="Z1" color={Colors.GRAY} onClick={() => addInterval(intervalFactory.steady({ power: 0.5 }))} />
-            <ColorButton label="Z2" color={Colors.BLUE} onClick={() => addInterval(intervalFactory.steady({ power: Zones.Z2.min }))} />
-            <ColorButton label="Z3" color={Colors.GREEN} onClick={() => addInterval(intervalFactory.steady({ power: Zones.Z3.min }))} />
-            <ColorButton label="Z4" color={Colors.YELLOW} onClick={() => addInterval(intervalFactory.steady({ power: Zones.Z4.min }))} />
-            <ColorButton label="Z5" color={Colors.ORANGE} onClick={() => addInterval(intervalFactory.steady({ power: Zones.Z5.min }))} />
-            <ColorButton label="Z6" color={Colors.RED} onClick={() => addInterval(intervalFactory.steady({ power: Zones.Z6.min }))} />
+            <ColorButton label="Z1" color={ZoneColor.GRAY} onClick={() => addInterval(intervalFactory.steady({ power: 0.5 }))} />
+            <ColorButton label="Z2" color={ZoneColor.BLUE} onClick={() => addInterval(intervalFactory.steady({ power: Zones.Z2.min }))} />
+            <ColorButton label="Z3" color={ZoneColor.GREEN} onClick={() => addInterval(intervalFactory.steady({ power: Zones.Z3.min }))} />
+            <ColorButton label="Z4" color={ZoneColor.YELLOW} onClick={() => addInterval(intervalFactory.steady({ power: Zones.Z4.min }))} />
+            <ColorButton label="Z5" color={ZoneColor.ORANGE} onClick={() => addInterval(intervalFactory.steady({ power: Zones.Z5.min }))} />
+            <ColorButton label="Z6" color={ZoneColor.RED} onClick={() => addInterval(intervalFactory.steady({ power: Zones.Z6.min }))} />
           </div>
           :
           <Button onClick={() => addInterval(intervalFactory.steady({}))}><SteadyLogo className="btn-icon" /> Steady Pace</Button>
