@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import './Viewer.css'
-import firebase from '../firebase'
+import firebase from '../../network/firebase'
 import {RouteComponentProps} from 'react-router-dom';
 
 type TParams = { id: string };

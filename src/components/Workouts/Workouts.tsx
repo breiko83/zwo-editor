@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import './Workouts.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faClock, faRuler } from '@fortawesome/free-solid-svg-icons'
-import firebase from '../firebase'
+import firebase from '../../network/firebase'
 
 interface Workout {
   id: string,
