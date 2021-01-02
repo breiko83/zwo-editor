@@ -7,8 +7,7 @@ import '@testing-library/jest-dom/extend-expect'
 
 test('RampBar renders correctly', () => {
   const interval = {
-    time: 50,
-    length: 0,
+    duration: 50,
     startPower: Zones.Z2.min,
     endPower: Zones.Z4.min,
     type: 'steady',

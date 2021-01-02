@@ -22,7 +22,7 @@ exports[`SteadyBar renders correctly 1`] = `
         "minWidth": 3,
         "position": "relative",
         "userSelect": "auto",
-        "width": "0px",
+        "width": "16.666666666666668px",
       }
     }
   >

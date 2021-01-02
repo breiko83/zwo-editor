@@ -7,7 +7,7 @@ import { Zones } from '../../../types/Zones'
 
 test('FreeBar renders correctly', () => {
   const interval = {
-    time: 50,
+    duration: 50,
     power: Zones.Z3.min,
     type: 'steady',
     id: uuidv4()

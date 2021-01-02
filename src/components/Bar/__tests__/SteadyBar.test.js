@@ -7,8 +7,7 @@ import '@testing-library/jest-dom/extend-expect'
 
 test('SteadyBar renders correctly', () => {
   const interval = {
-    time: 50,
-    length: 0,
+    duration: 50,
     power: Zones.Z3.min,
     type: 'steady',
     id: uuidv4()
