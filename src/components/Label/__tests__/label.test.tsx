@@ -8,6 +8,5 @@ test('Label renders correctly', () => {
     <Label duration={100} power={250} weight={75} sportType="bike" cadence={0} onCadenceChange={() => {}} />
   )
 
-  let tree = component.toJSON();
-  expect(tree).toMatchSnapshot();
+  expect(component).toMatchSnapshot();
 })

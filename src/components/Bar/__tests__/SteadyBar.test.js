@@ -24,6 +24,5 @@ test('SteadyBar renders correctly', () => {
     />
   )
 
-  let tree = component.toJSON();
-  expect(tree).toMatchSnapshot();
+  expect(component).toMatchSnapshot();
 })
