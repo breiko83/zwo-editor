@@ -9,8 +9,7 @@ import Footer from '../Footer/Footer'
 import Workouts from '../Workouts/Workouts'
 import TimeAxis from '../Axis/TimeAxis'
 import ZoneAxis from '../Axis/ZoneAxis'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faTrash, faArrowRight, faArrowLeft, faFile, faSave, faDownload, faComment, faBicycle, faCopy, faShareAlt, faTimesCircle, faList, faBiking, faRunning } from '@fortawesome/free-solid-svg-icons'
+import { faTrash, faArrowRight, faArrowLeft, faFile, faSave, faDownload, faComment, faBicycle, faCopy, faShareAlt, faList, faBiking, faRunning } from '@fortawesome/free-solid-svg-icons'
 import { ReactComponent as WarmdownLogo } from '../../assets/warmdown.svg'
 import { ReactComponent as WarmupLogo } from '../../assets/warmup.svg'
 import { ReactComponent as IntervalLogo } from '../../assets/interval.svg'
@@ -47,12 +46,7 @@ import ColorButton from '../Button/ColorButton'
 import Button from '../Button/Button'
 import ActionButton from '../Button/ActionButton'
 import * as storage from '../../storage/storage';
-
-interface Message {
-  visible: boolean,
-  class?: string,
-  text?: string
-}
+import Notification, { NotificationMessage } from './Notification'
 
 type TParams = { id: string };
 
@@ -85,7 +79,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
   const segmentsRef = useRef<HTMLInputElement>(null);
   const [segmentsWidth, setSegmentsWidth] = useState(1320);
 
-  const [message, setMessage] = useState<Message>()
+  const [message, setMessage] = useState<NotificationMessage>({ text: "", className: "", visible: false });
 
   const [showWorkouts, setShowWorkouts] = useState(false)
 
@@ -93,7 +87,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
 
   useEffect(() => {
 
-    setMessage({ visible: true, class: 'loading', text: 'Loading..' })
+    setMessage({ visible: true, className: 'loading', text: 'Loading..' })
 
     loadFirebaseWorkout(db, id).then((workout) => {
       if (workout) {
@@ -114,7 +108,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
       console.log('useEffect firebase');
 
       //finished loading
-      setMessage({ visible: false })
+      setMessage((message) => ({ ...message, visible: false }))
     })
 
     auth.onAuthStateChanged(user => {
@@ -240,7 +234,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
         newWorkout()
       }).catch((error) => {
         console.log(error);
-        setMessage({ visible: true, class: 'error', text: 'Cannot delete workout' })
+        setMessage({ visible: true, className: 'error', text: 'Cannot delete workout' })
       });
     }
   }
@@ -257,7 +251,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
 
   function save() {
 
-    setMessage({ visible: true, class: 'loading', text: 'Saving..' })
+    setMessage({ visible: true, className: 'loading', text: 'Saving..' })
 
     const xml = createWorkoutXml({
       author,
@@ -305,15 +299,15 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
       itemsRef.update(updates).then(() => {
         //upload to s3  
         upload(id, file)
-        setMessage({ visible: false })
+        setMessage((message) => ({ ...message, visible: false }))
 
       }).catch((error) => {
         console.log(error);
-        setMessage({ visible: true, class: 'error', text: 'Cannot save this' })
+        setMessage({ visible: true, className: 'error', text: 'Cannot save this' })
       });
     } else {
       // download workout without saving
-      setMessage({ visible: false })
+      setMessage((message) => ({ ...message, visible: false }))
     }
 
     return file
@@ -429,14 +423,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
     >
       <Head id={id} name={name} description={description} />
 
-      {message?.visible &&
-        <div className={`message ${message.class}`}>
-          {message.text}
-          <button className="close" onClick={() => setMessage({ visible: false })}>
-            <FontAwesomeIcon icon={faTimesCircle} size="lg" fixedWidth />
-          </button>
-        </div>
-      }
+      <Notification {...message} onClose={() => setMessage({ ...message, visible: false })} />
 
       {showWorkouts &&
         <Popup width="500px" dismiss={() => setShowWorkouts(false)}>
