@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import './SteadyBar.css'
-import { Zones } from '../Zones'
+import { zoneColor, Zones } from '../Zones'
 import { Resizable } from 're-resizable'
 import Label from '../Label/Label'
 import helpers from '../helpers'
@@ -21,7 +21,7 @@ interface SteadyBarProps {
 const SteadyBar = ({interval, ...props}: SteadyBarProps) => {
   const powerLabel = Math.round(interval.power * props.ftp)
 
-  const style = { backgroundColor: helpers.zoneColor(interval.power) }
+  const style = { backgroundColor: zoneColor(interval.power) }
 
   const [width, setWidth] = useState(interval.duration / durationMultiplier)
 

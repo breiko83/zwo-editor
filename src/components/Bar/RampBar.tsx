@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import './RampBar.css'
-import { ZoneColor, Zones, ZonesArray } from '../Zones'
+import { zoneColor, ZoneColor, Zones, ZonesArray } from '../Zones'
 import { Resizable } from 're-resizable'
 import Label from '../Label/Label'
 import helpers from '../helpers'
@@ -174,7 +174,7 @@ const RampBar = ({interval, ...props}: RampBarProps) => {
         >
         </Resizable>
       </div>
-      <div className='trapeze-colors' style={{ height: trapezeHeight, flexDirection: flexDirection, backgroundColor: helpers.zoneColor(interval.startPower) }}>
+      <div className='trapeze-colors' style={{ height: trapezeHeight, flexDirection: flexDirection, backgroundColor: zoneColor(interval.startPower) }}>
         <div className='color' style={{ backgroundColor: ZoneColor.GRAY, width: `${(bars['Z1'] * 100 / Math.abs(interval.endPower - interval.startPower))}%` }}></div>
         <div className='color' style={{ backgroundColor: ZoneColor.BLUE, width: `${(bars['Z2'] * 100 / Math.abs(interval.endPower - interval.startPower))}%` }}></div>
         <div className='color' style={{ backgroundColor: ZoneColor.GREEN, width: `${(bars['Z3'] * 100 / Math.abs(interval.endPower - interval.startPower))}%` }}></div>

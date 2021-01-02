@@ -43,3 +43,19 @@ export const ZonesArray = [
   [Zones.Z5.min,Zones.Z5.max],
   [Zones.Z6.min,Zones.Z6.max],
 ]
+
+export const zoneColor = (power: number): ZoneColor => {
+  if (power < Zones.Z1.max) {
+    return ZoneColor.GRAY;
+  } else if (power < Zones.Z2.max) {
+    return ZoneColor.BLUE;
+  } else if (power < Zones.Z3.max) {
+    return ZoneColor.GREEN;
+  } else if (power < Zones.Z4.max) {
+    return ZoneColor.YELLOW;
+  } else if (power < Zones.Z5.max) {
+    return ZoneColor.ORANGE;
+  } else {
+    return ZoneColor.RED;
+  }
+};
