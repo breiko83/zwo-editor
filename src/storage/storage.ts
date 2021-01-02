@@ -1,6 +1,6 @@
 import { Instruction } from "../types/Instruction";
 import { RunningTimes } from "../types/RunningTimes";
-import { Interval } from "../components/Interval";
+import { Interval } from "../types/Interval";
 import { SportType } from "../types/SportType";
 
 export function getId(): string | null {

@@ -4,7 +4,7 @@ import { Colors, Zones, ZonesArray } from '../Constants'
 import { Resizable } from 're-resizable'
 import Label from '../Label/Label'
 import helpers from '../helpers'
-import { RampInterval } from '../Interval'
+import { RampInterval } from '../../types/Interval'
 import { durationMultiplier, powerMultiplier } from './multipliers'
 
 interface IDictionary {

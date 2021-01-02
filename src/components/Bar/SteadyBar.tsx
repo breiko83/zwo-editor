@@ -4,7 +4,7 @@ import { Zones } from '../Constants'
 import { Resizable } from 're-resizable'
 import Label from '../Label/Label'
 import helpers from '../helpers'
-import { SteadyInterval } from '../Interval'
+import { SteadyInterval } from '../../types/Interval'
 import { durationMultiplier, powerMultiplier } from './multipliers'
 
 interface SteadyBarProps {

@@ -1,5 +1,5 @@
 import { Zones } from "./Constants";
-import { Interval } from "./Interval";
+import { Interval } from "../types/Interval";
 
 // Helpers for transforming intervals array
 

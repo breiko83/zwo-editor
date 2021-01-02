@@ -1,6 +1,6 @@
 import React from "react";
 import helpers from "../helpers";
-import { Interval } from "../Interval";
+import { Interval } from "../../types/Interval";
 
 // Displays summary statistics: workout length and TSS
 

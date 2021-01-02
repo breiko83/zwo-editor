@@ -1,7 +1,7 @@
 import moment from 'moment'
 import 'moment-duration-format'
 import { Colors, Zones } from './Constants'
-import { Interval } from './Interval'
+import { Interval } from '../types/Interval'
 
 const helpers = {
   getIntervalDuration(interval: Interval): number {

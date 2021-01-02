@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { v4 as uuidv4 } from 'uuid'
 import SteadyBar from './SteadyBar'
 import './RepetitionBar.css'
-import { RepetitionInterval, SteadyInterval } from '../Interval'
+import { RepetitionInterval, SteadyInterval } from '../../types/Interval'
 
 interface RepetitionBarProps {
   interval: RepetitionInterval;

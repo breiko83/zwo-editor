@@ -1,6 +1,6 @@
 import React from 'react';
 import { SportType } from '../../types/SportType';
-import { Interval } from '../Interval';
+import { Interval } from '../../types/Interval';
 import FreeBar from './FreeBar';
 import SteadyBar from './SteadyBar';
 import RampBar from './RampBar';

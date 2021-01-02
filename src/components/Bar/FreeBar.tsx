@@ -4,7 +4,7 @@ import { Resizable } from 're-resizable'
 import 'moment-duration-format'
 import Label from '../Label/Label'
 import helpers from '../helpers'
-import { FreeInterval } from '../Interval'
+import { FreeInterval } from '../../types/Interval'
 import { durationMultiplier } from './multipliers'
 
 interface FreeBarProps {
