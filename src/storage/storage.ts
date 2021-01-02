@@ -1,4 +1,4 @@
-import { Instruction } from "../components/Instruction";
+import { Instruction } from "../types/Instruction";
 import { RunningTimes } from "../types/RunningTimes";
 import { Interval } from "../components/Interval";
 import { SportType } from "../types/SportType";
