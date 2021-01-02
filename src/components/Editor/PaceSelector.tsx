@@ -1,12 +1,5 @@
 import React from "react";
-
-export enum PaceType {
-  oneMile = 0,
-  fiveKm = 1,
-  tenKm = 2,
-  halfMarathon = 3,
-  marathon = 4,
-}
+import { PaceType } from "../../types/PaceType";
 
 interface PaceSelectorProps {
   value?: PaceType;

@@ -1,5 +1,5 @@
 import { v4 as uuidv4 } from 'uuid'
-import { PaceType } from './Editor/PaceSelector';
+import { PaceType } from '../types/PaceType';
 import { FreeInterval, Interval, RampInterval, RepetitionInterval, SteadyInterval } from "./Interval";
 
 const defaultDuration = 300;

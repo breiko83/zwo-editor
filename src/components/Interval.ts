@@ -1,4 +1,4 @@
-import { PaceType } from "./Editor/PaceSelector";
+import { PaceType } from "../types/PaceType";
 
 export interface SteadyInterval {
   id: string,

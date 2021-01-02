@@ -2,7 +2,7 @@ import React from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faBolt, faClock } from '@fortawesome/free-solid-svg-icons'
 import './Label.css'
-import { PaceType } from '../Editor/PaceSelector'
+import { PaceType } from '../../types/PaceType'
 import helpers from '../helpers'
 
 interface LabelProps {
