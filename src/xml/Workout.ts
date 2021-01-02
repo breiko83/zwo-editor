@@ -1,4 +1,4 @@
-import { SportType } from "../components/Editor/Editor";
+import { SportType } from "../types/SportType";
 import { Instruction } from "../components/Instruction";
 import { Interval } from "../components/Interval";
 

@@ -1,5 +1,5 @@
 import React from 'react';
-import { SportType } from '../Editor/Editor';
+import { SportType } from '../../types/SportType';
 import { Interval } from '../Interval';
 import FreeBar from './FreeBar';
 import SteadyBar from './SteadyBar';

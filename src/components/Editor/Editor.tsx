@@ -48,10 +48,9 @@ import Button from '../Button/Button'
 import ActionButton from '../Button/ActionButton'
 import * as storage from '../../storage/storage';
 import Notification, { NotificationMessage } from './Notification'
+import { SportType } from '../../types/SportType'
 
 type TParams = { id: string };
-
-export type SportType = "bike" | "run";
 
 const Editor = ({ match }: RouteComponentProps<TParams>) => {
   const [id, setId] = useState(match.params.id === "new" ? (storage.getId() || generateId()) : match.params.id)

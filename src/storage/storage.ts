@@ -1,7 +1,7 @@
 import { Instruction } from "../components/Instruction";
 import { RunningTimes } from "../types/RunningTimes";
 import { Interval } from "../components/Interval";
-import { SportType } from "../components/Editor/Editor";
+import { SportType } from "../types/SportType";
 
 export function getId(): string | null {
   return localStorage.getItem('id');
