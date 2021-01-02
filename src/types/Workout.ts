@@ -1,6 +1,6 @@
-import { SportType } from "../types/SportType";
-import { Instruction } from "../types/Instruction";
-import { Interval } from "../types/Interval";
+import { SportType } from "./SportType";
+import { Instruction } from "./Instruction";
+import { Interval } from "./Interval";
 
 export interface Workout {
   author: string;

@@ -1,6 +1,6 @@
 import Builder from 'xmlbuilder'
 import helpers from '../components/helpers'
-import { Workout } from './Workout'
+import { Workout } from '../types/Workout'
 
 export default function createWorkoutXml({ author, name, description, sportType, tags, intervals, instructions }: Workout): string {
   var totalDuration = 0

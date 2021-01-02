@@ -1,5 +1,5 @@
 import firebase from "firebase";
-import { Workout } from "../xml/Workout";
+import { Workout } from "../types/Workout";
 
 export default async function loadFirebaseWorkout(db: firebase.database.Database, id: string): Promise<Workout | undefined> {
   const snapshot = await db.ref('workouts/' + id).once('value');
