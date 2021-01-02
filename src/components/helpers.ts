@@ -23,15 +23,11 @@ const helpers = {
     return duration
   },
 
-  getTimeinSeconds: function (time: string): number {
-    //convert time 01:00:00 to seconds 3600
-    return moment.duration(time).asSeconds()
-  },
-
   formatDuration: function (seconds: number): string {
     // 1 pixel equals 5 seconds 
     return moment.duration(seconds, "seconds").format("mm:ss", { trim: false })
   },
+
   floor: function (x: number, roundTo: number): number {
     return Math.floor(x / roundTo) * roundTo
   },
