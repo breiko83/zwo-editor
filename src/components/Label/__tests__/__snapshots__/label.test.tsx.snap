@@ -102,7 +102,7 @@ exports[`<Label> for cycling, renders: duration, power, w/kg, %FTP, cadence 1`] 
 </div>
 `;
 
-exports[`<Label> for running ramp, renders: duration, %FTP-range, pace type, cadence 1`] = `
+exports[`<Label> for running ramp, renders: duration, %FTP-range, pace type 1`] = `
 <div
   className="label"
 >
@@ -122,30 +122,10 @@ exports[`<Label> for running ramp, renders: duration, %FTP-range, pace type, cad
     10K
      pace
   </div>
-  <div
-    className="cadence-row"
-  >
-    <label
-      className="cadenceLabel"
-    >
-      Cadence
-    </label>
-    <input
-      className="textField cadence"
-      max="150"
-      min="40"
-      name="cadence"
-      onChange={[Function]}
-      onClick={[Function]}
-      step="5"
-      type="number"
-      value=""
-    />
-  </div>
 </div>
 `;
 
-exports[`<Label> for running, renders: duration, %FTP, pace type, cadence 1`] = `
+exports[`<Label> for running, renders: duration, %FTP, pace type 1`] = `
 <div
   className="label"
 >
@@ -162,26 +142,6 @@ exports[`<Label> for running, renders: duration, %FTP, pace type, cadence 1`] = 
     % 
     10K
      pace
-  </div>
-  <div
-    className="cadence-row"
-  >
-    <label
-      className="cadenceLabel"
-    >
-      Cadence
-    </label>
-    <input
-      className="textField cadence"
-      max="150"
-      min="40"
-      name="cadence"
-      onChange={[Function]}
-      onClick={[Function]}
-      step="5"
-      type="number"
-      value=""
-    />
   </div>
 </div>
 `;

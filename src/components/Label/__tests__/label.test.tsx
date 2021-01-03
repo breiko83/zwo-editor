@@ -32,14 +32,14 @@ describe('<Label>', () => {
     expect(component).toMatchSnapshot();
   });
 
-  test('for running, renders: duration, %FTP, pace type, cadence', () => {
+  test('for running, renders: duration, %FTP, pace type', () => {
     const component = renderer.create(
       <Label duration={100} power={250} ftp={200} weight={75} pace={PaceType.tenKm} sportType="run" cadence={0} onCadenceChange={() => {}} />
     );
     expect(component).toMatchSnapshot();
   });
 
-  test('for running ramp, renders: duration, %FTP-range, pace type, cadence', () => {
+  test('for running ramp, renders: duration, %FTP-range, pace type', () => {
     const component = renderer.create(
       <Label duration={100} powerStart={100} powerEnd={200} ftp={200} weight={75} pace={PaceType.tenKm} sportType="run" cadence={0} onCadenceChange={() => {}} />
     );
