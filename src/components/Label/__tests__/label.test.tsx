@@ -4,6 +4,19 @@ import renderer from 'react-test-renderer';
 import '@testing-library/jest-dom/extend-expect'
 import { PaceType } from '../../../types/PaceType';
 
+const MockReact = React;
+
+jest.mock('@fortawesome/react-fontawesome', () => ({
+  FontAwesomeIcon(props: any) {
+    return MockReact.createElement("FontAwesomeIcon", props);
+  },
+}));
+
+jest.mock('@fortawesome/free-solid-svg-icons', () => ({
+  faBolt: "faBolt",
+  faClock: "faClock",
+}));
+
 describe('<Label>', () => {
   test('for cycling, renders: duration, power, w/kg, %FTP, cadence', () => {
     const component = renderer.create(
