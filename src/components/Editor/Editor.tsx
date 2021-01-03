@@ -99,7 +99,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
           // user refreshed the page
         } else {
           // treat this as new workout
-          loadWorkout(createEmptyWorkout())
+          loadWorkout(createEmptyWorkout(sportType))
         }
 
         storage.setId(id)
@@ -121,7 +121,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
     ReactGA.initialize('UA-55073449-9');
     ReactGA.pageview(window.location.pathname + window.location.search);
 
-  }, [id, db])
+  }, [id, db, sportType])
 
   useEffect(() => {
     storage.setName(name)
@@ -144,18 +144,18 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
   }
 
   function loadWorkout(workout: Workout) {
+    setSportType(workout.sportType)
     setAuthor(workout.author)
     setName(workout.name)
     setDescription(workout.description)
     setIntervals(workout.intervals)
     setInstructions(workout.instructions)
     setTags(workout.tags)
-    setSportType(workout.sportType)
   }
 
-  function newWorkout() {
+  function newWorkout(sportType: SportType) {
     setId(generateId())
-    loadWorkout(createEmptyWorkout())
+    loadWorkout(createEmptyWorkout(sportType))
   }
 
   function showMessage({ text, className }: NotificationMessage) {
@@ -238,7 +238,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
 
       // save to firebase      
       itemsRef.update(updates).then(() => {
-        newWorkout()
+        newWorkout(sportType)
       }).catch((error) => {
         console.log(error);
         showMessage({ className: 'error', text: 'Cannot delete workout' })
@@ -348,7 +348,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
       }
     }
 
-    newWorkout()
+    newWorkout(sportType)
 
     try {
       await upload(id, file);
@@ -416,7 +416,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
   }
 
   function switchSportType(newSportType: SportType) {
-    setSportType(newSportType);
+    setSportType(newSportType)
   }
 
   return (
@@ -543,7 +543,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
         {sportType === "bike" &&
           <NumberField name="weight" label={"Body Weight (kg)"} value={weight} onChange={setWeight} />
         }
-        <IconButton label="New" icon={faFile} onClick={() => { if (window.confirm('Are you sure you want to create a new workout?')) newWorkout() }} />
+        <IconButton label="New" icon={faFile} onClick={() => { if (window.confirm('Are you sure you want to create a new workout?')) newWorkout(sportType) }} />
         <IconButton label="Save" icon={faSave} onClick={saveWorkout} />
         <IconButton label="Delete" icon={faTrash} onClick={() => { if (window.confirm('Are you sure you want to delete this workout?')) deleteWorkout() }} />
         <IconButton label="Download" icon={faDownload} onClick={downloadWorkout} />

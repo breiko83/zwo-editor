@@ -12,12 +12,12 @@ export interface Workout {
   instructions: Array<Instruction>;
 }
 
-export function createEmptyWorkout(): Workout {
+export function createEmptyWorkout(sportType: SportType): Workout {
   return {
     author: "",
     name: "",
     description: "",
-    sportType: "bike",
+    sportType: sportType,
     tags: [],
     intervals: [],
     instructions: [],

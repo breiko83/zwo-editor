@@ -7,7 +7,7 @@ export default function parseWorkoutXml(data: string): Workout {
   // TODO:
   // - sportType not detected from XML
   // - tags not detected from XML
-  const workout: Workout = createEmptyWorkout();
+  const workout: Workout = createEmptyWorkout("bike");
 
   data = data.replace(/<!--(.*?)-->/gm, "")
 
