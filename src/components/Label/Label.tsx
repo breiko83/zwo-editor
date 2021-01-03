@@ -29,24 +29,24 @@ function BikeData({ interval, ftp, weight, onCadenceChange }: LabelProps) {
   return (
     <>
       {interval.type === "steady" &&
-        <div>
-          <FontAwesomeIcon icon={faBolt} fixedWidth /> {intensityToPower(interval.power, ftp)}W
-        </div>
+        <>
+          <div>
+            <FontAwesomeIcon icon={faBolt} fixedWidth /> {intensityToPower(interval.power, ftp)}W
+          </div>
+          <div>
+            {intensityToWkg(interval.power, ftp, weight)}W/Kg &middot; {intensityToPercentage(interval.power)}% FTP
+          </div>
+        </>
       }
       {interval.type === "ramp" &&
-        <div>
-          <FontAwesomeIcon icon={faBolt} fixedWidth /> {intensityToPower(interval.startPower, ftp)}W - {intensityToPower(interval.endPower, ftp)}W
-        </div>
-      }
-      {interval.type === "steady" &&
-        <div>
-          {intensityToWkg(interval.power, ftp, weight)}W/Kg &middot; {intensityToPercentage(interval.power)}% FTP
-        </div>
-      }
-      {interval.type === "ramp" &&
-        <div>
-          {intensityToPercentage(interval.startPower)}% FTP - {intensityToPercentage(interval.endPower)}% FTP
-        </div>
+        <>
+          <div>
+            <FontAwesomeIcon icon={faBolt} fixedWidth /> {intensityToPower(interval.startPower, ftp)}W - {intensityToPower(interval.endPower, ftp)}W
+          </div>
+          <div>
+            {intensityToPercentage(interval.startPower)}% FTP - {intensityToPercentage(interval.endPower)}% FTP
+          </div>
+        </>
       }
       <div className="cadence-row">
         <label className="cadenceLabel">Cadence</label>
