@@ -19,8 +19,6 @@ interface SteadyBarProps {
 }
 
 const SteadyBar = ({interval, ...props}: SteadyBarProps) => {
-  const powerLabel = Math.round(interval.power * props.ftp)
-
   const style = { backgroundColor: zoneColor(interval.power) }
 
   const [width, setWidth] = useState(interval.duration / durationMultiplier)
@@ -64,12 +62,9 @@ const SteadyBar = ({interval, ...props}: SteadyBarProps) => {
       {((selected || showLabel) && (props.showLabel)) &&
         <Label
           sportType={props.sportType}
-          duration={interval.duration}
-          power={powerLabel}
+          interval={interval}
           weight={props.weight}
           ftp={props.ftp}
-          pace={interval.pace}
-          cadence={interval.cadence}
           onCadenceChange={(cadence: number)=> handleCadenceChange(cadence)}
         />
       }

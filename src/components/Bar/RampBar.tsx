@@ -21,9 +21,6 @@ interface RampBarProps {
 }
 
 const RampBar = ({interval, ...props}: RampBarProps) => {
-  const powerLabelStart = Math.round(interval.startPower * props.ftp)
-  const powerLabelEnd = Math.round(interval.endPower * props.ftp)
-
   const [showLabel, setShowLabel] = useState(false)
 
   const handleCadenceChange = (cadence: number) => {
@@ -117,13 +114,9 @@ const RampBar = ({interval, ...props}: RampBarProps) => {
     >
       {(props.selected || showLabel) &&
         <Label
-          duration={interval.duration}
-          powerStart={powerLabelStart}
-          powerEnd={powerLabelEnd}
+          interval={interval}
           ftp={props.ftp}
           sportType={props.sportType}
-          pace={interval.pace}
-          cadence={interval.cadence}
           onCadenceChange={(cadence: number)=> handleCadenceChange(cadence)}
         />
       }

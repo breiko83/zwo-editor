@@ -102,7 +102,7 @@ exports[`<Label> for cycling, renders: duration, power, w/kg, %FTP, cadence 1`] 
 </div>
 `;
 
-exports[`<Label> for running ramp, renders: duration, %FTP-range, pace type 1`] = `
+exports[`<Label> for running ramp, renders: duration, %pace-range, pace type 1`] = `
 <div
   className="label"
 >
@@ -125,7 +125,7 @@ exports[`<Label> for running ramp, renders: duration, %FTP-range, pace type 1`] 
 </div>
 `;
 
-exports[`<Label> for running, renders: duration, %FTP, pace type 1`] = `
+exports[`<Label> for running, renders: duration, %pace, pace type 1`] = `
 <div
   className="label"
 >

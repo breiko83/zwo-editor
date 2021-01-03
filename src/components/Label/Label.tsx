@@ -4,17 +4,13 @@ import { faBolt, faClock } from '@fortawesome/free-solid-svg-icons'
 import './Label.css'
 import { PaceType } from '../../types/PaceType'
 import helpers from '../helpers'
+import { FreeInterval, RampInterval, SteadyInterval } from '../../types/Interval'
 
 interface LabelProps {
   sportType: string;
-  duration: number;
-  power?: number;
-  powerStart?: number;
-  powerEnd?: number;
+  interval: SteadyInterval | RampInterval | FreeInterval;
   weight?: number;
   ftp?: number;
-  pace?: PaceType;
-  cadence: number;
   onCadenceChange: (cadence: number) => void;
 }
 
@@ -22,34 +18,34 @@ const Label = (props: LabelProps) => {
   return (
     <div className='label'>
       <div>
-        <FontAwesomeIcon icon={faClock} fixedWidth /> {helpers.formatDuration(props.duration)}
+        <FontAwesomeIcon icon={faClock} fixedWidth /> {helpers.formatDuration(props.interval.duration)}
       </div>
       {props.sportType === "bike" ? <BikeData {...props} /> : <RunData {...props} />}
     </div>
   );
 };
 
-function BikeData(props: LabelProps) {
+function BikeData({ interval, ftp, weight, onCadenceChange }: LabelProps) {
   return (
     <>
-      {props.power &&
+      {interval.type === "steady" && ftp &&
         <div>
-          <FontAwesomeIcon icon={faBolt} fixedWidth /> {props.power}W
+          <FontAwesomeIcon icon={faBolt} fixedWidth /> {intensityToPower(interval.power, ftp)}W
         </div>
       }
-      {props.powerStart && props.powerEnd &&
+      {interval.type === "ramp" && ftp &&
         <div>
-          <FontAwesomeIcon icon={faBolt} fixedWidth /> {props.powerStart}W - {props.powerEnd}W
+          <FontAwesomeIcon icon={faBolt} fixedWidth /> {intensityToPower(interval.startPower, ftp)}W - {intensityToPower(interval.endPower, ftp)}W
         </div>
       }
-      {props.weight && props.power && props.ftp &&
+      {interval.type === "steady" && weight && ftp &&
         <div>
-          {(props.power / props.weight).toFixed(1)}W/Kg &middot; {(props.power / props.ftp * 100).toFixed(0)}% FTP
+          {intensityToWkg(interval.power, ftp, weight)}W/Kg &middot; {intensityToPercentage(interval.power)}% FTP
         </div>
       }
-      {props.powerStart && props.powerEnd && props.ftp &&
+      {interval.type === "ramp" && ftp &&
         <div>
-          {(props.powerStart / props.ftp * 100).toFixed(0)}% FTP - {(props.powerEnd / props.ftp * 100).toFixed(0)}% FTP
+          {intensityToPercentage(interval.startPower)}% FTP - {intensityToPercentage(interval.endPower)}% FTP
         </div>
       }
       <div className="cadence-row">
@@ -60,8 +56,8 @@ function BikeData(props: LabelProps) {
           max="150"
           step="5"
           name="cadence"
-          value={props.cadence || ''}
-          onChange={(e) => {props.onCadenceChange(parseInt(e.target.value))}}
+          value={interval.cadence || ''}
+          onChange={(e) => {onCadenceChange(parseInt(e.target.value))}}
           onClick={(e)=> {e.stopPropagation()}}
           className="textField cadence"
         />
@@ -70,23 +66,38 @@ function BikeData(props: LabelProps) {
   );
 }
 
-function RunData(props: LabelProps) {
-  const paces = ["1M", "5K", "10K", "HM", "M"];
-
+function RunData({ interval }: LabelProps) {
   return (
     <>
-      {props.power && props.ftp && props.pace !== undefined &&
+      {interval.type === "steady" &&
         <div>
-          {(props.power / props.ftp * 100).toFixed(1).replace(/[.]0$/, "")}% {paces[props.pace || 0]} pace
+          {intensityToPercentage(interval.power)}% {paceToShortName(interval.pace)} pace
         </div>
       }
-      {props.powerStart && props.powerEnd && props.ftp && props.pace !== undefined &&
+      {interval.type === "ramp" &&
         <div>
-          {(props.powerStart / props.ftp * 100).toFixed(0)}% to {(props.powerEnd / props.ftp * 100).toFixed(0)}% {paces[props.pace || 0]} pace
+          {intensityToPercentage(interval.startPower)}% to {intensityToPercentage(interval.endPower)}% {paceToShortName(interval.pace)} pace
         </div>
       }
     </>
   );
+}
+
+function intensityToPower(intensity: number, ftp: number): number {
+  return Math.round(intensity * ftp);
+}
+
+function intensityToPercentage(intensity: number): number {
+  return Math.round(intensity * 100);
+}
+
+function intensityToWkg(intensity: number, ftp: number, weight: number): number {
+  return Math.round(intensityToPower(intensity, ftp) / weight * 10) / 10;
+}
+
+function paceToShortName(pace: PaceType) {
+  const paces = ["1M", "5K", "10K", "HM", "M"];
+  return paces[pace];
 }
 
 export default Label

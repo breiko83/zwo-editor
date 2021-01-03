@@ -45,9 +45,8 @@ const FreeBar = ({interval, ...props}: FreeBarProps) => {
     >
       {(props.selected || showLabel) &&
         <Label
-          duration={interval.duration}
+          interval={interval}
           sportType={props.sportType}
-          cadence={interval.cadence}
           onCadenceChange={(cadence: number)=> handleCadenceChange(cadence)}
         />
       }

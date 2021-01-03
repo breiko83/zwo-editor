@@ -3,6 +3,7 @@ import Label from '../Label';
 import renderer from 'react-test-renderer';
 import '@testing-library/jest-dom/extend-expect'
 import { PaceType } from '../../../types/PaceType';
+import intervalFactory from '../../../interval/intervalFactory';
 
 const MockReact = React;
 
@@ -19,29 +20,33 @@ jest.mock('@fortawesome/free-solid-svg-icons', () => ({
 
 describe('<Label>', () => {
   test('for cycling, renders: duration, power, w/kg, %FTP, cadence', () => {
+    const interval = intervalFactory.steady({ duration: 100, power: 1.25, cadence: 0 });
     const component = renderer.create(
-      <Label duration={100} power={250} weight={75} ftp={200} sportType="bike" cadence={0} onCadenceChange={() => {}} />
+      <Label interval={interval} weight={75} ftp={200} sportType="bike" onCadenceChange={() => {}} />
     );
     expect(component).toMatchSnapshot();
   });
 
   test('for cycling ramp, renders: duration, power-range, %FTP-range, cadence', () => {
+    const interval = intervalFactory.ramp({ duration: 100, startPower: 0.5, endPower: 1.0, cadence: 0 });
     const component = renderer.create(
-      <Label duration={100} powerStart={100} powerEnd={200} weight={75} ftp={200} sportType="bike" cadence={0} onCadenceChange={() => {}} />
+      <Label interval={interval} weight={75} ftp={200} sportType="bike" onCadenceChange={() => {}} />
     );
     expect(component).toMatchSnapshot();
   });
 
-  test('for running, renders: duration, %FTP, pace type', () => {
+  test('for running, renders: duration, %pace, pace type', () => {
+    const interval = intervalFactory.steady({ duration: 100, power: 1.25, cadence: 0, pace: PaceType.tenKm });
     const component = renderer.create(
-      <Label duration={100} power={250} ftp={200} weight={75} pace={PaceType.tenKm} sportType="run" cadence={0} onCadenceChange={() => {}} />
+      <Label interval={interval} weight={75} sportType="run" onCadenceChange={() => {}} />
     );
     expect(component).toMatchSnapshot();
   });
 
-  test('for running ramp, renders: duration, %FTP-range, pace type', () => {
+  test('for running ramp, renders: duration, %pace-range, pace type', () => {
+    const interval = intervalFactory.ramp({ duration: 100, startPower: 0.5, endPower: 1.0, cadence: 0, pace: PaceType.tenKm });
     const component = renderer.create(
-      <Label duration={100} powerStart={100} powerEnd={200} ftp={200} weight={75} pace={PaceType.tenKm} sportType="run" cadence={0} onCadenceChange={() => {}} />
+      <Label interval={interval} weight={75} sportType="run" onCadenceChange={() => {}} />
     );
     expect(component).toMatchSnapshot();
   });
