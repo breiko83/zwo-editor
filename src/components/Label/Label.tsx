@@ -50,17 +50,7 @@ function BikeData({ interval, ftp, weight, onCadenceChange }: LabelProps) {
       }
       <div className="cadence-row">
         <label className="cadenceLabel">Cadence</label>
-        <input
-          type="number"
-          min="40"
-          max="150"
-          step="5"
-          name="cadence"
-          value={interval.cadence || ''}
-          onChange={(e) => {onCadenceChange(parseInt(e.target.value))}}
-          onClick={(e)=> {e.stopPropagation()}}
-          className="textField cadence"
-        />
+        <CadenceInput cadence={interval.cadence} onCadenceChange={onCadenceChange} />
       </div>
     </>
   );
@@ -80,6 +70,22 @@ function RunData({ interval }: LabelProps) {
         </div>
       }
     </>
+  );
+}
+
+function CadenceInput({cadence, onCadenceChange}: {cadence: number, onCadenceChange: (v: number) => void}) {
+  return (
+    <input
+      type="number"
+      min="40"
+      max="150"
+      step="5"
+      name="cadence"
+      value={cadence || ''}
+      onChange={(e) => {onCadenceChange(parseInt(e.target.value))}}
+      onClick={(e)=> {e.stopPropagation()}}
+      className="textField cadence"
+    />
   );
 }
 
