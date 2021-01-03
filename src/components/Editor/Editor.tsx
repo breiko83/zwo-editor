@@ -416,7 +416,9 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
   }
 
   function switchSportType(newSportType: SportType) {
-    setSportType(newSportType)
+    if (window.confirm(`Switching from ${sportType} to ${newSportType} will clear current workout. Are you sure?`)) {
+      newWorkout(newSportType);
+    }
   }
 
   return (
