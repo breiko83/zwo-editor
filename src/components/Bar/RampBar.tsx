@@ -14,6 +14,7 @@ interface IDictionary {
 interface RampBarProps {
   interval: RampInterval;
   ftp: number;
+  weight: number;
   sportType: string;
   onChange: (interval: RampInterval) => void;
   onClick: (id: string) => void;
@@ -116,6 +117,7 @@ const RampBar = ({interval, ...props}: RampBarProps) => {
         <Label
           interval={interval}
           ftp={props.ftp}
+          weight={props.weight}
           sportType={props.sportType}
           onCadenceChange={(cadence: number)=> handleCadenceChange(cadence)}
         />

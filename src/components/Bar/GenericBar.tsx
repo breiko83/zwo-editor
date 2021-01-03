@@ -36,6 +36,7 @@ const GenericBar = ({ interval, sportType, ftp, weight, selected, onChange, onCl
         <RampBar
           interval={interval}
           ftp={ftp}
+          weight={weight}
           sportType={sportType}
           onChange={onChange}
           onClick={onClick}
@@ -46,6 +47,8 @@ const GenericBar = ({ interval, sportType, ftp, weight, selected, onChange, onCl
       return (
         <FreeBar
           interval={interval}
+          ftp={ftp}
+          weight={weight}
           sportType={sportType}
           onChange={onChange}
           onClick={onClick}

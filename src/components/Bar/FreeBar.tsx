@@ -9,6 +9,8 @@ import { durationMultiplier } from './multipliers'
 
 interface FreeBarProps {
   interval: FreeInterval;
+  ftp: number;
+  weight: number;
   sportType: string;
   onChange: (interval: FreeInterval) => void;
   onClick: (id: string) => void;
@@ -46,6 +48,8 @@ const FreeBar = ({interval, ...props}: FreeBarProps) => {
       {(props.selected || showLabel) &&
         <Label
           interval={interval}
+          ftp={props.ftp}
+          weight={props.weight}
           sportType={props.sportType}
           onCadenceChange={(cadence: number)=> handleCadenceChange(cadence)}
         />

@@ -12,6 +12,8 @@ test('FreeBar renders correctly', () => {
   const component = renderer.create(
     <FreeBar
       interval={interval}
+      ftp={200}
+      weight={75}
       sportType="bike"
       selected={false}
       onChange={() => { }}

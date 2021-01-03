@@ -16,6 +16,7 @@ test('RampBar renders correctly', () => {
     <RampBar
       interval={interval}
       ftp={250}
+      weight={75}
       sportType="bike"
       selected={false}
       onChange={() => { }}
