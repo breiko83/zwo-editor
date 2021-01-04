@@ -17,7 +17,7 @@ interface InstructionEditorProps {
 
 const InstructionEditor = (props: InstructionEditorProps) => {
   const [text, setText] = useState(props.instruction.text)
-  const [time, setTime] = useState(props.instruction.time / durationMultiplier)
+  const [xPosition, setXPosition] = useState(props.instruction.time / durationMultiplier)
 
   const [showInput, setShowInput] = useState(false)
 
@@ -33,7 +33,7 @@ const InstructionEditor = (props: InstructionEditorProps) => {
 
   function handleDragging(position: number) { 
     setShowInput(false)  
-    setTime(position)
+    setXPosition(position)
   }
 
   function handleInputChange(value: string) {
@@ -43,7 +43,7 @@ const InstructionEditor = (props: InstructionEditorProps) => {
       {
         id: props.instruction.id,
         text: value,
-        time: time * durationMultiplier,
+        time: xPosition * durationMultiplier,
       }
     )
   }
@@ -58,7 +58,7 @@ const InstructionEditor = (props: InstructionEditorProps) => {
     <Draggable
       axis='x'
       handle=".handle"
-      defaultPosition={{ x: time, y: (props.index % 5) * 20 }}
+      defaultPosition={{ x: xPosition, y: (props.index % 5) * 20 }}
       bounds={{ left: 0, right: props.width}}
       scale={1}
       onStop={(e, data) => handleTouch(data.x)}
@@ -69,14 +69,13 @@ const InstructionEditor = (props: InstructionEditorProps) => {
         {showInput &&
         <div className="edit">
           <FontAwesomeIcon icon={faTrashAlt} fixedWidth className="delete" style={{ color: 'gray' }} onClick={() => handleDelete()} />
-          <span style={{fontSize:'13px'}} data-testid='time'>{helpers.formatDuration(time * durationMultiplier)}</span>                  
+          <span style={{fontSize:'13px'}} data-testid='time'>{helpers.formatDuration(xPosition * durationMultiplier)}</span>                  
           <textarea name="comment" value={text} style={{display:'block', padding:'5px', width:'250px',backgroundColor:'white'}} onChange={e => handleInputChange(e.target.value)} />        
         </div>
         }
         <div className="line"></div>
       </div>
     </Draggable>
-
   )
 }
 
