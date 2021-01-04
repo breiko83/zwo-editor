@@ -1,9 +1,7 @@
 import { SportType } from "../types/SportType";
 import { PaceType } from "../types/PaceType";
 import { RunningTimes } from "../types/RunningTimes";
-
-// Distances in meters
-const DISTANCES = [1.60934, 5, 10, 21.0975, 42.195, 1.60934].map(d => d * 1000);
+import { runningDistances } from "../types/runningDistances";
 
 export default class RunMode {
   public readonly sportType: SportType = "run";
@@ -20,7 +18,7 @@ export default class RunMode {
   }
 
   distance(duration: number, intensity: number, pace: PaceType): number {
-    const speed = DISTANCES[pace] / this.runningTimes[pace] * intensity; // in m/s
+    const speed = runningDistances[pace] / this.runningTimes[pace] * intensity; // in m/s
     return Math.round(speed * duration); // in meters
   }
 }

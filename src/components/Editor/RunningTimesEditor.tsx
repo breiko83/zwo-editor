@@ -5,6 +5,7 @@ import 'rc-time-picker/assets/index.css'
 import moment from 'moment'
 import { RunningTimes } from '../../types/RunningTimes';
 import { PaceType } from '../../types/PaceType';
+import { runningDistances } from '../../types/runningDistances';
 
 interface RunningTimesEditorProps {
   times: RunningTimes;
@@ -59,9 +60,12 @@ const RunTimeInput: React.FC<{time: number, onChange: (time: number) => void}> =
   </div>
 );
 
+const defaultDistance = 1609.34; // one mile in meters
+const defaultTime = 11 * 60 + 20; // 00:11:20
+
 export function calculateEstimatedTimes(timesOrig: number[]): number[] {
-  const distances = [1.60934, 5, 10, 21.0975, 42.195, 1.60934];
-  const times = [...timesOrig, moment.duration("00:11:20").asSeconds()];
+  const distances = [...runningDistances, defaultDistance];
+  const times = [...timesOrig, defaultTime];
   const estimatedTimes: number[] = [];
 
   timesOrig.forEach((value, i) => {
