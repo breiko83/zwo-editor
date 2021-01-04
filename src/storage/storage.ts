@@ -1,3 +1,4 @@
+import moment from 'moment';
 import { Instruction } from "../types/Instruction";
 import { RunningTimes } from "../types/RunningTimes";
 import { Interval } from "../types/Interval";
@@ -74,23 +75,28 @@ export function setWeight(weight: number) {
 }
 
 export function getRunningTimes(): RunningTimes {
-  const missingRunningTimes: RunningTimes = { oneMile: "", fiveKm: "", tenKm: "", halfMarathon: "", marathon: "" }
-  const runningTimesJson = localStorage.getItem('runningTimes')
-  if (runningTimesJson) {
-    return JSON.parse(runningTimesJson)
+  const missingRunningTimes: RunningTimes = { oneMile: 0, fiveKm: 0, tenKm: 0, halfMarathon: 0, marathon: 0 };
+  const runningTimesJson = localStorage.getItem('runningTimes');
+  if (runningTimesJson && runningTimesJson) {
+    const parsed = JSON.parse(runningTimesJson);
+    // Ignore when times are stored in the old way (as strings)
+    if (typeof parsed.oneMile === 'number') {
+      return parsed;
+    }
   }
 
   // Fallback to old localStorage keys
-  const oneMile = localStorage.getItem('oneMileTime') || ''
-  const fiveKm = localStorage.getItem('fiveKmTime') || ''
-  const tenKm = localStorage.getItem('tenKmTime') || ''
-  const halfMarathon = localStorage.getItem('halfMarathonTime') || ''
-  const marathon = localStorage.getItem('marathonTime') || ''
+  const convert = (t: string) => moment.duration(t).asSeconds();
+  const oneMile = convert(localStorage.getItem('oneMileTime') || '');
+  const fiveKm = convert(localStorage.getItem('fiveKmTime') || '');
+  const tenKm = convert(localStorage.getItem('tenKmTime') || '');
+  const halfMarathon = convert(localStorage.getItem('halfMarathonTime') || '');
+  const marathon = convert(localStorage.getItem('marathonTime') || '');
   if (oneMile || fiveKm || tenKm || halfMarathon || marathon) {
-    return { oneMile, fiveKm, tenKm, halfMarathon, marathon }
+    return { oneMile, fiveKm, tenKm, halfMarathon, marathon };
   }
 
-  return missingRunningTimes
+  return missingRunningTimes;
 }
 
 export function setRunningTimes(runningTimes: RunningTimes) {

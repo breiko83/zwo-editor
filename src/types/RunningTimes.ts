@@ -1,7 +1,7 @@
 export interface RunningTimes {
-  oneMile: string;
-  fiveKm: string;
-  tenKm: string;
-  halfMarathon: string;
-  marathon: string;
+  oneMile: number;
+  fiveKm: number;
+  tenKm: number;
+  halfMarathon: number;
+  marathon: number;
 }
