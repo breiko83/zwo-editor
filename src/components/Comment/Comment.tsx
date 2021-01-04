@@ -10,7 +10,7 @@ import { Instruction } from '../../types/Instruction'
 interface CommentProps {
   instruction: Instruction;
   width: number;
-  onChange: (id: string, instruction: Instruction) => void;
+  onChange: (instruction: Instruction) => void;
   onDelete: (id: string) => void;
   index: number;
 }
@@ -23,12 +23,12 @@ const Comment = (props: CommentProps) => {
 
   function handleTouch(position: number) {
     props.onChange(
-      props.instruction.id,
       {
         id: props.instruction.id,
         text: text,
         time: position * durationMultiplier,
-      })
+      }
+    )
   }
 
   function handleDragging(position: number) { 
@@ -37,24 +37,21 @@ const Comment = (props: CommentProps) => {
   }
 
   function handleInputChange(value: string) {
-
     setText(value)
 
     props.onChange(
-      props.instruction.id,
       {
         id: props.instruction.id,
         text: value,
         time: time * durationMultiplier,
-      })
+      }
+    )
   }
 
   function handleDelete() {
-
     if (text === "" || window.confirm('Are you sure you want to delete this comment?')) {
       props.onDelete(props.instruction.id)
     }
-
   }
 
   return (

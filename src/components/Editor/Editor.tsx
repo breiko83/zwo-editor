@@ -190,8 +190,8 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
     setInstructions(instructions => [...instructions, instruction]);
   }
 
-  function changeInstruction(id: string, instruction: Instruction) {
-    const index = instructions.findIndex(instructions => instructions.id === id)
+  function updateInstruction(instruction: Instruction) {
+    const index = instructions.findIndex(instructions => instructions.id === instruction.id)
 
     const updatedArray = [...instructions]
     updatedArray[index] = instruction
@@ -371,7 +371,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
       key={instruction.id}
       instruction={instruction}
       width={helpers.getWorkoutDuration(intervals) / 3}
-      onChange={(id: string, values: Instruction) => changeInstruction(id, values)}
+      onChange={updateInstruction}
       onDelete={(id: string) => deleteInstruction(id)} 
       index={index}
       />
