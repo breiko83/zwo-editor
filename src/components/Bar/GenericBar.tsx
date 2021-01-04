@@ -1,30 +1,26 @@
 import React from 'react';
-import { SportType } from '../../types/SportType';
 import { Interval } from '../../types/Interval';
 import FreeBar from './FreeBar';
 import SteadyBar from './SteadyBar';
 import RampBar from './RampBar';
 import RepetitionBar from './RepetitionBar';
+import { WorkoutMode } from '../../modes/WorkoutMode';
 
 interface GenericBarProps {
   interval: Interval;
-  sportType: SportType;
-  ftp: number;
-  weight: number;
+  mode: WorkoutMode;
   selected: boolean;
   onChange: (interval: Interval) => void;
   onClick: (id: string) => void;
 }
 
-const GenericBar = ({ interval, sportType, ftp, weight, selected, onChange, onClick }: GenericBarProps) => {
+const GenericBar = ({ interval, mode, selected, onChange, onClick }: GenericBarProps) => {
   switch (interval.type) {
     case 'steady':
       return (
         <SteadyBar
           interval={interval}
-          ftp={ftp}
-          weight={weight}
-          sportType={sportType}
+          mode={mode}
           onChange={onChange}
           onClick={onClick}
           selected={selected}
@@ -35,9 +31,7 @@ const GenericBar = ({ interval, sportType, ftp, weight, selected, onChange, onCl
       return (
         <RampBar
           interval={interval}
-          ftp={ftp}
-          weight={weight}
-          sportType={sportType}
+          mode={mode}
           onChange={onChange}
           onClick={onClick}
           selected={selected}
@@ -47,9 +41,7 @@ const GenericBar = ({ interval, sportType, ftp, weight, selected, onChange, onCl
       return (
         <FreeBar
           interval={interval}
-          ftp={ftp}
-          weight={weight}
-          sportType={sportType}
+          mode={mode}
           onChange={onChange}
           onClick={onClick}
           selected={selected}
@@ -59,9 +51,7 @@ const GenericBar = ({ interval, sportType, ftp, weight, selected, onChange, onCl
       return (
         <RepetitionBar
           interval={interval}
-          ftp={ftp}
-          weight={weight}
-          sportType={sportType}
+          mode={mode}
           onChange={onChange}
           onClick={onClick}
           selected={selected}

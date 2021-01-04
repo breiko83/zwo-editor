@@ -6,12 +6,11 @@ import Label from '../Label/Label'
 import helpers from '../helpers'
 import { FreeInterval } from '../../types/Interval'
 import { durationMultiplier } from './multipliers'
+import { WorkoutMode } from '../../modes/WorkoutMode'
 
 interface FreeBarProps {
   interval: FreeInterval;
-  ftp: number;
-  weight: number;
-  sportType: string;
+  mode: WorkoutMode;
   onChange: (interval: FreeInterval) => void;
   onClick: (id: string) => void;
   selected: boolean;
@@ -48,9 +47,7 @@ const FreeBar = ({interval, ...props}: FreeBarProps) => {
       {(props.selected || showLabel) &&
         <Label
           interval={interval}
-          ftp={props.ftp}
-          weight={props.weight}
-          sportType={props.sportType}
+          mode={props.mode}
           onCadenceChange={(cadence: number)=> handleCadenceChange(cadence)}
         />
       }

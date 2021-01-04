@@ -6,12 +6,11 @@ import Label from '../Label/Label'
 import helpers from '../helpers'
 import { SteadyInterval } from '../../types/Interval'
 import { durationMultiplier, intensityMultiplier } from './multipliers'
+import { WorkoutMode } from '../../modes/WorkoutMode'
 
 interface SteadyBarProps {
   interval: SteadyInterval;
-  ftp: number;
-  weight: number;
-  sportType: string;
+  mode: WorkoutMode;
   onChange: (interval: SteadyInterval) => void;
   onClick: (id: string) => void;
   selected: boolean;
@@ -61,10 +60,8 @@ const SteadyBar = ({interval, ...props}: SteadyBarProps) => {
     >
       {((selected || showLabel) && (props.showLabel)) &&
         <Label
-          sportType={props.sportType}
           interval={interval}
-          weight={props.weight}
-          ftp={props.ftp}
+          mode={props.mode}
           onCadenceChange={(cadence: number)=> handleCadenceChange(cadence)}
         />
       }

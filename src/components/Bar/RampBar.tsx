@@ -6,6 +6,7 @@ import Label from '../Label/Label'
 import helpers from '../helpers'
 import { RampInterval } from '../../types/Interval'
 import { durationMultiplier, intensityMultiplier } from './multipliers'
+import { WorkoutMode } from '../../modes/WorkoutMode'
 
 interface IDictionary {
   [index: string]: number;
@@ -13,9 +14,7 @@ interface IDictionary {
 
 interface RampBarProps {
   interval: RampInterval;
-  ftp: number;
-  weight: number;
-  sportType: string;
+  mode: WorkoutMode;
   onChange: (interval: RampInterval) => void;
   onClick: (id: string) => void;
   selected: boolean;
@@ -116,9 +115,7 @@ const RampBar = ({interval, ...props}: RampBarProps) => {
       {(props.selected || showLabel) &&
         <Label
           interval={interval}
-          ftp={props.ftp}
-          weight={props.weight}
-          sportType={props.sportType}
+          mode={props.mode}
           onCadenceChange={(cadence: number)=> handleCadenceChange(cadence)}
         />
       }

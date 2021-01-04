@@ -4,6 +4,7 @@ import { Zones } from '../../../types/Zones'
 import renderer from 'react-test-renderer';
 import '@testing-library/jest-dom/extend-expect'
 import intervalFactory from '../../../interval/intervalFactory';
+import createMode from '../../../modes/createMode';
 
 test('RampBar renders correctly', () => {
   const interval = intervalFactory.ramp({
@@ -11,13 +12,12 @@ test('RampBar renders correctly', () => {
     startIntensity: Zones.Z2.min,
     endIntensity: Zones.Z4.min,
   });
+  const mode = createMode("bike", 250, 75);
 
   const component = renderer.create(
     <RampBar
       interval={interval}
-      ftp={250}
-      weight={75}
-      sportType="bike"
+      mode={mode}
       selected={false}
       onChange={() => { }}
       onClick={() => { }}

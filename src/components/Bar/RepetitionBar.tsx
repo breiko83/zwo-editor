@@ -3,12 +3,11 @@ import { v4 as uuidv4 } from 'uuid'
 import SteadyBar from './SteadyBar'
 import './RepetitionBar.css'
 import { RepetitionInterval, SteadyInterval } from '../../types/Interval'
+import { WorkoutMode } from '../../modes/WorkoutMode'
 
 interface RepetitionBarProps {
   interval: RepetitionInterval;
-  ftp: number;
-  weight: number;
-  sportType: string;
+  mode: WorkoutMode;
   onChange: (interval: RepetitionInterval) => void;
   onClick: (id: string) => void;
   selected: boolean;
@@ -102,9 +101,7 @@ const RepetitionBar = ({interval, ...props}: RepetitionBarProps) => {
     <SteadyBar
       key={subInterval.id}
       interval={subInterval}
-      ftp={props.ftp}
-      weight={props.weight}
-      sportType={props.sportType}
+      mode={props.mode}
       onChange={handleOnChange}
       onClick={() => props.onClick(interval.id)}
       selected={props.selected}

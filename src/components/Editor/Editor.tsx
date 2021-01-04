@@ -48,6 +48,7 @@ import ActionButton from '../Button/ActionButton'
 import * as storage from '../../storage/storage';
 import Notification, { NotificationMessage } from './Notification'
 import { SportType } from '../../types/SportType'
+import createMode from '../../modes/createMode'
 
 type TParams = { id: string };
 
@@ -356,9 +357,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
       <GenericBar
         key={interval.id}
         interval={interval}
-        ftp={ftp}
-        weight={weight}
-        sportType={sportType}
+        mode={createMode(sportType, ftp, weight)}
         onChange={updateInterval}
         onClick={toggleSelection}
         selected={interval.id === selectedId}

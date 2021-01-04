@@ -1,7 +1,7 @@
 import { SportType } from "../types/SportType";
 
 export default class BikeMode {
-  public sportType: SportType = "bike";
+  public readonly sportType: SportType = "bike";
 
   constructor(private ftp: number, private weight: number) {}
 
