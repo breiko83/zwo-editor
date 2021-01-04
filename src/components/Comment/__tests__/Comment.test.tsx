@@ -1,25 +1,24 @@
 import React from 'react';
-import Comment from '../../Comment/Comment';
+import Comment from '../Comment';
 import renderer from 'react-test-renderer';
-import { v4 as uuidv4 } from 'uuid'
 import '@testing-library/jest-dom/extend-expect'
+import { createInstruction } from '../../../types/Instruction';
 
 test('Comment renders correctly', () => {
-  const instruction = {
+  const instruction = createInstruction({
     text: 'This is a comment',
     time: 300,
-    id: uuidv4()
-  }
+  });
 
   const component = renderer.create(
     <Comment
-      key={instruction.id}
       instruction={instruction}
+      width={500}
+      index={0}
       onChange={() => { }}
       onDelete={() => { }}
     />,
-  )
+  );
 
-  let tree = component.toJSON();
-  expect(tree).toMatchSnapshot();
-})
+  expect(component).toMatchSnapshot();
+});

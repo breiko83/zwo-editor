@@ -8,7 +8,7 @@ exports[`Comment renders correctly 1`] = `
   onTouchEnd={[Function]}
   style={
     Object {
-      "transform": "translate(100px,NaNpx)",
+      "transform": "translate(100px,0px)",
     }
   }
   transform={null}
