@@ -4,10 +4,18 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faComment, faTrashAlt } from '@fortawesome/free-solid-svg-icons'
 import './Comment.css'
 import helpers from '../helpers'
-import { distanceMultiplier, durationMultiplier } from '../Bar/multipliers'
+import { durationMultiplier } from '../Bar/multipliers'
 import { Instruction } from '../../types/Instruction'
 
-const Comment = (props: { instruction: Instruction, width: number, onChange: Function, onDelete: Function, index: number }) => {
+interface CommentProps {
+  instruction: Instruction;
+  width: number;
+  onChange: (id: string, instruction: Instruction) => void;
+  onDelete: (id: string) => void;
+  index: number;
+}
+
+const Comment = (props: CommentProps) => {
   const [text, setText] = useState(props.instruction.text)
   const [time, setTime] = useState(props.instruction.time / durationMultiplier)
 
@@ -20,7 +28,6 @@ const Comment = (props: { instruction: Instruction, width: number, onChange: Fun
         id: props.instruction.id,
         text: text,
         time: position * durationMultiplier,
-        length: position * distanceMultiplier
       })
   }
 
