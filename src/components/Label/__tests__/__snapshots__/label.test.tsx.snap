@@ -102,7 +102,7 @@ exports[`<Label> for cycling, renders: duration, power, w/kg, %FTP, cadence 1`] 
 </div>
 `;
 
-exports[`<Label> for running ramp, renders: duration, %pace-range, pace type 1`] = `
+exports[`<Label> for running ramp, renders: duration, distance, %pace-range, pace type 1`] = `
 <div
   className="label"
 >
@@ -113,6 +113,14 @@ exports[`<Label> for running ramp, renders: duration, %pace-range, pace type 1`]
     />
      
     01:40
+  </div>
+  <div>
+    <FontAwesomeIcon
+      fixedWidth={true}
+    />
+     
+    750
+     m
   </div>
   <div>
     50
@@ -125,7 +133,7 @@ exports[`<Label> for running ramp, renders: duration, %pace-range, pace type 1`]
 </div>
 `;
 
-exports[`<Label> for running, renders: duration, %pace, pace type 1`] = `
+exports[`<Label> for running, renders: duration, distance, %pace, pace type 1`] = `
 <div
   className="label"
 >
@@ -136,6 +144,14 @@ exports[`<Label> for running, renders: duration, %pace, pace type 1`] = `
     />
      
     01:40
+  </div>
+  <div>
+    <FontAwesomeIcon
+      fixedWidth={true}
+    />
+     
+    1250
+     m
   </div>
   <div>
     125

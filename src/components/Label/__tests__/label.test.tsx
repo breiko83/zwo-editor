@@ -38,18 +38,18 @@ describe('<Label>', () => {
     expect(component).toMatchSnapshot();
   });
 
-  test('for running, renders: duration, %pace, pace type', () => {
+  test('for running, renders: duration, distance, %pace, pace type', () => {
     const interval = intervalFactory.steady({ duration: 100, intensity: 1.25, cadence: 0, pace: PaceType.tenKm });
-    const mode = createMode("run", 1234, 75, []);
+    const mode = createMode("run", 1234, 75, [0, 0, 1000, 0, 0]);
     const component = renderer.create(
       <Label interval={interval} mode={mode} onCadenceChange={() => {}} />
     );
     expect(component).toMatchSnapshot();
   });
 
-  test('for running ramp, renders: duration, %pace-range, pace type', () => {
+  test('for running ramp, renders: duration, distance, %pace-range, pace type', () => {
     const interval = intervalFactory.ramp({ duration: 100, startIntensity: 0.5, endIntensity: 1.0, cadence: 0, pace: PaceType.tenKm });
-    const mode = createMode("run", 1234, 75, []);
+    const mode = createMode("run", 1234, 75, [0, 0, 1000, 0, 0]);
     const component = renderer.create(
       <Label interval={interval} mode={mode} onCadenceChange={() => {}} />
     );

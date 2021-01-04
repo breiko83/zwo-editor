@@ -1,6 +1,6 @@
 import React from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faBolt, faClock } from '@fortawesome/free-solid-svg-icons'
+import { faBolt, faClock, faRuler } from '@fortawesome/free-solid-svg-icons'
 import './Label.css'
 import helpers from '../helpers'
 import { FreeInterval, RampInterval, SteadyInterval } from '../../types/Interval'
@@ -60,14 +60,26 @@ function RunData({ interval, mode }: LabelProps & { mode: RunMode }) {
   return (
     <>
       {interval.type === "steady" &&
-        <div>
-          {mode.percentage(interval.intensity)}% {mode.shortPaceName(interval.pace)} pace
-        </div>
+        <>
+          <div>
+            <FontAwesomeIcon icon={faRuler} fixedWidth />{" "}
+            {mode.distance(interval.duration, interval.intensity, interval.pace)} m
+          </div>
+          <div>
+            {mode.percentage(interval.intensity)}% {mode.shortPaceName(interval.pace)} pace
+          </div>
+        </>
       }
       {interval.type === "ramp" &&
-        <div>
-          {mode.percentage(interval.startIntensity)}% to {mode.percentage(interval.endIntensity)}% {mode.shortPaceName(interval.pace)} pace
-        </div>
+        <>
+          <div>
+            <FontAwesomeIcon icon={faRuler} fixedWidth />{" "}
+            {mode.distance(interval.duration, (interval.startIntensity + interval.endIntensity) / 2, interval.pace)} m
+          </div>
+          <div>
+            {mode.percentage(interval.startIntensity)}% to {mode.percentage(interval.endIntensity)}% {mode.shortPaceName(interval.pace)} pace
+          </div>
+        </>
       }
     </>
   );

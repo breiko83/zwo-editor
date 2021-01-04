@@ -21,6 +21,6 @@ export default class RunMode {
 
   distance(duration: number, intensity: number, pace: PaceType): number {
     const speed = DISTANCES[pace] / this.runningTimes[pace] * intensity; // in m/s
-    return speed * duration; // in meters
+    return Math.round(speed * duration); // in meters
   }
 }
