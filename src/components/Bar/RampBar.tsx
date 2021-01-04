@@ -5,7 +5,7 @@ import { Resizable } from 're-resizable'
 import Label from '../Label/Label'
 import helpers from '../helpers'
 import { RampInterval } from '../../types/Interval'
-import { durationMultiplier, powerMultiplier } from './multipliers'
+import { durationMultiplier, intensityMultiplier } from './multipliers'
 
 interface IDictionary {
   [index: string]: number;
@@ -31,9 +31,9 @@ const RampBar = ({interval, ...props}: RampBarProps) => {
   // RUN WORKOUTS ON DISTANCE - BIKE WORKOUTS ON TIME
   const [width, setWidth] = useState(Math.round(interval.duration / durationMultiplier / 3 ))
 
-  const [height1, setHeight1] = useState(interval.startPower * powerMultiplier)
-  const [height2, setHeight2] = useState(((interval.endPower + interval.startPower) * powerMultiplier) / 2)
-  const [height3, setHeight3] = useState(interval.endPower * powerMultiplier)
+  const [height1, setHeight1] = useState(interval.startIntensity * intensityMultiplier)
+  const [height2, setHeight2] = useState(((interval.endIntensity + interval.startIntensity) * intensityMultiplier) / 2)
+  const [height3, setHeight3] = useState(interval.endIntensity * intensityMultiplier)
 
   const trapezeHeight = height3 > height1 ? height3 : height1
   const trapezeTop = height3 > height1 ? (height3 - height1) : (height1 - height3)
@@ -42,7 +42,7 @@ const RampBar = ({interval, ...props}: RampBarProps) => {
   const vertexA = height3 > height1 ? trapezeTop : 0
   const vertexD = height3 > height1 ? 0 : trapezeTop
 
-  var bars = height3 > height1 ? calculateColors(interval.startPower, interval.endPower) : calculateColors(interval.endPower, interval.startPower)
+  var bars = height3 > height1 ? calculateColors(interval.startIntensity, interval.endIntensity) : calculateColors(interval.endIntensity, interval.startIntensity)
   const flexDirection = height3 > height1 ? 'row' : 'row-reverse'
 
   const handleResizeStop1 = (dHeight: number) => {    
@@ -64,16 +64,16 @@ const RampBar = ({interval, ...props}: RampBarProps) => {
     props.onChange({
       ...interval,
       duration: helpers.floor(width * durationMultiplier * 3, 5),
-      startPower: (height1 + dHeight) / powerMultiplier,
-      endPower: height3 / powerMultiplier,
+      startIntensity: (height1 + dHeight) / intensityMultiplier,
+      endIntensity: height3 / intensityMultiplier,
     })
   }
   const handleResize2 = (dHeight: number) => {
     props.onChange({
       ...interval,
       duration: helpers.floor(width * durationMultiplier * 3, 5),
-      startPower: (height1 + dHeight) / powerMultiplier,
-      endPower: (height3 + dHeight) / powerMultiplier,
+      startIntensity: (height1 + dHeight) / intensityMultiplier,
+      endIntensity: (height3 + dHeight) / intensityMultiplier,
     })
   }
   const handleResize3 = (dWidth: number, dHeight: number) => {
@@ -82,8 +82,8 @@ const RampBar = ({interval, ...props}: RampBarProps) => {
     props.onChange({
       ...interval,
       duration: helpers.floor(newWidth * durationMultiplier * 3, 5),
-      startPower: height1 / powerMultiplier,
-      endPower: (height3 + dHeight) / powerMultiplier
+      startIntensity: height1 / intensityMultiplier,
+      endIntensity: (height3 + dHeight) / intensityMultiplier
     })
   }
 
@@ -130,8 +130,8 @@ const RampBar = ({interval, ...props}: RampBarProps) => {
             height: height1,
           }}
           minWidth={3}
-          minHeight={powerMultiplier * Zones.Z1.min}
-          maxHeight={powerMultiplier * Zones.Z6.max}
+          minHeight={intensityMultiplier * Zones.Z1.min}
+          maxHeight={intensityMultiplier * Zones.Z6.max}
           enable={{ top: true, right: true }}
           grid={[1, 1]}
           onResizeStop={(e, direction, ref, d) => handleResizeStop1(d.height)}
@@ -145,8 +145,8 @@ const RampBar = ({interval, ...props}: RampBarProps) => {
             height: height2,
           }}
           minWidth={3}
-          minHeight={powerMultiplier * Zones.Z1.min}
-          maxHeight={powerMultiplier * Zones.Z6.max}
+          minHeight={intensityMultiplier * Zones.Z1.min}
+          maxHeight={intensityMultiplier * Zones.Z6.max}
           enable={{ top: true }}
           grid={[1, 1]}
           onResizeStop={(e, direction, ref, d) => handleResizeStop2(d.height)}
@@ -160,8 +160,8 @@ const RampBar = ({interval, ...props}: RampBarProps) => {
             height: height3,
           }}
           minWidth={3}
-          minHeight={powerMultiplier * Zones.Z1.min}
-          maxHeight={powerMultiplier * Zones.Z6.max}
+          minHeight={intensityMultiplier * Zones.Z1.min}
+          maxHeight={intensityMultiplier * Zones.Z6.max}
           enable={{ top: true, right: true }}
           grid={[1, 1]}
           onResizeStop={(e, direction, ref, d) => handleResizeStop3(d.width, d.height)}
@@ -169,13 +169,13 @@ const RampBar = ({interval, ...props}: RampBarProps) => {
         >
         </Resizable>
       </div>
-      <div className='trapeze-colors' style={{ height: trapezeHeight, flexDirection: flexDirection, backgroundColor: zoneColor(interval.startPower) }}>
-        <div className='color' style={{ backgroundColor: ZoneColor.GRAY, width: `${(bars['Z1'] * 100 / Math.abs(interval.endPower - interval.startPower))}%` }}></div>
-        <div className='color' style={{ backgroundColor: ZoneColor.BLUE, width: `${(bars['Z2'] * 100 / Math.abs(interval.endPower - interval.startPower))}%` }}></div>
-        <div className='color' style={{ backgroundColor: ZoneColor.GREEN, width: `${(bars['Z3'] * 100 / Math.abs(interval.endPower - interval.startPower))}%` }}></div>
-        <div className='color' style={{ backgroundColor: ZoneColor.YELLOW, width: `${(bars['Z4'] * 100 / Math.abs(interval.endPower - interval.startPower))}%` }}></div>
-        <div className='color' style={{ backgroundColor: ZoneColor.ORANGE, width: `${(bars['Z5'] * 100 / Math.abs(interval.endPower - interval.startPower))}%` }}></div>
-        <div className='color' style={{ backgroundColor: ZoneColor.RED, width: `${(bars['Z6'] * 100 / Math.abs(interval.endPower - interval.startPower))}%` }}></div>
+      <div className='trapeze-colors' style={{ height: trapezeHeight, flexDirection: flexDirection, backgroundColor: zoneColor(interval.startIntensity) }}>
+        <div className='color' style={{ backgroundColor: ZoneColor.GRAY, width: `${(bars['Z1'] * 100 / Math.abs(interval.endIntensity - interval.startIntensity))}%` }}></div>
+        <div className='color' style={{ backgroundColor: ZoneColor.BLUE, width: `${(bars['Z2'] * 100 / Math.abs(interval.endIntensity - interval.startIntensity))}%` }}></div>
+        <div className='color' style={{ backgroundColor: ZoneColor.GREEN, width: `${(bars['Z3'] * 100 / Math.abs(interval.endIntensity - interval.startIntensity))}%` }}></div>
+        <div className='color' style={{ backgroundColor: ZoneColor.YELLOW, width: `${(bars['Z4'] * 100 / Math.abs(interval.endIntensity - interval.startIntensity))}%` }}></div>
+        <div className='color' style={{ backgroundColor: ZoneColor.ORANGE, width: `${(bars['Z5'] * 100 / Math.abs(interval.endIntensity - interval.startIntensity))}%` }}></div>
+        <div className='color' style={{ backgroundColor: ZoneColor.RED, width: `${(bars['Z6'] * 100 / Math.abs(interval.endIntensity - interval.startIntensity))}%` }}></div>
       </div>
       <svg height={`${trapezeHeight}`} width={`${width * 3}`} className='trapeze-svg-container'>
         <polygon points={`0,${vertexA} 0,${trapezeHeight} ${width * 3},${trapezeHeight} ${width * 3},${vertexD}`} className='trapeze-svg' />

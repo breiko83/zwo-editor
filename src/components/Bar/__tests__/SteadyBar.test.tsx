@@ -8,7 +8,7 @@ import intervalFactory from '../../../interval/intervalFactory';
 test('SteadyBar renders correctly', () => {
   const interval = intervalFactory.steady({
     duration: 50,
-    power: Zones.Z3.min,
+    intensity: Zones.Z3.min,
   });
 
   const component = renderer.create(

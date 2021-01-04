@@ -5,7 +5,7 @@ import { Resizable } from 're-resizable'
 import Label from '../Label/Label'
 import helpers from '../helpers'
 import { SteadyInterval } from '../../types/Interval'
-import { durationMultiplier, powerMultiplier } from './multipliers'
+import { durationMultiplier, intensityMultiplier } from './multipliers'
 
 interface SteadyBarProps {
   interval: SteadyInterval;
@@ -19,11 +19,11 @@ interface SteadyBarProps {
 }
 
 const SteadyBar = ({interval, ...props}: SteadyBarProps) => {
-  const style = { backgroundColor: zoneColor(interval.power) }
+  const style = { backgroundColor: zoneColor(interval.intensity) }
 
   const [width, setWidth] = useState(interval.duration / durationMultiplier)
 
-  const [height, setHeight] = useState(interval.power * powerMultiplier)
+  const [height, setHeight] = useState(interval.intensity * intensityMultiplier)
 
   const [showLabel, setShowLabel] = useState(false)
 
@@ -48,7 +48,7 @@ const SteadyBar = ({interval, ...props}: SteadyBarProps) => {
     props.onChange({
       ...interval,
       duration: helpers.floor((width + dWidth) * durationMultiplier, 5),
-      power: (height + dHeight) / powerMultiplier,
+      intensity: (height + dHeight) / intensityMultiplier,
     })
   }
 
@@ -72,11 +72,11 @@ const SteadyBar = ({interval, ...props}: SteadyBarProps) => {
         className='bar'
         size={{
           width: interval.duration / durationMultiplier,
-          height: interval.power * powerMultiplier,
+          height: interval.intensity * intensityMultiplier,
         }}
         minWidth={3}
-        minHeight={powerMultiplier * Zones.Z1.min}
-        maxHeight={powerMultiplier * Zones.Z6.max}
+        minHeight={intensityMultiplier * Zones.Z1.min}
+        maxHeight={intensityMultiplier * Zones.Z6.max}
         enable={{ top: true, right: true }}
         grid={[1, 1]}
         onResizeStop={(e, direction, ref, d) => handleResizeStop(d.width, d.height)}

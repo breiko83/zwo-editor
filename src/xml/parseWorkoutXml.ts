@@ -40,7 +40,7 @@ export default function parseWorkoutXml(data: string): Workout {
 
       if (w.name === 'SteadyState') {
         workout.intervals.push(intervalFactory.steady({
-          power: parseFloat(w.attributes.Power || w.attributes.PowerLow),
+          intensity: parseFloat(w.attributes.Power || w.attributes.PowerLow),
           duration: parseFloat(w.attributes.Duration),
           cadence: parseFloat(w.attributes.Cadence || '0'),
           pace: parseInt(w.attributes.Pace || '0'),
@@ -48,8 +48,8 @@ export default function parseWorkoutXml(data: string): Workout {
       }
       if (w.name === 'Ramp' || w.name === 'Warmup' || w.name === 'Cooldown') {
         workout.intervals.push(intervalFactory.ramp({
-          startPower: parseFloat(w.attributes.PowerLow),
-          endPower: parseFloat(w.attributes.PowerHigh),
+          startIntensity: parseFloat(w.attributes.PowerLow),
+          endIntensity: parseFloat(w.attributes.PowerHigh),
           duration: parseFloat(w.attributes.Duration),
           pace: parseInt(w.attributes.Pace || '0'),
           cadence: parseInt(w.attributes.Cadence),
@@ -60,8 +60,8 @@ export default function parseWorkoutXml(data: string): Workout {
           repeat: parseFloat(w.attributes.Repeat),
           onDuration: parseFloat(w.attributes.OnDuration),
           offDuration: parseFloat(w.attributes.OffDuration),
-          onPower: parseFloat(w.attributes.OnPower),
-          offPower: parseFloat(w.attributes.OffPower),
+          onIntensity: parseFloat(w.attributes.OnPower),
+          offIntensity: parseFloat(w.attributes.OffPower),
           cadence: parseInt(w.attributes.Cadence || '0'),
           restingCadence: parseInt(w.attributes.CadenceResting),
           pace: parseInt(w.attributes.Pace || '0'),

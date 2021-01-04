@@ -29,13 +29,13 @@ export default function createWorkoutXml({ author, name, description, sportType,
     if (interval.type === 'steady') {
       segment = Builder.create('SteadyState')
         .att('Duration', interval.duration)
-        .att('Power', interval.power)
+        .att('Power', interval.intensity)
         .att('pace', interval.pace)
 
       // add cadence if not zero
       interval.cadence !== 0 && segment.att('Cadence', interval.cadence)
 
-    } else if (interval.type === 'ramp' && interval.startPower && interval.endPower) {
+    } else if (interval.type === 'ramp' && interval.startIntensity && interval.endIntensity) {
 
       // index 0 is warmup
       // last index is cooldown
@@ -45,12 +45,12 @@ export default function createWorkoutXml({ author, name, description, sportType,
       if (index === 0) ramp = 'Warmup'
       if (index === intervals.length - 1) ramp = 'Cooldown'
 
-      if (interval.startPower < interval.endPower) {
+      if (interval.startIntensity < interval.endIntensity) {
         // warmup
         segment = Builder.create(ramp)
           .att('Duration', interval.duration)
-          .att('PowerLow', interval.startPower)
-          .att('PowerHigh', interval.endPower)
+          .att('PowerLow', interval.startIntensity)
+          .att('PowerHigh', interval.endIntensity)
           .att('pace', interval.pace)
         // add cadence if not zero
         interval.cadence !== 0 && segment.att('Cadence', interval.cadence)
@@ -59,8 +59,8 @@ export default function createWorkoutXml({ author, name, description, sportType,
         // cooldown
         segment = Builder.create(ramp)
           .att('Duration', interval.duration)
-          .att('PowerLow', interval.startPower) // these 2 values are inverted
-          .att('PowerHigh', interval.endPower) // looks like a bug on zwift editor            
+          .att('PowerLow', interval.startIntensity) // these 2 values are inverted
+          .att('PowerHigh', interval.endIntensity) // looks like a bug on zwift editor            
           .att('pace', interval.pace)
         // add cadence if not zero
         interval.cadence !== 0 && segment.att('Cadence', interval.cadence)
@@ -71,8 +71,8 @@ export default function createWorkoutXml({ author, name, description, sportType,
         .att('Repeat', interval.repeat)
         .att('OnDuration', interval.onDuration)
         .att('OffDuration', interval.offDuration)
-        .att('OnPower', interval.onPower)
-        .att('OffPower', interval.offPower)
+        .att('OnPower', interval.onIntensity)
+        .att('OffPower', interval.offIntensity)
         .att('pace', interval.pace)        
         // add cadence if not zero
         interval.cadence !== 0 && segment.att('Cadence', interval.cadence)

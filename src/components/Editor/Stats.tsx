@@ -29,26 +29,26 @@ function getStressScore(intervals: Interval[], ftp: number): string {
   let tss = 0
 
   intervals.map((interval) => {
-    if (interval.type === 'steady' && interval.power) {
-      const np = interval.power * ftp
-      const iff = interval.power
+    if (interval.type === 'steady' && interval.intensity) {
+      const np = interval.intensity * ftp
+      const iff = interval.intensity
 
       tss += (interval.duration * np * iff)
     }
-    if (interval.type === 'ramp' && interval.startPower && interval.endPower) {
-      const np = (interval.startPower + interval.endPower) / 2 * ftp
-      const iff = (interval.startPower + interval.endPower) / 2
+    if (interval.type === 'ramp' && interval.startIntensity && interval.endIntensity) {
+      const np = (interval.startIntensity + interval.endIntensity) / 2 * ftp
+      const iff = (interval.startIntensity + interval.endIntensity) / 2
 
       tss += (interval.duration * np * iff)
     }
-    if (interval.type === 'repetition' && interval.onPower && interval.offPower && interval.repeat && interval.onDuration && interval.offDuration) {
-      const npOn = (interval.onPower * ftp)
-      const iffOn = interval.onPower
+    if (interval.type === 'repetition' && interval.onIntensity && interval.offIntensity && interval.repeat && interval.onDuration && interval.offDuration) {
+      const npOn = (interval.onIntensity * ftp)
+      const iffOn = interval.onIntensity
 
       tss += (interval.onDuration * interval.repeat * npOn * iffOn)
 
-      const npOff = (interval.offPower * ftp)
-      const iffOff = interval.offPower
+      const npOff = (interval.offIntensity * ftp)
+      const iffOff = interval.offIntensity
 
       tss += (interval.offDuration * interval.repeat * npOff * iffOff)
     }

@@ -28,7 +28,7 @@ const RepetitionBar = ({interval, ...props}: RepetitionBarProps) => {
       subIntervals.push(
         {
           duration: onDuration,
-          power: interval.onPower,
+          intensity: interval.onIntensity,
           cadence: interval.cadence,
           type: 'steady',
           pace: interval.pace,
@@ -38,7 +38,7 @@ const RepetitionBar = ({interval, ...props}: RepetitionBarProps) => {
       subIntervals.push(
         {
           duration: offDuration,
-          power: interval.offPower,
+          intensity: interval.offIntensity,
           cadence: interval.restingCadence,
           type: 'steady',
           pace: interval.pace,
@@ -62,7 +62,7 @@ const RepetitionBar = ({interval, ...props}: RepetitionBarProps) => {
     for (var i = 0; i < subIntervals.length; i++) {
       if (index % 2 === i % 2) {       
         subIntervals[i].duration = values.duration
-        subIntervals[i].power = values.power
+        subIntervals[i].intensity = values.intensity
         subIntervals[i].cadence = values.cadence        
       }      
     }
@@ -74,8 +74,8 @@ const RepetitionBar = ({interval, ...props}: RepetitionBarProps) => {
       repeat: repeat,
       onDuration: subIntervals[0].duration,
       offDuration: subIntervals[1].duration,
-      onPower: subIntervals[0].power,
-      offPower: subIntervals[1].power,
+      onIntensity: subIntervals[0].intensity,
+      offIntensity: subIntervals[1].intensity,
     })
 
   }

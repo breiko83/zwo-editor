@@ -28,12 +28,12 @@ export function updateIntervalDuration(id: string, dDuration: number, intervals:
   }, intervals);
 }
 
-export function updateIntervalPower(id: string, dPower: number, intervals: Interval[]): Interval[] {
+export function updateIntervalIntensity(id: string, dIntensity: number, intervals: Interval[]): Interval[] {
   return updateById(id, (interval) => {
     if (interval.type === 'steady') {
-      const power = interval.power + dPower;
-      if (power > Zones.Z1.min) {
-        return { ...interval, power };
+      const intensity = interval.intensity + dIntensity;
+      if (intensity > Zones.Z1.min) {
+        return { ...interval, intensity };
       }
     }
     return interval;

@@ -31,20 +31,20 @@ function BikeData({ interval, ftp, weight, onCadenceChange }: LabelProps) {
       {interval.type === "steady" &&
         <>
           <div>
-            <FontAwesomeIcon icon={faBolt} fixedWidth /> {intensityToPower(interval.power, ftp)}W
+            <FontAwesomeIcon icon={faBolt} fixedWidth /> {intensityToPower(interval.intensity, ftp)}W
           </div>
           <div>
-            {intensityToWkg(interval.power, ftp, weight)}W/Kg &middot; {intensityToPercentage(interval.power)}% FTP
+            {intensityToWkg(interval.intensity, ftp, weight)}W/Kg &middot; {intensityToPercentage(interval.intensity)}% FTP
           </div>
         </>
       }
       {interval.type === "ramp" &&
         <>
           <div>
-            <FontAwesomeIcon icon={faBolt} fixedWidth /> {intensityToPower(interval.startPower, ftp)}W - {intensityToPower(interval.endPower, ftp)}W
+            <FontAwesomeIcon icon={faBolt} fixedWidth /> {intensityToPower(interval.startIntensity, ftp)}W - {intensityToPower(interval.endIntensity, ftp)}W
           </div>
           <div>
-            {intensityToPercentage(interval.startPower)}% FTP - {intensityToPercentage(interval.endPower)}% FTP
+            {intensityToPercentage(interval.startIntensity)}% FTP - {intensityToPercentage(interval.endIntensity)}% FTP
           </div>
         </>
       }
@@ -61,12 +61,12 @@ function RunData({ interval }: LabelProps) {
     <>
       {interval.type === "steady" &&
         <div>
-          {intensityToPercentage(interval.power)}% {paceToShortName(interval.pace)} pace
+          {intensityToPercentage(interval.intensity)}% {paceToShortName(interval.pace)} pace
         </div>
       }
       {interval.type === "ramp" &&
         <div>
-          {intensityToPercentage(interval.startPower)}% to {intensityToPercentage(interval.endPower)}% {paceToShortName(interval.pace)} pace
+          {intensityToPercentage(interval.startIntensity)}% to {intensityToPercentage(interval.endIntensity)}% {paceToShortName(interval.pace)} pace
         </div>
       }
     </>

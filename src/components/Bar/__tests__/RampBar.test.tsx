@@ -8,8 +8,8 @@ import intervalFactory from '../../../interval/intervalFactory';
 test('RampBar renders correctly', () => {
   const interval = intervalFactory.ramp({
     duration: 50,
-    startPower: Zones.Z2.min,
-    endPower: Zones.Z4.min,
+    startIntensity: Zones.Z2.min,
+    endIntensity: Zones.Z4.min,
   });
 
   const component = renderer.create(

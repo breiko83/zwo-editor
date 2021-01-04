@@ -3,7 +3,7 @@ import { PaceType } from '../types/PaceType';
 import { FreeInterval, Interval, RampInterval, RepetitionInterval, SteadyInterval } from "../types/Interval";
 
 const defaultDuration = 300;
-const defaultPower = 1.0;
+const defaultIntensity = 1.0;
 const defaultPace = PaceType.oneMile;
 const defaultCadence = 0;
 
@@ -13,7 +13,7 @@ export default {
       type: 'steady',
       id: uuidv4(),
       duration: defaultDuration,
-      power: defaultPower,
+      intensity: defaultIntensity,
       cadence: defaultCadence,
       pace: defaultPace,
       ...interval,
@@ -25,8 +25,8 @@ export default {
       type: 'ramp',
       id: uuidv4(),
       duration: defaultDuration,
-      startPower: defaultPower / 2,
-      endPower: defaultPower,
+      startIntensity: defaultIntensity / 2,
+      endIntensity: defaultIntensity,
       cadence: defaultCadence,
       pace: defaultPace,
       ...interval,
@@ -52,8 +52,8 @@ export default {
       repeat: 3,
       onDuration: 30,
       offDuration: 120,
-      onPower: defaultPower,
-      offPower: defaultPower / 2,
+      onIntensity: defaultIntensity,
+      offIntensity: defaultIntensity / 2,
       pace: defaultPace,
       ...interval,
     };

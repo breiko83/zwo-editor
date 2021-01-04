@@ -20,7 +20,7 @@ jest.mock('@fortawesome/free-solid-svg-icons', () => ({
 
 describe('<Label>', () => {
   test('for cycling, renders: duration, power, w/kg, %FTP, cadence', () => {
-    const interval = intervalFactory.steady({ duration: 100, power: 1.25, cadence: 0 });
+    const interval = intervalFactory.steady({ duration: 100, intensity: 1.25, cadence: 0 });
     const component = renderer.create(
       <Label interval={interval} weight={75} ftp={200} sportType="bike" onCadenceChange={() => {}} />
     );
@@ -28,7 +28,7 @@ describe('<Label>', () => {
   });
 
   test('for cycling ramp, renders: duration, power-range, %FTP-range, cadence', () => {
-    const interval = intervalFactory.ramp({ duration: 100, startPower: 0.5, endPower: 1.0, cadence: 0 });
+    const interval = intervalFactory.ramp({ duration: 100, startIntensity: 0.5, endIntensity: 1.0, cadence: 0 });
     const component = renderer.create(
       <Label interval={interval} weight={75} ftp={200} sportType="bike" onCadenceChange={() => {}} />
     );
@@ -36,7 +36,7 @@ describe('<Label>', () => {
   });
 
   test('for running, renders: duration, %pace, pace type', () => {
-    const interval = intervalFactory.steady({ duration: 100, power: 1.25, cadence: 0, pace: PaceType.tenKm });
+    const interval = intervalFactory.steady({ duration: 100, intensity: 1.25, cadence: 0, pace: PaceType.tenKm });
     const component = renderer.create(
       <Label interval={interval} weight={75} ftp={1234} sportType="run" onCadenceChange={() => {}} />
     );
@@ -44,7 +44,7 @@ describe('<Label>', () => {
   });
 
   test('for running ramp, renders: duration, %pace-range, pace type', () => {
-    const interval = intervalFactory.ramp({ duration: 100, startPower: 0.5, endPower: 1.0, cadence: 0, pace: PaceType.tenKm });
+    const interval = intervalFactory.ramp({ duration: 100, startIntensity: 0.5, endIntensity: 1.0, cadence: 0, pace: PaceType.tenKm });
     const component = renderer.create(
       <Label interval={interval} weight={75} ftp={1234} sportType="run" onCadenceChange={() => {}} />
     );

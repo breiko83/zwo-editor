@@ -44,16 +44,16 @@ export const ZonesArray = [
   [Zones.Z6.min,Zones.Z6.max],
 ]
 
-export const zoneColor = (power: number): ZoneColor => {
-  if (power < Zones.Z1.max) {
+export const zoneColor = (intensity: number): ZoneColor => {
+  if (intensity < Zones.Z1.max) {
     return ZoneColor.GRAY;
-  } else if (power < Zones.Z2.max) {
+  } else if (intensity < Zones.Z2.max) {
     return ZoneColor.BLUE;
-  } else if (power < Zones.Z3.max) {
+  } else if (intensity < Zones.Z3.max) {
     return ZoneColor.GREEN;
-  } else if (power < Zones.Z4.max) {
+  } else if (intensity < Zones.Z4.max) {
     return ZoneColor.YELLOW;
-  } else if (power < Zones.Z5.max) {
+  } else if (intensity < Zones.Z5.max) {
     return ZoneColor.ORANGE;
   } else {
     return ZoneColor.RED;
