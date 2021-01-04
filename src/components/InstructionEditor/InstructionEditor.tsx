@@ -2,12 +2,12 @@ import React, { useState } from 'react'
 import Draggable from 'react-draggable'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faComment, faTrashAlt } from '@fortawesome/free-solid-svg-icons'
-import './Comment.css'
+import './InstructionEditor.css'
 import helpers from '../helpers'
 import { durationMultiplier } from '../Bar/multipliers'
 import { Instruction } from '../../types/Instruction'
 
-interface CommentProps {
+interface InstructionEditorProps {
   instruction: Instruction;
   width: number;
   onChange: (instruction: Instruction) => void;
@@ -15,7 +15,7 @@ interface CommentProps {
   index: number;
 }
 
-const Comment = (props: CommentProps) => {
+const InstructionEditor = (props: InstructionEditorProps) => {
   const [text, setText] = useState(props.instruction.text)
   const [time, setTime] = useState(props.instruction.time / durationMultiplier)
 
@@ -80,4 +80,4 @@ const Comment = (props: CommentProps) => {
   )
 }
 
-export default Comment
+export default InstructionEditor;

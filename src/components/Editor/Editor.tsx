@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react'
 import './Editor.css'
 import { ZoneColor, Zones } from '../../types/Zones'
 import GenericBar from '../Bar/GenericBar'
-import Comment from '../Comment/Comment'
+import InstructionEditor from '../InstructionEditor/InstructionEditor'
 import Popup from '../Popup/Popup'
 import Footer from '../Footer/Footer'
 import Workouts from '../Workouts/Workouts'
@@ -366,15 +366,15 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
     );
   }
 
-  const renderComment = (instruction: Instruction, index: number) => (
-    <Comment
+  const renderInstruction = (instruction: Instruction, index: number) => (
+    <InstructionEditor
       key={instruction.id}
       instruction={instruction}
       width={helpers.getWorkoutDuration(intervals) / 3}
       onChange={updateInstruction}
-      onDelete={(id: string) => deleteInstruction(id)} 
+      onDelete={deleteInstruction}
       index={index}
-      />
+    />
   )
 
   const renderRegistrationForm = () => {
@@ -504,7 +504,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
           </div>
 
           <div className='slider'>
-            {instructions.map((instruction, index) => renderComment(instruction, index))}
+            {instructions.map((instruction, index) => renderInstruction(instruction, index))}
           </div>
 
           <TimeAxis width={segmentsWidth} />

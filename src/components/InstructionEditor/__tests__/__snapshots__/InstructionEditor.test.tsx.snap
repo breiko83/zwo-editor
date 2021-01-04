@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Comment renders correctly 1`] = `
+exports[`InstructionEditor renders correctly 1`] = `
 <div
   className="react-draggable"
   onMouseDown={[Function]}

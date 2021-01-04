@@ -1,17 +1,17 @@
 import React from 'react';
-import Comment from '../Comment';
+import InstructionEditor from '../InstructionEditor';
 import renderer from 'react-test-renderer';
 import '@testing-library/jest-dom/extend-expect'
 import { createInstruction } from '../../../types/Instruction';
 
-test('Comment renders correctly', () => {
+test('InstructionEditor renders correctly', () => {
   const instruction = createInstruction({
     text: 'This is a comment',
     time: 300,
   });
 
   const component = renderer.create(
-    <Comment
+    <InstructionEditor
       instruction={instruction}
       width={500}
       index={0}
