@@ -9,7 +9,7 @@ test('FreeBar renders correctly', () => {
   const interval = intervalFactory.free({
     duration: 50,
   });
-  const mode = createMode("bike", 200, 75);
+  const mode = createMode("bike", 200, 75, []);
 
   const component = renderer.create(
     <FreeBar

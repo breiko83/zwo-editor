@@ -357,7 +357,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
       <GenericBar
         key={interval.id}
         interval={interval}
-        mode={createMode(sportType, ftp, weight)}
+        mode={createMode(sportType, ftp, weight, runningTimes)}
         onChange={updateInterval}
         onClick={toggleSelection}
         selected={interval.id === selectedId}

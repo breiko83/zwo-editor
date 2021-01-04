@@ -12,7 +12,7 @@ test('RampBar renders correctly', () => {
     startIntensity: Zones.Z2.min,
     endIntensity: Zones.Z4.min,
   });
-  const mode = createMode("bike", 250, 75);
+  const mode = createMode("bike", 250, 75, []);
 
   const component = renderer.create(
     <RampBar
