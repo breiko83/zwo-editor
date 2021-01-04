@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { v4 as uuidv4 } from 'uuid'
 import './Editor.css'
 import { ZoneColor, Zones } from '../../types/Zones'
 import GenericBar from '../Bar/GenericBar'
@@ -29,7 +28,7 @@ import ShareForm from '../Forms/ShareForm'
 import { PaceType } from '../../types/PaceType'
 import PaceSelector from './PaceSelector'
 import { Interval } from '../../types/Interval'
-import { Instruction } from '../../types/Instruction'
+import { createInstruction, Instruction } from '../../types/Instruction'
 import intervalFactory from '../../interval/intervalFactory'
 import parseWorkoutXml from '../../xml/parseWorkoutXml'
 import upload from '../../network/upload'
@@ -187,22 +186,16 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
     setIntervals(intervals => [...intervals, interval]);
   }
 
-  function addInstruction(text = '', time = 0) {
-    setInstructions(instructions => [...instructions, {
-      text: text,
-      time: time,
-      id: uuidv4()
-    }])
+  function addInstruction(instruction: Instruction) {
+    setInstructions(instructions => [...instructions, instruction]);
   }
 
-  function changeInstruction(id: string, values: Instruction) {
-
+  function changeInstruction(id: string, instruction: Instruction) {
     const index = instructions.findIndex(instructions => instructions.id === id)
 
     const updatedArray = [...instructions]
-    updatedArray[index] = values
+    updatedArray[index] = instruction
     setInstructions(updatedArray)
-
   }
 
   function deleteInstruction(id: string) {
@@ -538,7 +531,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
         {sportType === "bike" &&
           <IconButton label="Free Ride" icon={faBicycle} onClick={() => addInterval(intervalFactory.free({}))} />
         }
-        <IconButton label="Text Event" icon={faComment} onClick={addInstruction} />
+        <IconButton label="Text Event" icon={faComment} onClick={() => addInstruction(createInstruction({}))} />
         {sportType === "bike" &&
           <NumberField name="ftp" label={"FTP (W)"} value={ftp} onChange={setFtp} />
         }
