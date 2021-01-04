@@ -3,6 +3,7 @@ import { Instruction } from "../types/Instruction";
 import { RunningTimes } from "../types/RunningTimes";
 import { Interval } from "../types/Interval";
 import { SportType } from "../types/SportType";
+import { PaceType } from '../types/PaceType';
 
 export function getId(): string | null {
   return localStorage.getItem('id');
@@ -75,25 +76,26 @@ export function setWeight(weight: number) {
 }
 
 export function getRunningTimes(): RunningTimes {
-  const missingRunningTimes: RunningTimes = { oneMile: 0, fiveKm: 0, tenKm: 0, halfMarathon: 0, marathon: 0 };
+  const missingRunningTimes: RunningTimes = [0, 0, 0, 0, 0];
   const runningTimesJson = localStorage.getItem('runningTimes');
   if (runningTimesJson && runningTimesJson) {
     const parsed = JSON.parse(runningTimesJson);
-    // Ignore when times are stored in the old way (as strings)
-    if (typeof parsed.oneMile === 'number') {
+    // Ignore the intermediate store-as-object scheme
+    if (parsed instanceof Array) {
       return parsed;
     }
   }
 
   // Fallback to old localStorage keys
   const convert = (t: string) => moment.duration(t).asSeconds();
-  const oneMile = convert(localStorage.getItem('oneMileTime') || '');
-  const fiveKm = convert(localStorage.getItem('fiveKmTime') || '');
-  const tenKm = convert(localStorage.getItem('tenKmTime') || '');
-  const halfMarathon = convert(localStorage.getItem('halfMarathonTime') || '');
-  const marathon = convert(localStorage.getItem('marathonTime') || '');
-  if (oneMile || fiveKm || tenKm || halfMarathon || marathon) {
-    return { oneMile, fiveKm, tenKm, halfMarathon, marathon };
+  const times: RunningTimes = [];
+  times[PaceType.oneMile] = convert(localStorage.getItem('oneMileTime') || '');
+  times[PaceType.fiveKm] = convert(localStorage.getItem('fiveKmTime') || '');
+  times[PaceType.tenKm] = convert(localStorage.getItem('tenKmTime') || '');
+  times[PaceType.halfMarathon] = convert(localStorage.getItem('halfMarathonTime') || '');
+  times[PaceType.marathon] = convert(localStorage.getItem('marathonTime') || '');
+  if (times.some(t => t !== 0)) {
+    return times;
   }
 
   return missingRunningTimes;

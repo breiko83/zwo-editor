@@ -1,7 +1,2 @@
-export interface RunningTimes {
-  oneMile: number;
-  fiveKm: number;
-  tenKm: number;
-  halfMarathon: number;
-  marathon: number;
-}
+// An array with the same amount of entries as values in PaceType enum
+export type RunningTimes = number[];

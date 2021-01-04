@@ -4,6 +4,7 @@ import TimePicker from 'rc-time-picker';
 import 'rc-time-picker/assets/index.css'
 import moment from 'moment'
 import { RunningTimes } from '../../types/RunningTimes';
+import { PaceType } from '../../types/PaceType';
 
 interface RunningTimesEditorProps {
   times: RunningTimes;
@@ -12,34 +13,30 @@ interface RunningTimesEditorProps {
 
 export default function RunningTimesEditor({ times, onChange }: RunningTimesEditorProps) {
   const estimateRunningTimes = useCallback(() => {
-    console.log(`to estimate: ${[times.oneMile, times.fiveKm, times.tenKm, times.halfMarathon, times.marathon]}`);
-    const estimatedTimes = calculateEstimatedTimes([times.oneMile, times.fiveKm, times.tenKm, times.halfMarathon, times.marathon])
-    console.log(`estimated times: ${estimatedTimes}`);
-
-    onChange({
-      oneMile: estimatedTimes[0],
-      fiveKm: estimatedTimes[1],
-      tenKm: estimatedTimes[2],
-      halfMarathon: estimatedTimes[3],
-      marathon: estimatedTimes[4],
-    })
+    onChange(calculateEstimatedTimes(times))
   }, [times, onChange])
+
+  const handleInputChange = (pace: PaceType, t: number) => {
+    const timesCopy = [...times];
+    timesCopy[pace] = t;
+    onChange(timesCopy);
+  };
 
   return (
     <div className="run-workout">
-      <RunTimeInput time={times.oneMile} onChange={(oneMile) => onChange({ ...times, oneMile })}>
+      <RunTimeInput time={times[PaceType.oneMile]} onChange={t => handleInputChange(PaceType.oneMile,  t)}>
         1 Mile Time
       </RunTimeInput>
-      <RunTimeInput time={times.fiveKm} onChange={(fiveKm) => onChange({ ...times, fiveKm })}>
+      <RunTimeInput time={times[PaceType.fiveKm]} onChange={t => handleInputChange(PaceType.fiveKm,  t)}>
         5 Km Time
       </RunTimeInput>
-      <RunTimeInput time={times.tenKm} onChange={(tenKm) => onChange({ ...times, tenKm })}>
+      <RunTimeInput time={times[PaceType.tenKm]} onChange={t => handleInputChange(PaceType.tenKm,  t)}>
         10 Mile Time
       </RunTimeInput>
-      <RunTimeInput time={times.halfMarathon} onChange={(halfMarathon) => onChange({ ...times, halfMarathon })}>
+      <RunTimeInput time={times[PaceType.halfMarathon]} onChange={t => handleInputChange(PaceType.halfMarathon,  t)}>
         Half Marathon Time
       </RunTimeInput>
-      <RunTimeInput time={times.marathon} onChange={(marathon) => onChange({ ...times, marathon })}>
+      <RunTimeInput time={times[PaceType.marathon]} onChange={t => handleInputChange(PaceType.marathon,  t)}>
         Marathon Time
       </RunTimeInput>
       <div className="form-input">
