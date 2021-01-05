@@ -27,17 +27,15 @@ const RampBar = ({interval, ...props}: RampBarProps) => {
     props.onChange({ ...interval, cadence: cadence })
   }
 
-  // RUN WORKOUTS ON DISTANCE - BIKE WORKOUTS ON TIME
-  const [width, setWidth] = useState(Math.round(interval.duration / durationMultiplier / 3 ))
+  const [width, setWidth] = useState(Math.round(interval.duration / durationMultiplier / 2 ))
 
   const [height1, setHeight1] = useState(interval.startIntensity * intensityMultiplier)
-  const [height2, setHeight2] = useState(((interval.endIntensity + interval.startIntensity) * intensityMultiplier) / 2)
   const [height3, setHeight3] = useState(interval.endIntensity * intensityMultiplier)
 
   const trapezeHeight = height3 > height1 ? height3 : height1
   const trapezeTop = height3 > height1 ? (height3 - height1) : (height1 - height3)
 
-  const vertexB = height3 > height1 ? 0 : (width * 3)
+  const vertexB = height3 > height1 ? 0 : (width * 2)
   const vertexA = height3 > height1 ? trapezeTop : 0
   const vertexD = height3 > height1 ? 0 : trapezeTop
 
@@ -46,41 +44,26 @@ const RampBar = ({interval, ...props}: RampBarProps) => {
 
   const handleResizeStop1 = (dHeight: number) => {    
     setHeight1(height1 + dHeight)
-    setHeight2((height3 + dHeight + height1) / 2)
-  }
-  const handleResizeStop2 = (dHeight: number) => {
-    setHeight2(height2 + dHeight)
-    setHeight1(height1 + dHeight)
-    setHeight3(height3 + dHeight)    
   }
   const handleResizeStop3 = (dWidth: number, dHeight: number) => {
-    setWidth(width + (dWidth / 3))
+    setWidth(width + (dWidth / 2))
     setHeight3(height3 + dHeight)
-    setHeight2((height3 + dHeight + height1) / 2)
   }
 
   const handleResize1 = (dHeight: number) => {
     props.onChange({
       ...interval,
-      duration: floor(width * durationMultiplier * 3, 5),
+      duration: floor(width * durationMultiplier * 2, 5),
       startIntensity: (height1 + dHeight) / intensityMultiplier,
       endIntensity: height3 / intensityMultiplier,
     })
   }
-  const handleResize2 = (dHeight: number) => {
-    props.onChange({
-      ...interval,
-      duration: floor(width * durationMultiplier * 3, 5),
-      startIntensity: (height1 + dHeight) / intensityMultiplier,
-      endIntensity: (height3 + dHeight) / intensityMultiplier,
-    })
-  }
   const handleResize3 = (dWidth: number, dHeight: number) => {
-    const newWidth = width + (dWidth / 3)
+    const newWidth = width + (dWidth / 2)
 
     props.onChange({
       ...interval,
-      duration: floor(newWidth * durationMultiplier * 3, 5),
+      duration: floor(newWidth * durationMultiplier * 2, 5),
       startIntensity: height1 / intensityMultiplier,
       endIntensity: (height3 + dHeight) / intensityMultiplier
     })
@@ -139,21 +122,6 @@ const RampBar = ({interval, ...props}: RampBarProps) => {
           className='trapeze-component'
           size={{
             width: width,
-            height: height2,
-          }}
-          minWidth={3}
-          minHeight={intensityMultiplier * Zones.Z1.min}
-          maxHeight={intensityMultiplier * Zones.Z6.max}
-          enable={{ top: true }}
-          grid={[1, 1]}
-          onResizeStop={(e, direction, ref, d) => handleResizeStop2(d.height)}
-          onResize={(e, direction, ref, d) => handleResize2(d.height)}          
-        >
-        </Resizable>
-        <Resizable
-          className='trapeze-component'
-          size={{
-            width: width,
             height: height3,
           }}
           minWidth={3}
@@ -175,8 +143,8 @@ const RampBar = ({interval, ...props}: RampBarProps) => {
         <div className='color' style={{ backgroundColor: ZoneColor.RED, width: `${(bars['Z6'] * 100 / Math.abs(interval.endIntensity - interval.startIntensity))}%` }}></div>
       </div>
       <svg height={`${trapezeHeight}`} width={`${width * 3}`} className='trapeze-svg-container'>
-        <polygon points={`0,${vertexA} 0,${trapezeHeight} ${width * 3},${trapezeHeight} ${width * 3},${vertexD}`} className='trapeze-svg' />
-        <polygon points={`0,0 ${vertexB},${trapezeTop} ${width * 3},0`} className='trapeze-svg-off' />
+        <polygon points={`0,${vertexA} 0,${trapezeHeight} ${width * 2},${trapezeHeight} ${width * 2},${vertexD}`} className='trapeze-svg' />
+        <polygon points={`0,0 ${vertexB},${trapezeTop} ${width * 2},0`} className='trapeze-svg-off' />
 
         Sorry, your browser does not support inline SVG.
       </svg>
