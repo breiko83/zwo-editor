@@ -43,9 +43,7 @@ const RampBar = ({interval, ...props}: RampBarProps) => {
   const handleStartResize = (dHeight: number) => {
     props.onChange({
       ...interval,
-      duration: floor(width * durationMultiplier * 2, 5),
       startIntensity: (startHeight + dHeight) / intensityMultiplier,
-      endIntensity: endHeight / intensityMultiplier,
     })
   }
   const handleEndResize = (dWidth: number, dHeight: number) => {
