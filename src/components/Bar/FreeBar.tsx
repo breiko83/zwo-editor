@@ -6,7 +6,6 @@ import Label from '../Label/Label'
 import { FreeInterval } from '../../types/Interval'
 import { durationMultiplier } from './multipliers'
 import { WorkoutMode } from '../../modes/WorkoutMode'
-import { floor } from '../../utils/math'
 
 interface FreeBarProps {
   interval: FreeInterval;
@@ -16,8 +15,8 @@ interface FreeBarProps {
   selected: boolean;
 }
 
-const FreeBar = ({interval, ...props}: FreeBarProps) => {
-  const [width, setWidth] = useState(interval.duration / durationMultiplier)
+const FreeBar = ({interval, mode, ...props}: FreeBarProps) => {
+  const [width, setWidth] = useState(mode.durationToWidth(interval.duration))
 
   const [showLabel, setShowLabel] = useState(false)
 
@@ -34,7 +33,7 @@ const FreeBar = ({interval, ...props}: FreeBarProps) => {
   }
 
   const notifyChange = (dWidth: number) => {
-    props.onChange({ ...interval, duration: floor((width + dWidth) * durationMultiplier, 5) })
+    props.onChange({ ...interval, duration: mode.widthToDuration(width + dWidth) })
   }
 
   return (
@@ -47,7 +46,7 @@ const FreeBar = ({interval, ...props}: FreeBarProps) => {
       {(props.selected || showLabel) &&
         <Label
           interval={interval}
-          mode={props.mode}
+          mode={mode}
           onCadenceChange={(cadence: number)=> handleCadenceChange(cadence)}
         />
       }

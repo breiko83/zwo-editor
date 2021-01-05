@@ -6,7 +6,6 @@ import Label from '../Label/Label'
 import { SteadyInterval } from '../../types/Interval'
 import { durationMultiplier, intensityMultiplier } from './multipliers'
 import { WorkoutMode } from '../../modes/WorkoutMode'
-import { floor } from '../../utils/math'
 
 interface SteadyBarProps {
   interval: SteadyInterval;
@@ -17,17 +16,17 @@ interface SteadyBarProps {
   showLabel: boolean;
 }
 
-const SteadyBar = ({interval, ...props}: SteadyBarProps) => {
+const SteadyBar = ({interval, mode, ...props}: SteadyBarProps) => {
   const style = { backgroundColor: zoneColor(interval.intensity) }
 
-  const [width, setWidth] = useState(interval.duration / durationMultiplier)
+  const [width, setWidth] = useState(mode.durationToWidth(interval.duration))
 
-  const [height, setHeight] = useState(interval.intensity * intensityMultiplier)
+  const [height, setHeight] = useState(mode.intensityToHeight(interval.intensity))
 
   const [showLabel, setShowLabel] = useState(false)
 
   const [selected, setSelected] = useState(props.selected)
-  
+
   useEffect(()=>{
     setSelected(props.selected) 
   },[props.selected])  
@@ -46,8 +45,8 @@ const SteadyBar = ({interval, ...props}: SteadyBarProps) => {
   const notifyChange = (dWidth: number, dHeight: number) => {
     props.onChange({
       ...interval,
-      duration: floor((width + dWidth) * durationMultiplier, 5),
-      intensity: (height + dHeight) / intensityMultiplier,
+      duration: mode.widthToDuration(width + dWidth),
+      intensity: mode.heightToIntensity(height + dHeight),
     })
   }
 
@@ -61,7 +60,7 @@ const SteadyBar = ({interval, ...props}: SteadyBarProps) => {
       {((selected || showLabel) && (props.showLabel)) &&
         <Label
           interval={interval}
-          mode={props.mode}
+          mode={mode}
           onCadenceChange={(cadence: number)=> handleCadenceChange(cadence)}
         />
       }
