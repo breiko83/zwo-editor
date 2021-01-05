@@ -468,7 +468,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
       <div className="info">
         <Title name={name} author={author} description={description} />
         <div className="workout">
-          <Stats intervals={intervals} ftp={ftp} />
+          <Stats intervals={intervals} ftp={ftp} mode={createMode(sportType, ftp, weight, runningTimes)} />
           <LeftRightToggle<"bike","run">
             label="Sport Type"
             leftValue="bike"

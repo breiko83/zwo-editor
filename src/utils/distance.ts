@@ -1,5 +1,6 @@
 import RunMode from "../modes/RunMode";
 import { Interval } from "../types/Interval";
+import { sum } from 'ramda';
 
 export function intervalDistance(interval: Interval, mode: RunMode): number {
   switch (interval.type) {
@@ -18,4 +19,8 @@ export function intervalDistance(interval: Interval, mode: RunMode): number {
       return interval.repeat * (onDistance + offDistance);
     }
   }
+}
+
+export function workoutDistance(intervals: Interval[], mode: RunMode): number {
+  return sum(intervals.map(interval => intervalDistance(interval, mode)));
 }

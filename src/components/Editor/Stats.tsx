@@ -1,5 +1,8 @@
 import React from "react";
+import RunMode from "../../modes/RunMode";
+import { WorkoutMode } from "../../modes/WorkoutMode";
 import { Interval } from "../../types/Interval";
+import { workoutDistance } from "../../utils/distance";
 import { formatDuration, workoutDuration } from "../../utils/duration";
 
 // Displays summary statistics: workout length and TSS
@@ -7,15 +10,22 @@ import { formatDuration, workoutDuration } from "../../utils/duration";
 interface StatsProps {
   intervals: Interval[];
   ftp: number;
+  mode: WorkoutMode;
 }
 
-const Stats: React.FC<StatsProps> = ({ intervals, ftp }) => {
+const Stats: React.FC<StatsProps> = ({ intervals, ftp, mode }) => {
   return (
     <>
       <div className="form-input">
         <label>Workout Time</label>
         <input className="textInput" value={formatDuration(workoutDuration(intervals))} disabled />
       </div>
+      {mode instanceof RunMode &&
+        <div className="form-input">
+          <label>Workout Distance</label>
+          <input className="textInput" value={workoutDistance(intervals, mode) + " m"} disabled />
+        </div>
+      }
       <div className="form-input">
         <label>TSS</label>
         <input className="textInput" value={getStressScore(intervals, ftp)} disabled />
