@@ -3,10 +3,10 @@ import './SteadyBar.css'
 import { zoneColor, Zones } from '../../types/Zones'
 import { Resizable } from 're-resizable'
 import Label from '../Label/Label'
-import helpers from '../helpers'
 import { SteadyInterval } from '../../types/Interval'
 import { durationMultiplier, intensityMultiplier } from './multipliers'
 import { WorkoutMode } from '../../modes/WorkoutMode'
+import { floor } from '../../utils/math'
 
 interface SteadyBarProps {
   interval: SteadyInterval;
@@ -46,7 +46,7 @@ const SteadyBar = ({interval, ...props}: SteadyBarProps) => {
   const notifyChange = (dWidth: number, dHeight: number) => {
     props.onChange({
       ...interval,
-      duration: helpers.floor((width + dWidth) * durationMultiplier, 5),
+      duration: floor((width + dWidth) * durationMultiplier, 5),
       intensity: (height + dHeight) / intensityMultiplier,
     })
   }

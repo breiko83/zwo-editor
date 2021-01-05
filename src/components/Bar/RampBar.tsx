@@ -3,10 +3,10 @@ import './RampBar.css'
 import { zoneColor, ZoneColor, Zones, ZonesArray } from '../../types/Zones'
 import { Resizable } from 're-resizable'
 import Label from '../Label/Label'
-import helpers from '../helpers'
 import { RampInterval } from '../../types/Interval'
 import { durationMultiplier, intensityMultiplier } from './multipliers'
 import { WorkoutMode } from '../../modes/WorkoutMode'
+import { floor } from '../../utils/math'
 
 interface IDictionary {
   [index: string]: number;
@@ -62,7 +62,7 @@ const RampBar = ({interval, ...props}: RampBarProps) => {
   const handleResize1 = (dHeight: number) => {
     props.onChange({
       ...interval,
-      duration: helpers.floor(width * durationMultiplier * 3, 5),
+      duration: floor(width * durationMultiplier * 3, 5),
       startIntensity: (height1 + dHeight) / intensityMultiplier,
       endIntensity: height3 / intensityMultiplier,
     })
@@ -70,7 +70,7 @@ const RampBar = ({interval, ...props}: RampBarProps) => {
   const handleResize2 = (dHeight: number) => {
     props.onChange({
       ...interval,
-      duration: helpers.floor(width * durationMultiplier * 3, 5),
+      duration: floor(width * durationMultiplier * 3, 5),
       startIntensity: (height1 + dHeight) / intensityMultiplier,
       endIntensity: (height3 + dHeight) / intensityMultiplier,
     })
@@ -80,7 +80,7 @@ const RampBar = ({interval, ...props}: RampBarProps) => {
 
     props.onChange({
       ...interval,
-      duration: helpers.floor(newWidth * durationMultiplier * 3, 5),
+      duration: floor(newWidth * durationMultiplier * 3, 5),
       startIntensity: height1 / intensityMultiplier,
       endIntensity: (height3 + dHeight) / intensityMultiplier
     })

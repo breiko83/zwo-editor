@@ -3,10 +3,10 @@ import './FreeBar.css'
 import { Resizable } from 're-resizable'
 import 'moment-duration-format'
 import Label from '../Label/Label'
-import helpers from '../helpers'
 import { FreeInterval } from '../../types/Interval'
 import { durationMultiplier } from './multipliers'
 import { WorkoutMode } from '../../modes/WorkoutMode'
+import { floor } from '../../utils/math'
 
 interface FreeBarProps {
   interval: FreeInterval;
@@ -34,7 +34,7 @@ const FreeBar = ({interval, ...props}: FreeBarProps) => {
   }
 
   const notifyChange = (dWidth: number) => {
-    props.onChange({ ...interval, duration: helpers.floor((width + dWidth) * durationMultiplier, 5) })
+    props.onChange({ ...interval, duration: floor((width + dWidth) * durationMultiplier, 5) })
   }
 
   return (
