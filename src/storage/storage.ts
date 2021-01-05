@@ -4,6 +4,7 @@ import { RunningTimes } from "../types/RunningTimes";
 import { Interval } from "../types/Interval";
 import { SportType } from "../types/SportType";
 import { PaceType } from '../types/PaceType';
+import { DurationType } from '../types/DurationType';
 
 export function getId(): string | null {
   return localStorage.getItem('id');
@@ -59,6 +60,13 @@ export function getSportType(): SportType {
 }
 export function setSportType(sportType: SportType) {
   localStorage.setItem('sportType', sportType);
+}
+
+export function getDurationType(): DurationType {
+  return (localStorage.getItem('durationType') || 'time') as DurationType;
+}
+export function setDurationType(durationType: DurationType) {
+  localStorage.setItem('durationType', durationType);
 }
 
 export function getFtp(): number {

@@ -8,7 +8,7 @@ import Footer from '../Footer/Footer'
 import Workouts from '../Workouts/Workouts'
 import TimeAxis from '../Axis/TimeAxis'
 import ZoneAxis from '../Axis/ZoneAxis'
-import { faTrash, faArrowRight, faArrowLeft, faFile, faSave, faDownload, faComment, faBicycle, faCopy, faShareAlt, faList, faBiking, faRunning } from '@fortawesome/free-solid-svg-icons'
+import { faTrash, faArrowRight, faArrowLeft, faFile, faSave, faDownload, faComment, faBicycle, faCopy, faShareAlt, faList, faBiking, faRunning, faClock, faRuler } from '@fortawesome/free-solid-svg-icons'
 import { ReactComponent as WarmdownLogo } from '../../assets/warmdown.svg'
 import { ReactComponent as WarmupLogo } from '../../assets/warmup.svg'
 import { ReactComponent as IntervalLogo } from '../../assets/interval.svg'
@@ -60,6 +60,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
   const [author, setAuthor] = useState(storage.getAuthor())
   const [tags, setTags] = useState(storage.getTags())
   const [sportType, setSportType] = useState(storage.getSportType())
+  const [durationType, setDurationType] = useState(storage.getDurationType());
   const [intervals, setIntervals] = useState(storage.getIntervals())
   const [instructions, setInstructions] = useState(storage.getInstructions())
 
@@ -129,6 +130,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
     storage.setAuthor(author)
     storage.setTags(tags)
     storage.setSportType(sportType)
+    storage.setDurationType(durationType)
     storage.setIntervals(intervals)
     storage.setInstructions(instructions)
 
@@ -137,7 +139,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
     storage.setRunningTimes(runningTimes)
 
     setSegmentsWidth(segmentsRef.current?.scrollWidth || 1320)
-  }, [segmentsRef, intervals, ftp, instructions, weight, name, description, author, tags, sportType, runningTimes])
+  }, [segmentsRef, intervals, ftp, instructions, weight, name, description, author, tags, sportType, durationType, runningTimes])
 
   function generateId() {
     return Math.random().toString(36).substr(2, 16)
@@ -469,6 +471,17 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
         <Title name={name} author={author} description={description} />
         <div className="workout">
           <Stats intervals={intervals} ftp={ftp} mode={createMode(sportType, ftp, weight, runningTimes)} />
+          {sportType === 'run' &&
+            <LeftRightToggle<"time","distance">
+              label="Duration Type"
+              leftValue="time"
+              rightValue="distance"
+              leftIcon={faClock}
+              rightIcon={faRuler}
+              selected={durationType}
+              onChange={setDurationType}
+            />
+          }
           <LeftRightToggle<"bike","run">
             label="Sport Type"
             leftValue="bike"
