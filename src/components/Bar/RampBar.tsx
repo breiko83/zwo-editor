@@ -29,33 +29,33 @@ const RampBar = ({interval, ...props}: RampBarProps) => {
 
   const [width, setWidth] = useState(Math.round(interval.duration / durationMultiplier / 2 ))
 
-  const [height1, setHeight1] = useState(interval.startIntensity * intensityMultiplier)
-  const [height3, setHeight3] = useState(interval.endIntensity * intensityMultiplier)
+  const [startHeight, setStartHeight] = useState(interval.startIntensity * intensityMultiplier)
+  const [endHeight, setEndHeight] = useState(interval.endIntensity * intensityMultiplier)
 
-  const handleResizeStop1 = (dHeight: number) => {    
-    setHeight1(height1 + dHeight)
+  const handleStartResizeStop = (dHeight: number) => {    
+    setStartHeight(startHeight + dHeight)
   }
-  const handleResizeStop3 = (dWidth: number, dHeight: number) => {
+  const handleEndResizeStop = (dWidth: number, dHeight: number) => {
     setWidth(width + (dWidth / 2))
-    setHeight3(height3 + dHeight)
+    setEndHeight(endHeight + dHeight)
   }
 
-  const handleResize1 = (dHeight: number) => {
+  const handleStartResize = (dHeight: number) => {
     props.onChange({
       ...interval,
       duration: floor(width * durationMultiplier * 2, 5),
-      startIntensity: (height1 + dHeight) / intensityMultiplier,
-      endIntensity: height3 / intensityMultiplier,
+      startIntensity: (startHeight + dHeight) / intensityMultiplier,
+      endIntensity: endHeight / intensityMultiplier,
     })
   }
-  const handleResize3 = (dWidth: number, dHeight: number) => {
+  const handleEndResize = (dWidth: number, dHeight: number) => {
     const newWidth = width + (dWidth / 2)
 
     props.onChange({
       ...interval,
       duration: floor(newWidth * durationMultiplier * 2, 5),
-      startIntensity: height1 / intensityMultiplier,
-      endIntensity: (height3 + dHeight) / intensityMultiplier
+      startIntensity: startHeight / intensityMultiplier,
+      endIntensity: (endHeight + dHeight) / intensityMultiplier
     })
   }
 
@@ -78,43 +78,43 @@ const RampBar = ({interval, ...props}: RampBarProps) => {
           className='trapeze-component'
           size={{
             width: width,
-            height: height1,
+            height: startHeight,
           }}
           minWidth={3}
           minHeight={intensityMultiplier * Zones.Z1.min}
           maxHeight={intensityMultiplier * Zones.Z6.max}
           enable={{ top: true, right: true }}
           grid={[1, 1]}
-          onResizeStop={(e, direction, ref, d) => handleResizeStop1(d.height)}
-          onResize={(e, direction, ref, d) => handleResize1(d.height)}          
+          onResizeStop={(e, direction, ref, d) => handleStartResizeStop(d.height)}
+          onResize={(e, direction, ref, d) => handleStartResize(d.height)}          
         >
         </Resizable>
         <Resizable
           className='trapeze-component'
           size={{
             width: width,
-            height: height3,
+            height: endHeight,
           }}
           minWidth={3}
           minHeight={intensityMultiplier * Zones.Z1.min}
           maxHeight={intensityMultiplier * Zones.Z6.max}
           enable={{ top: true, right: true }}
           grid={[1, 1]}
-          onResizeStop={(e, direction, ref, d) => handleResizeStop3(d.width, d.height)}
-          onResize={(e, direction, ref, d) => handleResize3(d.width, d.height)}
+          onResizeStop={(e, direction, ref, d) => handleEndResizeStop(d.width, d.height)}
+          onResize={(e, direction, ref, d) => handleEndResize(d.width, d.height)}
         >
         </Resizable>
       </div>
-      <Rainbow interval={interval} height1={height1} height3={height3} />
-      <SvgPolygons width={width * 2} height1={height1} height3={height3} />
+      <Rainbow interval={interval} startHeight={startHeight} endHeight={endHeight} />
+      <SvgPolygons width={width * 2} startHeight={startHeight} endHeight={endHeight} />
     </div>
   );
 }
 
-const Rainbow: React.FC<{interval: RampInterval, height1: number, height3: number}> = ({interval, height1, height3}) => {
-  const trapezeHeight = height3 > height1 ? height3 : height1;
-  const bars = height3 > height1 ? calculateColors(interval.startIntensity, interval.endIntensity) : calculateColors(interval.endIntensity, interval.startIntensity);
-  const flexDirection = height3 > height1 ? 'row' : 'row-reverse';
+const Rainbow: React.FC<{interval: RampInterval, startHeight: number, endHeight: number}> = ({interval, startHeight, endHeight}) => {
+  const trapezeHeight = endHeight > startHeight ? endHeight : startHeight;
+  const bars = endHeight > startHeight ? calculateColors(interval.startIntensity, interval.endIntensity) : calculateColors(interval.endIntensity, interval.startIntensity);
+  const flexDirection = endHeight > startHeight ? 'row' : 'row-reverse';
 
   return (
     <div className='trapeze-colors' style={{ height: trapezeHeight, flexDirection: flexDirection, backgroundColor: zoneColor(interval.startIntensity) }}>
@@ -147,13 +147,13 @@ function calculateColors(start: number, end: number): IDictionary {
   return bars
 }
 
-const SvgPolygons: React.FC<{width: number, height1: number, height3: number}> = ({width, height1, height3}) => {
-  const trapezeHeight = height3 > height1 ? height3 : height1;
-  const trapezeTop = height3 > height1 ? (height3 - height1) : (height1 - height3);
+const SvgPolygons: React.FC<{width: number, startHeight: number, endHeight: number}> = ({width, startHeight, endHeight}) => {
+  const trapezeHeight = endHeight > startHeight ? endHeight : startHeight;
+  const trapezeTop = endHeight > startHeight ? (endHeight - startHeight) : (startHeight - endHeight);
 
-  const vertexB = height3 > height1 ? 0 : width;
-  const vertexA = height3 > height1 ? trapezeTop : 0;
-  const vertexD = height3 > height1 ? 0 : trapezeTop;
+  const vertexB = endHeight > startHeight ? 0 : width;
+  const vertexA = endHeight > startHeight ? trapezeTop : 0;
+  const vertexD = endHeight > startHeight ? 0 : trapezeTop;
 
   return (
     <svg height={`${trapezeHeight}`} width={`${width}`} className='trapeze-svg-container'>
