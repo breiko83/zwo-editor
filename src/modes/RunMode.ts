@@ -3,21 +3,17 @@ import { PaceType } from "../types/PaceType";
 import { RunningTimes } from "../types/RunningTimes";
 import { runningDistances } from "../types/runningDistances";
 import { DurationType } from "../types/DurationType";
-import { durationMultiplier, intensityMultiplier } from "../components/Bar/multipliers";
-import { floor } from "../utils/math";
+import DurationMode from "./DurationMode";
 
-export default class RunMode {
+export default class RunMode extends DurationMode {
   private runningTimes: RunningTimes;
   public readonly sportType: SportType = "run";
   public readonly durationType: DurationType;
 
   constructor(runningTimes: RunningTimes, durationType: DurationType) {
+    super();
     this.runningTimes = runningTimes;
     this.durationType = durationType;
-  }
-
-  percentage(intensity: number): number {
-    return Math.round(intensity * 100);
   }
 
   shortPaceName(pace: PaceType): string {
@@ -31,22 +27,5 @@ export default class RunMode {
 
   distance(duration: number, intensity: number, pace: PaceType): number {
     return Math.round(this.speed(intensity, pace) * duration); // in meters
-  }
-
-  // Convert to/from bar width in pixels
-  durationToWidth(duration: number): number {
-    return duration / durationMultiplier;
-  }
-
-  widthToDuration(width: number): number {
-    return floor(width * durationMultiplier, 5);
-  }
-
-  intensityToHeight(intensity: number): number {
-    return intensity * intensityMultiplier;
-  }
-
-  heightToIntensity(height: number): number {
-    return height / intensityMultiplier;
   }
 }
