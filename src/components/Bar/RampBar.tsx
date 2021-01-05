@@ -4,9 +4,8 @@ import { zoneColor, ZoneColor, Zones, ZonesArray } from '../../types/Zones'
 import { Resizable } from 're-resizable'
 import Label from '../Label/Label'
 import { RampInterval } from '../../types/Interval'
-import { durationMultiplier, intensityMultiplier } from './multipliers'
+import { intensityMultiplier } from './multipliers'
 import { WorkoutMode } from '../../modes/WorkoutMode'
-import { floor } from '../../utils/math'
 
 interface IDictionary {
   [index: string]: number;
@@ -20,17 +19,17 @@ interface RampBarProps {
   selected: boolean;
 }
 
-const RampBar = ({interval, ...props}: RampBarProps) => {
+const RampBar = ({interval, mode, ...props}: RampBarProps) => {
   const [showLabel, setShowLabel] = useState(false)
 
   const handleCadenceChange = (cadence: number) => {
     props.onChange({ ...interval, cadence: cadence })
   }
 
-  const [width, setWidth] = useState(Math.round(interval.duration / durationMultiplier))
+  const [width, setWidth] = useState(mode.durationToWidth(interval.duration))
 
-  const [startHeight, setStartHeight] = useState(interval.startIntensity * intensityMultiplier)
-  const [endHeight, setEndHeight] = useState(interval.endIntensity * intensityMultiplier)
+  const [startHeight, setStartHeight] = useState(mode.intensityToHeight(interval.startIntensity))
+  const [endHeight, setEndHeight] = useState(mode.intensityToHeight(interval.endIntensity))
 
   const handleStartResizeStop = (dHeight: number) => {    
     setStartHeight(startHeight + dHeight)
@@ -43,17 +42,15 @@ const RampBar = ({interval, ...props}: RampBarProps) => {
   const handleStartResize = (dHeight: number) => {
     props.onChange({
       ...interval,
-      startIntensity: (startHeight + dHeight) / intensityMultiplier,
+      startIntensity: mode.heightToIntensity(startHeight + dHeight),
     })
   }
   const handleEndResize = (dWidth: number, dHeight: number) => {
-    const newWidth = width + dWidth
-
     props.onChange({
       ...interval,
-      duration: floor(newWidth * durationMultiplier, 5),
-      startIntensity: startHeight / intensityMultiplier,
-      endIntensity: (endHeight + dHeight) / intensityMultiplier
+      duration: mode.widthToDuration(width + dWidth),
+      startIntensity: mode.heightToIntensity(startHeight),
+      endIntensity: mode.heightToIntensity(endHeight + dHeight),
     })
   }
 
@@ -67,7 +64,7 @@ const RampBar = ({interval, ...props}: RampBarProps) => {
       {(props.selected || showLabel) &&
         <Label
           interval={interval}
-          mode={props.mode}
+          mode={mode}
           onCadenceChange={(cadence: number)=> handleCadenceChange(cadence)}
         />
       }
