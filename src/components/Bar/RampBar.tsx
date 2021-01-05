@@ -33,11 +33,6 @@ const RampBar = ({interval, ...props}: RampBarProps) => {
   const [height3, setHeight3] = useState(interval.endIntensity * intensityMultiplier)
 
   const trapezeHeight = height3 > height1 ? height3 : height1
-  const trapezeTop = height3 > height1 ? (height3 - height1) : (height1 - height3)
-
-  const vertexB = height3 > height1 ? 0 : (width * 2)
-  const vertexA = height3 > height1 ? trapezeTop : 0
-  const vertexD = height3 > height1 ? 0 : trapezeTop
 
   var bars = height3 > height1 ? calculateColors(interval.startIntensity, interval.endIntensity) : calculateColors(interval.endIntensity, interval.startIntensity)
   const flexDirection = height3 > height1 ? 'row' : 'row-reverse'
@@ -142,15 +137,25 @@ const RampBar = ({interval, ...props}: RampBarProps) => {
         <div className='color' style={{ backgroundColor: ZoneColor.ORANGE, width: `${(bars['Z5'] * 100 / Math.abs(interval.endIntensity - interval.startIntensity))}%` }}></div>
         <div className='color' style={{ backgroundColor: ZoneColor.RED, width: `${(bars['Z6'] * 100 / Math.abs(interval.endIntensity - interval.startIntensity))}%` }}></div>
       </div>
-      <svg height={`${trapezeHeight}`} width={`${width * 3}`} className='trapeze-svg-container'>
-        <polygon points={`0,${vertexA} 0,${trapezeHeight} ${width * 2},${trapezeHeight} ${width * 2},${vertexD}`} className='trapeze-svg' />
-        <polygon points={`0,0 ${vertexB},${trapezeTop} ${width * 2},0`} className='trapeze-svg-off' />
-
-        Sorry, your browser does not support inline SVG.
-      </svg>
+      <SvgPolygons width={width * 2} height1={height1} height3={height3} />
     </div>
-
   );
 }
+
+const SvgPolygons: React.FC<{width: number, height1: number, height3: number}> = ({width, height1, height3}) => {
+  const trapezeHeight = height3 > height1 ? height3 : height1;
+  const trapezeTop = height3 > height1 ? (height3 - height1) : (height1 - height3);
+
+  const vertexB = height3 > height1 ? 0 : width;
+  const vertexA = height3 > height1 ? trapezeTop : 0;
+  const vertexD = height3 > height1 ? 0 : trapezeTop;
+
+  return (
+    <svg height={`${trapezeHeight}`} width={`${width}`} className='trapeze-svg-container'>
+      <polygon points={`0,${vertexA} 0,${trapezeHeight} ${width},${trapezeHeight} ${width},${vertexD}`} className='trapeze-svg' />
+      <polygon points={`0,0 ${vertexB},${trapezeTop} ${width},0`} className='trapeze-svg-off' />
+    </svg>
+  );
+};
 
 export default RampBar
