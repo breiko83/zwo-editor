@@ -1,4 +1,5 @@
 import React from "react";
+import BikeMode from "../../modes/BikeMode";
 import RunMode from "../../modes/RunMode";
 import { WorkoutMode } from "../../modes/WorkoutMode";
 import { Interval } from "../../types/Interval";
@@ -26,10 +27,12 @@ const Stats: React.FC<StatsProps> = ({ intervals, ftp, mode }) => {
           <input className="textInput" value={workoutDistance(intervals, mode) + " m"} disabled />
         </div>
       }
-      <div className="form-input">
-        <label>TSS</label>
-        <input className="textInput" value={getStressScore(intervals, ftp)} disabled />
-      </div>
+      {mode instanceof BikeMode &&
+        <div className="form-input">
+          <label>TSS</label>
+          <input className="textInput" value={getStressScore(intervals, ftp)} disabled />
+        </div>
+      }
     </>
   );
 };
