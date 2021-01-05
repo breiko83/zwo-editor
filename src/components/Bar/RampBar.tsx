@@ -32,11 +32,6 @@ const RampBar = ({interval, ...props}: RampBarProps) => {
   const [height1, setHeight1] = useState(interval.startIntensity * intensityMultiplier)
   const [height3, setHeight3] = useState(interval.endIntensity * intensityMultiplier)
 
-  const trapezeHeight = height3 > height1 ? height3 : height1
-
-  var bars = height3 > height1 ? calculateColors(interval.startIntensity, interval.endIntensity) : calculateColors(interval.endIntensity, interval.startIntensity)
-  const flexDirection = height3 > height1 ? 'row' : 'row-reverse'
-
   const handleResizeStop1 = (dHeight: number) => {    
     setHeight1(height1 + dHeight)
   }
@@ -62,25 +57,6 @@ const RampBar = ({interval, ...props}: RampBarProps) => {
       startIntensity: height1 / intensityMultiplier,
       endIntensity: (height3 + dHeight) / intensityMultiplier
     })
-  }
-
-  function calculateColors(start: number, end: number) {
-    const bars = {} as IDictionary;
-
-    ZonesArray.forEach((zone, index) => {
-      if (start >= zone[0] && start < zone[1]) {
-        bars['Z' + (index + 1)] = zone[1] - start
-      }
-      else if (end >= zone[0] && end < zone[1]) {
-        bars['Z' + (index + 1)] = end - zone[0]
-      }
-      else if (end >= zone[1] && start < zone[0]) {
-        bars['Z' + (index + 1)] = zone[1] - zone[0]
-      } else {
-        bars['Z' + (index + 1)] = 0
-      }
-    })
-    return bars
   }
 
   return (
@@ -129,17 +105,46 @@ const RampBar = ({interval, ...props}: RampBarProps) => {
         >
         </Resizable>
       </div>
-      <div className='trapeze-colors' style={{ height: trapezeHeight, flexDirection: flexDirection, backgroundColor: zoneColor(interval.startIntensity) }}>
-        <div className='color' style={{ backgroundColor: ZoneColor.GRAY, width: `${(bars['Z1'] * 100 / Math.abs(interval.endIntensity - interval.startIntensity))}%` }}></div>
-        <div className='color' style={{ backgroundColor: ZoneColor.BLUE, width: `${(bars['Z2'] * 100 / Math.abs(interval.endIntensity - interval.startIntensity))}%` }}></div>
-        <div className='color' style={{ backgroundColor: ZoneColor.GREEN, width: `${(bars['Z3'] * 100 / Math.abs(interval.endIntensity - interval.startIntensity))}%` }}></div>
-        <div className='color' style={{ backgroundColor: ZoneColor.YELLOW, width: `${(bars['Z4'] * 100 / Math.abs(interval.endIntensity - interval.startIntensity))}%` }}></div>
-        <div className='color' style={{ backgroundColor: ZoneColor.ORANGE, width: `${(bars['Z5'] * 100 / Math.abs(interval.endIntensity - interval.startIntensity))}%` }}></div>
-        <div className='color' style={{ backgroundColor: ZoneColor.RED, width: `${(bars['Z6'] * 100 / Math.abs(interval.endIntensity - interval.startIntensity))}%` }}></div>
-      </div>
+      <Rainbow interval={interval} height1={height1} height3={height3} />
       <SvgPolygons width={width * 2} height1={height1} height3={height3} />
     </div>
   );
+}
+
+const Rainbow: React.FC<{interval: RampInterval, height1: number, height3: number}> = ({interval, height1, height3}) => {
+  const trapezeHeight = height3 > height1 ? height3 : height1;
+  const bars = height3 > height1 ? calculateColors(interval.startIntensity, interval.endIntensity) : calculateColors(interval.endIntensity, interval.startIntensity);
+  const flexDirection = height3 > height1 ? 'row' : 'row-reverse';
+
+  return (
+    <div className='trapeze-colors' style={{ height: trapezeHeight, flexDirection: flexDirection, backgroundColor: zoneColor(interval.startIntensity) }}>
+      <div className='color' style={{ backgroundColor: ZoneColor.GRAY, width: `${(bars['Z1'] * 100 / Math.abs(interval.endIntensity - interval.startIntensity))}%` }}></div>
+      <div className='color' style={{ backgroundColor: ZoneColor.BLUE, width: `${(bars['Z2'] * 100 / Math.abs(interval.endIntensity - interval.startIntensity))}%` }}></div>
+      <div className='color' style={{ backgroundColor: ZoneColor.GREEN, width: `${(bars['Z3'] * 100 / Math.abs(interval.endIntensity - interval.startIntensity))}%` }}></div>
+      <div className='color' style={{ backgroundColor: ZoneColor.YELLOW, width: `${(bars['Z4'] * 100 / Math.abs(interval.endIntensity - interval.startIntensity))}%` }}></div>
+      <div className='color' style={{ backgroundColor: ZoneColor.ORANGE, width: `${(bars['Z5'] * 100 / Math.abs(interval.endIntensity - interval.startIntensity))}%` }}></div>
+      <div className='color' style={{ backgroundColor: ZoneColor.RED, width: `${(bars['Z6'] * 100 / Math.abs(interval.endIntensity - interval.startIntensity))}%` }}></div>
+    </div>
+  );
+};
+
+function calculateColors(start: number, end: number): IDictionary {
+  const bars = {} as IDictionary;
+
+  ZonesArray.forEach((zone, index) => {
+    if (start >= zone[0] && start < zone[1]) {
+      bars['Z' + (index + 1)] = zone[1] - start
+    }
+    else if (end >= zone[0] && end < zone[1]) {
+      bars['Z' + (index + 1)] = end - zone[0]
+    }
+    else if (end >= zone[1] && start < zone[0]) {
+      bars['Z' + (index + 1)] = zone[1] - zone[0]
+    } else {
+      bars['Z' + (index + 1)] = 0
+    }
+  })
+  return bars
 }
 
 const SvgPolygons: React.FC<{width: number, height1: number, height3: number}> = ({width, height1, height3}) => {
