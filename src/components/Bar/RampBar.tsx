@@ -27,7 +27,7 @@ const RampBar = ({interval, ...props}: RampBarProps) => {
     props.onChange({ ...interval, cadence: cadence })
   }
 
-  const [width, setWidth] = useState(Math.round(interval.duration / durationMultiplier / 2 ))
+  const [width, setWidth] = useState(Math.round(interval.duration / durationMultiplier))
 
   const [startHeight, setStartHeight] = useState(interval.startIntensity * intensityMultiplier)
   const [endHeight, setEndHeight] = useState(interval.endIntensity * intensityMultiplier)
@@ -36,7 +36,7 @@ const RampBar = ({interval, ...props}: RampBarProps) => {
     setStartHeight(startHeight + dHeight)
   }
   const handleEndResizeStop = (dWidth: number, dHeight: number) => {
-    setWidth(width + (dWidth / 2))
+    setWidth(width + dWidth)
     setEndHeight(endHeight + dHeight)
   }
 
@@ -47,11 +47,11 @@ const RampBar = ({interval, ...props}: RampBarProps) => {
     })
   }
   const handleEndResize = (dWidth: number, dHeight: number) => {
-    const newWidth = width + (dWidth / 2)
+    const newWidth = width + dWidth
 
     props.onChange({
       ...interval,
-      duration: floor(newWidth * durationMultiplier * 2, 5),
+      duration: floor(newWidth * durationMultiplier, 5),
       startIntensity: startHeight / intensityMultiplier,
       endIntensity: (endHeight + dHeight) / intensityMultiplier
     })
@@ -75,7 +75,7 @@ const RampBar = ({interval, ...props}: RampBarProps) => {
         <Resizable
           className='trapeze-component'
           size={{
-            width: width,
+            width: width / 2,
             height: startHeight,
           }}
           minWidth={3}
@@ -90,7 +90,7 @@ const RampBar = ({interval, ...props}: RampBarProps) => {
         <Resizable
           className='trapeze-component'
           size={{
-            width: width,
+            width: width / 2,
             height: endHeight,
           }}
           minWidth={3}
@@ -104,7 +104,7 @@ const RampBar = ({interval, ...props}: RampBarProps) => {
         </Resizable>
       </div>
       <Rainbow interval={interval} startHeight={startHeight} endHeight={endHeight} />
-      <SvgPolygons width={width * 2} startHeight={startHeight} endHeight={endHeight} />
+      <SvgPolygons width={width} startHeight={startHeight} endHeight={endHeight} />
     </div>
   );
 }
