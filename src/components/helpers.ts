@@ -1,6 +1,7 @@
 import moment from 'moment'
 import 'moment-duration-format'
 import { Interval } from '../types/Interval'
+import { sum } from 'ramda'
 
 const helpers = {
   getIntervalDuration(interval: Interval): number {
@@ -14,13 +15,7 @@ const helpers = {
 
   // calculate total time
   getWorkoutDuration: function (intervals: Interval[]): number {
-    var duration = 0
-
-    intervals.forEach((interval) => {
-      duration += this.getIntervalDuration(interval)
-    })
-
-    return duration
+    return sum(intervals.map(interval => this.getIntervalDuration(interval)));
   },
 
   formatDuration: function (seconds: number): string {
