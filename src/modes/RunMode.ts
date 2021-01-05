@@ -23,8 +23,11 @@ export default class RunMode {
     return paces[pace];
   }
 
+  speed(intensity: number, pace: PaceType): number {
+    return runningDistances[pace] / this.runningTimes[pace] * intensity; // in m/s
+  }
+
   distance(duration: number, intensity: number, pace: PaceType): number {
-    const speed = runningDistances[pace] / this.runningTimes[pace] * intensity; // in m/s
-    return Math.round(speed * duration); // in meters
+    return Math.round(this.speed(intensity, pace) * duration); // in meters
   }
 }
