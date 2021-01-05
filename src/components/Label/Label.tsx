@@ -2,11 +2,11 @@ import React from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faBolt, faClock, faRuler } from '@fortawesome/free-solid-svg-icons'
 import './Label.css'
-import helpers from '../helpers'
 import { FreeInterval, RampInterval, SteadyInterval } from '../../types/Interval'
 import { WorkoutMode } from '../../modes/WorkoutMode'
 import BikeMode from '../../modes/BikeMode'
 import RunMode from '../../modes/RunMode'
+import { formatDuration } from '../../utils/duration'
 
 interface LabelProps {
   interval: SteadyInterval | RampInterval | FreeInterval;
@@ -18,7 +18,7 @@ const Label = ({ mode, ...props }: LabelProps) => {
   return (
     <div className='label'>
       <div>
-        <FontAwesomeIcon icon={faClock} fixedWidth /> {helpers.formatDuration(props.interval.duration)}
+        <FontAwesomeIcon icon={faClock} fixedWidth /> {formatDuration(props.interval.duration)}
       </div>
       {mode instanceof BikeMode ? <BikeData mode={mode} {...props} /> : <RunData mode={mode} {...props} />}
     </div>

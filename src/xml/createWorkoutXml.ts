@@ -1,6 +1,6 @@
 import Builder from 'xmlbuilder'
-import helpers from '../components/helpers'
 import { Workout } from '../types/Workout'
+import { intervalDuration } from '../utils/duration'
 
 export default function createWorkoutXml({ author, name, description, sportType, tags, intervals, instructions }: Workout): string {
   var totalDuration = 0
@@ -88,13 +88,13 @@ export default function createWorkoutXml({ author, name, description, sportType,
     }
 
     // add instructions if present
-    instructions.filter((instruction) => (instruction.time >= totalDuration && instruction.time < (totalDuration + helpers.getIntervalDuration(interval)))).forEach((i) => {
+    instructions.filter((instruction) => (instruction.time >= totalDuration && instruction.time < (totalDuration + intervalDuration(interval)))).forEach((i) => {
       segment.ele('textevent', { timeoffset: (i.time - totalDuration), message: i.text })
     })
 
     xml.importDocument(segment)
 
-    totalDuration += helpers.getIntervalDuration(interval)
+    totalDuration += intervalDuration(interval)
   })
 
   return xml.end({ pretty: true });

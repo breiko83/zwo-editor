@@ -3,9 +3,9 @@ import Draggable from 'react-draggable'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faComment, faTrashAlt } from '@fortawesome/free-solid-svg-icons'
 import './InstructionEditor.css'
-import helpers from '../helpers'
 import { durationMultiplier } from '../Bar/multipliers'
 import { Instruction } from '../../types/Instruction'
+import { formatDuration } from '../../utils/duration'
 
 interface InstructionEditorProps {
   instruction: Instruction;
@@ -69,7 +69,7 @@ const InstructionEditor = (props: InstructionEditorProps) => {
         {showInput &&
         <div className="edit">
           <FontAwesomeIcon icon={faTrashAlt} fixedWidth className="delete" style={{ color: 'gray' }} onClick={() => handleDelete()} />
-          <span style={{fontSize:'13px'}} data-testid='time'>{helpers.formatDuration(xPosition * durationMultiplier)}</span>                  
+          <span style={{fontSize:'13px'}} data-testid='time'>{formatDuration(xPosition * durationMultiplier)}</span>                  
           <textarea name="comment" value={text} style={{display:'block', padding:'5px', width:'250px',backgroundColor:'white'}} onChange={e => handleInputChange(e.target.value)} />        
         </div>
         }

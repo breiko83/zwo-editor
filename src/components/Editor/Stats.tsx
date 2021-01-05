@@ -1,6 +1,6 @@
 import React from "react";
-import helpers from "../helpers";
 import { Interval } from "../../types/Interval";
+import { formatDuration, workoutDuration } from "../../utils/duration";
 
 // Displays summary statistics: workout length and TSS
 
@@ -14,7 +14,7 @@ const Stats: React.FC<StatsProps> = ({ intervals, ftp }) => {
     <>
       <div className="form-input">
         <label>Workout Time</label>
-        <input className="textInput" value={helpers.formatDuration(helpers.getWorkoutDuration(intervals))} disabled />
+        <input className="textInput" value={formatDuration(workoutDuration(intervals))} disabled />
       </div>
       <div className="form-input">
         <label>TSS</label>

@@ -13,7 +13,6 @@ import { ReactComponent as WarmdownLogo } from '../../assets/warmdown.svg'
 import { ReactComponent as WarmupLogo } from '../../assets/warmup.svg'
 import { ReactComponent as IntervalLogo } from '../../assets/interval.svg'
 import { ReactComponent as SteadyLogo } from '../../assets/steady.svg'
-import helpers from '../helpers'
 import firebase, { auth } from '../../network/firebase'
 import SaveForm from '../Forms/SaveForm'
 import SignupForm from '../Forms/SignupForm'
@@ -49,6 +48,7 @@ import * as storage from '../../storage/storage';
 import Notification, { NotificationMessage } from './Notification'
 import { SportType } from '../../types/SportType'
 import createMode from '../../modes/createMode'
+import { formatDuration, workoutDuration } from '../../utils/duration'
 
 type TParams = { id: string };
 
@@ -288,7 +288,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
         description: description,
         updatedAt: Date(),
         sportType: sportType,
-        workoutTime: helpers.formatDuration(helpers.getWorkoutDuration(intervals)),
+        workoutTime: formatDuration(workoutDuration(intervals)),
       }
 
       var updates: any = {}
@@ -369,7 +369,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
     <InstructionEditor
       key={instruction.id}
       instruction={instruction}
-      width={helpers.getWorkoutDuration(intervals) / 3}
+      width={workoutDuration(intervals) / 3}
       onChange={updateInstruction}
       onDelete={deleteInstruction}
       index={index}
