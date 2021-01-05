@@ -7,6 +7,7 @@ import { WorkoutMode } from '../../modes/WorkoutMode'
 import BikeMode from '../../modes/BikeMode'
 import RunMode from '../../modes/RunMode'
 import { formatDuration } from '../../utils/duration'
+import { intervalDistance } from '../../utils/distance'
 
 interface LabelProps {
   interval: SteadyInterval | RampInterval | FreeInterval;
@@ -59,27 +60,18 @@ function BikeData({ interval, mode, onCadenceChange }: LabelProps & { mode: Bike
 function RunData({ interval, mode }: LabelProps & { mode: RunMode }) {
   return (
     <>
+      <div>
+        <FontAwesomeIcon icon={faRuler} fixedWidth /> {intervalDistance(interval, mode)} m
+      </div>
       {interval.type === "steady" &&
-        <>
-          <div>
-            <FontAwesomeIcon icon={faRuler} fixedWidth />{" "}
-            {mode.distance(interval.duration, interval.intensity, interval.pace)} m
-          </div>
-          <div>
-            {mode.percentage(interval.intensity)}% {mode.shortPaceName(interval.pace)} pace
-          </div>
-        </>
+        <div>
+          {mode.percentage(interval.intensity)}% {mode.shortPaceName(interval.pace)} pace
+        </div>
       }
       {interval.type === "ramp" &&
-        <>
-          <div>
-            <FontAwesomeIcon icon={faRuler} fixedWidth />{" "}
-            {mode.distance(interval.duration, (interval.startIntensity + interval.endIntensity) / 2, interval.pace)} m
-          </div>
-          <div>
-            {mode.percentage(interval.startIntensity)}% to {mode.percentage(interval.endIntensity)}% {mode.shortPaceName(interval.pace)} pace
-          </div>
-        </>
+        <div>
+          {mode.percentage(interval.startIntensity)}% to {mode.percentage(interval.endIntensity)}% {mode.shortPaceName(interval.pace)} pace
+        </div>
       }
     </>
   );
