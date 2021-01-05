@@ -359,7 +359,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
       <GenericBar
         key={interval.id}
         interval={interval}
-        mode={createMode(sportType, ftp, weight, runningTimes)}
+        mode={createMode(sportType, ftp, weight, runningTimes, durationType)}
         onChange={updateInterval}
         onClick={toggleSelection}
         selected={interval.id === selectedId}
@@ -470,7 +470,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
       <div className="info">
         <Title name={name} author={author} description={description} />
         <div className="workout">
-          <Stats intervals={intervals} ftp={ftp} mode={createMode(sportType, ftp, weight, runningTimes)} />
+          <Stats intervals={intervals} ftp={ftp} mode={createMode(sportType, ftp, weight, runningTimes, durationType)} />
           {sportType === 'run' &&
             <LeftRightToggle<"time","distance">
               label="Duration Type"

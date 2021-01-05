@@ -1,7 +1,9 @@
+import { DurationType } from "../types/DurationType";
 import { SportType } from "../types/SportType";
 
 export default class BikeMode {
   public readonly sportType: SportType = "bike";
+  public readonly durationType: DurationType = "time";
 
   constructor(private ftp: number, private weight: number) {}
 

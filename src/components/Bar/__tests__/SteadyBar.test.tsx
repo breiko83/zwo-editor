@@ -11,7 +11,7 @@ test('SteadyBar renders correctly', () => {
     duration: 50,
     intensity: Zones.Z3.min,
   });
-  const mode = createMode("bike", 250, 75, []);
+  const mode = createMode("bike", 250, 75, [], "time");
 
   const component = renderer.create(
     <SteadyBar
