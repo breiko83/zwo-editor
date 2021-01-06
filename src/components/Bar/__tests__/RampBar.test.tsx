@@ -5,10 +5,11 @@ import renderer from 'react-test-renderer';
 import '@testing-library/jest-dom/extend-expect'
 import intervalFactory from '../../../interval/intervalFactory';
 import createMode from '../../../modes/createMode';
+import { Duration } from '../../../types/Length';
 
 test('RampBar renders correctly', () => {
   const interval = intervalFactory.ramp({
-    length: 50,
+    length: new Duration(50),
     startIntensity: Zones.Z2.min,
     endIntensity: Zones.Z4.min,
   });

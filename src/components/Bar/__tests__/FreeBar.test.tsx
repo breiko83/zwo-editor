@@ -4,10 +4,11 @@ import renderer from 'react-test-renderer';
 import '@testing-library/jest-dom/extend-expect'
 import intervalFactory from '../../../interval/intervalFactory';
 import createMode from '../../../modes/createMode';
+import { Duration } from '../../../types/Length';
 
 test('FreeBar renders correctly', () => {
   const interval = intervalFactory.free({
-    length: 50,
+    length: new Duration(50),
   });
   const mode = createMode("bike", 200, 75, [], "time");
 
