@@ -25,7 +25,7 @@ exports[`RampBar renders correctly 1`] = `
           "minWidth": 3,
           "position": "relative",
           "userSelect": "auto",
-          "width": "6px",
+          "width": "8.333333333333334px",
         }
       }
     >
@@ -70,42 +70,6 @@ exports[`RampBar renders correctly 1`] = `
         Object {
           "boxSizing": "border-box",
           "flexShrink": 0,
-          "height": "188.25px",
-          "maxHeight": 500,
-          "maxWidth": undefined,
-          "minHeight": 25,
-          "minWidth": 3,
-          "position": "relative",
-          "userSelect": "auto",
-          "width": "6px",
-        }
-      }
-    >
-      <span>
-        <div
-          className=""
-          onMouseDown={[Function]}
-          onTouchStart={[Function]}
-          style={
-            Object {
-              "cursor": "row-resize",
-              "height": "10px",
-              "left": "0px",
-              "position": "absolute",
-              "top": "-5px",
-              "userSelect": "none",
-              "width": "100%",
-            }
-          }
-        />
-      </span>
-    </div>
-    <div
-      className="trapeze-component"
-      style={
-        Object {
-          "boxSizing": "border-box",
-          "flexShrink": 0,
           "height": "225.25px",
           "maxHeight": 500,
           "maxWidth": undefined,
@@ -113,7 +77,7 @@ exports[`RampBar renders correctly 1`] = `
           "minWidth": 3,
           "position": "relative",
           "userSelect": "auto",
-          "width": "6px",
+          "width": "8.333333333333334px",
         }
       }
     >
@@ -221,17 +185,16 @@ exports[`RampBar renders correctly 1`] = `
   <svg
     className="trapeze-svg-container"
     height="225.25"
-    width="18"
+    width="16.666666666666668"
   >
     <polygon
       className="trapeze-svg"
-      points="0,74 0,225.25 18,225.25 18,0"
+      points="0,74 0,225.25 16.666666666666668,225.25 16.666666666666668,0"
     />
     <polygon
       className="trapeze-svg-off"
-      points="0,0 0,74 18,0"
+      points="0,0 0,74 16.666666666666668,0"
     />
-    Sorry, your browser does not support inline SVG.
   </svg>
 </div>
 `;
