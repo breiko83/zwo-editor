@@ -45,7 +45,7 @@ const SteadyBar = ({interval, mode, ...props}: SteadyBarProps) => {
   const notifyChange = (dWidth: number, dHeight: number) => {
     props.onChange({
       ...interval,
-      length: mode.widthToLength(width + dWidth, mode),
+      length: mode.widthToLength(width + dWidth),
       intensity: mode.heightToIntensity(height + dHeight),
     })
   }

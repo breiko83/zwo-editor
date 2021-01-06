@@ -1,10 +1,14 @@
 import { distanceMultiplier, durationMultiplier, intensityMultiplier } from "../components/Bar/multipliers";
 import { Distance, Duration, Length } from "../types/Length";
+import { LengthType } from "../types/LengthType";
+import { SportType } from "../types/SportType";
 import { floor } from "../utils/math";
-import { WorkoutMode } from "./WorkoutMode";
 
 // Base class for duration-based Mode classes
 export default abstract class Mode {
+  public abstract readonly sportType: SportType;
+  public abstract readonly lengthType: LengthType;
+
   percentage(intensity: number): number {
     return Math.round(intensity * 100);
   }
@@ -17,8 +21,8 @@ export default abstract class Mode {
     }
   }
 
-  widthToLength(width: number, mode: WorkoutMode): Length {
-    if (mode.lengthType === "time") {
+  widthToLength(width: number): Length {
+    if (this.lengthType === "time") {
       return new Duration(floor(width * durationMultiplier, 5));
     } else {
       return new Distance(floor(width * distanceMultiplier, 200));

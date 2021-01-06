@@ -29,7 +29,7 @@ const InstructionEditor = (props: InstructionEditorProps) => {
       {
         id: props.instruction.id,
         text: text,
-        offset: props.mode.widthToLength(position, props.mode),
+        offset: props.mode.widthToLength(position),
       }
     )
   }
@@ -46,7 +46,7 @@ const InstructionEditor = (props: InstructionEditorProps) => {
       {
         id: props.instruction.id,
         text: value,
-        offset: props.mode.widthToLength(xPosition, props.mode),
+        offset: props.mode.widthToLength(xPosition),
       }
     )
   }
