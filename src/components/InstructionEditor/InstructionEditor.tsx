@@ -6,7 +6,7 @@ import './InstructionEditor.css'
 import { durationMultiplier } from '../Bar/multipliers'
 import { Instruction } from '../../types/Instruction'
 import { formatDuration } from '../../utils/duration'
-import { Duration } from '../../types/Length'
+import { Duration, Length } from '../../types/Length'
 import { WorkoutMode } from '../../modes/WorkoutMode'
 
 interface InstructionEditorProps {
@@ -57,6 +57,9 @@ const InstructionEditor = (props: InstructionEditorProps) => {
     }
   }
 
+  const renderOffset = (offset: Length): string =>
+    offset instanceof Duration ? formatDuration(offset) : `${offset.meters} m`;
+
   return (
     <Draggable
       axis='x'
@@ -72,7 +75,7 @@ const InstructionEditor = (props: InstructionEditorProps) => {
         {showInput &&
         <div className="edit">
           <FontAwesomeIcon icon={faTrashAlt} fixedWidth className="delete" style={{ color: 'gray' }} onClick={() => handleDelete()} />
-          <span style={{fontSize:'13px'}} data-testid='time'>{formatDuration(new Duration(xPosition * durationMultiplier))}</span>                  
+          <span style={{fontSize:'13px'}} data-testid='time'>{renderOffset(props.instruction.offset)}</span>                  
           <textarea name="comment" value={text} style={{display:'block', padding:'5px', width:'250px',backgroundColor:'white'}} onChange={e => handleInputChange(e.target.value)} />        
         </div>
         }
