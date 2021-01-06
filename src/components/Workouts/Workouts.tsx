@@ -9,7 +9,7 @@ interface Workout {
   name: string,
   description: string,
   updatedAt: string,
-  durationType: string,
+  lengthType: string,
   workoutTime: string,
   workoutDistance: string
 }
@@ -27,7 +27,7 @@ const Workouts = (props: { userId: string }) => {
           name: child.val().name || "No name",
           description: child.val().description,
           updatedAt: child.val().updatedAt,
-          durationType: child.val().durationType,
+          lengthType: child.val().durationType,
           workoutTime: child.val().workoutTime,
           workoutDistance: child.val().workoutDistance
         }
@@ -42,7 +42,7 @@ const Workouts = (props: { userId: string }) => {
       {workouts.map((item, index) => (
         <a href={`/editor/${item.id}`} key={item.id} style={index % 2 === 0 ? { backgroundColor: '#DCDCDC' } : { backgroundColor: '#C8C8C8' }}>
           <div className="title">{item.name}</div>
-          {item.durationType === 'time' ?
+          {item.lengthType === 'time' ?
             <div className="description"><FontAwesomeIcon icon={faClock} size="sm" fixedWidth /> {item.workoutTime}</div>
             :
             <div className="description"><FontAwesomeIcon icon={faRuler} size="sm" fixedWidth /> {item.workoutDistance}</div>

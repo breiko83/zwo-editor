@@ -62,7 +62,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
   const [author, setAuthor] = useState(storage.getAuthor())
   const [tags, setTags] = useState(storage.getTags())
   const [sportType, setSportType] = useState(storage.getSportType())
-  const [durationType, setDurationType] = useState(storage.getDurationType());
+  const [lengthType, setLengthType] = useState(storage.getLengthType());
   const [intervals, setIntervals] = useState(storage.getIntervals())
   const [instructions, setInstructions] = useState(storage.getInstructions())
 
@@ -132,7 +132,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
     storage.setAuthor(author)
     storage.setTags(tags)
     storage.setSportType(sportType)
-    storage.setDurationType(durationType)
+    storage.setLengthType(lengthType)
     storage.setIntervals(intervals)
     storage.setInstructions(instructions)
 
@@ -141,10 +141,10 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
     storage.setRunningTimes(runningTimes)
 
     setSegmentsWidth(segmentsRef.current?.scrollWidth || 1320)
-  }, [segmentsRef, intervals, ftp, instructions, weight, name, description, author, tags, sportType, durationType, runningTimes])
+  }, [segmentsRef, intervals, ftp, instructions, weight, name, description, author, tags, sportType, lengthType, runningTimes])
 
   function getMode(): WorkoutMode {
-    return createMode(sportType, ftp, weight, runningTimes, durationType);
+    return createMode(sportType, ftp, weight, runningTimes, lengthType);
   }
 
   function generateId() {
@@ -476,7 +476,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
       <div className="info">
         <Title name={name} author={author} description={description} />
         <div className="workout">
-          <Stats intervals={intervals} ftp={ftp} mode={createMode(sportType, ftp, weight, runningTimes, durationType)} />
+          <Stats intervals={intervals} ftp={ftp} mode={createMode(sportType, ftp, weight, runningTimes, lengthType)} />
           {sportType === 'run' &&
             <LeftRightToggle<"time","distance">
               label="Duration Type"
@@ -484,8 +484,8 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
               rightValue="distance"
               leftIcon={faClock}
               rightIcon={faRuler}
-              selected={durationType}
-              onChange={setDurationType}
+              selected={lengthType}
+              onChange={setLengthType}
             />
           }
           <LeftRightToggle<"bike","run">

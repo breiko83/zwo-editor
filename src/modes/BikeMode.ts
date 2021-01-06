@@ -1,4 +1,4 @@
-import { DurationType } from "../types/DurationType";
+import { LengthType } from "../types/LengthType";
 import { Duration, Length } from "../types/Length";
 import { SportType } from "../types/SportType";
 import DurationMode from "./DurationMode";
@@ -7,7 +7,7 @@ export default class BikeMode extends DurationMode {
   private ftp: number;
   private weight: number;
   public readonly sportType: SportType = "bike";
-  public readonly durationType: DurationType = "time";
+  public readonly lengthType: LengthType = "time";
 
   constructor(ftp: number, weight: number) {
     super();

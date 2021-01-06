@@ -2,19 +2,19 @@ import { SportType } from "../types/SportType";
 import { PaceType } from "../types/PaceType";
 import { RunningTimes } from "../types/RunningTimes";
 import { runningDistances } from "../types/runningDistances";
-import { DurationType } from "../types/DurationType";
+import { LengthType } from "../types/LengthType";
 import DurationMode from "./DurationMode";
 import { Distance, Duration, Length } from "../types/Length";
 
 export default class RunMode extends DurationMode {
   private runningTimes: RunningTimes;
   public readonly sportType: SportType = "run";
-  public readonly durationType: DurationType;
+  public readonly lengthType: LengthType;
 
-  constructor(runningTimes: RunningTimes, durationType: DurationType) {
+  constructor(runningTimes: RunningTimes, lengthType: LengthType) {
     super();
     this.runningTimes = runningTimes;
-    this.durationType = durationType;
+    this.lengthType = lengthType;
   }
 
   shortPaceName(pace: PaceType): string {
