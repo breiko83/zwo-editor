@@ -104,7 +104,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
           // user refreshed the page
         } else {
           // treat this as new workout
-          loadWorkout(createEmptyWorkout(sportType))
+          loadWorkout(createEmptyWorkout(sportType, lengthType))
         }
 
         storage.setId(id)
@@ -155,6 +155,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
 
   function loadWorkout(workout: Workout) {
     setSportType(workout.sportType)
+    setLengthType(workout.lengthType)
     setAuthor(workout.author)
     setName(workout.name)
     setDescription(workout.description)
@@ -165,7 +166,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
 
   function newWorkout(sportType: SportType) {
     setId(generateId())
-    loadWorkout(createEmptyWorkout(sportType))
+    loadWorkout(createEmptyWorkout(sportType, lengthType))
   }
 
   function showMessage({ text, className }: NotificationMessage) {
@@ -269,6 +270,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
       name,
       description,
       sportType,
+      lengthType,
       tags,
       intervals,
       instructions,
@@ -291,6 +293,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
         userId: user.uid,
         updatedAt: Date(),
         sportType: sportType,
+        durationType: lengthType,
       }
 
       const item2 = {
@@ -298,6 +301,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
         description: description,
         updatedAt: Date(),
         sportType: sportType,
+        durationType: lengthType,
         workoutTime: formatDuration(workoutDuration(intervals, getMode())),
       }
 

@@ -16,5 +16,6 @@ export default async function loadFirebaseWorkout(db: firebase.database.Database
     instructions: (snapshot.val().instructions || []),
     tags: (snapshot.val().tags || []),
     sportType: (snapshot.val().sportType),
+    lengthType: (snapshot.val().durationType),
   };
 }
