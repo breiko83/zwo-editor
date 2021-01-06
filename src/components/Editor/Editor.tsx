@@ -427,8 +427,8 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
       onBackspacePress={() => selectedId && removeInterval(selectedId)}
       onUpPress={() => selectedId && setIntervals(updateIntervalIntensity(selectedId, 0.01, intervals))}
       onDownPress={() => selectedId && setIntervals(updateIntervalIntensity(selectedId, -0.01, intervals))}
-      onLeftPress={() => selectedId && setIntervals(updateIntervalDuration(selectedId, new Duration(-5), intervals))}
-      onRightPress={() => selectedId && setIntervals(updateIntervalDuration(selectedId, new Duration(5), intervals))}
+      onLeftPress={() => selectedId && setIntervals(updateIntervalDuration(selectedId, new Duration(-5), intervals, getMode()))}
+      onRightPress={() => selectedId && setIntervals(updateIntervalDuration(selectedId, new Duration(5), intervals, getMode()))}
     >
       <Head id={id} name={name} description={description} />
 
