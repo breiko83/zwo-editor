@@ -45,8 +45,8 @@ export default function parseWorkoutXml(data: string, mode: WorkoutMode): Workou
 
     var totalTime = 0
 
-    const readLength = (s: string) =>
-      workout.lengthType === "time" ? new Duration(parseFloat(s)) : new Distance(parseFloat(s));
+    const readLength = (x: number) =>
+      workout.lengthType === "time" ? new Duration(x) : new Distance(x);
 
     workout_file.elements[workoutIndex].elements.map((w: { name: string; attributes: { Power: any; PowerLow: string; Duration: string; PowerHigh: string; Cadence: string; CadenceResting: string; Repeat: string; OnDuration: string; OffDuration: string; OnPower: string, OffPower: string; Pace: string }; elements: any }) => {
 
@@ -55,7 +55,7 @@ export default function parseWorkoutXml(data: string, mode: WorkoutMode): Workou
       if (w.name === 'SteadyState') {
         workout.intervals.push(intervalFactory.steady({
           intensity: parseFloat(w.attributes.Power || w.attributes.PowerLow),
-          length: readLength(w.attributes.Duration),
+          length: readLength(parseFloat(w.attributes.Duration)),
           cadence: parseFloat(w.attributes.Cadence || '0'),
           pace: parseInt(w.attributes.Pace || '0'),
         }, mode))
@@ -64,7 +64,7 @@ export default function parseWorkoutXml(data: string, mode: WorkoutMode): Workou
         workout.intervals.push(intervalFactory.ramp({
           startIntensity: parseFloat(w.attributes.PowerLow),
           endIntensity: parseFloat(w.attributes.PowerHigh),
-          length: readLength(w.attributes.Duration),
+          length: readLength(parseFloat(w.attributes.Duration)),
           pace: parseInt(w.attributes.Pace || '0'),
           cadence: parseInt(w.attributes.Cadence),
         }, mode))
@@ -72,8 +72,8 @@ export default function parseWorkoutXml(data: string, mode: WorkoutMode): Workou
       if (w.name === 'IntervalsT') {
         workout.intervals.push(intervalFactory.repetition({
           repeat: parseFloat(w.attributes.Repeat),
-          onLength: readLength(w.attributes.OnDuration),
-          offLength: readLength(w.attributes.OffDuration),
+          onLength: readLength(parseFloat(w.attributes.OnDuration)),
+          offLength: readLength(parseFloat(w.attributes.OffDuration)),
           onIntensity: parseFloat(w.attributes.OnPower),
           offIntensity: parseFloat(w.attributes.OffPower),
           cadence: parseInt(w.attributes.Cadence || '0'),
@@ -84,7 +84,7 @@ export default function parseWorkoutXml(data: string, mode: WorkoutMode): Workou
       }
       if (w.name === 'free') {
         workout.intervals.push(intervalFactory.free({
-          length: readLength(w.attributes.Duration),
+          length: readLength(parseFloat(w.attributes.Duration)),
           cadence: parseInt(w.attributes.Cadence),
         }, mode))
       }
@@ -96,8 +96,7 @@ export default function parseWorkoutXml(data: string, mode: WorkoutMode): Workou
           if (t.name.toLowerCase() === 'textevent')
             workout.instructions.push({
               text: t.attributes.message || '',
-              // TODO: move parseFloat out of readLength
-              offset: readLength("" + (totalTime + parseFloat(t.attributes.timeoffset))),
+              offset: readLength(totalTime + parseFloat(t.attributes.timeoffset)),
               id: uuidv4()
             });
         })
