@@ -4,7 +4,7 @@ import { floor } from "../utils/math";
 import { WorkoutMode } from "./WorkoutMode";
 
 // Base class for duration-based Mode classes
-export default abstract class DurationMode {
+export default abstract class Mode {
   percentage(intensity: number): number {
     return Math.round(intensity * 100);
   }

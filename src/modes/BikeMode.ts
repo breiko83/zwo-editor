@@ -1,9 +1,9 @@
 import { LengthType } from "../types/LengthType";
 import { Duration, Length } from "../types/Length";
 import { SportType } from "../types/SportType";
-import DurationMode from "./DurationMode";
+import Mode from "./Mode";
 
-export default class BikeMode extends DurationMode {
+export default class BikeMode extends Mode {
   private ftp: number;
   private weight: number;
   public readonly sportType: SportType = "bike";

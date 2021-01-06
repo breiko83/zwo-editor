@@ -3,10 +3,10 @@ import { PaceType } from "../types/PaceType";
 import { RunningTimes } from "../types/RunningTimes";
 import { runningDistances } from "../types/runningDistances";
 import { LengthType } from "../types/LengthType";
-import DurationMode from "./DurationMode";
+import Mode from "./Mode";
 import { Distance, Duration, Length } from "../types/Length";
 
-export default class RunMode extends DurationMode {
+export default class RunMode extends Mode {
   private runningTimes: RunningTimes;
   public readonly sportType: SportType = "run";
   public readonly lengthType: LengthType;
