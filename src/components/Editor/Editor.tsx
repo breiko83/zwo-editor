@@ -52,6 +52,7 @@ import { formatDuration, workoutDuration } from '../../utils/duration'
 import { Duration } from '../../types/Length'
 import { WorkoutMode } from '../../modes/WorkoutMode'
 import DistanceAxis from '../Axis/DistanceAxis'
+import { LengthType } from '../../types/LengthType'
 
 type TParams = { id: string };
 
@@ -422,6 +423,13 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
     }
   }
 
+  function switchLengthType(newLengthType: LengthType) {
+    if (window.confirm(`Switching from ${lengthType} to ${newLengthType} will clear current workout. Are you sure?`)) {
+      newWorkout(sportType);
+      setLengthType(newLengthType);
+    }
+  }
+
   return (
     <Keyboard
       className="container"
@@ -486,7 +494,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
               leftIcon={faClock}
               rightIcon={faRuler}
               selected={lengthType}
-              onChange={setLengthType}
+              onChange={switchLengthType}
             />
           }
           <LeftRightToggle<"bike","run">
