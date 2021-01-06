@@ -43,14 +43,15 @@ export default function parseWorkoutXml(data: string, mode: WorkoutMode): Workou
 
     const workoutIndex = workout_file.elements.findIndex((element: { name: string }) => element.name === 'workout')
 
-    var totalTime = 0
+    // either meters (distance) or seconds (duration)
+    let totalLength = 0
 
     const readLength = (x: number) =>
       workout.lengthType === "time" ? new Duration(x) : new Distance(x);
 
     workout_file.elements[workoutIndex].elements.map((w: { name: string; attributes: { Power: any; PowerLow: string; Duration: string; PowerHigh: string; Cadence: string; CadenceResting: string; Repeat: string; OnDuration: string; OffDuration: string; OnPower: string, OffPower: string; Pace: string }; elements: any }) => {
 
-      let duration = parseFloat(w.attributes.Duration)
+      let length = parseFloat(w.attributes.Duration)
 
       if (w.name === 'SteadyState') {
         workout.intervals.push(intervalFactory.steady({
@@ -80,7 +81,7 @@ export default function parseWorkoutXml(data: string, mode: WorkoutMode): Workou
           restingCadence: parseInt(w.attributes.CadenceResting),
           pace: parseInt(w.attributes.Pace || '0'),
         }, mode))
-        duration = (parseFloat(w.attributes.OnDuration) + parseFloat(w.attributes.OffDuration)) * parseFloat(w.attributes.Repeat)
+        length = (parseFloat(w.attributes.OnDuration) + parseFloat(w.attributes.OffDuration)) * parseFloat(w.attributes.Repeat)
       }
       if (w.name === 'free') {
         workout.intervals.push(intervalFactory.free({
@@ -96,13 +97,13 @@ export default function parseWorkoutXml(data: string, mode: WorkoutMode): Workou
           if (t.name.toLowerCase() === 'textevent')
             workout.instructions.push({
               text: t.attributes.message || '',
-              offset: readLength(totalTime + parseFloat(t.attributes.timeoffset)),
+              offset: readLength(totalLength + parseFloat(t.attributes.timeoffset)),
               id: uuidv4()
             });
         })
       }
 
-      totalTime = totalTime + duration
+      totalLength = totalLength + length
       // map functions expect return value
       return false
     })
