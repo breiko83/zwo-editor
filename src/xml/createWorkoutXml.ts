@@ -93,8 +93,8 @@ export default function createWorkoutXml({ author, name, description, sportType,
     }
 
     // add instructions if present
-    instructions.filter((instruction) => (instruction.time >= totalDuration.seconds && instruction.time < (totalDuration.seconds + intervalDuration(interval, mode).seconds))).forEach((i) => {
-      segment.ele('textevent', { timeoffset: (i.time - totalDuration.seconds), message: i.text })
+    instructions.filter((instruction) => (instruction.offset >= totalDuration.seconds && instruction.offset < (totalDuration.seconds + intervalDuration(interval, mode).seconds))).forEach((i) => {
+      segment.ele('textevent', { timeoffset: (i.offset - totalDuration.seconds), message: i.text })
     })
 
     xml.importDocument(segment)

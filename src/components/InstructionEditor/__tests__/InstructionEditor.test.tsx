@@ -7,7 +7,7 @@ import { createInstruction } from '../../../types/Instruction';
 test('InstructionEditor renders correctly', () => {
   const instruction = createInstruction({
     text: 'This is a comment',
-    time: 300,
+    offset: 300,
   });
 
   const component = renderer.create(

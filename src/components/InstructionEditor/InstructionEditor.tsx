@@ -18,7 +18,7 @@ interface InstructionEditorProps {
 
 const InstructionEditor = (props: InstructionEditorProps) => {
   const [text, setText] = useState(props.instruction.text)
-  const [xPosition, setXPosition] = useState(props.instruction.time / durationMultiplier)
+  const [xPosition, setXPosition] = useState(props.instruction.offset / durationMultiplier)
 
   const [showInput, setShowInput] = useState(false)
 
@@ -27,7 +27,7 @@ const InstructionEditor = (props: InstructionEditorProps) => {
       {
         id: props.instruction.id,
         text: text,
-        time: position * durationMultiplier,
+        offset: position * durationMultiplier,
       }
     )
   }
@@ -44,7 +44,7 @@ const InstructionEditor = (props: InstructionEditorProps) => {
       {
         id: props.instruction.id,
         text: value,
-        time: xPosition * durationMultiplier,
+        offset: xPosition * durationMultiplier,
       }
     )
   }
