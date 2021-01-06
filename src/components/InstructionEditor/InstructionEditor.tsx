@@ -3,7 +3,6 @@ import Draggable from 'react-draggable'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faComment, faTrashAlt } from '@fortawesome/free-solid-svg-icons'
 import './InstructionEditor.css'
-import { durationMultiplier } from '../Bar/multipliers'
 import { Instruction } from '../../types/Instruction'
 import { formatDuration } from '../../utils/duration'
 import { Duration, Length } from '../../types/Length'
@@ -18,6 +17,8 @@ interface InstructionEditorProps {
   mode: WorkoutMode;
 }
 
+const roundingPrecision = { meters: 10, seconds: 5 };
+
 const InstructionEditor = (props: InstructionEditorProps) => {
   const [text, setText] = useState(props.instruction.text)
   const [xPosition, setXPosition] = useState(props.mode.lengthToWidth(props.instruction.offset))
@@ -29,7 +30,7 @@ const InstructionEditor = (props: InstructionEditorProps) => {
       {
         id: props.instruction.id,
         text: text,
-        offset: props.mode.widthToLength(position),
+        offset: props.mode.widthToLength(position, roundingPrecision),
       }
     )
   }
@@ -46,7 +47,7 @@ const InstructionEditor = (props: InstructionEditorProps) => {
       {
         id: props.instruction.id,
         text: value,
-        offset: props.mode.widthToLength(xPosition),
+        offset: props.mode.widthToLength(xPosition, roundingPrecision),
       }
     )
   }
