@@ -1,10 +1,10 @@
 import Builder from 'xmlbuilder'
 import { WorkoutMode } from '../modes/WorkoutMode';
-import { Duration } from '../types/Length'
+import { Duration, Length } from '../types/Length'
 import { Workout } from '../types/Workout'
 import { intervalDuration } from '../utils/duration'
 
-export default function createWorkoutXml({ author, name, description, sportType, tags, intervals, instructions }: Workout, mode: WorkoutMode): string {
+export default function createWorkoutXml({ author, name, description, sportType, lengthType, tags, intervals, instructions }: Workout, mode: WorkoutMode): string {
   var totalDuration = new Duration(0);
 
   let xml = Builder.begin()
@@ -13,6 +13,7 @@ export default function createWorkoutXml({ author, name, description, sportType,
     .ele('name', name).up()
     .ele('description', description).up()
     .ele('sportType', sportType).up()
+    .ele('durationType', lengthType).up()
     .ele('tags')
 
   tags.forEach((tag: string) => {
@@ -24,13 +25,16 @@ export default function createWorkoutXml({ author, name, description, sportType,
 
   xml = xml.up().ele('workout')
 
+  const writeLength = (len: Length): number =>
+    len instanceof Duration ? len.seconds : len.meters;
+
   intervals.forEach((interval, index) => {
     var segment: Builder.XMLNode
     var ramp
 
     if (interval.type === 'steady') {
       segment = Builder.create('SteadyState')
-        .att('Duration', interval.length)
+        .att('Duration', writeLength(interval.length))
         .att('Power', interval.intensity)
         .att('pace', interval.pace)
 
@@ -50,17 +54,16 @@ export default function createWorkoutXml({ author, name, description, sportType,
       if (interval.startIntensity < interval.endIntensity) {
         // warmup
         segment = Builder.create(ramp)
-          .att('Duration', interval.length)
+          .att('Duration', writeLength(interval.length))
           .att('PowerLow', interval.startIntensity)
           .att('PowerHigh', interval.endIntensity)
           .att('pace', interval.pace)
         // add cadence if not zero
         interval.cadence !== 0 && segment.att('Cadence', interval.cadence)
-          
       } else {
         // cooldown
         segment = Builder.create(ramp)
-          .att('Duration', interval.length)
+          .att('Duration', writeLength(interval.length))
           .att('PowerLow', interval.startIntensity) // these 2 values are inverted
           .att('PowerHigh', interval.endIntensity) // looks like a bug on zwift editor            
           .att('pace', interval.pace)
@@ -71,11 +74,11 @@ export default function createWorkoutXml({ author, name, description, sportType,
       // <IntervalsT Repeat="5" OnDuration="60" OffDuration="300" OnPower="0.8844353" OffPower="0.51775455" pace="0"/>
       segment = Builder.create('IntervalsT')
         .att('Repeat', interval.repeat)
-        .att('OnDuration', interval.onLength)
-        .att('OffDuration', interval.offLength)
+        .att('OnDuration', writeLength(interval.onLength))
+        .att('OffDuration', writeLength(interval.offLength))
         .att('OnPower', interval.onIntensity)
         .att('OffPower', interval.offIntensity)
-        .att('pace', interval.pace)        
+        .att('pace', interval.pace)
         // add cadence if not zero
         interval.cadence !== 0 && segment.att('Cadence', interval.cadence)
         // add cadence resting if not zero
@@ -83,7 +86,7 @@ export default function createWorkoutXml({ author, name, description, sportType,
     } else {
       // free ride
       segment = Builder.create('free')
-        .att('Duration', interval.length)
+        .att('Duration', writeLength(interval.length))
         .att('FlatRoad', 0) // Not sure what this is for
       // add cadence if not zero
       interval.cadence !== 0 && segment.att('Cadence', interval.cadence)
