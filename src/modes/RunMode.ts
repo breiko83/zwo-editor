@@ -4,6 +4,7 @@ import { RunningTimes } from "../types/RunningTimes";
 import { runningDistances } from "../types/runningDistances";
 import { DurationType } from "../types/DurationType";
 import DurationMode from "./DurationMode";
+import { Distance, Duration, Length } from "../types/Length";
 
 export default class RunMode extends DurationMode {
   private runningTimes: RunningTimes;
@@ -25,7 +26,11 @@ export default class RunMode extends DurationMode {
     return runningDistances[pace] / this.runningTimes[pace] * intensity; // in m/s
   }
 
-  distance(duration: number, intensity: number, pace: PaceType): number {
-    return Math.round(this.speed(intensity, pace) * duration); // in meters
+  distance(duration: Length, intensity: number, pace: PaceType): Distance {
+    if (duration instanceof Duration) {
+      return new Distance(Math.round(this.speed(intensity, pace) * duration.seconds));
+    } else {
+      return duration;
+    }
   }
 }

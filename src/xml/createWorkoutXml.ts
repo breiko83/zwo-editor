@@ -1,9 +1,11 @@
 import Builder from 'xmlbuilder'
+import { WorkoutMode } from '../modes/WorkoutMode';
+import { Duration } from '../types/Length'
 import { Workout } from '../types/Workout'
 import { intervalDuration } from '../utils/duration'
 
-export default function createWorkoutXml({ author, name, description, sportType, tags, intervals, instructions }: Workout): string {
-  var totalDuration = 0
+export default function createWorkoutXml({ author, name, description, sportType, tags, intervals, instructions }: Workout, mode: WorkoutMode): string {
+  var totalDuration = new Duration(0);
 
   let xml = Builder.begin()
     .ele('workout_file')
@@ -88,13 +90,13 @@ export default function createWorkoutXml({ author, name, description, sportType,
     }
 
     // add instructions if present
-    instructions.filter((instruction) => (instruction.time >= totalDuration && instruction.time < (totalDuration + intervalDuration(interval)))).forEach((i) => {
-      segment.ele('textevent', { timeoffset: (i.time - totalDuration), message: i.text })
+    instructions.filter((instruction) => (instruction.time >= totalDuration.seconds && instruction.time < (totalDuration.seconds + intervalDuration(interval, mode).seconds))).forEach((i) => {
+      segment.ele('textevent', { timeoffset: (i.time - totalDuration.seconds), message: i.text })
     })
 
     xml.importDocument(segment)
 
-    totalDuration += intervalDuration(interval)
+    totalDuration = new Duration(totalDuration.seconds + intervalDuration(interval, mode).seconds);
   })
 
   return xml.end({ pretty: true });

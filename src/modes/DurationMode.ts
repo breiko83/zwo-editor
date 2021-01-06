@@ -1,4 +1,5 @@
 import { durationMultiplier, intensityMultiplier } from "../components/Bar/multipliers";
+import { Duration, Length } from "../types/Length";
 import { floor } from "../utils/math";
 
 // Base class for duration-based Mode classes
@@ -7,12 +8,16 @@ export default abstract class DurationMode {
     return Math.round(intensity * 100);
   }
 
-  durationToWidth(duration: number): number {
-    return duration / durationMultiplier;
+  lengthToWidth(length: Length): number {
+    if (length instanceof Duration) {
+      return length.seconds / durationMultiplier;
+    } else {
+      return 0; // TODO
+    }
   }
 
-  widthToDuration(width: number): number {
-    return floor(width * durationMultiplier, 5);
+  widthToLength(width: number): Duration {
+    return new Duration(floor(width * durationMultiplier, 5));
   }
 
   intensityToHeight(intensity: number): number {
@@ -21,5 +26,13 @@ export default abstract class DurationMode {
 
   heightToIntensity(height: number): number {
     return height / intensityMultiplier;
+  }
+
+  duration(length: Length): Duration {
+    if (length instanceof Duration) {
+      return length;
+    } else {
+      return new Duration(0); // TODO
+    }
   }
 }

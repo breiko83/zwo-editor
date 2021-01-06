@@ -4,7 +4,7 @@ import { zoneColor, Zones } from '../../types/Zones'
 import { Resizable } from 're-resizable'
 import Label from '../Label/Label'
 import { SteadyInterval } from '../../types/Interval'
-import { durationMultiplier, intensityMultiplier } from './multipliers'
+import { intensityMultiplier } from './multipliers'
 import { WorkoutMode } from '../../modes/WorkoutMode'
 
 interface SteadyBarProps {
@@ -19,7 +19,7 @@ interface SteadyBarProps {
 const SteadyBar = ({interval, mode, ...props}: SteadyBarProps) => {
   const style = { backgroundColor: zoneColor(interval.intensity) }
 
-  const [width, setWidth] = useState(mode.durationToWidth(interval.duration))
+  const [width, setWidth] = useState(mode.lengthToWidth(interval.duration))
 
   const [height, setHeight] = useState(mode.intensityToHeight(interval.intensity))
 
@@ -45,7 +45,7 @@ const SteadyBar = ({interval, mode, ...props}: SteadyBarProps) => {
   const notifyChange = (dWidth: number, dHeight: number) => {
     props.onChange({
       ...interval,
-      duration: mode.widthToDuration(width + dWidth),
+      duration: mode.widthToLength(width + dWidth),
       intensity: mode.heightToIntensity(height + dHeight),
     })
   }
@@ -67,8 +67,8 @@ const SteadyBar = ({interval, mode, ...props}: SteadyBarProps) => {
       <Resizable
         className='bar'
         size={{
-          width: interval.duration / durationMultiplier,
-          height: interval.intensity * intensityMultiplier,
+          width: mode.lengthToWidth(interval.duration),
+          height: mode.intensityToHeight(interval.intensity),
         }}
         minWidth={3}
         minHeight={intensityMultiplier * Zones.Z1.min}

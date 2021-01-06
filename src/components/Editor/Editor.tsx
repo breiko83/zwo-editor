@@ -49,6 +49,7 @@ import Notification, { NotificationMessage } from './Notification'
 import { SportType } from '../../types/SportType'
 import createMode from '../../modes/createMode'
 import { formatDuration, workoutDuration } from '../../utils/duration'
+import { Duration } from '../../types/Length'
 
 type TParams = { id: string };
 
@@ -263,8 +264,8 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
       sportType,
       tags,
       intervals,
-      instructions
-    });
+      instructions,
+    }, createMode(sportType, ftp, weight, runningTimes, durationType));
 
     const file = new Blob([xml], { type: 'application/xml' })
 
@@ -290,7 +291,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
         description: description,
         updatedAt: Date(),
         sportType: sportType,
-        workoutTime: formatDuration(workoutDuration(intervals)),
+        workoutTime: formatDuration(workoutDuration(intervals, createMode(sportType, ftp, weight, runningTimes, durationType))),
       }
 
       var updates: any = {}
@@ -371,7 +372,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
     <InstructionEditor
       key={instruction.id}
       instruction={instruction}
-      width={workoutDuration(intervals) / 3}
+      width={workoutDuration(intervals, createMode(sportType, ftp, weight, runningTimes, durationType)).seconds / 3}
       onChange={updateInstruction}
       onDelete={deleteInstruction}
       index={index}
@@ -421,8 +422,8 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
       onBackspacePress={() => selectedId && removeInterval(selectedId)}
       onUpPress={() => selectedId && setIntervals(updateIntervalIntensity(selectedId, 0.01, intervals))}
       onDownPress={() => selectedId && setIntervals(updateIntervalIntensity(selectedId, -0.01, intervals))}
-      onLeftPress={() => selectedId && setIntervals(updateIntervalDuration(selectedId, -5, intervals))}
-      onRightPress={() => selectedId && setIntervals(updateIntervalDuration(selectedId, 5, intervals))}
+      onLeftPress={() => selectedId && setIntervals(updateIntervalDuration(selectedId, new Duration(-5), intervals))}
+      onRightPress={() => selectedId && setIntervals(updateIntervalDuration(selectedId, new Duration(5), intervals))}
     >
       <Head id={id} name={name} description={description} />
 

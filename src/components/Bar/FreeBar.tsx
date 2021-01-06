@@ -16,7 +16,7 @@ interface FreeBarProps {
 }
 
 const FreeBar = ({interval, mode, ...props}: FreeBarProps) => {
-  const [width, setWidth] = useState(mode.durationToWidth(interval.duration))
+  const [width, setWidth] = useState(mode.lengthToWidth(interval.duration))
 
   const [showLabel, setShowLabel] = useState(false)
 
@@ -33,7 +33,7 @@ const FreeBar = ({interval, mode, ...props}: FreeBarProps) => {
   }
 
   const notifyChange = (dWidth: number) => {
-    props.onChange({ ...interval, duration: mode.widthToDuration(width + dWidth) })
+    props.onChange({ ...interval, duration: mode.widthToLength(width + dWidth) })
   }
 
   return (
@@ -53,7 +53,7 @@ const FreeBar = ({interval, mode, ...props}: FreeBarProps) => {
       <Resizable
         className='freeRide'
         size={{
-          width: interval.duration / durationMultiplier,
+          width: mode.lengthToWidth(interval.duration),
           height: height,
         }}
         minWidth={durationMultiplier}

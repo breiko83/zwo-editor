@@ -2,6 +2,7 @@ import Converter from 'xml-js';
 import { v4 as uuidv4 } from 'uuid'
 import intervalFactory from '../interval/intervalFactory';
 import { createEmptyWorkout, Workout } from '../types/Workout';
+import { Duration } from '../types/Length';
 
 export default function parseWorkoutXml(data: string): Workout {
   // TODO:
@@ -41,7 +42,7 @@ export default function parseWorkoutXml(data: string): Workout {
       if (w.name === 'SteadyState') {
         workout.intervals.push(intervalFactory.steady({
           intensity: parseFloat(w.attributes.Power || w.attributes.PowerLow),
-          duration: parseFloat(w.attributes.Duration),
+          duration: new Duration(parseFloat(w.attributes.Duration)),
           cadence: parseFloat(w.attributes.Cadence || '0'),
           pace: parseInt(w.attributes.Pace || '0'),
         }))
@@ -50,7 +51,7 @@ export default function parseWorkoutXml(data: string): Workout {
         workout.intervals.push(intervalFactory.ramp({
           startIntensity: parseFloat(w.attributes.PowerLow),
           endIntensity: parseFloat(w.attributes.PowerHigh),
-          duration: parseFloat(w.attributes.Duration),
+          duration: new Duration(parseFloat(w.attributes.Duration)),
           pace: parseInt(w.attributes.Pace || '0'),
           cadence: parseInt(w.attributes.Cadence),
         }))
@@ -58,8 +59,8 @@ export default function parseWorkoutXml(data: string): Workout {
       if (w.name === 'IntervalsT') {
         workout.intervals.push(intervalFactory.repetition({
           repeat: parseFloat(w.attributes.Repeat),
-          onDuration: parseFloat(w.attributes.OnDuration),
-          offDuration: parseFloat(w.attributes.OffDuration),
+          onDuration: new Duration(parseFloat(w.attributes.OnDuration)),
+          offDuration: new Duration(parseFloat(w.attributes.OffDuration)),
           onIntensity: parseFloat(w.attributes.OnPower),
           offIntensity: parseFloat(w.attributes.OffPower),
           cadence: parseInt(w.attributes.Cadence || '0'),
@@ -70,7 +71,7 @@ export default function parseWorkoutXml(data: string): Workout {
       }
       if (w.name === 'free') {
         workout.intervals.push(intervalFactory.free({
-          duration: parseFloat(w.attributes.Duration),
+          duration: new Duration(parseFloat(w.attributes.Duration)),
           cadence: parseInt(w.attributes.Cadence),
         }))
       }

@@ -26,7 +26,7 @@ const RampBar = ({interval, mode, ...props}: RampBarProps) => {
     props.onChange({ ...interval, cadence: cadence })
   }
 
-  const [width, setWidth] = useState(mode.durationToWidth(interval.duration))
+  const [width, setWidth] = useState(mode.lengthToWidth(interval.duration))
 
   const [startHeight, setStartHeight] = useState(mode.intensityToHeight(interval.startIntensity))
   const [endHeight, setEndHeight] = useState(mode.intensityToHeight(interval.endIntensity))
@@ -48,7 +48,7 @@ const RampBar = ({interval, mode, ...props}: RampBarProps) => {
   const handleEndResize = (dWidth: number, dHeight: number) => {
     props.onChange({
       ...interval,
-      duration: mode.widthToDuration(width + dWidth),
+      duration: mode.widthToLength(width + dWidth),
       startIntensity: mode.heightToIntensity(startHeight),
       endIntensity: mode.heightToIntensity(endHeight + dHeight),
     })

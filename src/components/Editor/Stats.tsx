@@ -3,6 +3,7 @@ import BikeMode from "../../modes/BikeMode";
 import RunMode from "../../modes/RunMode";
 import { WorkoutMode } from "../../modes/WorkoutMode";
 import { Interval } from "../../types/Interval";
+import { Duration } from "../../types/Length";
 import { workoutDistance } from "../../utils/distance";
 import { formatDuration, workoutDuration } from "../../utils/duration";
 
@@ -19,12 +20,12 @@ const Stats: React.FC<StatsProps> = ({ intervals, ftp, mode }) => {
     <>
       <div className="form-input">
         <label>Workout Time</label>
-        <input className="textInput" value={formatDuration(workoutDuration(intervals))} disabled />
+        <input className="textInput" value={formatDuration(workoutDuration(intervals, mode))} disabled />
       </div>
       {mode instanceof RunMode &&
         <div className="form-input">
           <label>Workout Distance</label>
-          <input className="textInput" value={workoutDistance(intervals, mode) + " m"} disabled />
+          <input className="textInput" value={workoutDistance(intervals, mode).meters + " m"} disabled />
         </div>
       }
       {mode instanceof BikeMode &&
@@ -46,24 +47,36 @@ function getStressScore(intervals: Interval[], ftp: number): string {
       const np = interval.intensity * ftp
       const iff = interval.intensity
 
-      tss += (interval.duration * np * iff)
+      if (!(interval.duration instanceof Duration)) {
+        return false;
+      }
+      tss += (interval.duration.seconds * np * iff)
     }
     if (interval.type === 'ramp' && interval.startIntensity && interval.endIntensity) {
       const np = (interval.startIntensity + interval.endIntensity) / 2 * ftp
       const iff = (interval.startIntensity + interval.endIntensity) / 2
 
-      tss += (interval.duration * np * iff)
+      if (!(interval.duration instanceof Duration)) {
+        return false;
+      }
+      tss += (interval.duration.seconds * np * iff)
     }
     if (interval.type === 'repetition' && interval.onIntensity && interval.offIntensity && interval.repeat && interval.onDuration && interval.offDuration) {
       const npOn = (interval.onIntensity * ftp)
       const iffOn = interval.onIntensity
 
-      tss += (interval.onDuration * interval.repeat * npOn * iffOn)
+      if (!(interval.onDuration instanceof Duration)) {
+        return false;
+      }
+      tss += (interval.onDuration.seconds * interval.repeat * npOn * iffOn)
 
       const npOff = (interval.offIntensity * ftp)
       const iffOff = interval.offIntensity
 
-      tss += (interval.offDuration * interval.repeat * npOff * iffOff)
+      if (!(interval.offDuration instanceof Duration)) {
+        return false;
+      }
+      tss += (interval.offDuration.seconds * interval.repeat * npOff * iffOff)
     }
     return false;
   })

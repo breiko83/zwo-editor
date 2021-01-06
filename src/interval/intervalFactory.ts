@@ -1,14 +1,15 @@
 import { v4 as uuidv4 } from 'uuid'
 import { PaceType } from '../types/PaceType';
 import { FreeInterval, Interval, RampInterval, RepetitionInterval, SteadyInterval } from "../types/Interval";
+import { Duration } from '../types/Length';
 
-const defaultDuration = 300;
+const defaultDuration = new Duration(300);
 const defaultIntensity = 1.0;
 const defaultPace = PaceType.oneMile;
 const defaultCadence = 0;
 
 export default {
-  steady(interval: Partial<SteadyInterval>): SteadyInterval {
+  steady<T>(interval: Partial<SteadyInterval>): SteadyInterval {
     return {
       type: 'steady',
       id: uuidv4(),
@@ -50,8 +51,8 @@ export default {
       cadence: defaultCadence,
       restingCadence: defaultCadence,
       repeat: 3,
-      onDuration: 30,
-      offDuration: 120,
+      onDuration: new Duration(30),
+      offDuration: new Duration(120),
       onIntensity: defaultIntensity,
       offIntensity: defaultIntensity / 2,
       pace: defaultPace,

@@ -8,6 +8,7 @@ import BikeMode from '../../modes/BikeMode'
 import RunMode from '../../modes/RunMode'
 import { formatDuration } from '../../utils/duration'
 import { intervalDistance } from '../../utils/distance'
+import { Duration } from '../../types/Length'
 
 interface LabelProps {
   interval: SteadyInterval | RampInterval | FreeInterval;
@@ -18,9 +19,11 @@ interface LabelProps {
 const Label = ({ mode, ...props }: LabelProps) => {
   return (
     <div className='label'>
-      <div>
-        <FontAwesomeIcon icon={faClock} fixedWidth /> {formatDuration(props.interval.duration)}
-      </div>
+      {props.interval.duration instanceof Duration &&
+        <div>
+          <FontAwesomeIcon icon={faClock} fixedWidth /> {formatDuration(props.interval.duration)}
+        </div>
+      }
       {mode instanceof BikeMode ? <BikeData mode={mode} {...props} /> : <RunData mode={mode} {...props} />}
     </div>
   );
@@ -61,7 +64,7 @@ function RunData({ interval, mode }: LabelProps & { mode: RunMode }) {
   return (
     <>
       <div>
-        <FontAwesomeIcon icon={faRuler} fixedWidth /> {intervalDistance(interval, mode)} m
+        <FontAwesomeIcon icon={faRuler} fixedWidth /> {intervalDistance(interval, mode).meters} m
       </div>
       {interval.type === "steady" &&
         <div>

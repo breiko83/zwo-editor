@@ -1,8 +1,9 @@
+import { Length } from "./Length";
 import { PaceType } from "./PaceType";
 
 export interface SteadyInterval {
   id: string,
-  duration: number,
+  duration: Length,
   type: 'steady',
   intensity: number,
   cadence: number,
@@ -11,7 +12,7 @@ export interface SteadyInterval {
 
 export interface RampInterval {
   id: string,
-  duration: number,
+  duration: Length,
   type: 'ramp',
   startIntensity: number,
   endIntensity: number,
@@ -21,7 +22,7 @@ export interface RampInterval {
 
 export interface FreeInterval {
   id: string,
-  duration: number,
+  duration: Length,
   type: 'free',
   cadence: number,
 }
@@ -33,8 +34,8 @@ export interface RepetitionInterval {
   restingCadence: number,
   onIntensity: number,
   offIntensity: number,
-  onDuration: number,
-  offDuration: number,
+  onDuration: Length,
+  offDuration: Length,
   repeat: number,
   pace: PaceType,
 }

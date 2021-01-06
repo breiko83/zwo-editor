@@ -1,5 +1,6 @@
 import { Zones } from "../types/Zones";
 import { Interval } from "../types/Interval";
+import { Duration } from "../types/Length";
 
 // Helpers for transforming intervals array
 
@@ -16,12 +17,12 @@ function updateById(id: string, transform: (interval: Interval) => Interval, int
   ];
 }
 
-export function updateIntervalDuration(id: string, dDuration: number, intervals: Interval[]): Interval[] {
+export function updateIntervalDuration(id: string, dDuration: Duration, intervals: Interval[]): Interval[] {
   return updateById(id, (interval) => {
-    if (interval.type === 'steady') {
-      const duration = interval.duration + dDuration;
-      if (duration > 0) {
-        return { ...interval, duration };
+    if (interval.type === 'steady' && interval.duration instanceof Duration) {
+      const seconds = interval.duration.seconds + dDuration.seconds;
+      if (seconds > 0) {
+        return { ...interval, duration: new Duration(seconds) };
       }
     }
     return interval;
