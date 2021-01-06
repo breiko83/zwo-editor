@@ -356,7 +356,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
 
     try {
       await upload(id, file);
-      loadWorkout(parseWorkoutXml(await download(id)));
+      loadWorkout(parseWorkoutXml(await download(id), getMode()));
     } catch (e) {
       console.error(e);
     }
@@ -541,22 +541,22 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
       <div className='cta'>
         {sportType === "bike" ?
           <div>
-            <ColorButton label="Z1" color={ZoneColor.GRAY} onClick={() => addInterval(intervalFactory.steady({ intensity: 0.5 }))} />
-            <ColorButton label="Z2" color={ZoneColor.BLUE} onClick={() => addInterval(intervalFactory.steady({ intensity: Zones.Z2.min }))} />
-            <ColorButton label="Z3" color={ZoneColor.GREEN} onClick={() => addInterval(intervalFactory.steady({ intensity: Zones.Z3.min }))} />
-            <ColorButton label="Z4" color={ZoneColor.YELLOW} onClick={() => addInterval(intervalFactory.steady({ intensity: Zones.Z4.min }))} />
-            <ColorButton label="Z5" color={ZoneColor.ORANGE} onClick={() => addInterval(intervalFactory.steady({ intensity: Zones.Z5.min }))} />
-            <ColorButton label="Z6" color={ZoneColor.RED} onClick={() => addInterval(intervalFactory.steady({ intensity: Zones.Z6.min }))} />
+            <ColorButton label="Z1" color={ZoneColor.GRAY} onClick={() => addInterval(intervalFactory.steady({ intensity: 0.5 }, getMode()))} />
+            <ColorButton label="Z2" color={ZoneColor.BLUE} onClick={() => addInterval(intervalFactory.steady({ intensity: Zones.Z2.min }, getMode()))} />
+            <ColorButton label="Z3" color={ZoneColor.GREEN} onClick={() => addInterval(intervalFactory.steady({ intensity: Zones.Z3.min }, getMode()))} />
+            <ColorButton label="Z4" color={ZoneColor.YELLOW} onClick={() => addInterval(intervalFactory.steady({ intensity: Zones.Z4.min }, getMode()))} />
+            <ColorButton label="Z5" color={ZoneColor.ORANGE} onClick={() => addInterval(intervalFactory.steady({ intensity: Zones.Z5.min }, getMode()))} />
+            <ColorButton label="Z6" color={ZoneColor.RED} onClick={() => addInterval(intervalFactory.steady({ intensity: Zones.Z6.min }, getMode()))} />
           </div>
           :
-          <Button onClick={() => addInterval(intervalFactory.steady({}))}><SteadyLogo className="btn-icon" /> Steady Pace</Button>
+          <Button onClick={() => addInterval(intervalFactory.steady({}, getMode()))}><SteadyLogo className="btn-icon" /> Steady Pace</Button>
         }
 
-        <Button onClick={() => addInterval(intervalFactory.ramp({ startIntensity: 0.25, endIntensity: 0.75 }))}><WarmupLogo className="btn-icon" /> Warm up</Button>
-        <Button onClick={() => addInterval(intervalFactory.ramp({ startIntensity: 0.75, endIntensity: 0.25 }))}><WarmdownLogo className="btn-icon" /> Cool down</Button>
-        <Button onClick={() => addInterval(intervalFactory.repetition({}))}><IntervalLogo className="btn-icon" /> Interval</Button>
+        <Button onClick={() => addInterval(intervalFactory.ramp({ startIntensity: 0.25, endIntensity: 0.75 }, getMode()))}><WarmupLogo className="btn-icon" /> Warm up</Button>
+        <Button onClick={() => addInterval(intervalFactory.ramp({ startIntensity: 0.75, endIntensity: 0.25 }, getMode()))}><WarmdownLogo className="btn-icon" /> Cool down</Button>
+        <Button onClick={() => addInterval(intervalFactory.repetition({}, getMode()))}><IntervalLogo className="btn-icon" /> Interval</Button>
         {sportType === "bike" &&
-          <IconButton label="Free Ride" icon={faBicycle} onClick={() => addInterval(intervalFactory.free({}))} />
+          <IconButton label="Free Ride" icon={faBicycle} onClick={() => addInterval(intervalFactory.free({}, getMode()))} />
         }
         <IconButton label="Text Event" icon={faComment} onClick={() => addInstruction(createInstruction({}))} />
         {sportType === "bike" &&

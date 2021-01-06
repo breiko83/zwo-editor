@@ -3,8 +3,9 @@ import { v4 as uuidv4 } from 'uuid'
 import intervalFactory from '../interval/intervalFactory';
 import { createEmptyWorkout, Workout } from '../types/Workout';
 import { Duration } from '../types/Length';
+import { WorkoutMode } from '../modes/WorkoutMode';
 
-export default function parseWorkoutXml(data: string): Workout {
+export default function parseWorkoutXml(data: string, mode: WorkoutMode): Workout {
   // TODO:
   // - sportType not detected from XML
   // - tags not detected from XML
@@ -45,7 +46,7 @@ export default function parseWorkoutXml(data: string): Workout {
           length: new Duration(parseFloat(w.attributes.Duration)),
           cadence: parseFloat(w.attributes.Cadence || '0'),
           pace: parseInt(w.attributes.Pace || '0'),
-        }))
+        }, mode))
       }
       if (w.name === 'Ramp' || w.name === 'Warmup' || w.name === 'Cooldown') {
         workout.intervals.push(intervalFactory.ramp({
@@ -54,7 +55,7 @@ export default function parseWorkoutXml(data: string): Workout {
           length: new Duration(parseFloat(w.attributes.Duration)),
           pace: parseInt(w.attributes.Pace || '0'),
           cadence: parseInt(w.attributes.Cadence),
-        }))
+        }, mode))
       }
       if (w.name === 'IntervalsT') {
         workout.intervals.push(intervalFactory.repetition({
@@ -66,14 +67,14 @@ export default function parseWorkoutXml(data: string): Workout {
           cadence: parseInt(w.attributes.Cadence || '0'),
           restingCadence: parseInt(w.attributes.CadenceResting),
           pace: parseInt(w.attributes.Pace || '0'),
-        }))
+        }, mode))
         duration = (parseFloat(w.attributes.OnDuration) + parseFloat(w.attributes.OffDuration)) * parseFloat(w.attributes.Repeat)
       }
       if (w.name === 'free') {
         workout.intervals.push(intervalFactory.free({
           length: new Duration(parseFloat(w.attributes.Duration)),
           cadence: parseInt(w.attributes.Cadence),
-        }))
+        }, mode))
       }
 
       // check for instructions
