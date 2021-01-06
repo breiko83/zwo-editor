@@ -50,6 +50,7 @@ import { SportType } from '../../types/SportType'
 import createMode from '../../modes/createMode'
 import { formatDuration, workoutDuration } from '../../utils/duration'
 import { Duration } from '../../types/Length'
+import { WorkoutMode } from '../../modes/WorkoutMode'
 
 type TParams = { id: string };
 
@@ -141,6 +142,10 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
 
     setSegmentsWidth(segmentsRef.current?.scrollWidth || 1320)
   }, [segmentsRef, intervals, ftp, instructions, weight, name, description, author, tags, sportType, durationType, runningTimes])
+
+  function getMode(): WorkoutMode {
+    return createMode(sportType, ftp, weight, runningTimes, durationType);
+  }
 
   function generateId() {
     return Math.random().toString(36).substr(2, 16)
@@ -265,7 +270,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
       tags,
       intervals,
       instructions,
-    }, createMode(sportType, ftp, weight, runningTimes, durationType));
+    }, getMode());
 
     const file = new Blob([xml], { type: 'application/xml' })
 
@@ -291,7 +296,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
         description: description,
         updatedAt: Date(),
         sportType: sportType,
-        workoutTime: formatDuration(workoutDuration(intervals, createMode(sportType, ftp, weight, runningTimes, durationType))),
+        workoutTime: formatDuration(workoutDuration(intervals, getMode())),
       }
 
       var updates: any = {}
@@ -360,7 +365,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
       <GenericBar
         key={interval.id}
         interval={interval}
-        mode={createMode(sportType, ftp, weight, runningTimes, durationType)}
+        mode={getMode()}
         onChange={updateInterval}
         onClick={toggleSelection}
         selected={interval.id === selectedId}
@@ -372,7 +377,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
     <InstructionEditor
       key={instruction.id}
       instruction={instruction}
-      width={workoutDuration(intervals, createMode(sportType, ftp, weight, runningTimes, durationType)).seconds / 3}
+      width={workoutDuration(intervals, getMode()).seconds / 3}
       onChange={updateInstruction}
       onDelete={deleteInstruction}
       index={index}
