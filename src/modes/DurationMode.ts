@@ -1,4 +1,4 @@
-import { durationMultiplier, intensityMultiplier } from "../components/Bar/multipliers";
+import { distanceMultiplier, durationMultiplier, intensityMultiplier } from "../components/Bar/multipliers";
 import { Duration, Length } from "../types/Length";
 import { floor } from "../utils/math";
 
@@ -12,7 +12,7 @@ export default abstract class DurationMode {
     if (length instanceof Duration) {
       return length.seconds / durationMultiplier;
     } else {
-      return 0; // TODO
+      return length.meters / distanceMultiplier;
     }
   }
 
