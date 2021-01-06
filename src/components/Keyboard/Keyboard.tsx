@@ -31,10 +31,10 @@ const Keyboard: React.FC<KeyboardProps> = (props) => {
         props.onRightPress();
         break;
       case 38:
-        props.onDownPress();
+        props.onUpPress();
         break;
       case 40:
-        props.onUpPress();
+        props.onDownPress();
         break;
     }
   }
