@@ -8,7 +8,6 @@ import BikeMode from '../../modes/BikeMode'
 import RunMode from '../../modes/RunMode'
 import { formatDuration, intervalDuration } from '../../utils/duration'
 import { intervalDistance } from '../../utils/distance'
-import { Duration } from '../../types/Length'
 
 interface LabelProps {
   interval: SteadyInterval | RampInterval | FreeInterval;
