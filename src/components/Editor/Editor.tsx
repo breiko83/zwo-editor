@@ -126,7 +126,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
     ReactGA.initialize('UA-55073449-9');
     ReactGA.pageview(window.location.pathname + window.location.search);
 
-  }, [id, db, sportType])
+  }, [id, db, sportType, lengthType])
 
   useEffect(() => {
     storage.setName(name)
