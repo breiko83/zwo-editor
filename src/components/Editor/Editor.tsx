@@ -164,7 +164,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
     setTags(workout.tags)
   }
 
-  function newWorkout(sportType: SportType) {
+  function newWorkout() {
     setId(generateId())
     loadWorkout(createEmptyWorkout(sportType, lengthType))
   }
@@ -243,7 +243,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
 
       // save to firebase      
       itemsRef.update(updates).then(() => {
-        newWorkout(sportType)
+        newWorkout()
       }).catch((error) => {
         console.log(error);
         showMessage({ className: 'error', text: 'Cannot delete workout' })
@@ -356,7 +356,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
       }
     }
 
-    newWorkout(sportType)
+    newWorkout()
 
     try {
       await upload(id, file);
@@ -423,13 +423,14 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
 
   function switchSportType(newSportType: SportType) {
     if (window.confirm(`Switching from ${sportType} to ${newSportType} will clear current workout. Are you sure?`)) {
-      newWorkout(newSportType);
+      newWorkout();
+      setSportType(newSportType);
     }
   }
 
   function switchLengthType(newLengthType: LengthType) {
     if (window.confirm(`Switching from ${lengthType} to ${newLengthType} will clear current workout. Are you sure?`)) {
-      newWorkout(sportType);
+      newWorkout();
       setLengthType(newLengthType);
     }
   }
@@ -569,7 +570,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
         {sportType === "bike" &&
           <NumberField name="weight" label={"Body Weight (kg)"} value={weight} onChange={setWeight} />
         }
-        <IconButton label="New" icon={faFile} onClick={() => { if (window.confirm('Are you sure you want to create a new workout?')) newWorkout(sportType) }} />
+        <IconButton label="New" icon={faFile} onClick={() => { if (window.confirm('Are you sure you want to create a new workout?')) newWorkout() }} />
         <IconButton label="Save" icon={faSave} onClick={saveWorkout} />
         <IconButton label="Delete" icon={faTrash} onClick={() => { if (window.confirm('Are you sure you want to delete this workout?')) deleteWorkout() }} />
         <IconButton label="Download" icon={faDownload} onClick={downloadWorkout} />
