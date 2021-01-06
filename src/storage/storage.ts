@@ -5,7 +5,7 @@ import { Interval } from "../types/Interval";
 import { SportType } from "../types/SportType";
 import { PaceType } from '../types/PaceType';
 import { LengthType } from '../types/LengthType';
-import { Duration } from '../types/Length';
+import { Distance, Duration } from '../types/Length';
 
 export function getId(): string | null {
   return localStorage.getItem('id');
@@ -14,16 +14,19 @@ export function setId(id: string) {
   localStorage.setItem('id', id);
 }
 
-function convertDurations(obj: {[k: string]: any}) {
+function convertLengths(obj: {[k: string]: any}) {
   for (const [k, v] of Object.entries(obj)) {
     if (typeof v === "object" && typeof v.seconds === "number") {
       obj[k] = new Duration(v.seconds);
+    }
+    else if (typeof v === "object" && typeof v.meters === "number") {
+      obj[k] = new Distance(v.meters);
     }
   }
   return obj;
 }
 export function getIntervals(): Interval[] {
-  return JSON.parse(localStorage.getItem('currentWorkout') || '[]').map(convertDurations);
+  return JSON.parse(localStorage.getItem('currentWorkout') || '[]').map(convertLengths);
 }
 export function setIntervals(intervals: Interval[]) {
   localStorage.setItem('currentWorkout', JSON.stringify(intervals));
