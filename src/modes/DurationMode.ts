@@ -1,6 +1,7 @@
 import { distanceMultiplier, durationMultiplier, intensityMultiplier } from "../components/Bar/multipliers";
-import { Duration, Length } from "../types/Length";
+import { Distance, Duration, Length } from "../types/Length";
 import { floor } from "../utils/math";
+import { WorkoutMode } from "./WorkoutMode";
 
 // Base class for duration-based Mode classes
 export default abstract class DurationMode {
@@ -16,8 +17,12 @@ export default abstract class DurationMode {
     }
   }
 
-  widthToLength(width: number): Duration {
-    return new Duration(floor(width * durationMultiplier, 5));
+  widthToLength(width: number, mode: WorkoutMode): Length {
+    if (mode.lengthType === "time") {
+      return new Duration(floor(width * durationMultiplier, 5));
+    } else {
+      return new Distance(floor(width * distanceMultiplier, 200));
+    }
   }
 
   intensityToHeight(intensity: number): number {

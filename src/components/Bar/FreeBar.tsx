@@ -33,7 +33,7 @@ const FreeBar = ({interval, mode, ...props}: FreeBarProps) => {
   }
 
   const notifyChange = (dWidth: number) => {
-    props.onChange({ ...interval, length: mode.widthToLength(width + dWidth) })
+    props.onChange({ ...interval, length: mode.widthToLength(width + dWidth, mode) })
   }
 
   return (
