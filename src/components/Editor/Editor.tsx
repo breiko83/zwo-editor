@@ -387,6 +387,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
       onChange={updateInstruction}
       onDelete={deleteInstruction}
       index={index}
+      mode={getMode()}
     />
   )
 
@@ -563,7 +564,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
         {sportType === "bike" &&
           <IconButton label="Free Ride" icon={faBicycle} onClick={() => addInterval(intervalFactory.free({}, getMode()))} />
         }
-        <IconButton label="Text Event" icon={faComment} onClick={() => addInstruction(createInstruction({}))} />
+        <IconButton label="Text Event" icon={faComment} onClick={() => addInstruction(createInstruction({}, getMode()))} />
         {sportType === "bike" &&
           <NumberField name="ftp" label={"FTP (W)"} value={ftp} onChange={setFtp} />
         }

@@ -7,6 +7,7 @@ import { durationMultiplier } from '../Bar/multipliers'
 import { Instruction } from '../../types/Instruction'
 import { formatDuration } from '../../utils/duration'
 import { Duration } from '../../types/Length'
+import { WorkoutMode } from '../../modes/WorkoutMode'
 
 interface InstructionEditorProps {
   instruction: Instruction;
@@ -14,11 +15,12 @@ interface InstructionEditorProps {
   onChange: (instruction: Instruction) => void;
   onDelete: (id: string) => void;
   index: number;
+  mode: WorkoutMode;
 }
 
 const InstructionEditor = (props: InstructionEditorProps) => {
   const [text, setText] = useState(props.instruction.text)
-  const [xPosition, setXPosition] = useState(props.instruction.offset / durationMultiplier)
+  const [xPosition, setXPosition] = useState(props.mode.lengthToWidth(props.instruction.offset))
 
   const [showInput, setShowInput] = useState(false)
 
@@ -27,7 +29,7 @@ const InstructionEditor = (props: InstructionEditorProps) => {
       {
         id: props.instruction.id,
         text: text,
-        offset: position * durationMultiplier,
+        offset: props.mode.widthToLength(position, props.mode),
       }
     )
   }
@@ -44,7 +46,7 @@ const InstructionEditor = (props: InstructionEditorProps) => {
       {
         id: props.instruction.id,
         text: value,
-        offset: xPosition * durationMultiplier,
+        offset: props.mode.widthToLength(xPosition, props.mode),
       }
     )
   }

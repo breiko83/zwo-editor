@@ -33,7 +33,7 @@ export function setIntervals(intervals: Interval[]) {
 }
 
 export function getInstructions(): Instruction[] {
-  return JSON.parse(localStorage.getItem('instructions') || '[]');
+  return JSON.parse(localStorage.getItem('instructions') || '[]').map(convertLengths);
 }
 export function setInstructions(instructions: Instruction[]) {
   localStorage.setItem('instructions', JSON.stringify(instructions));

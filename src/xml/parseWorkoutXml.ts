@@ -96,7 +96,8 @@ export default function parseWorkoutXml(data: string, mode: WorkoutMode): Workou
           if (t.name.toLowerCase() === 'textevent')
             workout.instructions.push({
               text: t.attributes.message || '',
-              offset: totalTime + parseFloat(t.attributes.timeoffset),
+              // TODO: move parseFloat out of readLength
+              offset: readLength("" + (totalTime + parseFloat(t.attributes.timeoffset))),
               id: uuidv4()
             });
         })

@@ -3,12 +3,15 @@ import InstructionEditor from '../InstructionEditor';
 import renderer from 'react-test-renderer';
 import '@testing-library/jest-dom/extend-expect'
 import { createInstruction } from '../../../types/Instruction';
+import createMode from '../../../modes/createMode';
+import { Duration } from '../../../types/Length';
 
 test('InstructionEditor renders correctly', () => {
+  const mode = createMode("bike", 200, 75, [], "time");
   const instruction = createInstruction({
     text: 'This is a comment',
-    offset: 300,
-  });
+    offset: new Duration(300),
+  }, mode);
 
   const component = renderer.create(
     <InstructionEditor
@@ -17,6 +20,7 @@ test('InstructionEditor renders correctly', () => {
       index={0}
       onChange={() => { }}
       onDelete={() => { }}
+      mode={mode}
     />,
   );
 
