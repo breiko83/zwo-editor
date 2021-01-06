@@ -51,6 +51,7 @@ import createMode from '../../modes/createMode'
 import { formatDuration, workoutDuration } from '../../utils/duration'
 import { Duration } from '../../types/Length'
 import { WorkoutMode } from '../../modes/WorkoutMode'
+import DistanceAxis from '../Axis/DistanceAxis'
 
 type TParams = { id: string };
 
@@ -525,7 +526,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
             {instructions.map((instruction, index) => renderInstruction(instruction, index))}
           </div>
 
-          <TimeAxis width={segmentsWidth} />
+          {lengthType === "time" ? <TimeAxis width={segmentsWidth} /> : <DistanceAxis width={segmentsWidth} />}
         </div>
         <ZoneAxis />
       </div>
