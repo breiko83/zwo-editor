@@ -9,14 +9,14 @@ export function intervalDistance(interval: Interval, mode: RunMode): Distance {
       throw new Error("Run workout may not contain FreeRide");
     }
     case 'steady': {
-      return mode.distance(interval.duration, interval.intensity, interval.pace);
+      return mode.distance(interval.length, interval.intensity, interval.pace);
     }
     case 'ramp': {
-      return mode.distance(interval.duration, (interval.startIntensity + interval.endIntensity) / 2, interval.pace);
+      return mode.distance(interval.length, (interval.startIntensity + interval.endIntensity) / 2, interval.pace);
     }
     case 'repetition': {
-      const onDistance = mode.distance(interval.onDuration, interval.onIntensity, interval.pace);
-      const offDistance = mode.distance(interval.offDuration, interval.offIntensity, interval.pace);
+      const onDistance = mode.distance(interval.onLength, interval.onIntensity, interval.pace);
+      const offDistance = mode.distance(interval.offLength, interval.offIntensity, interval.pace);
       return new Distance(interval.repeat * (onDistance.meters + offDistance.meters));
     }
   }

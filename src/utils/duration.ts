@@ -7,10 +7,10 @@ import { Duration } from '../types/Length';
 
 export function intervalDuration(interval: Interval, mode: WorkoutMode): Duration {
   switch (interval.type) {
-    case 'free': return mode.duration(interval.duration);
-    case 'steady': return mode.duration(interval.duration);
-    case 'ramp': return mode.duration(interval.duration);
-    case 'repetition': return new Duration(interval.repeat * (mode.duration(interval.onDuration).seconds + mode.duration(interval.offDuration).seconds));
+    case 'free': return mode.duration(interval.length);
+    case 'steady': return mode.duration(interval.length);
+    case 'ramp': return mode.duration(interval.length);
+    case 'repetition': return new Duration(interval.repeat * (mode.duration(interval.onLength).seconds + mode.duration(interval.offLength).seconds));
   }
 }
 

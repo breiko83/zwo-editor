@@ -8,7 +8,7 @@ import createMode from '../../../modes/createMode';
 
 test('SteadyBar renders correctly', () => {
   const interval = intervalFactory.steady({
-    duration: 50,
+    length: 50,
     intensity: Zones.Z3.min,
   });
   const mode = createMode("bike", 250, 75, [], "time");

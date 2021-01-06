@@ -8,7 +8,7 @@ import createMode from '../../../modes/createMode';
 
 test('RampBar renders correctly', () => {
   const interval = intervalFactory.ramp({
-    duration: 50,
+    length: 50,
     startIntensity: Zones.Z2.min,
     endIntensity: Zones.Z4.min,
   });

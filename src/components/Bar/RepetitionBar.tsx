@@ -17,8 +17,8 @@ const RepetitionBar = ({interval, ...props}: RepetitionBarProps) => {
   const [subIntervals, setSubIntervals] = useState<Array<SteadyInterval>>([])
   const [repeat, setRepeat] = useState(interval.repeat)
 
-  const [onDuration, setOnDuration] = useState(interval.onDuration)
-  const [offDuration, setOffDuration] = useState(interval.offDuration)
+  const [onDuration, setOnDuration] = useState(interval.onLength)
+  const [offDuration, setOffDuration] = useState(interval.offLength)
 
   useEffect(() => {
     const subIntervals: SteadyInterval[] = []
@@ -26,7 +26,7 @@ const RepetitionBar = ({interval, ...props}: RepetitionBarProps) => {
     for (var i = 0; i < repeat; i++) {
       subIntervals.push(
         {
-          duration: onDuration,
+          length: onDuration,
           intensity: interval.onIntensity,
           cadence: interval.cadence,
           type: 'steady',
@@ -36,7 +36,7 @@ const RepetitionBar = ({interval, ...props}: RepetitionBarProps) => {
 
       subIntervals.push(
         {
-          duration: offDuration,
+          length: offDuration,
           intensity: interval.offIntensity,
           cadence: interval.restingCadence,
           type: 'steady',
@@ -53,14 +53,14 @@ const RepetitionBar = ({interval, ...props}: RepetitionBarProps) => {
     const index = subIntervals.findIndex(sub => sub.id === values.id)
     
     if (index % 2 === 1) {
-      setOffDuration(values.duration)
+      setOffDuration(values.length)
     }else{
-      setOnDuration(values.duration)
+      setOnDuration(values.length)
     }
 
     for (var i = 0; i < subIntervals.length; i++) {
       if (index % 2 === i % 2) {       
-        subIntervals[i].duration = values.duration
+        subIntervals[i].length = values.length
         subIntervals[i].intensity = values.intensity
         subIntervals[i].cadence = values.cadence        
       }      
@@ -71,8 +71,8 @@ const RepetitionBar = ({interval, ...props}: RepetitionBarProps) => {
       cadence: subIntervals[0].cadence,
       restingCadence: subIntervals[1].cadence,
       repeat: repeat,
-      onDuration: subIntervals[0].duration,
-      offDuration: subIntervals[1].duration,
+      onLength: subIntervals[0].length,
+      offLength: subIntervals[1].length,
       onIntensity: subIntervals[0].intensity,
       offIntensity: subIntervals[1].intensity,
     })

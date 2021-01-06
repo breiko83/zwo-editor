@@ -19,7 +19,7 @@ interface SteadyBarProps {
 const SteadyBar = ({interval, mode, ...props}: SteadyBarProps) => {
   const style = { backgroundColor: zoneColor(interval.intensity) }
 
-  const [width, setWidth] = useState(mode.lengthToWidth(interval.duration))
+  const [width, setWidth] = useState(mode.lengthToWidth(interval.length))
 
   const [height, setHeight] = useState(mode.intensityToHeight(interval.intensity))
 
@@ -45,7 +45,7 @@ const SteadyBar = ({interval, mode, ...props}: SteadyBarProps) => {
   const notifyChange = (dWidth: number, dHeight: number) => {
     props.onChange({
       ...interval,
-      duration: mode.widthToLength(width + dWidth),
+      length: mode.widthToLength(width + dWidth),
       intensity: mode.heightToIntensity(height + dHeight),
     })
   }
@@ -67,7 +67,7 @@ const SteadyBar = ({interval, mode, ...props}: SteadyBarProps) => {
       <Resizable
         className='bar'
         size={{
-          width: mode.lengthToWidth(interval.duration),
+          width: mode.lengthToWidth(interval.length),
           height: mode.intensityToHeight(interval.intensity),
         }}
         minWidth={3}

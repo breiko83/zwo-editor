@@ -30,7 +30,7 @@ export default function createWorkoutXml({ author, name, description, sportType,
 
     if (interval.type === 'steady') {
       segment = Builder.create('SteadyState')
-        .att('Duration', interval.duration)
+        .att('Duration', interval.length)
         .att('Power', interval.intensity)
         .att('pace', interval.pace)
 
@@ -50,7 +50,7 @@ export default function createWorkoutXml({ author, name, description, sportType,
       if (interval.startIntensity < interval.endIntensity) {
         // warmup
         segment = Builder.create(ramp)
-          .att('Duration', interval.duration)
+          .att('Duration', interval.length)
           .att('PowerLow', interval.startIntensity)
           .att('PowerHigh', interval.endIntensity)
           .att('pace', interval.pace)
@@ -60,7 +60,7 @@ export default function createWorkoutXml({ author, name, description, sportType,
       } else {
         // cooldown
         segment = Builder.create(ramp)
-          .att('Duration', interval.duration)
+          .att('Duration', interval.length)
           .att('PowerLow', interval.startIntensity) // these 2 values are inverted
           .att('PowerHigh', interval.endIntensity) // looks like a bug on zwift editor            
           .att('pace', interval.pace)
@@ -71,8 +71,8 @@ export default function createWorkoutXml({ author, name, description, sportType,
       // <IntervalsT Repeat="5" OnDuration="60" OffDuration="300" OnPower="0.8844353" OffPower="0.51775455" pace="0"/>
       segment = Builder.create('IntervalsT')
         .att('Repeat', interval.repeat)
-        .att('OnDuration', interval.onDuration)
-        .att('OffDuration', interval.offDuration)
+        .att('OnDuration', interval.onLength)
+        .att('OffDuration', interval.offLength)
         .att('OnPower', interval.onIntensity)
         .att('OffPower', interval.offIntensity)
         .att('pace', interval.pace)        
@@ -83,7 +83,7 @@ export default function createWorkoutXml({ author, name, description, sportType,
     } else {
       // free ride
       segment = Builder.create('free')
-        .att('Duration', interval.duration)
+        .att('Duration', interval.length)
         .att('FlatRoad', 0) // Not sure what this is for
       // add cadence if not zero
       interval.cadence !== 0 && segment.att('Cadence', interval.cadence)

@@ -42,7 +42,7 @@ export default function parseWorkoutXml(data: string): Workout {
       if (w.name === 'SteadyState') {
         workout.intervals.push(intervalFactory.steady({
           intensity: parseFloat(w.attributes.Power || w.attributes.PowerLow),
-          duration: new Duration(parseFloat(w.attributes.Duration)),
+          length: new Duration(parseFloat(w.attributes.Duration)),
           cadence: parseFloat(w.attributes.Cadence || '0'),
           pace: parseInt(w.attributes.Pace || '0'),
         }))
@@ -51,7 +51,7 @@ export default function parseWorkoutXml(data: string): Workout {
         workout.intervals.push(intervalFactory.ramp({
           startIntensity: parseFloat(w.attributes.PowerLow),
           endIntensity: parseFloat(w.attributes.PowerHigh),
-          duration: new Duration(parseFloat(w.attributes.Duration)),
+          length: new Duration(parseFloat(w.attributes.Duration)),
           pace: parseInt(w.attributes.Pace || '0'),
           cadence: parseInt(w.attributes.Cadence),
         }))
@@ -59,8 +59,8 @@ export default function parseWorkoutXml(data: string): Workout {
       if (w.name === 'IntervalsT') {
         workout.intervals.push(intervalFactory.repetition({
           repeat: parseFloat(w.attributes.Repeat),
-          onDuration: new Duration(parseFloat(w.attributes.OnDuration)),
-          offDuration: new Duration(parseFloat(w.attributes.OffDuration)),
+          onLength: new Duration(parseFloat(w.attributes.OnDuration)),
+          offLength: new Duration(parseFloat(w.attributes.OffDuration)),
           onIntensity: parseFloat(w.attributes.OnPower),
           offIntensity: parseFloat(w.attributes.OffPower),
           cadence: parseInt(w.attributes.Cadence || '0'),
@@ -71,7 +71,7 @@ export default function parseWorkoutXml(data: string): Workout {
       }
       if (w.name === 'free') {
         workout.intervals.push(intervalFactory.free({
-          duration: new Duration(parseFloat(w.attributes.Duration)),
+          length: new Duration(parseFloat(w.attributes.Duration)),
           cadence: parseInt(w.attributes.Cadence),
         }))
       }

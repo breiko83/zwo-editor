@@ -13,7 +13,7 @@ export default {
     return {
       type: 'steady',
       id: uuidv4(),
-      duration: defaultDuration,
+      length: defaultDuration,
       intensity: defaultIntensity,
       cadence: defaultCadence,
       pace: defaultPace,
@@ -25,7 +25,7 @@ export default {
     return {
       type: 'ramp',
       id: uuidv4(),
-      duration: defaultDuration,
+      length: defaultDuration,
       startIntensity: defaultIntensity / 2,
       endIntensity: defaultIntensity,
       cadence: defaultCadence,
@@ -38,7 +38,7 @@ export default {
     return {
       type: 'free',
       id: uuidv4(),
-      duration: defaultDuration,
+      length: defaultDuration,
       cadence: defaultCadence,
       ...interval
     };
@@ -51,8 +51,8 @@ export default {
       cadence: defaultCadence,
       restingCadence: defaultCadence,
       repeat: 3,
-      onDuration: new Duration(30),
-      offDuration: new Duration(120),
+      onLength: new Duration(30),
+      offLength: new Duration(120),
       onIntensity: defaultIntensity,
       offIntensity: defaultIntensity / 2,
       pace: defaultPace,

@@ -19,10 +19,10 @@ function updateById(id: string, transform: (interval: Interval) => Interval, int
 
 export function updateIntervalDuration(id: string, dDuration: Duration, intervals: Interval[]): Interval[] {
   return updateById(id, (interval) => {
-    if (interval.type === 'steady' && interval.duration instanceof Duration) {
-      const seconds = interval.duration.seconds + dDuration.seconds;
+    if (interval.type === 'steady' && interval.length instanceof Duration) {
+      const seconds = interval.length.seconds + dDuration.seconds;
       if (seconds > 0) {
-        return { ...interval, duration: new Duration(seconds) };
+        return { ...interval, length: new Duration(seconds) };
       }
     }
     return interval;

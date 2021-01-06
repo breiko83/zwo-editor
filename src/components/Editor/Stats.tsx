@@ -47,36 +47,36 @@ function getStressScore(intervals: Interval[], ftp: number): string {
       const np = interval.intensity * ftp
       const iff = interval.intensity
 
-      if (!(interval.duration instanceof Duration)) {
+      if (!(interval.length instanceof Duration)) {
         return false;
       }
-      tss += (interval.duration.seconds * np * iff)
+      tss += (interval.length.seconds * np * iff)
     }
     if (interval.type === 'ramp' && interval.startIntensity && interval.endIntensity) {
       const np = (interval.startIntensity + interval.endIntensity) / 2 * ftp
       const iff = (interval.startIntensity + interval.endIntensity) / 2
 
-      if (!(interval.duration instanceof Duration)) {
+      if (!(interval.length instanceof Duration)) {
         return false;
       }
-      tss += (interval.duration.seconds * np * iff)
+      tss += (interval.length.seconds * np * iff)
     }
-    if (interval.type === 'repetition' && interval.onIntensity && interval.offIntensity && interval.repeat && interval.onDuration && interval.offDuration) {
+    if (interval.type === 'repetition' && interval.onIntensity && interval.offIntensity && interval.repeat && interval.onLength && interval.offLength) {
       const npOn = (interval.onIntensity * ftp)
       const iffOn = interval.onIntensity
 
-      if (!(interval.onDuration instanceof Duration)) {
+      if (!(interval.onLength instanceof Duration)) {
         return false;
       }
-      tss += (interval.onDuration.seconds * interval.repeat * npOn * iffOn)
+      tss += (interval.onLength.seconds * interval.repeat * npOn * iffOn)
 
       const npOff = (interval.offIntensity * ftp)
       const iffOff = interval.offIntensity
 
-      if (!(interval.offDuration instanceof Duration)) {
+      if (!(interval.offLength instanceof Duration)) {
         return false;
       }
-      tss += (interval.offDuration.seconds * interval.repeat * npOff * iffOff)
+      tss += (interval.offLength.seconds * interval.repeat * npOff * iffOff)
     }
     return false;
   })

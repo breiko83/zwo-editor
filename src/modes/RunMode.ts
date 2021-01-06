@@ -26,11 +26,11 @@ export default class RunMode extends DurationMode {
     return runningDistances[pace] / this.runningTimes[pace] * intensity; // in m/s
   }
 
-  distance(duration: Length, intensity: number, pace: PaceType): Distance {
-    if (duration instanceof Duration) {
-      return new Distance(Math.round(this.speed(intensity, pace) * duration.seconds));
+  distance(length: Length, intensity: number, pace: PaceType): Distance {
+    if (length instanceof Duration) {
+      return new Distance(Math.round(this.speed(intensity, pace) * length.seconds));
     } else {
-      return duration;
+      return length;
     }
   }
 }

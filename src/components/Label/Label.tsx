@@ -19,9 +19,9 @@ interface LabelProps {
 const Label = ({ mode, ...props }: LabelProps) => {
   return (
     <div className='label'>
-      {props.interval.duration instanceof Duration &&
+      {props.interval.length instanceof Duration &&
         <div>
-          <FontAwesomeIcon icon={faClock} fixedWidth /> {formatDuration(props.interval.duration)}
+          <FontAwesomeIcon icon={faClock} fixedWidth /> {formatDuration(props.interval.length)}
         </div>
       }
       {mode instanceof BikeMode ? <BikeData mode={mode} {...props} /> : <RunData mode={mode} {...props} />}
