@@ -1,4 +1,5 @@
 import { DurationType } from "../types/DurationType";
+import { Duration, Length } from "../types/Length";
 import { SportType } from "../types/SportType";
 import DurationMode from "./DurationMode";
 
@@ -20,5 +21,13 @@ export default class BikeMode extends DurationMode {
 
   wkg(intensity: number): number {
     return Math.round(this.power(intensity) / this.weight * 10) / 10;
+  }
+
+  duration(length: Length): Duration {
+    if (length instanceof Duration) {
+      return length;
+    } else {
+      throw new Error("Unexpected length:Distance encountered in BikeMode");
+    }
   }
 }

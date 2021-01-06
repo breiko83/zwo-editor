@@ -27,12 +27,4 @@ export default abstract class DurationMode {
   heightToIntensity(height: number): number {
     return height / intensityMultiplier;
   }
-
-  duration(length: Length): Duration {
-    if (length instanceof Duration) {
-      return length;
-    } else {
-      return new Duration(0); // TODO
-    }
-  }
 }

@@ -46,24 +46,24 @@ function getStressScore(intervals: Interval[], ftp: number, mode: WorkoutMode): 
       const np = interval.intensity * ftp
       const iff = interval.intensity
 
-      tss += (mode.duration(interval.length).seconds * np * iff)
+      tss += (mode.duration(interval.length, interval.intensity, interval.pace).seconds * np * iff)
     }
     if (interval.type === 'ramp' && interval.startIntensity && interval.endIntensity) {
       const np = (interval.startIntensity + interval.endIntensity) / 2 * ftp
       const iff = (interval.startIntensity + interval.endIntensity) / 2
 
-      tss += (mode.duration(interval.length).seconds * np * iff)
+      tss += (mode.duration(interval.length, (interval.startIntensity + interval.endIntensity) / 2, interval.pace).seconds * np * iff)
     }
     if (interval.type === 'repetition' && interval.onIntensity && interval.offIntensity && interval.repeat && interval.onLength && interval.offLength) {
       const npOn = (interval.onIntensity * ftp)
       const iffOn = interval.onIntensity
 
-      tss += (mode.duration(interval.onLength).seconds * interval.repeat * npOn * iffOn)
+      tss += (mode.duration(interval.onLength, interval.onIntensity, interval.pace).seconds * interval.repeat * npOn * iffOn)
 
       const npOff = (interval.offIntensity * ftp)
       const iffOff = interval.offIntensity
 
-      tss += (mode.duration(interval.offLength).seconds * interval.repeat * npOff * iffOff)
+      tss += (mode.duration(interval.offLength, interval.offIntensity, interval.pace).seconds * interval.repeat * npOff * iffOff)
     }
     return false;
   })

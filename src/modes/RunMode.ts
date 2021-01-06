@@ -33,4 +33,12 @@ export default class RunMode extends DurationMode {
       return length;
     }
   }
+
+  duration(length: Length, intensity: number, pace: PaceType): Duration {
+    if (length instanceof Duration) {
+      return length;
+    } else {
+      return new Duration(length.meters / this.speed(intensity, pace));
+    }
+  }
 }

@@ -4,13 +4,18 @@ import { Interval } from '../types/Interval';
 import { sum } from 'ramda';
 import { WorkoutMode } from '../modes/WorkoutMode';
 import { Duration } from '../types/Length';
+import { PaceType } from '../types/PaceType';
 
 export function intervalDuration(interval: Interval, mode: WorkoutMode): Duration {
   switch (interval.type) {
-    case 'free': return mode.duration(interval.length);
-    case 'steady': return mode.duration(interval.length);
-    case 'ramp': return mode.duration(interval.length);
-    case 'repetition': return new Duration(interval.repeat * (mode.duration(interval.onLength).seconds + mode.duration(interval.offLength).seconds));
+    case 'free': return mode.duration(interval.length, 0, PaceType.oneMile);
+    case 'steady': return mode.duration(interval.length, interval.intensity, interval.pace);
+    case 'ramp': return mode.duration(interval.length, (interval.startIntensity + interval.endIntensity) / 2, interval.pace);
+    case 'repetition': {
+      const onDuration = mode.duration(interval.onLength, interval.onIntensity, interval.pace);
+      const offDuration = mode.duration(interval.offLength, interval.offIntensity, interval.pace);
+      return new Duration(interval.repeat * (onDuration.seconds + offDuration.seconds));
+    }
   }
 }
 
