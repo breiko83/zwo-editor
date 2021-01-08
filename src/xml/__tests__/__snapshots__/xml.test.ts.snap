@@ -13,3 +13,54 @@ exports[`XML creates and parses an empty workout 1`] = `
   <workout/>
 </workout_file>"
 `;
+
+exports[`XML creates and parses bike workout (with cadence) 1`] = `
+"<workout_file>
+  <author>Eddy Merckx</author>
+  <name>Cycling Workout</name>
+  <description>Featuring a mixture of different interval types.</description>
+  <sportType>bike</sportType>
+  <durationType>time</durationType>
+  <tags/>
+  <workout>
+    <Warmup Duration=\\"600\\" PowerLow=\\"0.3\\" PowerHigh=\\"0.75\\" pace=\\"0\\" Cadence=\\"80\\"/>
+    <SteadyState Duration=\\"300\\" Power=\\"0.8\\" pace=\\"0\\" Cadence=\\"90\\"/>
+    <IntervalsT Repeat=\\"4\\" OnDuration=\\"30\\" OffDuration=\\"60\\" OnPower=\\"1.2\\" OffPower=\\"0.6\\" pace=\\"0\\" Cadence=\\"100\\" CadenceResting=\\"60\\"/>
+    <Ramp Duration=\\"60\\" PowerLow=\\"0.8\\" PowerHigh=\\"1.5\\" pace=\\"0\\" Cadence=\\"90\\"/>
+    <free Duration=\\"1200\\" FlatRoad=\\"0\\"/>
+    <Cooldown Duration=\\"600\\" PowerLow=\\"0.7\\" PowerHigh=\\"0.3\\" pace=\\"0\\" Cadence=\\"85\\"/>
+  </workout>
+</workout_file>"
+`;
+
+exports[`XML creates and parses bike workout (without cadence) 1`] = `
+"<workout_file>
+  <author>Eddy Merckx</author>
+  <name>Cycling Workout</name>
+  <description>Featuring a mixture of different interval types.</description>
+  <sportType>bike</sportType>
+  <durationType>time</durationType>
+  <tags/>
+  <workout>
+    <Warmup Duration=\\"600\\" PowerLow=\\"0.3\\" PowerHigh=\\"0.75\\" pace=\\"0\\">
+      <textevent timeoffset=\\"0\\" message=\\"Welcome to the workout!\\"/>
+    </Warmup>
+    <SteadyState Duration=\\"300\\" Power=\\"0.8\\" pace=\\"0\\">
+      <textevent timeoffset=\\"150\\" message=\\"This is just a warmup still\\"/>
+    </SteadyState>
+    <IntervalsT Repeat=\\"4\\" OnDuration=\\"30\\" OffDuration=\\"60\\" OnPower=\\"1.2\\" OffPower=\\"0.6\\" pace=\\"0\\">
+      <textevent timeoffset=\\"0\\" message=\\"It's the first one of four sprint efforts\\"/>
+      <textevent timeoffset=\\"270\\" message=\\"It's the first one of four sprint efforts\\"/>
+    </IntervalsT>
+    <Ramp Duration=\\"60\\" PowerLow=\\"0.8\\" PowerHigh=\\"1.5\\" pace=\\"0\\">
+      <textevent timeoffset=\\"0\\" message=\\"As a bonus, we'll ramp up really hard :)\\"/>
+    </Ramp>
+    <free Duration=\\"1200\\" FlatRoad=\\"0\\">
+      <textevent timeoffset=\\"600\\" message=\\"Ride as hard as you can for 20 minutes!\\"/>
+    </free>
+    <Cooldown Duration=\\"600\\" PowerLow=\\"0.7\\" PowerHigh=\\"0.3\\" pace=\\"0\\">
+      <textevent timeoffset=\\"590\\" message=\\"This was it. See you next time.\\"/>
+    </Cooldown>
+  </workout>
+</workout_file>"
+`;

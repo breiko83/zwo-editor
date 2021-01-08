@@ -70,7 +70,7 @@ export default function parseWorkoutXml(data: string, mode: WorkoutMode): Workou
           endIntensity: parseFloat(w.attributes.PowerHigh),
           length: readLength(parseFloat(w.attributes.Duration)),
           pace: parseInt(w.attributes.Pace || '0'),
-          cadence: parseInt(w.attributes.Cadence),
+          cadence: parseInt(w.attributes.Cadence || '0'),
         }, mode))
       }
       if (w.name === 'IntervalsT') {
@@ -81,7 +81,7 @@ export default function parseWorkoutXml(data: string, mode: WorkoutMode): Workou
           onIntensity: parseFloat(w.attributes.OnPower),
           offIntensity: parseFloat(w.attributes.OffPower),
           cadence: parseInt(w.attributes.Cadence || '0'),
-          restingCadence: parseInt(w.attributes.CadenceResting),
+          restingCadence: parseInt(w.attributes.CadenceResting || '0'),
           pace: parseInt(w.attributes.Pace || '0'),
         }, mode))
         length = (parseFloat(w.attributes.OnDuration) + parseFloat(w.attributes.OffDuration)) * parseFloat(w.attributes.Repeat)
@@ -89,7 +89,7 @@ export default function parseWorkoutXml(data: string, mode: WorkoutMode): Workou
       if (w.name === 'free') {
         workout.intervals.push(intervalFactory.free({
           length: readLength(parseFloat(w.attributes.Duration)),
-          cadence: parseInt(w.attributes.Cadence),
+          cadence: parseInt(w.attributes.Cadence || '0'),
         }, mode))
       }
 
