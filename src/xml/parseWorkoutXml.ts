@@ -6,8 +6,6 @@ import { Distance, Duration } from '../types/Length';
 import { WorkoutMode } from '../modes/WorkoutMode';
 
 export default function parseWorkoutXml(data: string, mode: WorkoutMode): Workout {
-  // TODO:
-  // - tags not detected from XML
   const workout: Workout = createEmptyWorkout(mode.sportType, mode.lengthType);
 
   data = data.replace(/<!--(.*?)-->/gm, "")
@@ -39,6 +37,13 @@ export default function parseWorkoutXml(data: string, mode: WorkoutMode): Workou
     const descriptionIndex = workout_file.elements.findIndex((element: { name: string }) => element.name === 'description')
     if (descriptionIndex !== -1 && workout_file.elements[descriptionIndex].elements) {
       workout.description = workout_file.elements[descriptionIndex].elements[0].text;
+    }
+
+    const tagsIndex = workout_file.elements.findIndex((element: { name: string }) => element.name === 'tags')
+    if (tagsIndex !== -1 && workout_file.elements[tagsIndex].elements) {
+      workout.tags = workout_file.elements[tagsIndex].elements.map(
+        (el: { attributes: { name: string } }) => el.attributes.name
+      );
     }
 
     const workoutEl = workout_file.elements.find((element: { name: string }) => element.name === 'workout' && "elements" in element)

@@ -9,6 +9,7 @@ exports[`XML creates and parses an empty workout 1`] = `
   <durationType>time</durationType>
   <tags>
     <tag name=\\"RECOVERY\\"/>
+    <tag name=\\"INTERVALS\\"/>
   </tags>
   <workout/>
 </workout_file>"

@@ -18,7 +18,7 @@ describe("XML", () => {
       name: "Sample Workout",
       author: "John Doe",
       description: "Some intervals for your pleasure (or pain).",
-      tags: ["RECOVERY"],
+      tags: ["RECOVERY", "INTERVALS"],
       sportType: mode.sportType,
       lengthType: mode.lengthType,
       intervals: [],
@@ -28,7 +28,7 @@ describe("XML", () => {
     expect(xml).toMatchSnapshot();
 
     // Parsing of tags not yet supported
-    expect(parseWorkoutXml(xml, mode)).toEqual({ ...workout, tags: [] });
+    expect(parseWorkoutXml(xml, mode)).toEqual(workout);
   });
 
   it('creates and parses bike workout (without cadence)', () => {
