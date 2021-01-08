@@ -41,7 +41,10 @@ export default function parseWorkoutXml(data: string, mode: WorkoutMode): Workou
       workout.description = workout_file.elements[descriptionIndex].elements[0].text;
     }
 
-    const workoutIndex = workout_file.elements.findIndex((element: { name: string }) => element.name === 'workout')
+    const workoutEl = workout_file.elements.find((element: { name: string }) => element.name === 'workout' && "elements" in element)
+    if (!workoutEl) {
+      return workout;
+    }
 
     // either meters (distance) or seconds (duration)
     let totalLength = 0
@@ -49,7 +52,7 @@ export default function parseWorkoutXml(data: string, mode: WorkoutMode): Workou
     const readLength = (x: number) =>
       workout.lengthType === "time" ? new Duration(x) : new Distance(x);
 
-    workout_file.elements[workoutIndex].elements.map((w: { name: string; attributes: { Power: any; PowerLow: string; Duration: string; PowerHigh: string; Cadence: string; CadenceResting: string; Repeat: string; OnDuration: string; OffDuration: string; OnPower: string, OffPower: string; Pace: string }; elements: any }) => {
+    workoutEl.elements.map((w: { name: string; attributes: { Power: any; PowerLow: string; Duration: string; PowerHigh: string; Cadence: string; CadenceResting: string; Repeat: string; OnDuration: string; OffDuration: string; OnPower: string, OffPower: string; Pace: string }; elements: any }) => {
 
       let length = parseFloat(w.attributes.Duration)
 

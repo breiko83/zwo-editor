@@ -1,0 +1,15 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`XML creates and parses an empty workout 1`] = `
+"<workout_file>
+  <author>John Doe</author>
+  <name>Sample Workout</name>
+  <description>Some intervals for your pleasure (or pain).</description>
+  <sportType>bike</sportType>
+  <durationType>time</durationType>
+  <tags>
+    <tag name=\\"RECOVERY\\"/>
+  </tags>
+  <workout/>
+</workout_file>"
+`;
