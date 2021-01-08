@@ -64,3 +64,32 @@ exports[`XML creates and parses bike workout (without cadence) 1`] = `
   </workout>
 </workout_file>"
 `;
+
+exports[`XML creates and parses run workout (duration-based) 1`] = `
+"<workout_file>
+  <author>Carl Lewis</author>
+  <name>Run Workout</name>
+  <description>Featuring a mixture of different interval types.</description>
+  <sportType>run</sportType>
+  <durationType>time</durationType>
+  <tags/>
+  <workout>
+    <Warmup Duration=\\"600\\" PowerLow=\\"0.3\\" PowerHigh=\\"0.75\\" pace=\\"4\\">
+      <textevent timeoffset=\\"0\\" message=\\"Welcome to the workout!\\"/>
+    </Warmup>
+    <SteadyState Duration=\\"300\\" Power=\\"0.8\\" pace=\\"3\\">
+      <textevent timeoffset=\\"150\\" message=\\"This is just a warmup still\\"/>
+    </SteadyState>
+    <IntervalsT Repeat=\\"4\\" OnDuration=\\"30\\" OffDuration=\\"60\\" OnPower=\\"1.2\\" OffPower=\\"0.6\\" pace=\\"1\\">
+      <textevent timeoffset=\\"0\\" message=\\"It's the first one of four sprint efforts\\"/>
+      <textevent timeoffset=\\"270\\" message=\\"It's the first one of four sprint efforts\\"/>
+    </IntervalsT>
+    <Ramp Duration=\\"60\\" PowerLow=\\"0.8\\" PowerHigh=\\"1.5\\" pace=\\"0\\">
+      <textevent timeoffset=\\"0\\" message=\\"As a bonus, we'll ramp up really hard :)\\"/>
+    </Ramp>
+    <Cooldown Duration=\\"600\\" PowerLow=\\"0.7\\" PowerHigh=\\"0.3\\" pace=\\"2\\">
+      <textevent timeoffset=\\"590\\" message=\\"This was it. See you next time.\\"/>
+    </Cooldown>
+  </workout>
+</workout_file>"
+`;

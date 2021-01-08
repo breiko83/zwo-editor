@@ -2,6 +2,7 @@ import intervalFactory from "../../interval/intervalFactory";
 import createMode from "../../modes/createMode";
 import { createInstruction } from "../../types/Instruction";
 import { Duration } from "../../types/Length";
+import { PaceType } from "../../types/PaceType";
 import { Workout } from "../../types/Workout";
 import createWorkoutXml from "../createWorkoutXml";
 import parseWorkoutXml from "../parseWorkoutXml";
@@ -100,6 +101,48 @@ describe("XML", () => {
         intervalFactory.ramp({ length: new Duration(10 * 60), startIntensity: 0.7, endIntensity: 0.3, cadence: 85 }, mode),
       ],
       instructions: [],
+    };
+    const xml = createWorkoutXml(workout, mode);
+    expect(xml).toMatchSnapshot();
+
+    expect(parseWorkoutXml(xml, mode)).toEqual({ ...workout });
+  });
+
+  it('creates and parses run workout (duration-based)', () => {
+    const mode = createMode("run", 200, 75, [], "time");
+    const workout: Workout = {
+      name: "Run Workout",
+      author: "Carl Lewis",
+      description: "Featuring a mixture of different interval types.",
+      tags: [],
+      sportType: mode.sportType,
+      lengthType: mode.lengthType,
+      intervals: [
+        // Warmup: 10:00 30%..75% of marathon pace
+        intervalFactory.ramp({ length: new Duration(10 * 60), startIntensity: 0.3, endIntensity: 0.75, pace: PaceType.marathon }, mode),
+        // Steady: 5:00 80% of half-marathon pace
+        intervalFactory.steady({ length: new Duration(5 * 60), intensity: 0.8, pace: PaceType.halfMarathon }, mode),
+        // Intervals: 4 x ON 0:30 120%, OFF 1:00 60% of 5 km pace
+        intervalFactory.repetition({ repeat: 4, onLength: new Duration(30), onIntensity: 1.2, offLength: new Duration(60), offIntensity: 0.6, pace: PaceType.fiveKm }, mode),
+        // Ramp 1:00 80%..150% of 1 mile pace
+        intervalFactory.ramp({ length: new Duration(60), startIntensity: 0.8, endIntensity: 1.5, pace: PaceType.oneMile }, mode),
+        // Cooldown: 10:00 30%..30% of 10 km pace
+        intervalFactory.ramp({ length: new Duration(10 * 60), startIntensity: 0.7, endIntensity: 0.3, pace: PaceType.tenKm }, mode),
+      ],
+      instructions: [
+        // @ 00:00 - at the start of warmup
+        createInstruction({ offset: new Duration(0), text: "Welcome to the workout!" }, mode),
+        // @ 12:30 - at the middle of second block
+        createInstruction({ offset: new Duration(12 * 60 + 30), text: "This is just a warmup still" }, mode),
+        // @ 15:00 - at the start of repetition block
+        createInstruction({ offset: new Duration(15 * 60), text: "It's the first one of four sprint efforts" }, mode),
+        // @ 19:30 - at the start of last repetition block
+        createInstruction({ offset: new Duration(19 * 60 + 30), text: "It's the first one of four sprint efforts" }, mode),
+        // @ 21:00 - at the start of a ramp
+        createInstruction({ offset: new Duration(21 * 60), text: "As a bonus, we'll ramp up really hard :)" }, mode),
+        // @ 31:50 - almost at the very end of cooldown
+        createInstruction({ offset: new Duration(31 * 60 + 50), text: "This was it. See you next time." }, mode),
+      ],
     };
     const xml = createWorkoutXml(workout, mode);
     expect(xml).toMatchSnapshot();

@@ -52,7 +52,7 @@ export default function parseWorkoutXml(data: string, mode: WorkoutMode): Workou
     const readLength = (x: number) =>
       workout.lengthType === "time" ? new Duration(x) : new Distance(x);
 
-    workoutEl.elements.map((w: { name: string; attributes: { Power: any; PowerLow: string; Duration: string; PowerHigh: string; Cadence: string; CadenceResting: string; Repeat: string; OnDuration: string; OffDuration: string; OnPower: string, OffPower: string; Pace: string }; elements: any }) => {
+    workoutEl.elements.map((w: { name: string; attributes: { Power: any; PowerLow: string; Duration: string; PowerHigh: string; Cadence: string; CadenceResting: string; Repeat: string; OnDuration: string; OffDuration: string; OnPower: string, OffPower: string; pace: string }; elements: any }) => {
 
       let length = parseFloat(w.attributes.Duration)
 
@@ -61,7 +61,7 @@ export default function parseWorkoutXml(data: string, mode: WorkoutMode): Workou
           intensity: parseFloat(w.attributes.Power || w.attributes.PowerLow),
           length: readLength(parseFloat(w.attributes.Duration)),
           cadence: parseFloat(w.attributes.Cadence || '0'),
-          pace: parseInt(w.attributes.Pace || '0'),
+          pace: parseInt(w.attributes.pace || '0'),
         }, mode))
       }
       if (w.name === 'Ramp' || w.name === 'Warmup' || w.name === 'Cooldown') {
@@ -69,7 +69,7 @@ export default function parseWorkoutXml(data: string, mode: WorkoutMode): Workou
           startIntensity: parseFloat(w.attributes.PowerLow),
           endIntensity: parseFloat(w.attributes.PowerHigh),
           length: readLength(parseFloat(w.attributes.Duration)),
-          pace: parseInt(w.attributes.Pace || '0'),
+          pace: parseInt(w.attributes.pace || '0'),
           cadence: parseInt(w.attributes.Cadence || '0'),
         }, mode))
       }
@@ -82,7 +82,7 @@ export default function parseWorkoutXml(data: string, mode: WorkoutMode): Workou
           offIntensity: parseFloat(w.attributes.OffPower),
           cadence: parseInt(w.attributes.Cadence || '0'),
           restingCadence: parseInt(w.attributes.CadenceResting || '0'),
-          pace: parseInt(w.attributes.Pace || '0'),
+          pace: parseInt(w.attributes.pace || '0'),
         }, mode))
         length = (parseFloat(w.attributes.OnDuration) + parseFloat(w.attributes.OffDuration)) * parseFloat(w.attributes.Repeat)
       }
