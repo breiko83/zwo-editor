@@ -1,7 +1,7 @@
 import intervalFactory from "../../interval/intervalFactory";
 import createMode from "../../modes/createMode";
 import { createInstruction } from "../../types/Instruction";
-import { Duration } from "../../types/Length";
+import { Distance, Duration } from "../../types/Length";
 import { PaceType } from "../../types/PaceType";
 import { Workout } from "../../types/Workout";
 import createWorkoutXml from "../createWorkoutXml";
@@ -74,7 +74,7 @@ describe("XML", () => {
     const xml = createWorkoutXml(workout, mode);
     expect(xml).toMatchSnapshot();
 
-    expect(parseWorkoutXml(xml, mode)).toEqual({ ...workout });
+    expect(parseWorkoutXml(xml, mode)).toEqual(workout);
   });
 
   it('creates and parses bike workout (with cadence)', () => {
@@ -105,7 +105,7 @@ describe("XML", () => {
     const xml = createWorkoutXml(workout, mode);
     expect(xml).toMatchSnapshot();
 
-    expect(parseWorkoutXml(xml, mode)).toEqual({ ...workout });
+    expect(parseWorkoutXml(xml, mode)).toEqual(workout);
   });
 
   it('creates and parses run workout (duration-based)', () => {
@@ -147,6 +147,48 @@ describe("XML", () => {
     const xml = createWorkoutXml(workout, mode);
     expect(xml).toMatchSnapshot();
 
-    expect(parseWorkoutXml(xml, mode)).toEqual({ ...workout });
+    expect(parseWorkoutXml(xml, mode)).toEqual(workout);
+  });
+
+  it('creates and parses run workout (distance-based)', () => {
+    const mode = createMode("run", 200, 75, [], "distance");
+    const workout: Workout = {
+      name: "Run Workout",
+      author: "Carl Lewis",
+      description: "Featuring a mixture of different interval types.",
+      tags: [],
+      sportType: mode.sportType,
+      lengthType: mode.lengthType,
+      intervals: [
+        // Warmup: 1000m 30%..75% of marathon pace
+        intervalFactory.ramp({ length: new Distance(1000), startIntensity: 0.3, endIntensity: 0.75, pace: PaceType.marathon }, mode),
+        // Steady: 600m 80% of half-marathon pace
+        intervalFactory.steady({ length: new Distance(600), intensity: 0.8, pace: PaceType.halfMarathon }, mode),
+        // Intervals: 4 x ON 200m 120%, OFF 400m 60% of 5 km pace
+        intervalFactory.repetition({ repeat: 4, onLength: new Distance(200), onIntensity: 1.2, offLength: new Distance(400), offIntensity: 0.6, pace: PaceType.fiveKm }, mode),
+        // Ramp 600m 80%..150% of 1 mile pace
+        intervalFactory.ramp({ length: new Distance(600), startIntensity: 0.8, endIntensity: 1.5, pace: PaceType.oneMile }, mode),
+        // Cooldown: 1000m 30%..30% of 10 km pace
+        intervalFactory.ramp({ length: new Distance(1000), startIntensity: 0.7, endIntensity: 0.3, pace: PaceType.tenKm }, mode),
+      ],
+      instructions: [
+        // @ 0m - at the start of warmup
+        createInstruction({ offset: new Distance(0), text: "Welcome to the workout!" }, mode),
+        // @ 1300m - at the middle of second block
+        createInstruction({ offset: new Distance(1300), text: "This is just a warmup still" }, mode),
+        // @ 1600m - at the start of repetition block
+        createInstruction({ offset: new Distance(1600), text: "It's the first one of four sprint efforts" }, mode),
+        // @ 3400m - at the start of last repetition block
+        createInstruction({ offset: new Distance(3400), text: "It's the first one of four sprint efforts" }, mode),
+        // @ 4000m - at the start of a ramp
+        createInstruction({ offset: new Distance(4000), text: "As a bonus, we'll ramp up really hard :)" }, mode),
+        // @ 5400 - almost at the very end of cooldown
+        createInstruction({ offset: new Distance(5400), text: "This was it. See you next time." }, mode),
+      ],
+    };
+    const xml = createWorkoutXml(workout, mode);
+    expect(xml).toMatchSnapshot();
+
+    expect(parseWorkoutXml(xml, mode)).toEqual(workout);
   });
 });
