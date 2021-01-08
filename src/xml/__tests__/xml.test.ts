@@ -191,4 +191,39 @@ describe("XML", () => {
 
     expect(parseWorkoutXml(xml, mode)).toEqual(workout);
   });
+
+  it('excludes instructions past the end of workout', () => {
+    const mode = createMode("bike", 200, 75, [], "time");
+    const workout: Workout = {
+      name: "Borderline instruction",
+      author: "Who Knows",
+      description: "Checking instruction positions.",
+      tags: [],
+      sportType: mode.sportType,
+      lengthType: mode.lengthType,
+      intervals: [
+        // Steady: 5:00 80%
+        intervalFactory.steady({ length: new Duration(5 * 60), intensity: 0.8 }, mode),
+      ],
+      instructions: [
+        // @ 00:00 - at the start of workout
+        createInstruction({ offset: new Duration(0), text: "Are we there yet?" }, mode),
+        // @ 04:59 - a second before the end of workout
+        createInstruction({ offset: new Duration(4 * 60 + 59), text: "Almost there!" }, mode),
+        // @ 05:00 - right at the end
+        createInstruction({ offset: new Duration(5 * 60), text: "There!" }, mode),
+        // @ 08:00 - well past the end
+        createInstruction({ offset: new Duration(8 * 60), text: "Enough of it!" }, mode),
+      ],
+    };
+    const xml = createWorkoutXml(workout, mode);
+    expect(xml).toMatchSnapshot();
+
+    expect(parseWorkoutXml(xml, mode)).toEqual({ ...workout, instructions: [
+      // @ 00:00 - at the start of workout
+      createInstruction({ offset: new Duration(0), text: "Are we there yet?" }, mode),
+      // @ 04:59 - a second before the end of workout
+      createInstruction({ offset: new Duration(4 * 60 + 59), text: "Almost there!" }, mode),
+    ]});
+  });
 });

@@ -122,3 +122,20 @@ exports[`XML creates and parses run workout (duration-based) 1`] = `
   </workout>
 </workout_file>"
 `;
+
+exports[`XML excludes instructions past the end of workout 1`] = `
+"<workout_file>
+  <author>Who Knows</author>
+  <name>Borderline instruction</name>
+  <description>Checking instruction positions.</description>
+  <sportType>bike</sportType>
+  <durationType>time</durationType>
+  <tags/>
+  <workout>
+    <SteadyState Duration=\\"300\\" Power=\\"0.8\\" pace=\\"0\\">
+      <textevent timeoffset=\\"0\\" message=\\"Are we there yet?\\"/>
+      <textevent timeoffset=\\"299\\" message=\\"Almost there!\\"/>
+    </SteadyState>
+  </workout>
+</workout_file>"
+`;
