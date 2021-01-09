@@ -48,11 +48,13 @@ const Label = (props: { sportType: string, duration: string, distance?: number, 
         <div>
           {(props.powerStart / props.ftp * 100).toFixed(0)}% to {(props.powerEnd / props.ftp * 100).toFixed(0)}% {paces[props.pace || 0]} pace
         </div>
-      }      
-      <div className="cadence-row">
-        <label className="cadenceLabel">Cadence</label>
-        <input type="number" min="40" max="150" step="5" name="cadence" value={props.cadence || ''} onChange={(e) => {if (props.setCadence) props.setCadence(parseInt(e.target.value))}} onClick={(e)=> {e.stopPropagation()}} className="textField cadence" />
-      </div>
+      }    
+      {props.sportType === "bike" &&
+        <div className="cadence-row">
+          <label className="cadenceLabel">Cadence</label>
+          <input type="number" min="40" max="150" step="5" name="cadence" value={props.cadence || ''} onChange={(e) => {if (props.setCadence) props.setCadence(parseInt(e.target.value))}} onClick={(e)=> {e.stopPropagation()}} className="textField cadence" />
+        </div>
+      }
     </div>
   )
 }
