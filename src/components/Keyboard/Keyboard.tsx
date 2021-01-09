@@ -13,7 +13,7 @@ interface KeyboardProps {
 
 const Keyboard: React.FC<KeyboardProps> = (props) => {
   function handleKeyPress(event: React.KeyboardEvent<HTMLDivElement>) {
-    if (event.target instanceof HTMLInputElement) {
+    if (event.target instanceof HTMLInputElement || event.target instanceof HTMLTextAreaElement) {
       // Ignore key presses coming from input elements
       return;
     }
