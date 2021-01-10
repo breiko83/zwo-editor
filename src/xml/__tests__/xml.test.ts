@@ -226,4 +226,50 @@ describe("XML", () => {
       createInstruction({ offset: new Duration(4 * 60 + 59), text: "Almost there!" }, mode),
     ]});
   });
+
+  it('ignores comments', () => {
+    const mode = createMode({sportType: "bike", ftp: 200, weight: 75, runningTimes: [], lengthType: "time"});
+
+    const xml = `
+    <workout_file>
+      <!-- start the workout -->
+      <author>Johnny</author>
+      <name>XML with comments</name>
+      <description>Featuring a <!-- comment --> inside text.</description>
+      <sportType>bike</sportType>
+      <durationType>time</durationType>
+      <tags>
+        <tag name="RECOVERY"/>
+        <tag name="INTERVALS"/>
+      </tags>
+      <workout>
+        <SteadyState Duration="300" Power="0.8" pace="0"/>
+        <!-- comment between intervals -->
+        <SteadyState Duration="300" Power="0.8" pace="0">
+          <textevent timeoffset="0" message="Welcome to the interval"/>
+          <!-- comment between instructions -->
+          <textevent timeoffset="290" message="Near the end now"/>
+        </SteadyState>
+      </workout>
+    </workout_file>`;
+
+    const workout: Workout = {
+      name: "XML with comments",
+      author: "Johnny",
+      description: "Featuring a  inside text.",
+      tags: ["RECOVERY", "INTERVALS"],
+      sportType: mode.sportType,
+      lengthType: mode.lengthType,
+      intervals: [
+        intervalFactory.steady({ length: new Duration(5 * 60), intensity: 0.8 }, mode),
+        intervalFactory.steady({ length: new Duration(5 * 60), intensity: 0.8 }, mode),
+      ],
+      instructions: [
+        createInstruction({ offset: new Duration(5 * 60), text: "Welcome to the interval" }, mode),
+        createInstruction({ offset: new Duration(9 * 60 + 50), text: "Near the end now" }, mode),
+      ],
+    };
+
+    expect(parseWorkoutXml(xml, mode)).toEqual(workout);
+  });
 });
