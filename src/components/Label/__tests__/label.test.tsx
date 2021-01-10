@@ -22,7 +22,7 @@ jest.mock('@fortawesome/free-solid-svg-icons', () => ({
 
 describe('<Label>', () => {
   test('for cycling, renders: duration, power, w/kg, %FTP, cadence', () => {
-    const mode = createMode("bike", 200, 75, [], "time");
+    const mode = createMode({sportType: "bike", ftp: 200, weight: 75, runningTimes: [], lengthType: "time"});
     const interval = intervalFactory.steady({ length: new Duration(100), intensity: 1.25, cadence: 0 }, mode);
     const component = renderer.create(
       <Label interval={interval} mode={mode} onCadenceChange={() => {}} />
@@ -31,7 +31,7 @@ describe('<Label>', () => {
   });
 
   test('for cycling ramp, renders: duration, power-range, %FTP-range, cadence', () => {
-    const mode = createMode("bike", 200, 75, [], "time");
+    const mode = createMode({sportType: "bike", ftp: 200, weight: 75, runningTimes: [], lengthType: "time"});
     const interval = intervalFactory.ramp({ length: new Duration(100), startIntensity: 0.5, endIntensity: 1.0, cadence: 0 }, mode);
     const component = renderer.create(
       <Label interval={interval} mode={mode} onCadenceChange={() => {}} />
@@ -40,7 +40,7 @@ describe('<Label>', () => {
   });
 
   test('for running, renders: duration, distance, %pace, pace type', () => {
-    const mode = createMode("run", 1234, 75, [0, 0, 1000, 0, 0], "time");
+    const mode = createMode({sportType: "run", ftp: 1234, weight: 75, runningTimes: [0, 0, 1000, 0, 0], lengthType: "time"});
     const interval = intervalFactory.steady({ length: new Duration(100), intensity: 1.25, cadence: 0, pace: PaceType.tenKm }, mode);
     const component = renderer.create(
       <Label interval={interval} mode={mode} onCadenceChange={() => {}} />
@@ -49,7 +49,7 @@ describe('<Label>', () => {
   });
 
   test('for running ramp, renders: duration, distance, %pace-range, pace type', () => {
-    const mode = createMode("run", 1234, 75, [0, 0, 1000, 0, 0], "time");
+    const mode = createMode({sportType: "run", ftp: 1234, weight: 75, runningTimes: [0, 0, 1000, 0, 0], lengthType: "time"});
     const interval = intervalFactory.ramp({ length: new Duration(100), startIntensity: 0.5, endIntensity: 1.0, cadence: 0, pace: PaceType.tenKm }, mode);
     const component = renderer.create(
       <Label interval={interval} mode={mode} onCadenceChange={() => {}} />

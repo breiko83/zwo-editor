@@ -8,7 +8,7 @@ import createMode from '../../../modes/createMode';
 import { Duration } from '../../../types/Length';
 
 test('RampBar renders correctly', () => {
-  const mode = createMode("bike", 250, 75, [], "time");
+  const mode = createMode({sportType: "bike", ftp: 250, weight: 75, runningTimes: [], lengthType: "time"});
   const interval = intervalFactory.ramp({
     length: new Duration(50),
     startIntensity: Zones.Z2.min,

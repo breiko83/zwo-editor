@@ -7,7 +7,7 @@ import createMode from '../../../modes/createMode';
 import { Duration } from '../../../types/Length';
 
 test('FreeBar renders correctly', () => {
-  const mode = createMode("bike", 200, 75, [], "time");
+  const mode = createMode({sportType: "bike", ftp: 200, weight: 75, runningTimes: [], lengthType: "time"});
   const interval = intervalFactory.free({
     length: new Duration(50),
   }, mode);

@@ -146,7 +146,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
   }, [segmentsRef, intervals, ftp, instructions, weight, name, description, author, tags, sportType, lengthType, runningTimes])
 
   function getMode(): WorkoutMode {
-    return createMode(sportType, ftp, weight, runningTimes, lengthType);
+    return createMode({sportType, ftp, weight, runningTimes, lengthType});
   }
 
   function generateId() {
@@ -491,7 +491,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
       <div className="info">
         <Title name={name} author={author} description={description} />
         <div className="workout">
-          <Stats intervals={intervals} ftp={ftp} mode={createMode(sportType, ftp, weight, runningTimes, lengthType)} />
+          <Stats intervals={intervals} ftp={ftp} mode={getMode()} />
           {sportType === 'run' &&
             <LeftRightToggle<"time","distance">
               label="Duration Type"

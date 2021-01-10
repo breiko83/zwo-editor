@@ -13,7 +13,7 @@ jest.mock('uuid', () => ({
 
 describe("XML", () => {
   it('creates and parses an empty workout', () => {
-    const mode = createMode("bike", 200, 75, [], "time");
+    const mode = createMode({sportType: "bike", ftp: 200, weight: 75, runningTimes: [], lengthType: "time"});
     const workout: Workout = {
       name: "Sample Workout",
       author: "John Doe",
@@ -32,7 +32,7 @@ describe("XML", () => {
   });
 
   it('creates and parses bike workout (without cadence)', () => {
-    const mode = createMode("bike", 200, 75, [], "time");
+    const mode = createMode({sportType: "bike", ftp: 200, weight: 75, runningTimes: [], lengthType: "time"});
     const workout: Workout = {
       name: "Cycling Workout",
       author: "Eddy Merckx",
@@ -78,7 +78,7 @@ describe("XML", () => {
   });
 
   it('creates and parses bike workout (with cadence)', () => {
-    const mode = createMode("bike", 200, 75, [], "time");
+    const mode = createMode({sportType: "bike", ftp: 200, weight: 75, runningTimes: [], lengthType: "time"});
     const workout: Workout = {
       name: "Cycling Workout",
       author: "Eddy Merckx",
@@ -109,7 +109,7 @@ describe("XML", () => {
   });
 
   it('creates and parses run workout (duration-based)', () => {
-    const mode = createMode("run", 200, 75, [], "time");
+    const mode = createMode({sportType: "run", ftp: 200, weight: 75, runningTimes: [], lengthType: "time"});
     const workout: Workout = {
       name: "Run Workout",
       author: "Carl Lewis",
@@ -151,7 +151,7 @@ describe("XML", () => {
   });
 
   it('creates and parses run workout (distance-based)', () => {
-    const mode = createMode("run", 200, 75, [], "distance");
+    const mode = createMode({sportType: "run", ftp: 200, weight: 75, runningTimes: [], lengthType: "distance"});
     const workout: Workout = {
       name: "Run Workout",
       author: "Carl Lewis",
@@ -193,7 +193,7 @@ describe("XML", () => {
   });
 
   it('excludes instructions past the end of workout', () => {
-    const mode = createMode("bike", 200, 75, [], "time");
+    const mode = createMode({sportType: "bike", ftp: 200, weight: 75, runningTimes: [], lengthType: "time"});
     const workout: Workout = {
       name: "Borderline instruction",
       author: "Who Knows",
