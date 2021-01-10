@@ -117,6 +117,7 @@ exports[`<Label> for running ramp, renders: duration, distance, %pace-range, pac
   <div>
     <FontAwesomeIcon
       fixedWidth={true}
+      icon="faRuler"
     />
      
     750
@@ -148,6 +149,7 @@ exports[`<Label> for running, renders: duration, distance, %pace, pace type 1`] 
   <div>
     <FontAwesomeIcon
       fixedWidth={true}
+      icon="faRuler"
     />
      
     1250

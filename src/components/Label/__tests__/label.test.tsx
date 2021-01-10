@@ -18,6 +18,7 @@ jest.mock('@fortawesome/react-fontawesome', () => ({
 jest.mock('@fortawesome/free-solid-svg-icons', () => ({
   faBolt: "faBolt",
   faClock: "faClock",
+  faRuler: "faRuler",
 }));
 
 describe('<Label>', () => {
