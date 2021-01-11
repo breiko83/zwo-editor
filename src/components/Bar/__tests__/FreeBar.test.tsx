@@ -6,21 +6,51 @@ import intervalFactory from '../../../interval/intervalFactory';
 import createMode from '../../../modes/createMode';
 import { Duration } from '../../../types/Length';
 
-test('FreeBar renders correctly', () => {
-  const mode = createMode({sportType: "bike", ftp: 200, weight: 75, runningTimes: [], lengthType: "time"});
-  const interval = intervalFactory.free({
-    length: new Duration(50),
-  }, mode);
+const MockReact = React;
 
-  const component = renderer.create(
-    <FreeBar
-      interval={interval}
-      mode={mode}
-      selected={false}
-      onChange={() => { }}
-      onClick={() => { }}
-    />
-  );
+jest.mock('../../Label/Label', () => (props: any) =>
+  MockReact.createElement("Label", props));
 
-  expect(component).toMatchSnapshot();
+jest.mock('re-resizable', () => ({
+  Resizable: (props: any) => MockReact.createElement("Resizable", props),
+}));
+
+describe('<FreeBar>', () => {
+  it('renders', () => {
+    const mode = createMode({sportType: "bike", ftp: 200, weight: 75, runningTimes: [], lengthType: "time"});
+    const interval = intervalFactory.free({
+      length: new Duration(50),
+    }, mode);
+  
+    const component = renderer.create(
+      <FreeBar
+        interval={interval}
+        mode={mode}
+        selected={false}
+        onChange={() => { }}
+        onClick={() => { }}
+      />
+    );
+  
+    expect(component).toMatchSnapshot();
+  });
+
+  it('renders with label when selected', () => {
+    const mode = createMode({sportType: "bike", ftp: 200, weight: 75, runningTimes: [], lengthType: "time"});
+    const interval = intervalFactory.free({
+      length: new Duration(50),
+    }, mode);
+  
+    const component = renderer.create(
+      <FreeBar
+        interval={interval}
+        mode={mode}
+        selected={true}
+        onChange={() => { }}
+        onClick={() => { }}
+      />
+    );
+  
+    expect(component).toMatchSnapshot();
+  });
 });
