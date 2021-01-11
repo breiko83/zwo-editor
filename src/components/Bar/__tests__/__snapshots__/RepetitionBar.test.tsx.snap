@@ -1,0 +1,180 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<RepetitionBar> renders using SteadyBar components 1`] = `
+<div>
+  <div
+    className="buttons"
+  >
+    <button
+      onClick={[Function]}
+    >
+      +
+    </button>
+    <button
+      onClick={[Function]}
+    >
+      -
+    </button>
+  </div>
+  <div
+    className="intervals"
+  >
+    <SteadyBar
+      interval={
+        Object {
+          "cadence": 0,
+          "id": "mock-id-2",
+          "intensity": 1,
+          "length": Duration {
+            "seconds": 50,
+          },
+          "pace": 0,
+          "type": "steady",
+        }
+      }
+      mode={
+        BikeMode {
+          "ftp": 200,
+          "lengthType": "time",
+          "sportType": "bike",
+          "weight": 75,
+        }
+      }
+      onChange={[Function]}
+      onClick={[Function]}
+      selected={false}
+      showLabel={true}
+    />
+    <SteadyBar
+      interval={
+        Object {
+          "cadence": 0,
+          "id": "mock-id-3",
+          "intensity": 0.5,
+          "length": Duration {
+            "seconds": 100,
+          },
+          "pace": 0,
+          "type": "steady",
+        }
+      }
+      mode={
+        BikeMode {
+          "ftp": 200,
+          "lengthType": "time",
+          "sportType": "bike",
+          "weight": 75,
+        }
+      }
+      onChange={[Function]}
+      onClick={[Function]}
+      selected={false}
+      showLabel={false}
+    />
+    <SteadyBar
+      interval={
+        Object {
+          "cadence": 0,
+          "id": "mock-id-4",
+          "intensity": 1,
+          "length": Duration {
+            "seconds": 50,
+          },
+          "pace": 0,
+          "type": "steady",
+        }
+      }
+      mode={
+        BikeMode {
+          "ftp": 200,
+          "lengthType": "time",
+          "sportType": "bike",
+          "weight": 75,
+        }
+      }
+      onChange={[Function]}
+      onClick={[Function]}
+      selected={false}
+      showLabel={false}
+    />
+    <SteadyBar
+      interval={
+        Object {
+          "cadence": 0,
+          "id": "mock-id-5",
+          "intensity": 0.5,
+          "length": Duration {
+            "seconds": 100,
+          },
+          "pace": 0,
+          "type": "steady",
+        }
+      }
+      mode={
+        BikeMode {
+          "ftp": 200,
+          "lengthType": "time",
+          "sportType": "bike",
+          "weight": 75,
+        }
+      }
+      onChange={[Function]}
+      onClick={[Function]}
+      selected={false}
+      showLabel={false}
+    />
+    <SteadyBar
+      interval={
+        Object {
+          "cadence": 0,
+          "id": "mock-id-6",
+          "intensity": 1,
+          "length": Duration {
+            "seconds": 50,
+          },
+          "pace": 0,
+          "type": "steady",
+        }
+      }
+      mode={
+        BikeMode {
+          "ftp": 200,
+          "lengthType": "time",
+          "sportType": "bike",
+          "weight": 75,
+        }
+      }
+      onChange={[Function]}
+      onClick={[Function]}
+      selected={false}
+      showLabel={false}
+    />
+    <SteadyBar
+      interval={
+        Object {
+          "cadence": 0,
+          "id": "mock-id-7",
+          "intensity": 0.5,
+          "length": Duration {
+            "seconds": 100,
+          },
+          "pace": 0,
+          "type": "steady",
+        }
+      }
+      mode={
+        BikeMode {
+          "ftp": 200,
+          "lengthType": "time",
+          "sportType": "bike",
+          "weight": 75,
+        }
+      }
+      onChange={[Function]}
+      onClick={[Function]}
+      selected={false}
+      showLabel={true}
+    />
+  </div>
+</div>
+`;
