@@ -17,19 +17,19 @@ interface RepetitionBarProps {
 const RepetitionBar = ({interval, ...props}: RepetitionBarProps) => {
   const [repeat, setRepeat] = useState(interval.repeat)
 
-  const [onDuration, setOnDuration] = useState(interval.onLength)
-  const [offDuration, setOffDuration] = useState(interval.offLength)
+  const [onLength, setOnLength] = useState(interval.onLength)
+  const [offLength, setOffLength] = useState(interval.offLength)
 
   const subIntervals = useMemo(() => {
     return range(0, repeat).flatMap(() => [
       intervalFactory.steady({
-        length: onDuration,
+        length: onLength,
         intensity: interval.onIntensity,
         cadence: interval.cadence,
         pace: interval.pace,
       }, props.mode),
       intervalFactory.steady({
-        length: offDuration,
+        length: offLength,
         intensity: interval.offIntensity,
         cadence: interval.restingCadence,
         pace: interval.pace,
@@ -42,9 +42,9 @@ const RepetitionBar = ({interval, ...props}: RepetitionBarProps) => {
     const index = subIntervals.findIndex(sub => sub.id === values.id)
     
     if (index % 2 === 1) {
-      setOffDuration(values.length)
+      setOffLength(values.length)
     }else{
-      setOnDuration(values.length)
+      setOnLength(values.length)
     }
 
     for (var i = 0; i < subIntervals.length; i++) {
