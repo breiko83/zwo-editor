@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`RampBar renders correctly 1`] = `
+exports[`<SteadyBar> renders 1`] = `
 <div
   className="segment"
   onClick={[Function]}
@@ -12,110 +12,233 @@ exports[`RampBar renders correctly 1`] = `
     className="trapeze"
     onClick={[Function]}
   >
-    <div
+    <Resizable
       className="trapeze-component"
-      style={
+      enable={
         Object {
-          "boxSizing": "border-box",
-          "flexShrink": 0,
-          "height": "151.25px",
-          "maxHeight": 500,
-          "maxWidth": undefined,
-          "minHeight": 25,
-          "minWidth": 3,
-          "position": "relative",
-          "userSelect": "auto",
-          "width": "8.333333333333334px",
+          "right": true,
+          "top": true,
         }
       }
-    >
-      <span>
-        <div
-          className=""
-          onMouseDown={[Function]}
-          onTouchStart={[Function]}
-          style={
-            Object {
-              "cursor": "row-resize",
-              "height": "10px",
-              "left": "0px",
-              "position": "absolute",
-              "top": "-5px",
-              "userSelect": "none",
-              "width": "100%",
-            }
-          }
-        />
-        <div
-          className=""
-          onMouseDown={[Function]}
-          onTouchStart={[Function]}
-          style={
-            Object {
-              "cursor": "col-resize",
-              "height": "100%",
-              "position": "absolute",
-              "right": "-5px",
-              "top": "0px",
-              "userSelect": "none",
-              "width": "10px",
-            }
-          }
-        />
-      </span>
-    </div>
-    <div
-      className="trapeze-component"
-      style={
+      grid={
+        Array [
+          1,
+          1,
+        ]
+      }
+      maxHeight={500}
+      minHeight={25}
+      minWidth={3}
+      onResize={[Function]}
+      onResizeStop={[Function]}
+      size={
         Object {
-          "boxSizing": "border-box",
-          "flexShrink": 0,
-          "height": "225.25px",
-          "maxHeight": 500,
-          "maxWidth": undefined,
-          "minHeight": 25,
-          "minWidth": 3,
-          "position": "relative",
-          "userSelect": "auto",
-          "width": "8.333333333333334px",
+          "height": 151.25,
+          "width": 8.333333333333334,
         }
       }
-    >
-      <span>
-        <div
-          className=""
-          onMouseDown={[Function]}
-          onTouchStart={[Function]}
-          style={
-            Object {
-              "cursor": "row-resize",
-              "height": "10px",
-              "left": "0px",
-              "position": "absolute",
-              "top": "-5px",
-              "userSelect": "none",
-              "width": "100%",
-            }
-          }
-        />
-        <div
-          className=""
-          onMouseDown={[Function]}
-          onTouchStart={[Function]}
-          style={
-            Object {
-              "cursor": "col-resize",
-              "height": "100%",
-              "position": "absolute",
-              "right": "-5px",
-              "top": "0px",
-              "userSelect": "none",
-              "width": "10px",
-            }
-          }
-        />
-      </span>
-    </div>
+    />
+    <Resizable
+      className="trapeze-component"
+      enable={
+        Object {
+          "right": true,
+          "top": true,
+        }
+      }
+      grid={
+        Array [
+          1,
+          1,
+        ]
+      }
+      maxHeight={500}
+      minHeight={25}
+      minWidth={3}
+      onResize={[Function]}
+      onResizeStop={[Function]}
+      size={
+        Object {
+          "height": 225.25,
+          "width": 8.333333333333334,
+        }
+      }
+    />
+  </div>
+  <div
+    className="trapeze-colors"
+    style={
+      Object {
+        "backgroundColor": "#0E90D4",
+        "flexDirection": "row",
+        "height": 225.25,
+      }
+    }
+  >
+    <div
+      className="color"
+      style={
+        Object {
+          "backgroundColor": "#807F80",
+          "width": "0%",
+        }
+      }
+    />
+    <div
+      className="color"
+      style={
+        Object {
+          "backgroundColor": "#0E90D4",
+          "width": "53.37837837837838%",
+        }
+      }
+    />
+    <div
+      className="color"
+      style={
+        Object {
+          "backgroundColor": "#00C46A",
+          "width": "46.62162162162162%",
+        }
+      }
+    />
+    <div
+      className="color"
+      style={
+        Object {
+          "backgroundColor": "#FFCB00",
+          "width": "0%",
+        }
+      }
+    />
+    <div
+      className="color"
+      style={
+        Object {
+          "backgroundColor": "#FF6430",
+          "width": "0%",
+        }
+      }
+    />
+    <div
+      className="color"
+      style={
+        Object {
+          "backgroundColor": "#E90000",
+          "width": "0%",
+        }
+      }
+    />
+  </div>
+  <svg
+    className="trapeze-svg-container"
+    height="225.25"
+    width="16.666666666666668"
+  >
+    <polygon
+      className="trapeze-svg"
+      points="0,74 0,225.25 16.666666666666668,225.25 16.666666666666668,0"
+    />
+    <polygon
+      className="trapeze-svg-off"
+      points="0,0 0,74 16.666666666666668,0"
+    />
+  </svg>
+</div>
+`;
+
+exports[`<SteadyBar> renders with Label when selected 1`] = `
+<div
+  className="segment"
+  onClick={[Function]}
+  onMouseEnter={[Function]}
+  onMouseLeave={[Function]}
+  style={
+    Object {
+      "zIndex": 1,
+    }
+  }
+>
+  <Label
+    interval={
+      Object {
+        "cadence": 0,
+        "endIntensity": 0.901,
+        "id": "8d8cccd3-d7f0-446e-9935-190a7646e18e",
+        "length": Duration {
+          "seconds": 50,
+        },
+        "pace": 0,
+        "startIntensity": 0.605,
+        "type": "ramp",
+      }
+    }
+    mode={
+      BikeMode {
+        "ftp": 250,
+        "lengthType": "time",
+        "sportType": "bike",
+        "weight": 75,
+      }
+    }
+    onCadenceChange={[Function]}
+  />
+  <div
+    className="trapeze"
+    onClick={[Function]}
+  >
+    <Resizable
+      className="trapeze-component"
+      enable={
+        Object {
+          "right": true,
+          "top": true,
+        }
+      }
+      grid={
+        Array [
+          1,
+          1,
+        ]
+      }
+      maxHeight={500}
+      minHeight={25}
+      minWidth={3}
+      onResize={[Function]}
+      onResizeStop={[Function]}
+      size={
+        Object {
+          "height": 151.25,
+          "width": 8.333333333333334,
+        }
+      }
+    />
+    <Resizable
+      className="trapeze-component"
+      enable={
+        Object {
+          "right": true,
+          "top": true,
+        }
+      }
+      grid={
+        Array [
+          1,
+          1,
+        ]
+      }
+      maxHeight={500}
+      minHeight={25}
+      minWidth={3}
+      onResize={[Function]}
+      onResizeStop={[Function]}
+      size={
+        Object {
+          "height": 225.25,
+          "width": 8.333333333333334,
+        }
+      }
+    />
   </div>
   <div
     className="trapeze-colors"
