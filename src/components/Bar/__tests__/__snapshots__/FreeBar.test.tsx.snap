@@ -52,7 +52,7 @@ exports[`<FreeBar> renders with label when selected 1`] = `
     interval={
       Object {
         "cadence": 0,
-        "id": "4ace2a26-3ccc-4895-8c60-bd3851b1ed35",
+        "id": "mock-id",
         "length": Duration {
           "seconds": 50,
         },

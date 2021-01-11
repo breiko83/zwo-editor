@@ -16,6 +16,10 @@ jest.mock('re-resizable', () => ({
   Resizable: (props: any) => MockReact.createElement("Resizable", props),
 }));
 
+jest.mock('uuid', () => ({
+  v4: () => `mock-id`,
+}));
+
 describe('<SteadyBar>', () => {
   it('renders', () => {
     const mode = createMode({sportType: "bike", ftp: 250, weight: 75, runningTimes: [], lengthType: "time"});

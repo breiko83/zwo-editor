@@ -58,7 +58,7 @@ exports[`<SteadyBar> renders with Label when selected and showLabel=true 1`] = `
     interval={
       Object {
         "cadence": 0,
-        "id": "0ea7dd79-c33a-492d-8ed6-7304dc0456ad",
+        "id": "mock-id",
         "intensity": 0.763,
         "length": Duration {
           "seconds": 50,

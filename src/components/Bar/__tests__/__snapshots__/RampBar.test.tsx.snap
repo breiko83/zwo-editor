@@ -164,7 +164,7 @@ exports[`<SteadyBar> renders with Label when selected 1`] = `
       Object {
         "cadence": 0,
         "endIntensity": 0.901,
-        "id": "8d8cccd3-d7f0-446e-9935-190a7646e18e",
+        "id": "mock-id",
         "length": Duration {
           "seconds": 50,
         },
