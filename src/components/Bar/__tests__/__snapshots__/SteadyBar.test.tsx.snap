@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`SteadyBar renders correctly 1`] = `
+exports[`<SteadyBar> renders 1`] = `
 <div
   className="segment"
   onClick={[Function]}
@@ -8,58 +8,151 @@ exports[`SteadyBar renders correctly 1`] = `
   onMouseLeave={[Function]}
   style={Object {}}
 >
-  <div
+  <Resizable
     className="bar"
+    enable={
+      Object {
+        "right": true,
+        "top": true,
+      }
+    }
+    grid={
+      Array [
+        1,
+        1,
+      ]
+    }
+    maxHeight={500}
+    minHeight={25}
+    minWidth={3}
+    onResize={[Function]}
+    onResizeStop={[Function]}
+    size={
+      Object {
+        "height": 190.75,
+        "width": 16.666666666666668,
+      }
+    }
     style={
       Object {
         "backgroundColor": "#00C46A",
-        "boxSizing": "border-box",
-        "flexShrink": 0,
-        "height": "190.75px",
-        "maxHeight": 500,
-        "maxWidth": undefined,
-        "minHeight": 25,
-        "minWidth": 3,
-        "position": "relative",
-        "userSelect": "auto",
-        "width": "16.666666666666668px",
       }
     }
-  >
-    <span>
-      <div
-        className=""
-        onMouseDown={[Function]}
-        onTouchStart={[Function]}
-        style={
-          Object {
-            "cursor": "row-resize",
-            "height": "10px",
-            "left": "0px",
-            "position": "absolute",
-            "top": "-5px",
-            "userSelect": "none",
-            "width": "100%",
-          }
-        }
-      />
-      <div
-        className=""
-        onMouseDown={[Function]}
-        onTouchStart={[Function]}
-        style={
-          Object {
-            "cursor": "col-resize",
-            "height": "100%",
-            "position": "absolute",
-            "right": "-5px",
-            "top": "0px",
-            "userSelect": "none",
-            "width": "10px",
-          }
-        }
-      />
-    </span>
-  </div>
+  />
+</div>
+`;
+
+exports[`<SteadyBar> renders with Label when selected and showLabel=true 1`] = `
+<div
+  className="segment"
+  onClick={[Function]}
+  onMouseEnter={[Function]}
+  onMouseLeave={[Function]}
+  style={
+    Object {
+      "zIndex": 10,
+    }
+  }
+>
+  <Label
+    interval={
+      Object {
+        "cadence": 0,
+        "id": "0ea7dd79-c33a-492d-8ed6-7304dc0456ad",
+        "intensity": 0.763,
+        "length": Duration {
+          "seconds": 50,
+        },
+        "pace": 0,
+        "type": "steady",
+      }
+    }
+    mode={
+      BikeMode {
+        "ftp": 250,
+        "lengthType": "time",
+        "sportType": "bike",
+        "weight": 75,
+      }
+    }
+    onCadenceChange={[Function]}
+  />
+  <Resizable
+    className="bar"
+    enable={
+      Object {
+        "right": true,
+        "top": true,
+      }
+    }
+    grid={
+      Array [
+        1,
+        1,
+      ]
+    }
+    maxHeight={500}
+    minHeight={25}
+    minWidth={3}
+    onResize={[Function]}
+    onResizeStop={[Function]}
+    size={
+      Object {
+        "height": 190.75,
+        "width": 16.666666666666668,
+      }
+    }
+    style={
+      Object {
+        "backgroundColor": "#00C46A",
+      }
+    }
+  />
+</div>
+`;
+
+exports[`<SteadyBar> renders without Label when selected, but showLabel=false 1`] = `
+<div
+  className="segment"
+  onClick={[Function]}
+  onMouseEnter={[Function]}
+  onMouseLeave={[Function]}
+  style={
+    Object {
+      "zIndex": 10,
+    }
+  }
+>
+  <Resizable
+    className="bar"
+    enable={
+      Object {
+        "right": true,
+        "top": true,
+      }
+    }
+    grid={
+      Array [
+        1,
+        1,
+      ]
+    }
+    maxHeight={500}
+    minHeight={25}
+    minWidth={3}
+    onResize={[Function]}
+    onResizeStop={[Function]}
+    size={
+      Object {
+        "height": 190.75,
+        "width": 16.666666666666668,
+      }
+    }
+    style={
+      Object {
+        "backgroundColor": "#00C46A",
+      }
+    }
+  />
 </div>
 `;
