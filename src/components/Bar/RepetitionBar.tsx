@@ -40,7 +40,7 @@ const RepetitionBar = ({interval, ...props}: RepetitionBarProps) => {
 
   function handleOnChange(values: SteadyInterval) {
     const index = subIntervals.findIndex(sub => sub.id === values.id)
-    
+
     if (index % 2 === 1) {
       setOffLength(values.length)
     }else{
@@ -48,11 +48,11 @@ const RepetitionBar = ({interval, ...props}: RepetitionBarProps) => {
     }
 
     for (var i = 0; i < subIntervals.length; i++) {
-      if (index % 2 === i % 2) {       
+      if (index % 2 === i % 2) {
         subIntervals[i].length = values.length
         subIntervals[i].intensity = values.intensity
-        subIntervals[i].cadence = values.cadence        
-      }      
+        subIntervals[i].cadence = values.cadence
+      }
     }
 
     props.onChange({
@@ -65,7 +65,6 @@ const RepetitionBar = ({interval, ...props}: RepetitionBarProps) => {
       onIntensity: subIntervals[0].intensity,
       offIntensity: subIntervals[1].intensity,
     })
-
   }
 
   function handleAddInterval() {
@@ -98,13 +97,12 @@ const RepetitionBar = ({interval, ...props}: RepetitionBarProps) => {
     />
   )
 
-
   return (
     <div>
       <div className='buttons'><button onClick={handleAddInterval}>+</button><button onClick={handleRemoveInterval}>-</button></div>
       <div className='intervals'>
         {subIntervals.map((sub, index) => renderBar(sub, index === 0 || index === subIntervals.length - 1))}
-      </div>      
+      </div>
     </div>
   )
 }
