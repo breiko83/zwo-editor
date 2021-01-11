@@ -92,7 +92,7 @@ describe("XML", () => {
         // Steady: 5:00 80% 90rpm
         intervalFactory.steady({ length: new Duration(5 * 60), intensity: 0.8, cadence: 90 }, mode),
         // Intervals: 4 x ON 0:30 120% 100rpm, OFF 1:00 60% 60rpm
-        intervalFactory.repetition({ repeat: 4, onLength: new Duration(30), onIntensity: 1.2, cadence: 100, offLength: new Duration(60), offIntensity: 0.6, restingCadence: 60 }, mode),
+        intervalFactory.repetition({ repeat: 4, onLength: new Duration(30), onIntensity: 1.2, onCadence: 100, offLength: new Duration(60), offIntensity: 0.6, offCadence: 60 }, mode),
         // Ramp 1:00 80%..150% 90rpm
         intervalFactory.ramp({ length: new Duration(60), startIntensity: 0.8, endIntensity: 1.5, cadence: 90 }, mode),
         // Freeride: 20:00

@@ -53,8 +53,8 @@ export default {
     return {
       type: 'repetition',
       id: uuidv4(),
-      cadence: defaultCadence,
-      restingCadence: defaultCadence,
+      onCadence: defaultCadence,
+      offCadence: defaultCadence,
       repeat: 3,
       onLength: mode.lengthType === "time" ? new Duration(30) : new Distance(200),
       offLength: mode.lengthType === "time" ? new Duration(120) : new Distance(200),

@@ -84,9 +84,9 @@ export default function createWorkoutXml({ author, name, description, sportType,
         .att('OffPower', interval.offIntensity)
         .att('pace', interval.pace)
         // add cadence if not zero
-        interval.cadence !== 0 && segment.att('Cadence', interval.cadence)
+        interval.onCadence !== 0 && segment.att('Cadence', interval.onCadence)
         // add cadence resting if not zero
-        interval.restingCadence !== 0 && segment.att('CadenceResting', interval.restingCadence)        
+        interval.offCadence !== 0 && segment.att('CadenceResting', interval.offCadence)
     } else {
       // free ride
       segment = Builder.create('free')

@@ -85,8 +85,8 @@ export default function parseWorkoutXml(data: string, mode: WorkoutMode): Workou
           offLength: readLength(parseFloat(w.attributes.OffDuration)),
           onIntensity: parseFloat(w.attributes.OnPower),
           offIntensity: parseFloat(w.attributes.OffPower),
-          cadence: parseInt(w.attributes.Cadence || '0'),
-          restingCadence: parseInt(w.attributes.CadenceResting || '0'),
+          onCadence: parseInt(w.attributes.Cadence || '0'),
+          offCadence: parseInt(w.attributes.CadenceResting || '0'),
           pace: parseInt(w.attributes.pace || '0'),
         }, mode))
         length = (parseFloat(w.attributes.OnDuration) + parseFloat(w.attributes.OffDuration)) * parseFloat(w.attributes.Repeat)

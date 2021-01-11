@@ -25,13 +25,13 @@ const RepetitionBar = ({interval, ...props}: RepetitionBarProps) => {
       intervalFactory.steady({
         length: onLength,
         intensity: interval.onIntensity,
-        cadence: interval.cadence,
+        cadence: interval.onCadence,
         pace: interval.pace,
       }, props.mode),
       intervalFactory.steady({
         length: offLength,
         intensity: interval.offIntensity,
-        cadence: interval.restingCadence,
+        cadence: interval.offCadence,
         pace: interval.pace,
       }, props.mode),
     ]);
@@ -57,8 +57,8 @@ const RepetitionBar = ({interval, ...props}: RepetitionBarProps) => {
 
     props.onChange({
       ...interval,
-      cadence: subIntervals[0].cadence,
-      restingCadence: subIntervals[1].cadence,
+      onCadence: subIntervals[0].cadence,
+      offCadence: subIntervals[1].cadence,
       repeat: repeat,
       onLength: subIntervals[0].length,
       offLength: subIntervals[1].length,
