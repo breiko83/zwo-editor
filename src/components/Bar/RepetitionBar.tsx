@@ -1,9 +1,9 @@
 import React, { useMemo, useState } from 'react'
-import { v4 as uuidv4 } from 'uuid'
 import SteadyBar from './SteadyBar'
 import './RepetitionBar.css'
 import { RepetitionInterval, SteadyInterval } from '../../types/Interval'
 import { WorkoutMode } from '../../modes/WorkoutMode'
+import intervalFactory from '../../interval/intervalFactory'
 
 interface RepetitionBarProps {
   interval: RepetitionInterval;
@@ -23,25 +23,19 @@ const RepetitionBar = ({interval, ...props}: RepetitionBarProps) => {
     const subIntervals: SteadyInterval[] = []
 
     for (var i = 0; i < repeat; i++) {
-      subIntervals.push(
-        {
-          length: onDuration,
-          intensity: interval.onIntensity,
-          cadence: interval.cadence,
-          type: 'steady',
-          pace: interval.pace,
-          id: uuidv4()
-        })
+      subIntervals.push(intervalFactory.steady({
+        length: onDuration,
+        intensity: interval.onIntensity,
+        cadence: interval.cadence,
+        pace: interval.pace,
+      }, props.mode));
 
-      subIntervals.push(
-        {
-          length: offDuration,
-          intensity: interval.offIntensity,
-          cadence: interval.restingCadence,
-          type: 'steady',
-          pace: interval.pace,
-          id: uuidv4()
-        })
+      subIntervals.push(intervalFactory.steady({
+        length: offDuration,
+        intensity: interval.offIntensity,
+        cadence: interval.restingCadence,
+        pace: interval.pace,
+      }, props.mode));
     }
     return subIntervals;
     // eslint-disable-next-line
