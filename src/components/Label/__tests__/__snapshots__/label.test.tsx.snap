@@ -102,6 +102,36 @@ exports[`<Label> for cycling, renders: duration, power, w/kg, %FTP, cadence 1`] 
 </div>
 `;
 
+exports[`<Label> for running (in distance mode), renders: duration, distance, %pace, pace type 1`] = `
+<div
+  className="label"
+>
+  <div>
+    <FontAwesomeIcon
+      fixedWidth={true}
+      icon="faClock"
+    />
+     
+    01:40
+  </div>
+  <div>
+    <FontAwesomeIcon
+      fixedWidth={true}
+      icon="faRuler"
+    />
+     
+    1250
+     m
+  </div>
+  <div>
+    125
+    % 
+    10K
+     pace
+  </div>
+</div>
+`;
+
 exports[`<Label> for running ramp, renders: duration, distance, %pace-range, pace type 1`] = `
 <div
   className="label"

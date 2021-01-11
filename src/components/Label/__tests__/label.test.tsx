@@ -5,7 +5,7 @@ import '@testing-library/jest-dom/extend-expect'
 import { PaceType } from '../../../types/PaceType';
 import intervalFactory from '../../../interval/intervalFactory';
 import createMode from '../../../modes/createMode';
-import { Duration } from '../../../types/Length';
+import { Distance, Duration } from '../../../types/Length';
 
 const MockReact = React;
 
@@ -43,6 +43,17 @@ describe('<Label>', () => {
   test('for running, renders: duration, distance, %pace, pace type', () => {
     const mode = createMode({sportType: "run", ftp: 1234, weight: 75, runningTimes: [0, 0, 1000, 0, 0], lengthType: "time"});
     const interval = intervalFactory.steady({ length: new Duration(100), intensity: 1.25, cadence: 0, pace: PaceType.tenKm }, mode);
+    const component = renderer.create(
+      <Label interval={interval} mode={mode} onCadenceChange={() => {}} />
+    );
+    expect(component).toMatchSnapshot();
+  });
+
+  test('for running (in distance mode), renders: duration, distance, %pace, pace type', () => {
+    const mode = createMode({sportType: "run", ftp: 1234, weight: 75, runningTimes: [0, 0, 1000, 0, 0], lengthType: "distance"});
+    // Using the same distance as was calculated in previous test,
+    // and expecting to get the same 1:40 duration calculated from it
+    const interval = intervalFactory.steady({ length: new Distance(1250), intensity: 1.25, cadence: 0, pace: PaceType.tenKm }, mode);
     const component = renderer.create(
       <Label interval={interval} mode={mode} onCadenceChange={() => {}} />
     );
