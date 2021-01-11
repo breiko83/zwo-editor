@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useMemo, useState } from 'react'
 import { v4 as uuidv4 } from 'uuid'
 import SteadyBar from './SteadyBar'
 import './RepetitionBar.css'
@@ -14,13 +14,12 @@ interface RepetitionBarProps {
 }
 
 const RepetitionBar = ({interval, ...props}: RepetitionBarProps) => {
-  const [subIntervals, setSubIntervals] = useState<Array<SteadyInterval>>([])
   const [repeat, setRepeat] = useState(interval.repeat)
 
   const [onDuration, setOnDuration] = useState(interval.onLength)
   const [offDuration, setOffDuration] = useState(interval.offLength)
 
-  useEffect(() => {
+  const subIntervals = useMemo(() => {
     const subIntervals: SteadyInterval[] = []
 
     for (var i = 0; i < repeat; i++) {
@@ -44,10 +43,9 @@ const RepetitionBar = ({interval, ...props}: RepetitionBarProps) => {
           id: uuidv4()
         })
     }
-    setSubIntervals(subIntervals)
-
+    return subIntervals;
     // eslint-disable-next-line
-  }, [repeat])
+  }, [repeat]);
 
   function handleOnChange(values: SteadyInterval) {
     const index = subIntervals.findIndex(sub => sub.id === values.id)

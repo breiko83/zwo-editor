@@ -37,15 +37,6 @@ describe('<RepetitionBar>', () => {
       />
     );
 
-    // Perform dummy update to trigger useEffect hook which generates the SteadyBar children
-    component.update(<RepetitionBar
-      interval={interval}
-      mode={mode}
-      selected={false}
-      onChange={() => { }}
-      onClick={() => { }}
-    />)
-  
     expect(component).toMatchSnapshot();
   });
 });
