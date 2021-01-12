@@ -1,4 +1,5 @@
 import React from "react";
+import intervalFactory from "../../interval/intervalFactory";
 import BikeMode from "../../modes/BikeMode";
 import RunMode from "../../modes/RunMode";
 import { WorkoutMode } from "../../modes/WorkoutMode";
@@ -37,7 +38,7 @@ const Stats: React.FC<StatsProps> = ({ intervals, ftp, mode }) => {
   );
 };
 
-function getStressScore(intervals: Interval[], ftp: number, mode: WorkoutMode): string {
+function getStressScore(intervals: Interval[], ftp: number, mode: BikeMode): string {
   // TSS = [(sec x NP x IF)/(FTP x 3600)] x 100
   let tss = 0
 
@@ -46,24 +47,32 @@ function getStressScore(intervals: Interval[], ftp: number, mode: WorkoutMode): 
       const np = interval.intensity * ftp
       const iff = interval.intensity
 
-      tss += (mode.duration(interval.length, interval.intensity, interval.pace).seconds * np * iff)
+      tss += (mode.intervalDuration(interval).seconds * np * iff)
     }
     if (interval.type === 'ramp' && interval.startIntensity && interval.endIntensity) {
       const np = (interval.startIntensity + interval.endIntensity) / 2 * ftp
       const iff = (interval.startIntensity + interval.endIntensity) / 2
 
-      tss += (mode.duration(interval.length, (interval.startIntensity + interval.endIntensity) / 2, interval.pace).seconds * np * iff)
+      tss += (mode.intervalDuration(interval).seconds * np * iff)
     }
     if (interval.type === 'repetition' && interval.onIntensity && interval.offIntensity && interval.repeat && interval.onLength && interval.offLength) {
       const npOn = (interval.onIntensity * ftp)
       const iffOn = interval.onIntensity
 
-      tss += (mode.duration(interval.onLength, interval.onIntensity, interval.pace).seconds * interval.repeat * npOn * iffOn)
+      const onDuration = mode.intervalDuration(intervalFactory.steady({
+        length: interval.onLength,
+        intensity: interval.onIntensity,
+      }, mode));
+      tss += onDuration.seconds * interval.repeat * npOn * iffOn
 
       const npOff = (interval.offIntensity * ftp)
       const iffOff = interval.offIntensity
 
-      tss += (mode.duration(interval.offLength, interval.offIntensity, interval.pace).seconds * interval.repeat * npOff * iffOff)
+      const offDuration = mode.intervalDuration(intervalFactory.steady({
+        length: interval.offLength,
+        intensity: interval.offIntensity
+      }, mode));
+      tss += offDuration.seconds * interval.repeat * npOff * iffOff;
     }
     return false;
   })
