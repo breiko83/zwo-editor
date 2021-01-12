@@ -98,7 +98,7 @@ export default function createWorkoutXml({ author, name, description, sportType,
 
     const intervalLength = (interval: Interval): number =>
       mode instanceof RunMode && mode.lengthType === "distance"
-        ? intervalDistance(interval, mode).meters
+        ? mode.intervalDistance(interval).meters
         : intervalDuration(interval, mode).seconds;
 
     const instructionInsideInterval = (instruction: Instruction): boolean =>

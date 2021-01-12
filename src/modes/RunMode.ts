@@ -5,6 +5,7 @@ import { runningDistances } from "../types/runningDistances";
 import { LengthType } from "../types/LengthType";
 import Mode from "./Mode";
 import { Distance, Duration, Length } from "../types/Length";
+import { Interval } from "../types/Interval";
 
 export default class RunMode extends Mode {
   private runningTimes: RunningTimes;
@@ -39,6 +40,25 @@ export default class RunMode extends Mode {
       return length;
     } else {
       return new Duration(length.meters / this.speed(intensity, pace));
+    }
+  }
+
+  intervalDistance(interval: Interval): Distance {
+    switch (interval.type) {
+      case 'free': {
+        throw new Error("Run workout may not contain FreeRide");
+      }
+      case 'steady': {
+        return this.distance(interval.length, interval.intensity, interval.pace);
+      }
+      case 'ramp': {
+        return this.distance(interval.length, (interval.startIntensity + interval.endIntensity) / 2, interval.pace);
+      }
+      case 'repetition': {
+        const onDistance = this.distance(interval.onLength, interval.onIntensity, interval.pace);
+        const offDistance = this.distance(interval.offLength, interval.offIntensity, interval.pace);
+        return new Distance(interval.repeat * (onDistance.meters + offDistance.meters));
+      }
     }
   }
 }

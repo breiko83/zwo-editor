@@ -7,7 +7,6 @@ import { WorkoutMode } from '../../modes/WorkoutMode'
 import BikeMode from '../../modes/BikeMode'
 import RunMode from '../../modes/RunMode'
 import { formatDuration, intervalDuration } from '../../utils/duration'
-import { intervalDistance } from '../../utils/distance'
 
 interface LabelProps {
   interval: SteadyInterval | RampInterval | FreeInterval;
@@ -61,7 +60,7 @@ function RunData({ interval, mode }: LabelProps & { mode: RunMode }) {
   return (
     <>
       <div>
-        <FontAwesomeIcon icon={faRuler} fixedWidth /> {intervalDistance(interval, mode).meters} m
+        <FontAwesomeIcon icon={faRuler} fixedWidth /> {mode.intervalDistance(interval).meters} m
       </div>
       {interval.type === "steady" &&
         <div>
