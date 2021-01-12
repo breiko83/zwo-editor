@@ -2,7 +2,6 @@ import { Zones } from "../types/Zones";
 import { Interval } from "../types/Interval";
 import { Duration } from "../types/Length";
 import { WorkoutMode } from "../modes/WorkoutMode";
-import { intervalDuration } from "../utils/duration";
 
 // Helpers for transforming intervals array
 
@@ -22,7 +21,7 @@ function updateById(id: string, transform: (interval: Interval) => Interval, int
 export function updateIntervalDuration(id: string, dDuration: Duration, intervals: Interval[], mode: WorkoutMode): Interval[] {
   return updateById(id, (interval) => {
     if (interval.type === 'steady') {
-      const seconds = intervalDuration(interval, mode).seconds + dDuration.seconds;
+      const seconds = mode.intervalDuration(interval).seconds + dDuration.seconds;
       if (seconds > 0) {
         return { ...interval, length: new Duration(seconds) };
       }

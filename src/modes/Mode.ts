@@ -41,4 +41,5 @@ export default abstract class Mode {
   heightToIntensity(height: number): number {
     return height / intensityMultiplier;
   }
+
 }

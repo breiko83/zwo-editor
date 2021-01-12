@@ -5,8 +5,6 @@ import { Instruction } from '../types/Instruction';
 import { Interval } from '../types/Interval';
 import { Duration, Length } from '../types/Length'
 import { Workout } from '../types/Workout'
-import { intervalDistance } from '../utils/distance';
-import { intervalDuration } from '../utils/duration'
 
 export default function createWorkoutXml({ author, name, description, sportType, lengthType, tags, intervals, instructions }: Workout, mode: WorkoutMode): string {
   var totalLength = 0;
@@ -99,7 +97,7 @@ export default function createWorkoutXml({ author, name, description, sportType,
     const intervalLength = (interval: Interval): number =>
       mode instanceof RunMode && mode.lengthType === "distance"
         ? mode.intervalDistance(interval).meters
-        : intervalDuration(interval, mode).seconds;
+        : mode.intervalDuration(interval).seconds;
 
     const instructionInsideInterval = (instruction: Instruction): boolean =>
       (writeLength(instruction.offset) >= totalLength && writeLength(instruction.offset) < (totalLength + intervalLength(interval)));

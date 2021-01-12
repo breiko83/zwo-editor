@@ -61,4 +61,20 @@ export default class RunMode extends Mode {
       }
     }
   }
+
+  intervalDuration(interval: Interval): Duration {
+    switch (interval.type) {
+      case 'free':
+        throw new Error("Run workout may not contain FreeRide");
+      case 'steady':
+        return this.duration(interval.length, interval.intensity, interval.pace);
+      case 'ramp':
+        return this.duration(interval.length, (interval.startIntensity + interval.endIntensity) / 2, interval.pace);
+      case 'repetition': {
+        const onDuration = this.duration(interval.onLength, interval.onIntensity, interval.pace);
+        const offDuration = this.duration(interval.offLength, interval.offIntensity, interval.pace);
+        return new Duration(interval.repeat * (onDuration.seconds + offDuration.seconds));
+      }
+    }
+  }
 }
