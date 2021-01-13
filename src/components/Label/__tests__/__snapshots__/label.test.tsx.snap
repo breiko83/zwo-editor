@@ -18,9 +18,9 @@ exports[`<Label> for cycling ramp, renders: duration, power-range, %FTP-range, c
       icon="faBolt"
     />
      
-    100W
+    100 W
      - 
-    200W
+    200 W
   </div>
   <div>
     50%
@@ -69,10 +69,10 @@ exports[`<Label> for cycling, renders: duration, power, w/kg, %FTP, cadence 1`] 
       icon="faBolt"
     />
      
-    250W
+    250 W
   </div>
   <div>
-    3.3W/kg
+    3.3 W/kg
      · 
     125%
      FTP

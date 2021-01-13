@@ -31,9 +31,9 @@ describe('format', () => {
 
   it('power() rounds and adds unit', () => {
     ([
-      [0, "0W"],
-      [280, "280W"],
-      [199.73, "200W"],
+      [0, "0 W"],
+      [280, "280 W"],
+      [199.73, "200 W"],
     ] as [number, string][]).forEach(([power, expectedOutput]) => {
       expect(format.power(power)).toEqual(expectedOutput);
     }); 
@@ -41,10 +41,10 @@ describe('format', () => {
 
   it('wkg() rounds to 1 decimal and adds unit', () => {
     ([
-      [0, "0W/kg"],
-      [3, "3W/kg"],
-      [2.5, "2.5W/kg"],
-      [4.271, "4.3W/kg"],
+      [0, "0 W/kg"],
+      [3, "3 W/kg"],
+      [2.5, "2.5 W/kg"],
+      [4.271, "4.3 W/kg"],
     ] as [number, string][]).forEach(([wkg, expectedOutput]) => {
       expect(format.wkg(wkg)).toEqual(expectedOutput);
     }); 

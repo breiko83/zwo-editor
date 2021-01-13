@@ -9,9 +9,9 @@ export const duration = (duration: Duration): string =>
 export const distance = (distance: Distance): string =>
   Math.round(distance.meters) + " m";
 
-export const power = (power: number): string => Math.round(power) + "W";
+export const power = (power: number): string => Math.round(power) + " W";
 
-export const wkg = (wkg: number): string => Math.round(wkg * 10) / 10 + "W/kg";
+export const wkg = (wkg: number): string => Math.round(wkg * 10) / 10 + " W/kg";
 
 export const percentage = (intensity: number): string => Math.round(intensity * 100) + "%";
 
