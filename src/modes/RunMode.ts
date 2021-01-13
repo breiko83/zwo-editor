@@ -18,18 +18,13 @@ export default class RunMode extends Mode {
     this.lengthType = lengthType;
   }
 
-  shortPaceName(pace: PaceType): string {
-    const paces = ["1M", "5K", "10K", "HM", "M"];
-    return paces[pace];
-  }
-
   speed(intensity: number, pace: PaceType): number {
     return runningDistances[pace] / this.runningTimes[pace] * intensity; // in m/s
   }
 
   distance(length: Length, intensity: number, pace: PaceType): Distance {
     if (length instanceof Duration) {
-      return new Distance(Math.round(this.speed(intensity, pace) * length.seconds));
+      return new Distance(this.speed(intensity, pace) * length.seconds);
     } else {
       return length;
     }

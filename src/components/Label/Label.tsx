@@ -31,20 +31,20 @@ function BikeData({ interval, mode, onCadenceChange }: LabelProps & { mode: Bike
       {interval.type === "steady" &&
         <>
           <div>
-            <FontAwesomeIcon icon={faBolt} fixedWidth /> {mode.power(interval.intensity)}W
+            <FontAwesomeIcon icon={faBolt} fixedWidth /> {format.power(mode.power(interval.intensity))}
           </div>
           <div>
-            {mode.wkg(interval.intensity)}W/Kg &middot; {mode.percentage(interval.intensity)}% FTP
+            {format.wkg(mode.wkg(interval.intensity))} &middot; {format.percentage(interval.intensity)} FTP
           </div>
         </>
       }
       {interval.type === "ramp" &&
         <>
           <div>
-            <FontAwesomeIcon icon={faBolt} fixedWidth /> {mode.power(interval.startIntensity)}W - {mode.power(interval.endIntensity)}W
+            <FontAwesomeIcon icon={faBolt} fixedWidth /> {format.power(mode.power(interval.startIntensity))} - {format.power(mode.power(interval.endIntensity))}
           </div>
           <div>
-            {mode.percentage(interval.startIntensity)}% FTP - {mode.percentage(interval.endIntensity)}% FTP
+            {format.percentage(interval.startIntensity)} - {format.percentage(interval.endIntensity)} FTP
           </div>
         </>
       }
@@ -60,16 +60,16 @@ function RunData({ interval, mode }: LabelProps & { mode: RunMode }) {
   return (
     <>
       <div>
-        <FontAwesomeIcon icon={faRuler} fixedWidth /> {mode.intervalDistance(interval).meters} m
+        <FontAwesomeIcon icon={faRuler} fixedWidth /> {format.distance(mode.intervalDistance(interval))}
       </div>
       {interval.type === "steady" &&
         <div>
-          {mode.percentage(interval.intensity)}% {mode.shortPaceName(interval.pace)} pace
+          {format.percentage(interval.intensity)} {format.shortPaceName(interval.pace)}
         </div>
       }
       {interval.type === "ramp" &&
         <div>
-          {mode.percentage(interval.startIntensity)}% to {mode.percentage(interval.endIntensity)}% {mode.shortPaceName(interval.pace)} pace
+          {format.percentage(interval.startIntensity)} to {format.percentage(interval.endIntensity)} {format.shortPaceName(interval.pace)}
         </div>
       }
     </>

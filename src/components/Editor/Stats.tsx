@@ -26,7 +26,7 @@ const Stats: React.FC<StatsProps> = ({ intervals, ftp, mode }) => {
       {mode instanceof RunMode &&
         <div className="form-input">
           <label>Workout Distance</label>
-          <input className="textInput" value={workoutDistance(intervals, mode).meters + " m"} disabled />
+          <input className="textInput" value={format.distance(workoutDistance(intervals, mode))} disabled />
         </div>
       }
       {mode instanceof BikeMode &&

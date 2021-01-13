@@ -17,16 +17,6 @@ const allModes = (): WorkoutMode[] => [
 ];
 
 describe('Mode', () => {
-  it('percentage() converts intensity to rounded percentage', () => {
-    allModes().forEach((mode) => {
-      expect(mode.percentage(0.5)).toEqual(50);
-      expect(mode.percentage(0)).toEqual(0);
-      expect(mode.percentage(1.0)).toEqual(100);
-      expect(mode.percentage(1.2345)).toEqual(123);
-      expect(mode.percentage(1.777)).toEqual(178);
-    });
-  });
-
   it('intensityToHeight() converts intensity to height in pixels and heightToIntensity() does the opposite', () => {
     allModes().forEach((mode) => {
       [0.5, 0, 1.0, 1.2345, 1.777].forEach((intensity) => {
@@ -160,30 +150,20 @@ describe('Mode', () => {
   });
 
   describe('BikeMode', () => {
-    it('power() converts intensity to power using FTP (rounded)', () => {
+    it('power() converts intensity to power using FTP', () => {
       expect(defaultBikeMode().power(0)).toEqual(0);
       expect(defaultBikeMode().power(1.5)).toEqual(300);
-      expect(defaultBikeMode().power(1.12345)).toEqual(225);
+      expect(defaultBikeMode().power(1.12345)).toEqual(224.69);
     });
 
-    // There's a minor problem here:
-    // wkg() uses power() internally, which is also a rounded value, so the result might not be 100% exact
-    it('wkg() converts intensity to w/kg using FTP and weight (rounded to one decimal)', () => {
+    it('wkg() converts intensity to w/kg using FTP and weight', () => {
       expect(defaultBikeMode().wkg(0)).toEqual(0);
       expect(defaultBikeMode().wkg(1.5)).toEqual(4);
-      expect(defaultBikeMode().wkg(1.1)).toEqual(2.9);
+      expect(defaultBikeMode().wkg(1.1)).toEqual(2.9333333333333336);
     });
   });
 
   describe('RunMode', () => {
-    it('shortPaceName() returns pace name abbreviation', () => {
-      expect(defaultRunMode().shortPaceName(PaceType.oneMile)).toEqual('1M');
-      expect(defaultRunMode().shortPaceName(PaceType.fiveKm)).toEqual('5K');
-      expect(defaultRunMode().shortPaceName(PaceType.tenKm)).toEqual('10K');
-      expect(defaultRunMode().shortPaceName(PaceType.halfMarathon)).toEqual('HM');
-      expect(defaultRunMode().shortPaceName(PaceType.marathon)).toEqual('M');
-    });
-
     it('speed() converts intensity & pace type to speed in m/s', () => {
       expect(defaultRunMode().speed(0, PaceType.fiveKm)).toEqual(0);
       expect(defaultRunMode().speed(0.3, PaceType.fiveKm)).toEqual(5);
@@ -193,7 +173,8 @@ describe('Mode', () => {
     describe('distance()', () => {
       it('distance() converts duration to distance', () => {
         expect(defaultRunMode().distance(new Duration(60), 0, PaceType.fiveKm)).toEqual(new Distance(0));
-        expect(defaultRunMode().distance(new Duration(60), 1.0, PaceType.fiveKm)).toEqual(new Distance(1000));
+        expect(defaultRunMode().distance(new Duration(60), 1.0, PaceType.fiveKm)).toEqual(new Distance(1000.0000000000001));
+        expect(defaultRunMode().distance(new Duration(59.876), 1.0, PaceType.fiveKm)).toEqual(new Distance(997.93333333333334));
       });
 
       it('distance() keeps distance unchanged', () => {
@@ -210,7 +191,7 @@ describe('Mode', () => {
             intensity: 1.0,
             pace: PaceType.fiveKm,
           }, mode);
-          expect(mode.intervalDistance(interval)).toEqual(new Distance(1000));
+          expect(mode.intervalDistance(interval)).toEqual(new Distance(1000.0000000000001));
         });
 
         it('calculates ramp interval distance', () => {
@@ -234,7 +215,7 @@ describe('Mode', () => {
             offIntensity: 0.5,
             pace: PaceType.fiveKm,
           }, mode);
-          expect(mode.intervalDistance(interval)).toEqual(new Distance(4500));
+          expect(mode.intervalDistance(interval)).toEqual(new Distance(4500.000000000001));
         });
       });
 

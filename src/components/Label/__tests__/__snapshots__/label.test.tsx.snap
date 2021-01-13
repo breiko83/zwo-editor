@@ -18,16 +18,15 @@ exports[`<Label> for cycling ramp, renders: duration, power-range, %FTP-range, c
       icon="faBolt"
     />
      
-    100
-    W - 
-    200
-    W
+    100W
+     - 
+    200W
   </div>
   <div>
-    50
-    % FTP - 
-    100
-    % FTP
+    50%
+     - 
+    100%
+     FTP
   </div>
   <div
     className="cadence-row"
@@ -70,14 +69,13 @@ exports[`<Label> for cycling, renders: duration, power, w/kg, %FTP, cadence 1`] 
       icon="faBolt"
     />
      
-    250
-    W
+    250W
   </div>
   <div>
-    3.3
-    W/Kg · 
-    125
-    % FTP
+    3.3W/Kg
+     · 
+    125%
+     FTP
   </div>
   <div
     className="cadence-row"
@@ -120,14 +118,12 @@ exports[`<Label> for running (in distance mode), renders: duration, distance, %p
       icon="faRuler"
     />
      
-    1250
-     m
+    1250 m
   </div>
   <div>
-    125
-    % 
-    10K
-     pace
+    125%
+     
+    10K pace
   </div>
 </div>
 `;
@@ -150,16 +146,14 @@ exports[`<Label> for running ramp, renders: duration, distance, %pace-range, pac
       icon="faRuler"
     />
      
-    750
-     m
+    750 m
   </div>
   <div>
-    50
-    % to 
-    100
-    % 
-    10K
-     pace
+    50%
+     to 
+    100%
+     
+    10K pace
   </div>
 </div>
 `;
@@ -182,14 +176,12 @@ exports[`<Label> for running, renders: duration, distance, %pace, pace type 1`] 
       icon="faRuler"
     />
      
-    1250
-     m
+    1250 m
   </div>
   <div>
-    125
-    % 
-    10K
-     pace
+    125%
+     
+    10K pace
   </div>
 </div>
 `;

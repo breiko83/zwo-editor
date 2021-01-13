@@ -14,10 +14,6 @@ export default abstract class Mode {
   public abstract readonly sportType: SportType;
   public abstract readonly lengthType: LengthType;
 
-  percentage(intensity: number): number {
-    return Math.round(intensity * 100);
-  }
-
   lengthToWidth(length: Length): number {
     if (length instanceof Duration) {
       return length.seconds / durationMultiplier;

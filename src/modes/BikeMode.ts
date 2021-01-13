@@ -17,11 +17,11 @@ export default class BikeMode extends Mode {
   }
 
   power(intensity: number): number {
-    return Math.round(intensity * this.ftp);
+    return intensity * this.ftp;
   }
 
   wkg(intensity: number): number {
-    return Math.round(this.power(intensity) / this.weight * 10) / 10;
+    return this.power(intensity) / this.weight;
   }
 
   duration(length: Length): Duration {
