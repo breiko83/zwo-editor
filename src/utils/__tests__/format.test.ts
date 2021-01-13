@@ -41,10 +41,10 @@ describe('format', () => {
 
   it('wkg() rounds to 1 decimal and adds unit', () => {
     ([
-      [0, "0W/Kg"],
-      [3, "3W/Kg"],
-      [2.5, "2.5W/Kg"],
-      [4.271, "4.3W/Kg"],
+      [0, "0W/kg"],
+      [3, "3W/kg"],
+      [2.5, "2.5W/kg"],
+      [4.271, "4.3W/kg"],
     ] as [number, string][]).forEach(([wkg, expectedOutput]) => {
       expect(format.wkg(wkg)).toEqual(expectedOutput);
     }); 

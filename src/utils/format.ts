@@ -11,7 +11,7 @@ export const distance = (distance: Distance): string =>
 
 export const power = (power: number): string => Math.round(power) + "W";
 
-export const wkg = (wkg: number): string => Math.round(wkg * 10) / 10 + "W/Kg";
+export const wkg = (wkg: number): string => Math.round(wkg * 10) / 10 + "W/kg";
 
 export const percentage = (intensity: number): string => Math.round(intensity * 100) + "%";
 
