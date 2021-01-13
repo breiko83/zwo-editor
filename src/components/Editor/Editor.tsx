@@ -48,7 +48,8 @@ import * as storage from '../../storage/storage';
 import Notification, { NotificationMessage } from './Notification'
 import { SportType } from '../../types/SportType'
 import createMode from '../../modes/createMode'
-import { formatDuration, workoutDuration } from '../../utils/duration'
+import { workoutDuration } from '../../utils/duration'
+import * as format from '../../utils/format'
 import { Duration } from '../../types/Length'
 import { WorkoutMode } from '../../modes/WorkoutMode'
 import DistanceAxis from '../Axis/DistanceAxis'
@@ -302,7 +303,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
         updatedAt: Date(),
         sportType: sportType,
         durationType: lengthType,
-        workoutTime: formatDuration(workoutDuration(intervals, getMode())),
+        workoutTime: format.duration(workoutDuration(intervals, getMode())),
       }
 
       var updates: any = {}

@@ -5,7 +5,8 @@ import RunMode from "../../modes/RunMode";
 import { WorkoutMode } from "../../modes/WorkoutMode";
 import { Interval } from "../../types/Interval";
 import { workoutDistance } from "../../utils/distance";
-import { formatDuration, workoutDuration } from "../../utils/duration";
+import { workoutDuration } from "../../utils/duration";
+import * as format from "../../utils/format";
 
 // Displays summary statistics: workout length and TSS
 
@@ -20,7 +21,7 @@ const Stats: React.FC<StatsProps> = ({ intervals, ftp, mode }) => {
     <>
       <div className="form-input">
         <label>Workout Time</label>
-        <input className="textInput" value={formatDuration(workoutDuration(intervals, mode))} disabled />
+        <input className="textInput" value={format.duration(workoutDuration(intervals, mode))} disabled />
       </div>
       {mode instanceof RunMode &&
         <div className="form-input">
