@@ -2,12 +2,12 @@ import { Zones } from "../types/Zones";
 import { Interval } from "../types/Interval";
 import { Duration } from "../types/Length";
 import { WorkoutMode } from "../modes/WorkoutMode";
-import { move, update } from "ramda";
+import { move, propEq, update } from "ramda";
 
 // Helpers for transforming intervals array
 
 function updateById(id: string, transform: (interval: Interval) => Interval, intervals: Interval[]): Interval[] {
-  const index = intervals.findIndex(interval => interval.id === id);
+  const index = intervals.findIndex(propEq('id', id));
   if (index === -1) {
     return intervals;
   }
@@ -40,7 +40,7 @@ export function updateIntervalIntensity(id: string, dIntensity: number, interval
 }
 
 export function moveInterval(id: string, direction: -1 | 1, intervals: Interval[]): Interval[] {
-  const oldIndex = intervals.findIndex(interval => interval.id === id);
+  const oldIndex = intervals.findIndex(propEq('id', id));
   const newIndex = oldIndex + direction;
 
   if (newIndex < 0 || newIndex >= intervals.length) {
