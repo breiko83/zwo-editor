@@ -50,6 +50,12 @@ describe('intervalUtils', () => {
       expect(updateIntervalDuration("#1", new Duration(-65), intervals, mode)).toEqual(intervals);
       expect(updateIntervalDuration("#1", new Duration(-60), intervals, mode)).toEqual(intervals);
     });
+
+    it('does nothing when ID not found', () => {
+      const mode = defaultBikeMode();
+      const intervals = defaultIntervals(mode);
+      expect(updateIntervalDuration("#blah", new Duration(10), intervals, mode)).toEqual(intervals);
+    });
   });
 
   describe('updateIntervalIntensity', () => {
@@ -66,6 +72,12 @@ describe('intervalUtils', () => {
       expect(updateIntervalIntensity("#1", -0.55, intervals)).toEqual(intervals);
       expect(updateIntervalIntensity("#1", -0.5, intervals)).toEqual(intervals);
     });
+
+    it('does nothing when ID not found', () => {
+      const mode = defaultBikeMode();
+      const intervals = defaultIntervals(mode);
+      expect(updateIntervalIntensity("#blah", 0.1, intervals)).toEqual(intervals);
+    });
   });
 
   describe('moveInterval', () => {
@@ -81,6 +93,12 @@ describe('intervalUtils', () => {
       const intervals = defaultIntervals(mode);
       expect(moveInterval("#1", -1, intervals)).toEqual(intervals);
       expect(moveInterval("#3", +1, intervals)).toEqual(intervals);
+    });
+
+    it('does nothing when ID not found', () => {
+      const mode = defaultBikeMode();
+      const intervals = defaultIntervals(mode);
+      expect(moveInterval("#blah", 1, intervals)).toEqual(intervals);
     });
   });
 });

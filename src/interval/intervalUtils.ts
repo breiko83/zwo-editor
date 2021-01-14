@@ -43,7 +43,7 @@ export function moveInterval(id: string, direction: -1 | 1, intervals: Interval[
   const oldIndex = intervals.findIndex(propEq('id', id));
   const newIndex = oldIndex + direction;
 
-  if (newIndex < 0 || newIndex >= intervals.length) {
+  if (oldIndex < 0 || newIndex < 0 || newIndex >= intervals.length) {
     return intervals;
   }
 
