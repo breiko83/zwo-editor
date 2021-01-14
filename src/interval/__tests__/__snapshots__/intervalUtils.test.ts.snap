@@ -1,0 +1,211 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`intervalUtils moveInterval moves interval index by +1 or -1 1`] = `
+Array [
+  Object {
+    "cadence": 0,
+    "id": "#2",
+    "intensity": 1,
+    "length": Duration {
+      "seconds": 120,
+    },
+    "pace": 0,
+    "type": "steady",
+  },
+  Object {
+    "cadence": 0,
+    "id": "#1",
+    "intensity": 0.5,
+    "length": Duration {
+      "seconds": 60,
+    },
+    "pace": 0,
+    "type": "steady",
+  },
+  Object {
+    "cadence": 0,
+    "id": "#3",
+    "intensity": 0.75,
+    "length": Duration {
+      "seconds": 30,
+    },
+    "pace": 0,
+    "type": "steady",
+  },
+]
+`;
+
+exports[`intervalUtils moveInterval moves interval index by +1 or -1 2`] = `
+Array [
+  Object {
+    "cadence": 0,
+    "id": "#1",
+    "intensity": 0.5,
+    "length": Duration {
+      "seconds": 60,
+    },
+    "pace": 0,
+    "type": "steady",
+  },
+  Object {
+    "cadence": 0,
+    "id": "#3",
+    "intensity": 0.75,
+    "length": Duration {
+      "seconds": 30,
+    },
+    "pace": 0,
+    "type": "steady",
+  },
+  Object {
+    "cadence": 0,
+    "id": "#2",
+    "intensity": 1,
+    "length": Duration {
+      "seconds": 120,
+    },
+    "pace": 0,
+    "type": "steady",
+  },
+]
+`;
+
+exports[`intervalUtils updateIntervalDuration increases or decreses duration of specified interval 1`] = `
+Array [
+  Object {
+    "cadence": 0,
+    "id": "#1",
+    "intensity": 0.5,
+    "length": Duration {
+      "seconds": 60,
+    },
+    "pace": 0,
+    "type": "steady",
+  },
+  Object {
+    "cadence": 0,
+    "id": "#2",
+    "intensity": 1,
+    "length": Duration {
+      "seconds": 130,
+    },
+    "pace": 0,
+    "type": "steady",
+  },
+  Object {
+    "cadence": 0,
+    "id": "#3",
+    "intensity": 0.75,
+    "length": Duration {
+      "seconds": 30,
+    },
+    "pace": 0,
+    "type": "steady",
+  },
+]
+`;
+
+exports[`intervalUtils updateIntervalDuration increases or decreses duration of specified interval 2`] = `
+Array [
+  Object {
+    "cadence": 0,
+    "id": "#1",
+    "intensity": 0.5,
+    "length": Duration {
+      "seconds": 60,
+    },
+    "pace": 0,
+    "type": "steady",
+  },
+  Object {
+    "cadence": 0,
+    "id": "#2",
+    "intensity": 1,
+    "length": Duration {
+      "seconds": 120,
+    },
+    "pace": 0,
+    "type": "steady",
+  },
+  Object {
+    "cadence": 0,
+    "id": "#3",
+    "intensity": 0.75,
+    "length": Duration {
+      "seconds": 20,
+    },
+    "pace": 0,
+    "type": "steady",
+  },
+]
+`;
+
+exports[`intervalUtils updateIntervalIntensity increases or decreses duration of specified interval 1`] = `
+Array [
+  Object {
+    "cadence": 0,
+    "id": "#1",
+    "intensity": 0.5,
+    "length": Duration {
+      "seconds": 60,
+    },
+    "pace": 0,
+    "type": "steady",
+  },
+  Object {
+    "cadence": 0,
+    "id": "#2",
+    "intensity": 1.05,
+    "length": Duration {
+      "seconds": 120,
+    },
+    "pace": 0,
+    "type": "steady",
+  },
+  Object {
+    "cadence": 0,
+    "id": "#3",
+    "intensity": 0.75,
+    "length": Duration {
+      "seconds": 30,
+    },
+    "pace": 0,
+    "type": "steady",
+  },
+]
+`;
+
+exports[`intervalUtils updateIntervalIntensity increases or decreses duration of specified interval 2`] = `
+Array [
+  Object {
+    "cadence": 0,
+    "id": "#1",
+    "intensity": 0.5,
+    "length": Duration {
+      "seconds": 60,
+    },
+    "pace": 0,
+    "type": "steady",
+  },
+  Object {
+    "cadence": 0,
+    "id": "#2",
+    "intensity": 1,
+    "length": Duration {
+      "seconds": 120,
+    },
+    "pace": 0,
+    "type": "steady",
+  },
+  Object {
+    "cadence": 0,
+    "id": "#3",
+    "intensity": 0.7,
+    "length": Duration {
+      "seconds": 30,
+    },
+    "pace": 0,
+    "type": "steady",
+  },
+]
+`;
