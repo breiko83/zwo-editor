@@ -6,9 +6,9 @@ import { WorkoutMode } from '../../modes/WorkoutMode';
 
 const defaultBikeMode = () => new BikeMode(200, 75);
 
-function deepFreeze(object: {[k: string]: any}) {
+function deepFreeze<T>(object: T): T {
   for (const name of Object.getOwnPropertyNames(object)) {
-    const value = object[name];
+    const value = (object as any)[name];
     if (value && typeof value === "object") {
       deepFreeze(value);
     }
