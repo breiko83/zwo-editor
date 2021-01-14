@@ -2,6 +2,7 @@ import { Zones } from "../types/Zones";
 import { Interval } from "../types/Interval";
 import { Duration } from "../types/Length";
 import { WorkoutMode } from "../modes/WorkoutMode";
+import { update } from "ramda";
 
 // Helpers for transforming intervals array
 
@@ -11,11 +12,7 @@ function updateById(id: string, transform: (interval: Interval) => Interval, int
     return intervals;
   }
 
-  return [
-    ...intervals.slice(0, index),
-    ...[transform(intervals[index])],
-    ...intervals.slice(index + 1),
-  ];
+  return update(index, transform(intervals[index]), intervals);
 }
 
 export function updateIntervalDuration(id: string, dDuration: Duration, intervals: Interval[], mode: WorkoutMode): Interval[] {
