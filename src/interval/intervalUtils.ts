@@ -2,7 +2,7 @@ import { Zones } from "../types/Zones";
 import { Interval } from "../types/Interval";
 import { Duration } from "../types/Length";
 import { WorkoutMode } from "../modes/WorkoutMode";
-import { update } from "ramda";
+import { move, update } from "ramda";
 
 // Helpers for transforming intervals array
 
@@ -47,8 +47,5 @@ export function moveInterval(id: string, direction: -1 | 1, intervals: Interval[
     return intervals;
   }
 
-  const newArray = [...intervals];
-  newArray[newIndex] = intervals[oldIndex];
-  newArray[oldIndex] = intervals[newIndex];
-  return newArray;
+  return move(oldIndex, newIndex, intervals);
 }
