@@ -230,13 +230,12 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
   function deleteWorkout() {
     // save to cloud (firebase) if logged in
     if (user) {
-      const itemsRef = firebase.database().ref();
+      var updates = {
+        [`users/${user.uid}/workouts/${id}`]: null
+      }
 
-      var updates: any = {}
-      updates[`users/${user.uid}/workouts/${id}`] = null
-
-      // save to firebase      
-      itemsRef.update(updates).then(() => {
+      // save to firebase
+      firebase.database().ref().update(updates).then(() => {
         newWorkout()
       }).catch((error) => {
         console.log(error);
