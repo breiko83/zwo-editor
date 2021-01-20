@@ -14,6 +14,7 @@ import { ReactComponent as WarmupLogo } from '../../assets/warmup.svg'
 import { ReactComponent as IntervalLogo } from '../../assets/interval.svg'
 import { ReactComponent as SteadyLogo } from '../../assets/steady.svg'
 import firebase, { auth } from '../../network/firebase'
+import * as workoutMeta from '../../network/workoutMeta'
 import SaveForm from '../Forms/SaveForm'
 import SignupForm from '../Forms/SignupForm'
 import LoginForm from '../Forms/LoginForm'
@@ -227,20 +228,15 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
     setSavePopupVisibility(true)
   }
 
-  function deleteWorkout() {
-    // save to cloud (firebase) if logged in
+  async function deleteWorkout() {
     if (user) {
-      var updates = {
-        [`users/${user.uid}/workouts/${id}`]: null
-      }
-
-      // save to firebase
-      firebase.database().ref().update(updates).then(() => {
+      try {
+        await workoutMeta.remove(user, id);
         newWorkout()
-      }).catch((error) => {
+      } catch(error) {
         console.log(error);
         showMessage({ className: 'error', text: 'Cannot delete workout' })
-      });
+      }
     }
   }
 
@@ -254,7 +250,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
 
   }
 
-  function save() {
+  async function save() {
     const mode = getMode();
     showMessage({ className: 'loading', text: 'Saving..' })
 
@@ -273,8 +269,9 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
 
     // save to cloud (firebase) if logged in
     if (user) {
-      const updates = {
-        [`users/${user.uid}/workouts/${id}`]: {
+      try {
+        await workoutMeta.update(user, {
+          id: id,
           name: name,
           description: description,
           updatedAt: Date(),
@@ -282,19 +279,14 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
           durationType: lengthType,
           workoutTime: format.duration(workoutDuration(intervals, mode)),
           workoutDistance: mode instanceof RunMode ? format.distance(workoutDistance(intervals, mode)) : "",
-        }
-      };
-
-      // save to firebase
-      firebase.database().ref().update(updates).then(() => {
+        });
         //upload to s3  
         upload(id, file)
         hideMessage()
-
-      }).catch((error) => {
+      } catch (error) {
         console.log(error);
         showMessage({ className: 'error', text: 'Cannot save this' })
-      });
+      }
     } else {
       // download workout without saving
       hideMessage()
