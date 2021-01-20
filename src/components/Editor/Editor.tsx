@@ -285,7 +285,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
     if (user) {
       const itemsRef = firebase.database().ref();
 
-      const item = {
+      const workoutData = {
         id: id,
         name: name,
         description: description,
@@ -299,7 +299,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
         durationType: lengthType,
       }
 
-      const item2 = {
+      const workoutMetadata = {
         name: name,
         description: description,
         updatedAt: Date(),
@@ -310,8 +310,8 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
       }
 
       var updates: any = {}
-      updates[`users/${user.uid}/workouts/${id}`] = item2
-      updates[`workouts/${id}`] = item
+      updates[`users/${user.uid}/workouts/${id}`] = workoutMetadata
+      updates[`workouts/${id}`] = workoutData
 
 
       // save to firebase      
