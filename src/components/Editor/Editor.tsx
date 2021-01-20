@@ -54,6 +54,8 @@ import { Duration } from '../../types/Length'
 import { WorkoutMode } from '../../modes/WorkoutMode'
 import DistanceAxis from '../Axis/DistanceAxis'
 import { LengthType } from '../../types/LengthType'
+import { workoutDistance } from '../../utils/distance'
+import RunMode from '../../modes/RunMode'
 
 type TParams = { id: string };
 
@@ -263,7 +265,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
   }
 
   function save() {
-
+    const mode = getMode();
     showMessage({ className: 'loading', text: 'Saving..' })
 
     const xml = createWorkoutXml({
@@ -275,7 +277,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
       tags,
       intervals,
       instructions,
-    }, getMode());
+    }, mode);
 
     const file = new Blob([xml], { type: 'application/xml' })
 
@@ -303,7 +305,8 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
         updatedAt: Date(),
         sportType: sportType,
         durationType: lengthType,
-        workoutTime: format.duration(workoutDuration(intervals, getMode())),
+        workoutTime: format.duration(workoutDuration(intervals, mode)),
+        workoutDistance: mode instanceof RunMode ? format.distance(workoutDistance(intervals, mode)) : "",
       }
 
       var updates: any = {}
