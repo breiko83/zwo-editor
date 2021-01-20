@@ -272,4 +272,10 @@ describe("XML", () => {
 
     expect(parseWorkoutXml(xml, mode)).toEqual(workout);
   });
+
+  it('throws error when root element is not <workout_file>', () => {
+    const mode = createMode({sportType: "bike", ftp: 200, weight: 75, runningTimes: [], lengthType: "time"});
+
+    expect(() => parseWorkoutXml("<blah></blah>", mode)).toThrow("Invalid ZWO file");
+  });
 });

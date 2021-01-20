@@ -97,11 +97,11 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
     showMessage({ className: 'loading', text: 'Loading..' })
 
     download(id).then((xml) => {
-      if (/<workout_file>/.test(xml)) {
+      try {
         // workout exist on server
         loadWorkout(parseWorkoutXml(xml, getMode()));
         storage.setId(id)
-      } else {
+      } catch (e) {
         // workout doesn't exist on cloud 
         if (id === storage.getId()) {
           // user refreshed the page
