@@ -276,23 +276,20 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
 
     // save to cloud (firebase) if logged in
     if (user) {
-      const itemsRef = firebase.database().ref();
+      const updates = {
+        [`users/${user.uid}/workouts/${id}`]: {
+          name: name,
+          description: description,
+          updatedAt: Date(),
+          sportType: sportType,
+          durationType: lengthType,
+          workoutTime: format.duration(workoutDuration(intervals, mode)),
+          workoutDistance: mode instanceof RunMode ? format.distance(workoutDistance(intervals, mode)) : "",
+        }
+      };
 
-      const workoutMetadata = {
-        name: name,
-        description: description,
-        updatedAt: Date(),
-        sportType: sportType,
-        durationType: lengthType,
-        workoutTime: format.duration(workoutDuration(intervals, mode)),
-        workoutDistance: mode instanceof RunMode ? format.distance(workoutDistance(intervals, mode)) : "",
-      }
-
-      var updates: any = {}
-      updates[`users/${user.uid}/workouts/${id}`] = workoutMetadata
-
-      // save to firebase      
-      itemsRef.update(updates).then(() => {
+      // save to firebase
+      firebase.database().ref().update(updates).then(() => {
         //upload to s3  
         upload(id, file)
         hideMessage()
