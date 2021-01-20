@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef, useCallback } from 'react'
 import './Editor.css'
 import { ZoneColor, Zones } from '../../types/Zones'
 import GenericBar from '../Bar/GenericBar'
@@ -32,7 +32,6 @@ import intervalFactory from '../../interval/intervalFactory'
 import parseWorkoutXml from '../../xml/parseWorkoutXml'
 import upload from '../../network/upload'
 import download from '../../network/download'
-import loadFirebaseWorkout from '../../network/loadFirebaseWorkout'
 import { createEmptyWorkout, Workout } from '../../types/Workout'
 import { moveInterval, updateIntervalDuration, updateIntervalIntensity } from '../../interval/intervalUtils'
 import Keyboard from '../Keyboard/Keyboard'
@@ -51,7 +50,6 @@ import createMode from '../../modes/createMode'
 import { workoutDuration } from '../../utils/duration'
 import * as format from '../../utils/format'
 import { Duration } from '../../types/Length'
-import { WorkoutMode } from '../../modes/WorkoutMode'
 import DistanceAxis from '../Axis/DistanceAxis'
 import { LengthType } from '../../types/LengthType'
 import { workoutDistance } from '../../utils/distance'
@@ -91,15 +89,17 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
 
   const [showWorkouts, setShowWorkouts] = useState(false)
 
-  const db = firebase.database();
+  const getMode = useCallback(() => {
+    return createMode({sportType, ftp, weight, runningTimes, lengthType});
+  }, [sportType, ftp, weight, runningTimes, lengthType]);
 
   useEffect(() => {
     showMessage({ className: 'loading', text: 'Loading..' })
 
-    loadFirebaseWorkout(db, id).then((workout) => {
-      if (workout) {
+    download(id).then((xml) => {
+      if (/<workout_file>/.test(xml)) {
         // workout exist on server
-        loadWorkout(workout)
+        loadWorkout(parseWorkoutXml(xml, getMode()));
         storage.setId(id)
       } else {
         // workout doesn't exist on cloud 
@@ -112,8 +112,6 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
 
         storage.setId(id)
       }
-      console.log('useEffect firebase');
-
       //finished loading
       hideMessage()
     })
@@ -128,8 +126,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
 
     ReactGA.initialize('UA-55073449-9');
     ReactGA.pageview(window.location.pathname + window.location.search);
-
-  }, [id, db, sportType, lengthType])
+  }, [id, sportType, lengthType, getMode])
 
   useEffect(() => {
     storage.setName(name)
@@ -147,10 +144,6 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
 
     setSegmentsWidth(segmentsRef.current?.scrollWidth || 1320)
   }, [segmentsRef, intervals, ftp, instructions, weight, name, description, author, tags, sportType, lengthType, runningTimes])
-
-  function getMode(): WorkoutMode {
-    return createMode({sportType, ftp, weight, runningTimes, lengthType});
-  }
 
   function generateId() {
     return Math.random().toString(36).substr(2, 16)
