@@ -234,8 +234,6 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
 
       var updates: any = {}
       updates[`users/${user.uid}/workouts/${id}`] = null
-      updates[`workouts/${id}`] = null
-
 
       // save to firebase      
       itemsRef.update(updates).then(() => {
