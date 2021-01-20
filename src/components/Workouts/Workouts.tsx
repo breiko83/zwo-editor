@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faClock, faRuler } from '@fortawesome/free-solid-svg-icons'
 import firebase from '../../network/firebase'
 
-interface Workout {
+interface WorkoutMetadata {
   id: string,
   name: string,
   description: string,
@@ -16,7 +16,7 @@ interface Workout {
 
 const Workouts = (props: { userId: string }) => {
 
-  const [workouts, setWorkouts] = useState<Array<Workout>>([])
+  const [workouts, setWorkouts] = useState<Array<WorkoutMetadata>>([])
 
   React.useEffect(() => {
 
