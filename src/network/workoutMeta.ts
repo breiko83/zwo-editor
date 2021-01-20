@@ -1,6 +1,6 @@
 import firebase from './firebase';
 
-interface WorkoutMetadata {
+export interface WorkoutMetadata {
   id: string;
   name: string;
   description: string;
@@ -21,4 +21,25 @@ export async function update(user: firebase.User, {id, ...workout}: WorkoutMetad
   return firebase.database().ref().update({
     [`users/${user.uid}/workouts/${id}`]: workout
   });
+}
+
+export async function fetchAll(userId: string): Promise<WorkoutMetadata[]> {
+  const snapshot = await firebase.database().ref('users/' + userId + '/workouts').orderByChild('name').once('value');
+
+  const workouts: WorkoutMetadata[] = [];
+
+  snapshot.forEach(child => {
+    workouts.push({
+      id: child.key || "",
+      name: child.val().name || "No name",
+      description: child.val().description,
+      updatedAt: child.val().updatedAt,
+      sportType: child.val().sportType,
+      durationType: child.val().durationType,
+      workoutTime: child.val().workoutTime,
+      workoutDistance: child.val().workoutDistance
+    });
+  });
+
+  return workouts;
 }

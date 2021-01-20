@@ -2,38 +2,13 @@ import React, { useState } from 'react'
 import './Workouts.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faClock, faRuler } from '@fortawesome/free-solid-svg-icons'
-import firebase from '../../network/firebase'
-
-interface WorkoutMetadata {
-  id: string,
-  name: string,
-  description: string,
-  updatedAt: string,
-  lengthType: string,
-  workoutTime: string,
-  workoutDistance: string
-}
+import * as workoutMeta from '../../network/workoutMeta'
 
 const Workouts = (props: { userId: string }) => {
-
-  const [workouts, setWorkouts] = useState<Array<WorkoutMetadata>>([])
+  const [workouts, setWorkouts] = useState<Array<workoutMeta.WorkoutMetadata>>([])
 
   React.useEffect(() => {
-
-    firebase.database().ref('users/' + props.userId + '/workouts').orderByChild('name').once('value').then(function (snapshot) {
-      snapshot.forEach(child => {
-        setWorkouts(workouts => [...workouts, {
-          id: child.key || "",
-          name: child.val().name || "No name",
-          description: child.val().description,
-          updatedAt: child.val().updatedAt,
-          lengthType: child.val().durationType,
-          workoutTime: child.val().workoutTime,
-          workoutDistance: child.val().workoutDistance
-        }
-        ])
-      });
-    })
+    workoutMeta.fetchAll(props.userId).then(setWorkouts);
   }, [props.userId])
 
   return (
@@ -42,7 +17,7 @@ const Workouts = (props: { userId: string }) => {
       {workouts.map((item, index) => (
         <a href={`/editor/${item.id}`} key={item.id} style={index % 2 === 0 ? { backgroundColor: '#DCDCDC' } : { backgroundColor: '#C8C8C8' }}>
           <div className="title">{item.name}</div>
-          {item.lengthType === 'time' ?
+          {item.durationType === 'time' ?
             <div className="description"><FontAwesomeIcon icon={faClock} size="sm" fixedWidth /> {item.workoutTime}</div>
             :
             <div className="description"><FontAwesomeIcon icon={faRuler} size="sm" fixedWidth /> {item.workoutDistance}</div>
