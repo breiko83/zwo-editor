@@ -1569,14 +1569,16 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
               />
             </div>
           )}
+          {sportType === "bike" && (
           <div className="form-input">
-            <label title="Training Load">TL</label>
+            <label title="Training Load">Training Load</label>
             <input
               className="textInput"
               value={helpers.getStressScore(bars, ftp)}
               disabled
             />
           </div>
+          )}
           {sportType === "run" && (
             <LeftRightToggle<"time", "distance">
               label="Duration Type"
