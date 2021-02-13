@@ -1,0 +1,23 @@
+.speed-axis {
+  position: absolute;
+  bottom: 50px;
+  left: 2px;
+  color: gray;
+}
+.speed-block {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  
+  display: flex;  
+  align-items: center;
+  justify-content: center;
+}
+
+.speed-label {    
+  font-size: 10px;
+}
+
+.speed-block {
+  border-top: 1px solid #ccc;
+}
