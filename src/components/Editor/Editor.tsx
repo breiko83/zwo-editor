@@ -1732,7 +1732,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
           )}
         </div>
 
-        {sportType === "bike" ? <ZoneAxis /> : <SpeedAxis />}
+        <ZoneAxis />
       </div>
       <div className="cta">
         {sportType === "bike" ? (
