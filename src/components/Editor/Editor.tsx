@@ -12,7 +12,6 @@ import Workouts from "../Workouts/Workouts";
 import TimeAxis from "./TimeAxis";
 import DistanceAxis from "./DistanceAxis";
 import ZoneAxis from "./ZoneAxis";
-import SpeedAxis from "./SpeedAxis";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faTrash,
