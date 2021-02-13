@@ -1570,7 +1570,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
             </div>
           )}
           <div className="form-input">
-            <label>TSS</label>
+            <label title="Training Load">TL</label>
             <input
               className="textInput"
               value={helpers.getStressScore(bars, ftp)}
