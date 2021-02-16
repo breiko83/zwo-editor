@@ -1,6 +1,7 @@
 .edit {
-  position: relative;
+  display: inline-block;  
   padding: 5px;
+  background-color: white;
 }
 .line {  
   position: absolute;

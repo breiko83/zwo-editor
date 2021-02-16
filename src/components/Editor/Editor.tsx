@@ -6,6 +6,7 @@ import Trapeze from "../Trapeze/Trapeze";
 import FreeRide from "../FreeRide/FreeRide";
 import Interval from "../Interval/Interval";
 import Comment from "../Comment/Comment";
+import EditComment from "../Comment/EditComment";
 import Popup from "../Popup/Popup";
 import Footer from "../Footer/Footer";
 import Workouts from "../Workouts/Workouts";
@@ -175,6 +176,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
   const [runningTimes, setRunningTimes] = useState(loadRunningTimes());
 
   const [textEditorIsVisible, setTextEditorIsVisible] = useState(false);
+  const [selectedInstruction, setSelectedInstruction] = useState<Instruction>();
 
   const db = firebase.database();
 
@@ -404,20 +406,14 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
 
   function addFreeRide(
     duration: number = 600,
-    cadence: number = 0,    
+    cadence: number = 0,
     length: number = 1000
   ) {
     setBars((bars) => [
       ...bars,
       {
-        time:
-          durationType === "time"
-            ? duration
-            : 0,
-        length:
-          durationType === "time"
-            ? 0
-            : length,
+        time: durationType === "time" ? duration : 0,
+        length: durationType === "time" ? 0 : length,
         cadence: cadence,
         type: "freeRide",
         id: uuidv4(),
@@ -678,11 +674,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
         element.length
       );
     if (element.type === "freeRide")
-      addFreeRide(
-        element.time,
-        element.cadence,
-        element.length
-      );
+      addFreeRide(element.time, element.cadence, element.length);
     if (element.type === "trapeze")
       addTrapeze(
         element.startPower || 80,
@@ -878,7 +870,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
   }
 
   function upload(file: Blob, parse = false) {
-    fetch(process.env.UPLOAD_FUNCTION || '/.netlify/functions/upload', {
+    fetch(process.env.UPLOAD_FUNCTION || "/.netlify/functions/upload", {
       method: "POST",
       body: JSON.stringify({
         fileType: "zwo",
@@ -1180,7 +1172,9 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
       onChange={(id: string, values: Instruction) =>
         changeInstruction(id, values)
       }
-      onDelete={(id: string) => deleteInstruction(id)}
+      onClick={(id: string) =>
+        setSelectedInstruction(instructions.find((i) => i.id === id))
+      }
       index={index}
     />
   );
@@ -1529,6 +1523,21 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
         <Popup width="500px" dismiss={() => setShowWorkouts(false)}>
           {user ? <Workouts userId={user.uid} /> : renderRegistrationForm()}
         </Popup>
+      )}
+
+      {selectedInstruction && (
+        <EditComment
+          instruction={selectedInstruction}
+          onChange={(id: string, values: Instruction) => {
+            changeInstruction(id, values);
+            setSelectedInstruction(undefined);
+          }}
+          dismiss={()=>setSelectedInstruction(undefined)}
+          onDelete={(id: string) => {
+            deleteInstruction(id);
+            setSelectedInstruction(undefined);
+          }}
+        />
       )}
 
       {savePopupIsVisile && (

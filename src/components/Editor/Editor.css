@@ -2,28 +2,27 @@
   display: flex;
   flex-direction: column;
   min-height: 100%;
-  margin: 0px;  
-  
+  margin: 0px;
+
   background-color: #eaeaea;
-  
+
   overflow-x: hidden;
-  
 }
 
 .editor {
   flex: 1;
-  position: relative;  
+  position: relative;
   white-space: nowrap;
   background-color: white;
 
-  padding: 0px 40px 0px 50px;  
+  padding: 0px 40px 0px 50px;
   margin: 10px auto;
   overflow-x: hidden;
   width: 100%;
   max-width: 1280px;
-  -webkit-box-shadow: 0px 0px 27px -9px rgba(0,0,0,0.35);
-  -moz-box-shadow: 0px 0px 27px -9px rgba(0,0,0,0.35);
-  box-shadow: 0px 0px 27px -9px rgba(0,0,0,0.35);
+  -webkit-box-shadow: 0px 0px 27px -9px rgba(0, 0, 0, 0.35);
+  -moz-box-shadow: 0px 0px 27px -9px rgba(0, 0, 0, 0.35);
+  box-shadow: 0px 0px 27px -9px rgba(0, 0, 0, 0.35);
   border-radius: 5px;
 }
 
@@ -33,7 +32,7 @@
 }
 
 a {
-  color: #00C46A;
+  color: #00c46a;
 }
 
 .canvas {
@@ -43,19 +42,17 @@ a {
   height: 100%;
   overflow-y: hidden;
   overflow-x: visible;
-  
+
   bottom: 10px;
-  
 }
 
 .segments {
-
   position: absolute;
 
   display: flex;
   flex-wrap: nowrap;
   justify-content: flex-start;
-  align-items: flex-end;  
+  align-items: flex-end;
   bottom: 0px;
   padding-bottom: 40px;
 
@@ -74,17 +71,17 @@ a {
   z-index: 1;
 }
 
-.cta {  
+.cta {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
-  margin: 10px auto;  
+  margin: 10px auto;
   padding: 20px;
   background-color: white;
 
-  -webkit-box-shadow: 0px 0px 27px -9px rgba(0,0,0,0.35);
-  -moz-box-shadow: 0px 0px 27px -9px rgba(0,0,0,0.35);
-  box-shadow: 0px 0px 27px -9px rgba(0,0,0,0.35);
+  -webkit-box-shadow: 0px 0px 27px -9px rgba(0, 0, 0, 0.35);
+  -moz-box-shadow: 0px 0px 27px -9px rgba(0, 0, 0, 0.35);
+  box-shadow: 0px 0px 27px -9px rgba(0, 0, 0, 0.35);
   border-radius: 5px;
 }
 
@@ -113,7 +110,7 @@ a {
 }
 
 .btn-primary {
-  background-color: #00C46A;
+  background-color: #00c46a;
   color: white;
   padding: 5px 20px;
 }
@@ -129,7 +126,7 @@ a {
 }
 
 .btn-secondary:hover {
-  background-color: #EEEEEE;
+  background-color: #eeeeee;
 }
 
 .btn-square {
@@ -144,9 +141,8 @@ a {
 }
 
 .textInput {
-  
   font-size: 20px;
-  border: 1px solid lightgray;  
+  border: 1px solid lightgray;
   text-align: center;
 }
 
@@ -175,7 +171,7 @@ label {
   z-index: 10;
 }
 
-.actions > button{
+.actions > button {
   padding: 20px;
   margin: 0 5px;
   background-color: rgba(0, 0, 0, 0.7);
@@ -184,8 +180,8 @@ label {
   border-radius: 50%;
 }
 
-.slider {  
-  position: absolute;  
+.slider {
+  position: absolute;
   top: 10px;
   left: 0px;
 }
@@ -195,7 +191,7 @@ label {
 }
 
 .alert {
-  color: 'red'
+  color: "red";
 }
 
 .message {
@@ -211,17 +207,17 @@ label {
   z-index: 1000;
 }
 
-.message > .close {  
+.message > .close {
   color: white;
 }
 
 .loading {
-  color:white;
+  color: white;
   background-color: rgba(0, 0, 0, 0.7);
 }
 
 .error {
-  color:white;
+  color: white;
   background-color: rgba(196, 13, 13, 0.7);
 }
 
@@ -232,17 +228,15 @@ label {
   color: white;
 }
 
-.info {  
+.info {
   margin: 0 auto;
   text-align: left;
   max-width: 1360px;
   width: 100%;
-  
+
   display: flex;
   flex-direction: row;
 }
-
-
 
 .info > .title {
   flex: 1;
@@ -258,24 +252,22 @@ label {
   margin: 10px 0 0 0;
 }
 
-
 .info > .workout {
   padding: 10px;
   display: flex;
-  flex-direction: row; 
+  flex-direction: row;
 }
-.info > .workout > .form-input{
-  max-width: 120px;  
+.info > .workout > .form-input {
+  max-width: 120px;
   padding: 0 10px;
 }
 
 .run-workout {
-  display: flex;  
+  display: flex;
   margin: 0 auto;
-  flex-direction: row;  
+  flex-direction: row;
   width: 100%;
   max-width: 1360px;
-  
 }
 
 .run-workout > .form-input {
@@ -284,22 +276,22 @@ label {
 }
 
 .timePicker {
-  width: 120px;  
+  width: 120px;
 }
 
-.timePicker > input{
-  font-size: 18px;  
+.timePicker > input {
+  font-size: 18px;
   font-family: monospace;
   color: black;
 }
 
 .rc-time-picker-panel-input {
-  font-size: 18px;  
+  font-size: 18px;
   font-family: monospace;
 }
 
 .rc-time-picker-panel-select > ul > li {
-  font-size: 16px;  
+  font-size: 16px;
   font-family: monospace;
 }
 
@@ -340,7 +332,6 @@ label {
   margin: 5px 0;
 }
 
-
 .text-editor-instructions > h2 {
   font-size: 14px;
   margin: 0;
@@ -348,23 +339,21 @@ label {
   line-height: 2;
 }
 
-
 .text-editor-instructions > h3 {
-  font-size: 14px;  
+  font-size: 14px;
   margin: 10px 0;
   line-height: 1;
 }
 
-.text-editor-textarea {  
- 
- width: 70%; 
+.text-editor-textarea {
+  width: 70%;
 
- font-size: 14px;
- box-sizing: border-box;
- padding: 20px;
+  font-size: 14px;
+  box-sizing: border-box;
+  padding: 20px;
 
- -webkit-box-shadow: 0px 0px 27px -9px rgba(0,0,0,0.35);
- -moz-box-shadow: 0px 0px 27px -9px rgba(0,0,0,0.35);
- box-shadow: 0px 0px 27px -9px rgba(0,0,0,0.35);
- border-radius: 5px;
+  -webkit-box-shadow: 0px 0px 27px -9px rgba(0, 0, 0, 0.35);
+  -moz-box-shadow: 0px 0px 27px -9px rgba(0, 0, 0, 0.35);
+  box-shadow: 0px 0px 27px -9px rgba(0, 0, 0, 0.35);
+  border-radius: 5px;
 }
