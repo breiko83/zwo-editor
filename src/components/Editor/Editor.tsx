@@ -402,11 +402,22 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
     ]);
   }
 
-  function addFreeRide(duration = 600, cadence: number = 0) {
+  function addFreeRide(
+    duration: number = 600,
+    cadence: number = 0,    
+    length: number = 1000
+  ) {
     setBars((bars) => [
       ...bars,
       {
-        time: duration,
+        time:
+          durationType === "time"
+            ? duration
+            : 0,
+        length:
+          durationType === "time"
+            ? 0
+            : length,
         cadence: cadence,
         type: "freeRide",
         id: uuidv4(),
@@ -666,7 +677,12 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
         element.pace,
         element.length
       );
-    if (element.type === "freeRide") addFreeRide(element.time, element.cadence);
+    if (element.type === "freeRide")
+      addFreeRide(
+        element.time,
+        element.cadence,
+        element.length
+      );
     if (element.type === "trapeze")
       addTrapeze(
         element.startPower || 80,
@@ -862,7 +878,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
   }
 
   function upload(file: Blob, parse = false) {
-    fetch("https://zwiftworkout.netlify.app/.netlify/functions/upload", {
+    fetch(process.env.UPLOAD_FUNCTION || '/.netlify/functions/upload', {
       method: "POST",
       body: JSON.stringify({
         fileType: "zwo",
@@ -1114,7 +1130,9 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
       key={bar.id}
       id={bar.id}
       time={bar.time}
+      length={bar.length}
       cadence={bar.cadence}
+      durationType={durationType}
       sportType={sportType}
       onChange={(id: string, value: any) => handleOnChange(id, value)} // Change any to Interface Bar?
       onClick={(id: string) => handleOnClick(id)}
@@ -1570,14 +1588,14 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
             </div>
           )}
           {sportType === "bike" && (
-          <div className="form-input">
-            <label title="Training Load">Training Load</label>
-            <input
-              className="textInput"
-              value={helpers.getStressScore(bars, ftp)}
-              disabled
-            />
-          </div>
+            <div className="form-input">
+              <label title="Training Load">Training Load</label>
+              <input
+                className="textInput"
+                value={helpers.getStressScore(bars, ftp)}
+                disabled
+              />
+            </div>
           )}
           {sportType === "run" && (
             <LeftRightToggle<"time", "distance">
@@ -1821,15 +1839,18 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
         >
           <IntervalLogo className="btn-icon" /> Interval
         </button>
-        {sportType === "bike" && (
-          <button
-            className="btn"
-            onClick={() => addFreeRide()}
-            style={{ backgroundColor: Colors.WHITE }}
-          >
-            <FontAwesomeIcon icon={faBicycle} size="lg" fixedWidth /> Free Ride
-          </button>
-        )}
+        <button
+          className="btn"
+          onClick={() => addFreeRide()}
+          style={{ backgroundColor: Colors.WHITE }}
+        >
+          <FontAwesomeIcon
+            icon={sportType === "bike" ? faBicycle : faRunning}
+            size="lg"
+            fixedWidth
+          />{" "}
+          Free {sportType === "bike" ? "Ride" : "Run"}
+        </button>
         <button
           className="btn"
           onClick={() => addInstruction()}

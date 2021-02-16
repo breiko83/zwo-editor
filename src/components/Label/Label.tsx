@@ -23,7 +23,7 @@ const Label = (props: {
 
   return (
     <div className="label">
-      {props.duration && (
+      {props.duration && props.duration !== '00:00' && (
         <div>
           <FontAwesomeIcon icon={faClock} fixedWidth /> {props.duration}
         </div>
@@ -54,7 +54,7 @@ const Label = (props: {
             {((props.powerEnd / props.ftp) * 100).toFixed(0)}% FTP
           </div>
         )}
-      {props.sportType === "run" && props.distance && (
+      {props.sportType === "run" && props.distance !== undefined && props.distance !== 0 && (
         <div>
           <FontAwesomeIcon icon={faRuler} fixedWidth />{" "}
           {props.distance.toFixed(0)} m

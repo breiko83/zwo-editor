@@ -18,6 +18,10 @@ const helpers = {
           length += bar.time;
         }
 
+        if (bar.type === "freeRide") {
+          length += bar.time;
+        }
+
         if (bar.type === "interval") {
           length += bar.repeat * bar.onDuration;
           length += bar.repeat * bar.offDuration;
