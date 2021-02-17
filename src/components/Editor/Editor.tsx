@@ -884,7 +884,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
   }
 
   function upload(file: Blob, parse = false) {
-    fetch(process.env.UPLOAD_FUNCTION || "/.netlify/functions/upload", {
+    fetch(process.env.REACT_APP_UPLOAD_FUNCTION || "https://zwiftworkout.netlify.app/.netlify/functions/upload", {
       method: "POST",
       body: JSON.stringify({
         fileType: "zwo",
