@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { auth } from '../firebase'
 import './Form.css'
 
-const LoginForm = (props: { login: Function, showSignup: Function, dismiss: Function }) => {
+const LoginForm = (props: { login: Function, showSignup: Function, showForgotPassword: Function, dismiss: Function }) => {
 
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -41,6 +41,7 @@ const LoginForm = (props: { login: Function, showSignup: Function, dismiss: Func
         <button className="btn btn-primary" type="submit">Login</button>
         <button className="btn btn-secondary" type="button" onClick={() => props.dismiss()}>Dismiss</button>
       </div>
+      <div><button className="btn link-button" onClick={() => props.showForgotPassword()}>Forgot Your Password?</button></div>
     </form>
   )
 }

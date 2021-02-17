@@ -3,6 +3,11 @@
   font-size: 12px;
 }
 
+.success {
+  color: green;
+  font-size: 12px;
+}
+
 .link-button {
   font-size: 16px;
   color: #00C46A;

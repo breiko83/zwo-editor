@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
+import { useLocation } from "react-router";
 import "./Editor.css";
 import { Colors, Zones } from "../Constants";
 import Bar from "../Bar/Bar";
@@ -44,6 +45,8 @@ import firebase, { auth } from "../firebase";
 import SaveForm from "../Forms/SaveForm";
 import SignupForm from "../Forms/SignupForm";
 import LoginForm from "../Forms/LoginForm";
+import ForgotPasswordForm from "../Forms/ForgotPasswordForm";
+import UpdatePasswordForm from "../Forms/UpdatePasswordForm";
 import { Helmet } from "react-helmet";
 import { RouteComponentProps } from "react-router-dom";
 import ReactGA from "react-ga";
@@ -179,6 +182,17 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
   const [selectedInstruction, setSelectedInstruction] = useState<Instruction>();
 
   const db = firebase.database();
+
+  const location = useLocation();
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const mode = params.get("mode");
+    if (mode === "resetPassword") {
+      setVisibleForm("updatePassword");
+      setSavePopupVisibility(true);
+    }
+  }, [location]);
 
   useEffect(() => {
     setMessage({ visible: true, class: "loading", text: "Loading.." });
@@ -1180,22 +1194,42 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
   );
 
   const renderRegistrationForm = () => {
-    if (visibleForm === "login") {
-      return (
-        <LoginForm
-          login={setUser}
-          showSignup={() => setVisibleForm("signup")}
-          dismiss={() => setSavePopupVisibility(false)}
-        />
-      );
-    } else {
-      return (
-        <SignupForm
-          signUp={setUser}
-          showLogin={() => setVisibleForm("login")}
-          dismiss={() => setSavePopupVisibility(false)}
-        />
-      );
+    switch (visibleForm) {
+      case "login":
+        return (
+          <LoginForm
+            login={setUser}
+            showSignup={() => setVisibleForm("signup")}
+            dismiss={() => setSavePopupVisibility(false)}
+            showForgotPassword={() => setVisibleForm("forgotPassword")}
+          />
+        );
+      case "signup":
+        return (
+          <SignupForm
+            signUp={setUser}
+            showLogin={() => setVisibleForm("login")}
+            dismiss={() => setSavePopupVisibility(false)}
+          />
+        );
+      case "forgotPassword":
+        return (
+          <ForgotPasswordForm
+            dismiss={() => setSavePopupVisibility(false)}
+            workoutId={id}
+          />
+        );
+      case "updatePassword":
+        return (
+          <UpdatePasswordForm
+            dismiss={() => {
+              setVisibleForm("login");
+              setSavePopupVisibility(true);
+            }}
+          />
+        );
+      default:
+        break;
     }
   };
 
@@ -1532,7 +1566,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
             changeInstruction(id, values);
             setSelectedInstruction(undefined);
           }}
-          dismiss={()=>setSelectedInstruction(undefined)}
+          dismiss={() => setSelectedInstruction(undefined)}
           onDelete={(id: string) => {
             deleteInstruction(id);
             setSelectedInstruction(undefined);
