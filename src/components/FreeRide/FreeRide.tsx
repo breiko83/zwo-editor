@@ -50,12 +50,12 @@ const FreeRide = (props: {
 
     const length =
       props.durationType === "time"
-        ? undefined
+        ? 0
         : helpers.round((width + dWidth) * lengthMultiplier, 200);
     const time =
       props.durationType === "time"
         ? helpers.round((width + dWidth) * timeMultiplier, 5)
-        : undefined
+        : 0;
 
     props.onChange(props.id, {
       time: time,
@@ -69,12 +69,12 @@ const FreeRide = (props: {
   const handleResize = (dWidth: number) => {
     const length =
       props.durationType === "time"
-        ? undefined
+        ? 0
         : helpers.round((width + dWidth) * lengthMultiplier, 200);
     const time =
       props.durationType === "time"
         ? helpers.round((width + dWidth) * timeMultiplier, 5)
-        : undefined
+        : 0;
 
     props.onChange(props.id, {
       time: time,
@@ -94,7 +94,6 @@ const FreeRide = (props: {
       onClick={() => props.onClick(props.id)}
     >
       {(props.selected || showLabel) && (
-        
         <Label
           sportType={props.sportType}
           duration={durationLabel}

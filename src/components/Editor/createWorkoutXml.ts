@@ -93,7 +93,7 @@ export default function createWorkoutXml({ author, name, description, sportType,
     } else {
       // free ride
       segment = Builder.create('FreeRide')
-        .att('Duration', bar.time)
+        .att('Duration', durationType === 'time' ? bar.time : bar.length)
         .att('FlatRoad', 0) // Not sure what this is for
       // add cadence if not zero
       bar.cadence !== 0 && segment.att('Cadence', bar.cadence)
