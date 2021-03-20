@@ -55,6 +55,8 @@ import LeftRightToggle from "./LeftRightToggle";
 import createWorkoutXml from "./createWorkoutXml";
 import ShareForm from "../Forms/ShareForm";
 import ReactTooltip from "react-tooltip";
+import regex from "./regex";
+import WorkoutTextEditor from "./WorkoutTextEditor";
 
 export interface Bar {
   id: string;
@@ -884,13 +886,17 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
   }
 
   function upload(file: Blob, parse = false) {
-    fetch(process.env.REACT_APP_UPLOAD_FUNCTION || "https://zwiftworkout.netlify.app/.netlify/functions/upload", {
-      method: "POST",
-      body: JSON.stringify({
-        fileType: "zwo",
-        fileName: `${id}.zwo`,
-      }),
-    })
+    fetch(
+      process.env.REACT_APP_UPLOAD_FUNCTION ||
+        "https://zwiftworkout.netlify.app/.netlify/functions/upload",
+      {
+        method: "POST",
+        body: JSON.stringify({
+          fileType: "zwo",
+          fileName: `${id}.zwo`,
+        }),
+      }
+    )
       .then((res) => res.json())
       .then(function (data) {
         const signedUrl = data.uploadURL;
@@ -1307,38 +1313,23 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
         // generate a steady state block
 
         // extract watts
-        const powerInWatts = workoutBlock.match(/([0-9]\d*w)/);
-        const powerInWattsPerKg = workoutBlock.match(/([0-9]*.?[0-9]wkg)/);
-        const powerInPercentageFtp = workoutBlock.match(/([0-9]\d*%)/);
-
-        let power = powerInWatts ? parseInt(powerInWatts[0]) / ftp : 1;
-        power = powerInWattsPerKg
-          ? (parseFloat(powerInWattsPerKg[0]) * weight) / ftp
-          : power;
-        power = powerInPercentageFtp
-          ? parseInt(powerInPercentageFtp[0]) / 100
-          : power;
+        const power = regex.extractPower(workoutBlock, weight, ftp);
 
         // extract duration in seconds
-        const durationInSeconds = workoutBlock.match(/([0-9]\d*s)/);
-        const durationInMinutes = workoutBlock.match(/([0-9]*:?[0-9][0-9]*m)/);
-
-        let duration = durationInSeconds && parseInt(durationInSeconds[0]);
-        duration = durationInMinutes
-          ? parseInt(durationInMinutes[0].split(":")[0]) * 60 +
-            (parseInt(durationInMinutes[0].split(":")[1]) || 0)
-          : duration;
+        const duration = regex.extractDuration(workoutBlock);
 
         // extract cadence in rpm
-        const cadence = workoutBlock.match(/([0-9]\d*rpm)/);
-        const rpm = cadence ? parseInt(cadence[0]) : undefined;
+        const cadence = regex.extractCadence(workoutBlock);
 
-        // extract multiplier
-        // const multiplier = workoutBlock.match(/([0-9]\d*x)/)
-        // const nTimes = multiplier ? Array(parseInt(multiplier[0])) : Array(1)
-        // for (var i = 0; i < nTimes.length; i++)
+        // extract pace
+        const pace = regex.extractPace(workoutBlock);
 
-        addBar(power, duration || 300, rpm);
+        // extract distance
+        const distance = regex.extractDistance(workoutBlock);
+
+        sportType === "bike"
+          ? addBar(power, duration || 300, cadence)
+          : addBar(power, duration, 0, pace, distance);
       }
 
       if (
@@ -1665,66 +1656,12 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
       {sportType === "run" && (
         <RunningTimesEditor times={runningTimes} onChange={setRunningTimes} />
       )}
-      {textEditorIsVisible && sportType === "bike" && (
-        <div className="text-editor">
-          <textarea
-            onChange={(e) => transformTextToWorkout(e.target.value)}
-            rows={10}
-            spellCheck={false}
-            className="text-editor-textarea"
-            placeholder="Add one block per line here: &#10;steady 3.0wkg 30s"
-          ></textarea>
-          <div className="text-editor-instructions">
-            <h2>Instructions</h2>
-            <p>
-              Every row correspond to a workout block. Scroll down to see some
-              examples.
-            </p>
-            <h3>Blocks</h3>
-            <p>
-              <span>steady</span> <span>warmup</span> <span>cooldown</span>{" "}
-              <span>ramp</span> <span>intervals</span> <span>freeride</span>{" "}
-              <span>message</span>
-            </p>
-            <h3>Time</h3>
-            <p>
-              <span>30s</span> or <span>0:30m</span>
-            </p>
-            <h3>Power</h3>
-            <p>
-              <span>250w</span> or <span>3.0wkg</span> or <span>75%</span> (FTP)
-            </p>
-            <h3>Cadence</h3>
-            <p>
-              <span>120rpm</span>
-            </p>
-            <h2>Examples</h2>
-            <h3>Steady block</h3>
-            <p>
-              <code>steady 3.0wkg 30s</code>
-              <code>steady 120w 10m 85rpm</code>
-            </p>
-            <h3>Warmup / Cooldown / Ramp block</h3>
-            <p>
-              <code>warmup 2.0wkg-3.5wkg 10m</code>
-              <code>cooldown 180w-100w 5m 110rpm</code>
-            </p>
-            <h3>Intervals</h3>
-            <p>
-              <code>interval 10x 30s-30s 4.0wkg-1.0wkg 110rpm-85rpm</code>
-              <code>interval 3x 1:00m-5:00m 300w-180w</code>
-            </p>
-            <h3>Free Ride</h3>
-            <p>
-              <code>freeride 10m 85rpm</code>
-            </p>
-            <h3>Text Event</h3>
-            <p>
-              <code>message "Get ready to your first set!" 30s</code>
-              <code>message "Last one!" 20:00m</code>
-            </p>
-          </div>
-        </div>
+      {textEditorIsVisible && (
+        <WorkoutTextEditor
+          sportType={sportType}
+          durationType={durationType}
+          onChange={(value: string) => transformTextToWorkout(value)}
+        />
       )}
       <div id="editor" className="editor">
         {actionId && (
@@ -1797,17 +1734,17 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
         <ZoneAxis />
       </div>
       <div className="cta">
+        <ReactTooltip effect="solid" />
+        <button
+          className="btn btn-square"
+          onClick={() => toggleTextEditor()}
+          style={{ backgroundColor: "palevioletred" }}
+          data-tip="New! Workout text editor!"
+        >
+          <FontAwesomeIcon icon={faPen} fixedWidth />
+        </button>
         {sportType === "bike" ? (
           <div>
-            <ReactTooltip effect="solid" />
-            <button
-              className="btn btn-square"
-              onClick={() => toggleTextEditor()}
-              style={{ backgroundColor: "palevioletred" }}
-              data-tip="New! Workout text editor!"
-            >
-              <FontAwesomeIcon icon={faPen} fixedWidth />
-            </button>
             <button
               className="btn btn-square"
               onClick={() => addBar(0.5)}

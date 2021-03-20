@@ -43,3 +43,5 @@ export const ZonesArray = [
   [Zones.Z5.min,Zones.Z5.max],
   [Zones.Z6.min,Zones.Z6.max],
 ]
+
+export const RUNNING_PACES = ['1M','5K','10K','HM','M']
