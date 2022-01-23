@@ -76,11 +76,6 @@ const Bar = (props: {
     });
   };
 
-  const handleLabelClose = () => {
-    console.log('closing: ', showLabel);
-    setShowLabel(false);
-  }
-
   const handleResizeStop = (dWidth: number, dHeight: number) => {
     setWidth(width + dWidth);
     setHeight(height + dHeight);
