@@ -170,7 +170,7 @@ const Bar = (props: {
       onClick={() => props.onClick(props.id)}
       style={props.selected ? { zIndex: 10 } : {}}
     >
-      {showLabel && (
+      {showLabel && props.showLabel && (
         <Label
           sportType={props.sportType}
           duration={duration}
