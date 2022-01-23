@@ -252,6 +252,7 @@ const Trapeze = (props: {
           setCadence={(cadence: number) => handleCadenceChange(cadence)}
           speedStart={speedStart}
           speedEnd={speedEnd}
+          onClose={() => setShowLabel(false)}
         />
       )}
       <div className="trapeze" onClick={() => props.onClick(props.id)}>

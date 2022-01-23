@@ -76,6 +76,11 @@ const Bar = (props: {
     });
   };
 
+  const handleLabelClose = () => {
+    console.log('closing: ', showLabel);
+    setShowLabel(false);
+  }
+
   const handleResizeStop = (dWidth: number, dHeight: number) => {
     setWidth(width + dWidth);
     setHeight(height + dHeight);
@@ -167,11 +172,10 @@ const Bar = (props: {
     <div
       className="segment"
       onMouseEnter={() => setShowLabel(true)}
-      onMouseLeave={() => setShowLabel(false)}
       onClick={() => props.onClick(props.id)}
       style={props.selected ? { zIndex: 10 } : {}}
     >
-      {(selected || showLabel) && props.showLabel && (
+      {showLabel && (
         <Label
           sportType={props.sportType}
           duration={duration}
@@ -183,6 +187,7 @@ const Bar = (props: {
           cadence={props.cadence}
           setCadence={(cadence: number) => handleCadenceChange(cadence)}
           speed={speed}
+          onClose={() => setShowLabel(false)}
         />
       )}
       <Resizable

@@ -89,7 +89,6 @@ const FreeRide = (props: {
     <div
       className="segment"
       onMouseEnter={() => setShowLabel(true)}
-      onMouseLeave={() => setShowLabel(false)}
       style={props.selected ? { zIndex: 1 } : {}}
       onClick={() => props.onClick(props.id)}
     >
@@ -100,6 +99,7 @@ const FreeRide = (props: {
           distance={distance}
           cadence={props.cadence}
           setCadence={(cadence: number) => handleCadenceChange(cadence)}
+          onClose={() => setShowLabel(false)}
         />
       )}
       <Resizable

@@ -1,6 +1,6 @@
-import React from "react";
+import React, {Dispatch, SetStateAction, useState} from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBolt, faClock, faRuler } from "@fortawesome/free-solid-svg-icons";
+import { faBolt, faClock, faRuler, faWindowClose } from "@fortawesome/free-solid-svg-icons";
 import "./Label.css";
 
 const Label = (props: {
@@ -18,11 +18,12 @@ const Label = (props: {
   speed?: number;
   speedStart?: number;
   speedEnd?: number;
+  onClose: () => void;
 }) => {
   const paces = ["1M", "5K", "10K", "HM", "M"];
-
   return (
     <div className="label">
+      <div style={{position: 'absolute', right: "3px", top: "0"}} onClick={props.onClose}><FontAwesomeIcon icon={faWindowClose} /></div>
       {props.duration && props.duration !== '00:00' && (
         <div>
           <FontAwesomeIcon icon={faClock} fixedWidth /> {props.duration}
