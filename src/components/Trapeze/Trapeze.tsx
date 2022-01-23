@@ -235,11 +235,10 @@ const Trapeze = (props: {
     <div
       className="segment"
       onMouseEnter={() => setShowLabel(true)}
-      onMouseLeave={() => setShowLabel(false)}
       style={props.selected ? { zIndex: 1 } : {}}
       onClick={() => props.onClick(props.id)}
     >
-      {(props.selected || showLabel) && (
+      {(showLabel) && (
         <Label
           duration={durationLabel}
           powerStart={powerLabelStart}

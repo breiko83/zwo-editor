@@ -92,7 +92,7 @@ const FreeRide = (props: {
       style={props.selected ? { zIndex: 1 } : {}}
       onClick={() => props.onClick(props.id)}
     >
-      {(props.selected || showLabel) && (
+      {(showLabel) && (
         <Label
           sportType={props.sportType}
           duration={durationLabel}
