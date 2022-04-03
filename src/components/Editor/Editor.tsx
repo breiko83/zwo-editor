@@ -34,9 +34,6 @@ import {
   faRunning,
   faRuler,
   faPen,
-  faGlobe,
-  faEuroSign,
-  faDollarSign,
 } from "@fortawesome/free-solid-svg-icons";
 import { ReactComponent as WarmdownLogo } from "../../assets/warmdown.svg";
 import { ReactComponent as WarmupLogo } from "../../assets/warmup.svg";
@@ -181,8 +178,8 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
   );
 
   // min / km or min / mi
-  const [PaceUnitType, setPaceUnitType] = useState<PaceUnitType>(
-    (localStorage.getItem("paceUnitType") as PaceUnitType) || "time"
+  const [paceUnitType, setPaceUnitType] = useState<PaceUnitType>(
+    (localStorage.getItem("paceUnitType") as PaceUnitType) || "metric"
   );
 
   const [runningTimes, setRunningTimes] = useState(loadRunningTimes());
@@ -268,6 +265,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
     localStorage.setItem("tags", JSON.stringify(tags));
     localStorage.setItem("sportType", sportType);
     localStorage.setItem("durationType", durationType);
+    localStorage.setItem("paceUnitType", paceUnitType);
 
     localStorage.setItem("runningTimes", JSON.stringify(runningTimes));
 
@@ -284,6 +282,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
     tags,
     sportType,
     durationType,
+    paceUnitType,
     runningTimes,
   ]);
 
@@ -1111,6 +1110,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
       weight={weight}
       sportType={sportType}
       durationType={durationType}
+      paceUnitType={paceUnitType}
       pace={bar.pace || 0}
       speed={calculateSpeed(bar.pace || 0)}
       onChange={(id: string, value: any) => handleOnChange(id, value)} // Change any to Interface Bar?
@@ -1132,6 +1132,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
       ftp={ftp}
       sportType={sportType}
       durationType={durationType}
+      paceUnitType={paceUnitType}
       pace={bar.pace || 0}
       speed={calculateSpeed(bar.pace || 0)}
       onChange={(id: string, value: any) => handleOnChange(id, value)} // Change any to Interface Bar?
@@ -1650,6 +1651,16 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
             </div>
           )}
           {sportType === "run" && (
+            <div className="form-input">
+              <label>Avg. Workout Pace</label>
+              <input
+                className="textInput"
+                value={helpers.getWorkoutPace(bars, durationType, paceUnitType)}
+                disabled
+              />
+            </div>
+          )}
+          {sportType === "run" && (
             <LeftRightToggle<"time", "distance">
               label="Duration Type"
               leftValue="time"
@@ -1660,6 +1671,17 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
               onChange={setDurationType}
             />
           )}
+           {sportType === "run" && (
+            <LeftRightToggle<"metric", "imperial">
+              label="Pace Unit"
+              leftValue="metric"
+              rightValue="imperial"
+              leftLabel="min/km"
+              rightLabel="min/mi"
+              selected={paceUnitType}
+              onChange={setPaceUnitType}
+            />
+          )}
           <LeftRightToggle<"bike", "run">
             label="Sport Type"
             leftValue="bike"
@@ -1668,15 +1690,6 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
             rightIcon={faRunning}
             selected={sportType}
             onChange={switchSportType}
-          />
-          <LeftRightToggle<"metric", "imperial">
-            label="Pace Unit"
-            leftValue="metric"
-            rightValue="imperial"
-            leftIcon={faEuroSign}
-            rightIcon={faDollarSign}
-            selected={PaceUnitType}
-            onChange={setPaceUnitType}
           />
         </div>
       </div>

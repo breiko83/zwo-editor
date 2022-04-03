@@ -4,6 +4,7 @@ import { Colors, Zones } from "../Constants";
 import { Resizable } from "re-resizable";
 import Label from "../Label/Label";
 import helpers from "../helpers";
+import { PaceUnitType } from "../Editor/Editor";
 
 const Bar = (props: {
   id: string;
@@ -21,6 +22,7 @@ const Bar = (props: {
   onClick: Function;
   selected: boolean;
   showLabel: boolean;
+  paceUnitType?: PaceUnitType;
 }) => {
   const multiplier = 250;
   const timeMultiplier = 3;
@@ -175,6 +177,7 @@ const Bar = (props: {
         <Label
           sportType={props.sportType}
           duration={duration}
+          paceUnitType={props.paceUnitType}
           power={powerLabel}
           weight={props.weight}
           ftp={props.ftp}

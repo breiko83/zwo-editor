@@ -66,6 +66,18 @@ const helpers = {
     return ((tss / (ftp * 3600)) * 100).toFixed(0);
   },
 
+  getWorkoutPace: function (bars, durationType, paceUnitType) {
+    const pacedBars = bars.filter(b => b.type !== "freeRide");
+    const length = this.getWorkoutLength(pacedBars, durationType);
+    const distance = this.getWorkoutDistance(pacedBars);
+    if (distance > 0) {
+      const kph = +distance / (length / 3600);
+      return this.speedToPace(kph, paceUnitType);
+    } else {
+      return "";
+    }
+  },
+
   calculateEstimatedTimes: function (distances, times) {
     var estimatedTimes = [];
 
@@ -119,8 +131,14 @@ const helpers = {
     // in km/h
     return ((time / distance) * 18) / 5;
   },
-  speedToPace: function (speedkph) {
-    return moment.duration(3600 / speedkph, "seconds").format("mm:ss", { trim: false });
+  speedToPace: function (speedkph, paceUnitType) {
+    let pace = 0;
+    if (paceUnitType === "metric") {
+      pace = 3600 / speedkph;
+    } else {
+      pace =  1.60934 * 3600 / speedkph;
+    }
+    return moment.duration(pace, "seconds").format("mm:ss", { trim: false });
   }
 };
 
