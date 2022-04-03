@@ -2,6 +2,7 @@ import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBolt, faClock, faRuler } from "@fortawesome/free-solid-svg-icons";
 import "./Label.css";
+import helpers from "../helpers";
 
 const Label = (props: {
   sportType: string;
@@ -23,7 +24,7 @@ const Label = (props: {
 
   return (
     <div className="label">
-      {props.duration && props.duration !== '00:00' && (
+      {props.duration && props.duration !== "00:00" && (
         <div>
           <FontAwesomeIcon icon={faClock} fixedWidth /> {props.duration}
         </div>
@@ -54,12 +55,14 @@ const Label = (props: {
             {((props.powerEnd / props.ftp) * 100).toFixed(0)}% FTP
           </div>
         )}
-      {props.sportType === "run" && props.distance !== undefined && props.distance !== 0 && (
-        <div>
-          <FontAwesomeIcon icon={faRuler} fixedWidth />{" "}
-          {props.distance.toFixed(0)} m
-        </div>
-      )}
+      {props.sportType === "run" &&
+        props.distance !== undefined &&
+        props.distance !== 0 && (
+          <div>
+            <FontAwesomeIcon icon={faRuler} fixedWidth />{" "}
+            {props.distance.toFixed(0)} m
+          </div>
+        )}
       {props.power &&
         props.ftp &&
         props.pace !== null &&
@@ -101,12 +104,18 @@ const Label = (props: {
         </div>
       )}
       {props.sportType === "run" && props.speed && (
-        <div>{props.speed?.toFixed(1)} Km/h</div>
+        <div>
+          <div>{props.speed?.toFixed(1)} km/h</div>
+          <div>{helpers.speedToPace(props.speed)} min/km</div>
+        </div>
       )}
       {props.sportType === "run" && props.speedStart && props.speedEnd && (
         <div>
-          {props.speedStart?.toFixed(1)} Km/h - {props.speedEnd?.toFixed(1)}{" "}
-          Km/h
+        <div>
+          {props.speedStart?.toFixed(1)} km/h - {props.speedEnd?.toFixed(1)}{" "}
+          km/h
+        </div>
+        <div>{helpers.speedToPace(props.speedStart)} - {helpers.speedToPace(props.speedEnd)} min/km</div>
         </div>
       )}
     </div>

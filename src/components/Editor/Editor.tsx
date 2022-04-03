@@ -34,6 +34,9 @@ import {
   faRunning,
   faRuler,
   faPen,
+  faGlobe,
+  faEuroSign,
+  faDollarSign,
 } from "@fortawesome/free-solid-svg-icons";
 import { ReactComponent as WarmdownLogo } from "../../assets/warmdown.svg";
 import { ReactComponent as WarmupLogo } from "../../assets/warmup.svg";
@@ -118,6 +121,7 @@ const loadRunningTimes = (): RunningTimes => {
 };
 export type SportType = "bike" | "run";
 export type DurationType = "time" | "distance";
+export type PaceUnitType = "metric" | "imperial";
 
 const Editor = ({ match }: RouteComponentProps<TParams>) => {
   const { v4: uuidv4 } = require("uuid");
@@ -174,6 +178,11 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
   // distance or time
   const [durationType, setDurationType] = useState<DurationType>(
     (localStorage.getItem("durationType") as DurationType) || "time"
+  );
+
+  // min / km or min / mi
+  const [PaceUnitType, setPaceUnitType] = useState<PaceUnitType>(
+    (localStorage.getItem("paceUnitType") as PaceUnitType) || "time"
   );
 
   const [runningTimes, setRunningTimes] = useState(loadRunningTimes());
@@ -1659,6 +1668,15 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
             rightIcon={faRunning}
             selected={sportType}
             onChange={switchSportType}
+          />
+          <LeftRightToggle<"metric", "imperial">
+            label="Pace Unit"
+            leftValue="metric"
+            rightValue="imperial"
+            leftIcon={faEuroSign}
+            rightIcon={faDollarSign}
+            selected={PaceUnitType}
+            onChange={setPaceUnitType}
           />
         </div>
       </div>

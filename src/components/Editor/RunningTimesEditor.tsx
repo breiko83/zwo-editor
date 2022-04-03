@@ -38,10 +38,10 @@ export default function RunningTimesEditor({ times, onChange }: RunningTimesEdit
         1 Mile Time
       </RunTimeInput>
       <RunTimeInput time={times.fiveKm} onChange={(fiveKm) => onChange({ ...times, fiveKm })}>
-        5 Km Time
+        5 km Time
       </RunTimeInput>
       <RunTimeInput time={times.tenKm} onChange={(tenKm) => onChange({ ...times, tenKm })}>
-        10 Km Time
+        10 km Time
       </RunTimeInput>
       <RunTimeInput time={times.halfMarathon} onChange={(halfMarathon) => onChange({ ...times, halfMarathon })}>
         Half Marathon Time

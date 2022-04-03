@@ -119,6 +119,9 @@ const helpers = {
     // in km/h
     return ((time / distance) * 18) / 5;
   },
+  speedToPace: function (speedkph) {
+    return moment.duration(3600 / speedkph, "seconds").format("mm:ss", { trim: false });
+  }
 };
 
 export default helpers;
