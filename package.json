@@ -21,7 +21,7 @@
     "chrome-aws-lambda": "^5.3.1",
     "firebase": "^7.16.0",
     "immutability-helper": "^3.0.2",
-    "moment": "^2.26.0",
+    "moment": "^2.29.2",
     "moment-duration-format": "^2.3.2",
     "puppeteer-core": "^5.4.1",
     "rc-slider": "^9.3.0",
