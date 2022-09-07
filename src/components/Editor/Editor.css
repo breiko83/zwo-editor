@@ -141,6 +141,7 @@ a {
 }
 
 .textInput {
+  max-width: 90px;
   font-size: 20px;
   border: 1px solid lightgray;
   text-align: center;
@@ -253,13 +254,12 @@ label {
 }
 
 .info > .workout {
-  padding: 10px;
+  padding: 10px 0 10px 10px;
   display: flex;
   flex-direction: row;
 }
 .info > .workout > .form-input {
-  max-width: 120px;
-  padding: 0 10px;
+   padding: 0 6px;
 }
 
 .run-workout {

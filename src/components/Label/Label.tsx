@@ -2,6 +2,8 @@ import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBolt, faClock, faRuler } from "@fortawesome/free-solid-svg-icons";
 import "./Label.css";
+import helpers from "../helpers";
+import { PaceUnitType } from "../Editor/Editor";
 
 const Label = (props: {
   sportType: string;
@@ -18,12 +20,13 @@ const Label = (props: {
   speed?: number;
   speedStart?: number;
   speedEnd?: number;
+  paceUnitType?: PaceUnitType;
 }) => {
   const paces = ["1M", "5K", "10K", "HM", "M"];
 
   return (
     <div className="label">
-      {props.duration && props.duration !== '00:00' && (
+      {props.duration && props.duration !== "00:00" && (
         <div>
           <FontAwesomeIcon icon={faClock} fixedWidth /> {props.duration}
         </div>
@@ -54,12 +57,14 @@ const Label = (props: {
             {((props.powerEnd / props.ftp) * 100).toFixed(0)}% FTP
           </div>
         )}
-      {props.sportType === "run" && props.distance !== undefined && props.distance !== 0 && (
-        <div>
-          <FontAwesomeIcon icon={faRuler} fixedWidth />{" "}
-          {props.distance.toFixed(0)} m
-        </div>
-      )}
+      {props.sportType === "run" &&
+        props.distance !== undefined &&
+        props.distance !== 0 && (
+          <div>
+            <FontAwesomeIcon icon={faRuler} fixedWidth />{" "}
+            {props.distance.toFixed(0)} m
+          </div>
+        )}
       {props.power &&
         props.ftp &&
         props.pace !== null &&
@@ -100,13 +105,19 @@ const Label = (props: {
           />
         </div>
       )}
-      {props.sportType === "run" && props.speed && (
-        <div>{props.speed?.toFixed(1)} Km/h</div>
+      {props.sportType === "run" && props.speed && props.paceUnitType && (
+        <div>
+          <div>{props.speed?.toFixed(1)} km/h</div>
+          <div>{helpers.speedToPace(props.speed, props.paceUnitType)} { props.paceUnitType === "metric" ? "min/km" : "min/mi" }</div>
+        </div>
       )}
       {props.sportType === "run" && props.speedStart && props.speedEnd && (
         <div>
-          {props.speedStart?.toFixed(1)} Km/h - {props.speedEnd?.toFixed(1)}{" "}
-          Km/h
+        <div>
+          {props.speedStart?.toFixed(1)} km/h - {props.speedEnd?.toFixed(1)}{" "}
+          km/h
+        </div>
+        <div>{helpers.speedToPace(props.speedStart, props.paceUnitType)} - {helpers.speedToPace(props.speedEnd, props.paceUnitType)} { props.paceUnitType === "metric" ? "min/km" : "min/mi" }</div>
         </div>
       )}
     </div>

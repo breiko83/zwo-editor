@@ -118,6 +118,7 @@ const loadRunningTimes = (): RunningTimes => {
 };
 export type SportType = "bike" | "run";
 export type DurationType = "time" | "distance";
+export type PaceUnitType = "metric" | "imperial";
 
 const Editor = ({ match }: RouteComponentProps<TParams>) => {
   const { v4: uuidv4 } = require("uuid");
@@ -174,6 +175,11 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
   // distance or time
   const [durationType, setDurationType] = useState<DurationType>(
     (localStorage.getItem("durationType") as DurationType) || "time"
+  );
+
+  // min / km or min / mi
+  const [paceUnitType, setPaceUnitType] = useState<PaceUnitType>(
+    (localStorage.getItem("paceUnitType") as PaceUnitType) || "metric"
   );
 
   const [runningTimes, setRunningTimes] = useState(loadRunningTimes());
@@ -259,6 +265,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
     localStorage.setItem("tags", JSON.stringify(tags));
     localStorage.setItem("sportType", sportType);
     localStorage.setItem("durationType", durationType);
+    localStorage.setItem("paceUnitType", paceUnitType);
 
     localStorage.setItem("runningTimes", JSON.stringify(runningTimes));
 
@@ -275,6 +282,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
     tags,
     sportType,
     durationType,
+    paceUnitType,
     runningTimes,
   ]);
 
@@ -1102,6 +1110,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
       weight={weight}
       sportType={sportType}
       durationType={durationType}
+      paceUnitType={paceUnitType}
       pace={bar.pace || 0}
       speed={calculateSpeed(bar.pace || 0)}
       onChange={(id: string, value: any) => handleOnChange(id, value)} // Change any to Interface Bar?
@@ -1123,6 +1132,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
       ftp={ftp}
       sportType={sportType}
       durationType={durationType}
+      paceUnitType={paceUnitType}
       pace={bar.pace || 0}
       speed={calculateSpeed(bar.pace || 0)}
       onChange={(id: string, value: any) => handleOnChange(id, value)} // Change any to Interface Bar?
@@ -1641,6 +1651,16 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
             </div>
           )}
           {sportType === "run" && (
+            <div className="form-input">
+              <label>Avg. Workout Pace</label>
+              <input
+                className="textInput"
+                value={helpers.getWorkoutPace(bars, durationType, paceUnitType)}
+                disabled
+              />
+            </div>
+          )}
+          {sportType === "run" && (
             <LeftRightToggle<"time", "distance">
               label="Duration Type"
               leftValue="time"
@@ -1649,6 +1669,17 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
               rightIcon={faRuler}
               selected={durationType}
               onChange={setDurationType}
+            />
+          )}
+           {sportType === "run" && (
+            <LeftRightToggle<"metric", "imperial">
+              label="Pace Unit"
+              leftValue="metric"
+              rightValue="imperial"
+              leftLabel="min/km"
+              rightLabel="min/mi"
+              selected={paceUnitType}
+              onChange={setPaceUnitType}
             />
           )}
           <LeftRightToggle<"bike", "run">

@@ -4,6 +4,7 @@ import { Colors, Zones, ZonesArray } from "../Constants";
 import { Resizable } from "re-resizable";
 import Label from "../Label/Label";
 import helpers from "../helpers";
+import { PaceUnitType } from "../Editor/Editor";
 
 interface IDictionary {
   [index: string]: number;
@@ -24,6 +25,7 @@ const Trapeze = (props: {
   onChange: Function;
   onClick: Function;
   selected: boolean;
+  paceUnitType?: PaceUnitType;
 }) => {
   const multiplier = 250;
   const timeMultiplier = 3;
@@ -58,15 +60,9 @@ const Trapeze = (props: {
       : (props.length || 0) / lengthMultiplier / 3
   );
 
-  const speedStart =
-    props.length !== undefined && props.time !== undefined
-      ? helpers.calculateSpeed(props.length, props.time)
-      : 0;
+  const speedStart = props.startPower * (props.speed || 0) * 3.6;
 
-  const speedEnd =
-    props.length !== undefined && props.time !== undefined
-      ? helpers.calculateSpeed(props.length, props.time)
-      : 0;
+  const speedEnd = props.endPower * (props.speed || 0) * 3.6;
 
   const [height1, setHeight1] = useState(props.startPower * multiplier);
   const [height2, setHeight2] = useState(
@@ -252,7 +248,8 @@ const Trapeze = (props: {
           setCadence={(cadence: number) => handleCadenceChange(cadence)}
           speedStart={speedStart}
           speedEnd={speedEnd}
-        />
+          paceUnitType={props.paceUnitType}
+          />
       )}
       <div className="trapeze" onClick={() => props.onClick(props.id)}>
         <Resizable
