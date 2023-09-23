@@ -59,7 +59,7 @@ import createWorkoutXml from "./createWorkoutXml";
 import ShareForm from "../Forms/ShareForm";
 import ReactTooltip from "react-tooltip";
 
-export interface Bar {
+export interface BarType {
   id: string;
   time: number;
   length?: number;
@@ -134,7 +134,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
       ? localStorage.getItem("id") || generateId()
       : match.params.id
   );
-  const [bars, setBars] = useState<Array<Bar>>(
+  const [bars, setBars] = useState<Array<BarType>>(
     JSON.parse(localStorage.getItem("currentWorkout") || "[]")
   );
   const [actionId, setActionId] = useState<string | undefined>(undefined);
@@ -303,7 +303,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
     setTags([]);
   }
 
-  function handleOnChange(id: string, values: Bar) {
+  function handleOnChange(id: string, values: BarType) {
     const index = bars.findIndex((bar) => bar.id === id);
 
     const updatedArray = [...bars];
@@ -1096,7 +1096,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
     }
   }
 
-  const renderBar = (bar: Bar) => (
+  const renderBar = (bar: BarType) => (
     <Bar
       key={bar.id}
       id={bar.id}
@@ -1118,7 +1118,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
     />
   );
 
-  const renderTrapeze = (bar: Bar) => (
+  const renderTrapeze = (bar: BarType) => (
     <Trapeze
       key={bar.id}
       id={bar.id}
@@ -1139,7 +1139,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
     />
   );
 
-  const renderFreeRide = (bar: Bar) => (
+  const renderFreeRide = (bar: BarType) => (
     <FreeRide
       key={bar.id}
       id={bar.id}
@@ -1154,7 +1154,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
     />
   );
 
-  const renderInterval = (bar: Bar) => (
+  const renderInterval = (bar: BarType) => (
     <Interval
       key={bar.id}
       id={bar.id}
