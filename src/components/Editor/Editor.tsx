@@ -41,7 +41,10 @@ import { ReactComponent as IntervalLogo } from "../../assets/interval.svg";
 import { ReactComponent as SteadyLogo } from "../../assets/steady.svg";
 import Converter from "xml-js";
 import helpers from "../helpers";
-import firebase, { auth } from "../firebase";
+import { firebaseApp } from "../firebase";
+import { User as FirebaseUser } from "firebase/auth";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { getDatabase, onValue, ref, update } from "firebase/database";
 import SaveForm from "../Forms/SaveForm";
 import SignupForm from "../Forms/SignupForm";
 import LoginForm from "../Forms/LoginForm";
@@ -121,6 +124,7 @@ export type DurationType = "time" | "distance";
 export type PaceUnitType = "metric" | "imperial";
 
 const Editor = ({ match }: RouteComponentProps<TParams>) => {
+  const auth = getAuth(firebaseApp);
   const { v4: uuidv4 } = require("uuid");
 
   const S3_URL = "https://zwift-workout.s3-eu-west-1.amazonaws.com";
@@ -156,7 +160,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
   const [savePopupIsVisile, setSavePopupVisibility] = useState(false);
   const [sharePopupIsVisile, setSharePopupVisibility] = useState(false);
 
-  const [user, setUser] = useState<firebase.User | null>(null);
+  const [user, setUser] = useState<FirebaseUser | null>(null);
   const [visibleForm, setVisibleForm] = useState("login"); // default form is login
 
   const canvasRef = useRef<HTMLInputElement>(null);
@@ -187,7 +191,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
   const [textEditorIsVisible, setTextEditorIsVisible] = useState(false);
   const [selectedInstruction, setSelectedInstruction] = useState<Instruction>();
 
-  const db = firebase.database();
+  const db = getDatabase(firebaseApp);
 
   const location = useLocation();
 
@@ -203,44 +207,41 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
   useEffect(() => {
     setMessage({ visible: true, class: "loading", text: "Loading.." });
 
-    db.ref("workouts/" + id)
-      .once("value")
-      .then(function (snapshot) {
-        if (snapshot.val()) {
-          // workout exist on server
-          setAuthor(snapshot.val().author);
-          setName(snapshot.val().name);
-          setDescription(snapshot.val().description);
-          setBars(snapshot.val().workout || []);
-          setInstructions(snapshot.val().instructions || []);
-          setTags(snapshot.val().tags || []);
-          setDurationType(snapshot.val().durationType);
-          setSportType(snapshot.val().sportType);
+    const starCountRef = ref(db, "workouts/" + id);
+    onValue(starCountRef, (snapshot) => {
+      if (snapshot.val()) {
+        // workout exist on server
+        setAuthor(snapshot.val().author);
+        setName(snapshot.val().name);
+        setDescription(snapshot.val().description);
+        setBars(snapshot.val().workout || []);
+        setInstructions(snapshot.val().instructions || []);
+        setTags(snapshot.val().tags || []);
+        setDurationType(snapshot.val().durationType);
+        setSportType(snapshot.val().sportType);
 
-          localStorage.setItem("id", id);
+        localStorage.setItem("id", id);
+      } else {
+        // workout doesn't exist on cloud
+        if (id === localStorage.getItem("id")) {
+          // user refreshed the page
         } else {
-          // workout doesn't exist on cloud
-          if (id === localStorage.getItem("id")) {
-            // user refreshed the page
-          } else {
-            // treat this as new workout
-            setBars([]);
-            setInstructions([]);
-            setName("");
-            setDescription("");
-            setAuthor("");
-            setTags([]);
-          }
-
-          localStorage.setItem("id", id);
+          // treat this as new workout
+          setBars([]);
+          setInstructions([]);
+          setName("");
+          setDescription("");
+          setAuthor("");
+          setTags([]);
         }
-        console.log("useEffect firebase");
 
-        //finished loading
-        setMessage({ visible: false });
-      });
+        localStorage.setItem("id", id);
+      }
+      //finished loading
+      setMessage({ visible: false });
+    });
 
-    auth.onAuthStateChanged((user) => {
+    onAuthStateChanged(auth, (user) => {
       if (user) {
         setUser(user);
       }
@@ -754,15 +755,13 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
   function deleteWorkout() {
     // save to cloud (firebase) if logged in
     if (user) {
-      const itemsRef = firebase.database().ref();
-
       var updates: any = {};
       updates[`users/${user.uid}/workouts/${id}`] = null;
       updates[`workouts/${id}`] = null;
 
       // save to firebase
-      itemsRef
-        .update(updates)
+
+      update(ref(db), updates)
         .then(() => {
           newWorkout();
         })
@@ -804,8 +803,6 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
 
     // save to cloud (firebase) if logged in
     if (user) {
-      const itemsRef = firebase.database().ref();
-
       const item = {
         id: id,
         name: name,
@@ -837,8 +834,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
       updates[`workouts/${id}`] = item;
 
       // save to firebase
-      itemsRef
-        .update(updates)
+      update(ref(db), updates)
         .then(() => {
           //upload to s3
           upload(file, false);
@@ -892,13 +888,17 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
   }
 
   function upload(file: Blob, parse = false) {
-    fetch(process.env.REACT_APP_UPLOAD_FUNCTION || "https://zwiftworkout.netlify.app/.netlify/functions/upload", {
-      method: "POST",
-      body: JSON.stringify({
-        fileType: "zwo",
-        fileName: `${id}.zwo`,
-      }),
-    })
+    fetch(
+      process.env.REACT_APP_UPLOAD_FUNCTION ||
+        "https://zwiftworkout.netlify.app/.netlify/functions/upload",
+      {
+        method: "POST",
+        body: JSON.stringify({
+          fileType: "zwo",
+          fileName: `${id}.zwo`,
+        }),
+      }
+    )
       .then((res) => res.json())
       .then(function (data) {
         const signedUrl = data.uploadURL;
@@ -1671,7 +1671,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
               onChange={setDurationType}
             />
           )}
-           {sportType === "run" && (
+          {sportType === "run" && (
             <LeftRightToggle<"metric", "imperial">
               label="Pace Unit"
               leftValue="metric"

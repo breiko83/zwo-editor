@@ -1,23 +1,26 @@
 import React, { useState } from "react";
-import { auth } from "../firebase";
+import { firebaseApp } from "../firebase";
+import { getAuth, sendPasswordResetEmail } from "firebase/auth";
 import "./Form.css";
 
-const ForgotPasswordForm = (props: { workoutId: string,  dismiss: Function }) => {
+const ForgotPasswordForm = (props: {
+  workoutId: string;
+  dismiss: Function;
+}) => {
+  const auth = getAuth(firebaseApp);
   const [email, setEmail] = useState("");
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [disabled, setDisabled] = useState(false);
 
   function forgotPassword(email: string) {
-
-    auth
-      .sendPasswordResetEmail(email)
+    sendPasswordResetEmail(auth, email)
       .then(function () {
         setSuccess("We have emailed you a password reset link.");
         setDisabled(true);
         // Email sent.
       })
-      .catch(function (error) {        
+      .catch(function (error) {
         setError(error.message);
       });
   }

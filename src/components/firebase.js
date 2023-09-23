@@ -1,6 +1,4 @@
-import * as firebase from 'firebase/app'
-import 'firebase/auth';
-import 'firebase/database';
+import { initializeApp } from "firebase/app";
 
 const firebaseConfig = {
   apiKey: "AIzaSyAnjDvxTUCDNtOTfl_LoJKs0ejCaKQ5MFM",
@@ -10,9 +8,7 @@ const firebaseConfig = {
   storageBucket: "zwiftworkout.appspot.com",
   messagingSenderId: "1029540478836",
   appId: "1:1029540478836:web:c951e0c72508468a9ef621",
-  measurementId: "G-1B0S5TVM5F"
-}
+  measurementId: "G-1B0S5TVM5F",
+};
 
-firebase.initializeApp(firebaseConfig)
-export default firebase
-export const auth = firebase.auth()
+export const firebaseApp = initializeApp(firebaseConfig);
