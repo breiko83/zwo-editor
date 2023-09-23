@@ -157,8 +157,8 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
   );
   const [author, setAuthor] = useState(localStorage.getItem("author") || "");
 
-  const [savePopupIsVisile, setSavePopupVisibility] = useState(false);
-  const [sharePopupIsVisile, setSharePopupVisibility] = useState(false);
+  const [savePopupIsVisible, setSavePopupVisibility] = useState(false);
+  const [sharePopupIsVisible, setSharePopupVisibility] = useState(false);
 
   const [user, setUser] = useState<FirebaseUser | null>(null);
   const [visibleForm, setVisibleForm] = useState("login"); // default form is login
@@ -251,7 +251,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
 
     ReactGA.initialize("UA-55073449-9");
     ReactGA.pageview(window.location.pathname + window.location.search);
-  }, [id, db]);
+  }, [id, db, auth]);
 
   useEffect(() => {
     localStorage.setItem("currentWorkout", JSON.stringify(bars));
@@ -1582,7 +1582,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
         />
       )}
 
-      {savePopupIsVisile && (
+      {savePopupIsVisible && (
         <Popup width="500px" dismiss={() => setSavePopupVisibility(false)}>
           {user ? (
             <SaveForm
@@ -1606,7 +1606,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
           )}
         </Popup>
       )}
-      {sharePopupIsVisile && (
+      {sharePopupIsVisible && (
         <Popup width="500px" dismiss={() => setSharePopupVisibility(false)}>
           <ShareForm id={id} onDismiss={() => setSharePopupVisibility(false)} />
         </Popup>
