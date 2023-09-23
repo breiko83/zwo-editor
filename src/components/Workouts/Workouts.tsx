@@ -46,7 +46,7 @@ const Workouts = (props: { userId: string }) => {
         ]);
       });
     });
-  }, [props.userId]);
+  }, [props.userId, db]);
 
   return (
     <div className="workouts">

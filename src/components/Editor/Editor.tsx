@@ -43,7 +43,7 @@ import Converter from "xml-js";
 import helpers from "../helpers";
 import { firebaseApp } from "../firebase";
 import { User as FirebaseUser } from "firebase/auth";
-import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
 import { getDatabase, onValue, ref, update } from "firebase/database";
 import SaveForm from "../Forms/SaveForm";
 import SignupForm from "../Forms/SignupForm";
@@ -857,9 +857,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
   }
 
   function logout() {
-    console.log("logout");
-
-    auth.signOut().then(() => setUser(null));
+    signOut(auth).then(() => setUser(null));
   }
 
   function downloadWorkout() {
