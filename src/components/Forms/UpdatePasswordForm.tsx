@@ -1,9 +1,11 @@
 import React, { useState } from "react";
-import { useLocation } from "react-router";
-import { auth } from "../firebase";
+import { useLocation } from "react-router-dom";
+import { firebaseApp } from "../firebase";
+import { getAuth, confirmPasswordReset } from "firebase/auth";
 import "./Form.css";
 
 const UpdatePasswordForm = (props: { dismiss: Function }) => {
+  const auth = getAuth(firebaseApp);
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
@@ -13,11 +15,10 @@ const UpdatePasswordForm = (props: { dismiss: Function }) => {
 
   const location = useLocation();
   const params = new URLSearchParams(location.search);
-  const code = params.get("oobCode") || '';
+  const code = params.get("oobCode") || "";
 
   function resetPassword(code: string, password: string) {
-    auth
-      .confirmPasswordReset(code, password)
+    confirmPasswordReset(auth, code, password)
       .then(function () {
         setSuccess("Your password has been updated");
         setDisabled(true);
@@ -31,12 +32,10 @@ const UpdatePasswordForm = (props: { dismiss: Function }) => {
   return (
     <form
       onSubmit={(e) => {
-        setError('');
-        
-        if(password === confirmPassword)
-          resetPassword(code, password);
-        else
-          setError('Passwords do not match');
+        setError("");
+
+        if (password === confirmPassword) resetPassword(code, password);
+        else setError("Passwords do not match");
 
         e.preventDefault();
       }}
@@ -45,17 +44,29 @@ const UpdatePasswordForm = (props: { dismiss: Function }) => {
       <div className="alert">{error}</div>
       <div className="form-control">
         <label htmlFor="password">New password</label>
-        <input type="password" name="password" autoComplete='new-password' value={password} onChange={(e) => {
-          setPassword(e.target.value)
-          setError('')
-        }} />
+        <input
+          type="password"
+          name="password"
+          autoComplete="new-password"
+          value={password}
+          onChange={(e) => {
+            setPassword(e.target.value);
+            setError("");
+          }}
+        />
       </div>
       <div className="form-control">
         <label htmlFor="password">Confirm password</label>
-        <input type="password" name="confirmPassword" autoComplete='new-password' value={confirmPassword} onChange={(e) => {
-          setConfirmPassword(e.target.value)
-          setError('')
-        }} />
+        <input
+          type="password"
+          name="confirmPassword"
+          autoComplete="new-password"
+          value={confirmPassword}
+          onChange={(e) => {
+            setConfirmPassword(e.target.value);
+            setError("");
+          }}
+        />
       </div>
       <div className="form-control">
         <button className="btn btn-primary" type="submit" disabled={disabled}>

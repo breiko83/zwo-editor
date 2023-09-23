@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useLocation } from "react-router";
+import { useLocation } from "react-router-dom";
 import "./Editor.css";
 import { Colors, Zones } from "../Constants";
 import Bar from "../Bar/Bar";
@@ -41,7 +41,10 @@ import { ReactComponent as IntervalLogo } from "../../assets/interval.svg";
 import { ReactComponent as SteadyLogo } from "../../assets/steady.svg";
 import Converter from "xml-js";
 import helpers from "../helpers";
-import firebase, { auth } from "../firebase";
+import { firebaseApp } from "../firebase";
+import { User as FirebaseUser } from "firebase/auth";
+import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
+import { getDatabase, onValue, ref, update } from "firebase/database";
 import SaveForm from "../Forms/SaveForm";
 import SignupForm from "../Forms/SignupForm";
 import LoginForm from "../Forms/LoginForm";
@@ -56,7 +59,7 @@ import createWorkoutXml from "./createWorkoutXml";
 import ShareForm from "../Forms/ShareForm";
 import ReactTooltip from "react-tooltip";
 
-export interface Bar {
+export interface BarType {
   id: string;
   time: number;
   length?: number;
@@ -121,6 +124,7 @@ export type DurationType = "time" | "distance";
 export type PaceUnitType = "metric" | "imperial";
 
 const Editor = ({ match }: RouteComponentProps<TParams>) => {
+  const auth = getAuth(firebaseApp);
   const { v4: uuidv4 } = require("uuid");
 
   const S3_URL = "https://zwift-workout.s3-eu-west-1.amazonaws.com";
@@ -130,7 +134,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
       ? localStorage.getItem("id") || generateId()
       : match.params.id
   );
-  const [bars, setBars] = useState<Array<Bar>>(
+  const [bars, setBars] = useState<Array<BarType>>(
     JSON.parse(localStorage.getItem("currentWorkout") || "[]")
   );
   const [actionId, setActionId] = useState<string | undefined>(undefined);
@@ -153,10 +157,10 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
   );
   const [author, setAuthor] = useState(localStorage.getItem("author") || "");
 
-  const [savePopupIsVisile, setSavePopupVisibility] = useState(false);
-  const [sharePopupIsVisile, setSharePopupVisibility] = useState(false);
+  const [savePopupIsVisible, setSavePopupVisibility] = useState(false);
+  const [sharePopupIsVisible, setSharePopupVisibility] = useState(false);
 
-  const [user, setUser] = useState<firebase.User | null>(null);
+  const [user, setUser] = useState<FirebaseUser | null>(null);
   const [visibleForm, setVisibleForm] = useState("login"); // default form is login
 
   const canvasRef = useRef<HTMLInputElement>(null);
@@ -187,7 +191,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
   const [textEditorIsVisible, setTextEditorIsVisible] = useState(false);
   const [selectedInstruction, setSelectedInstruction] = useState<Instruction>();
 
-  const db = firebase.database();
+  const db = getDatabase(firebaseApp);
 
   const location = useLocation();
 
@@ -203,44 +207,41 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
   useEffect(() => {
     setMessage({ visible: true, class: "loading", text: "Loading.." });
 
-    db.ref("workouts/" + id)
-      .once("value")
-      .then(function (snapshot) {
-        if (snapshot.val()) {
-          // workout exist on server
-          setAuthor(snapshot.val().author);
-          setName(snapshot.val().name);
-          setDescription(snapshot.val().description);
-          setBars(snapshot.val().workout || []);
-          setInstructions(snapshot.val().instructions || []);
-          setTags(snapshot.val().tags || []);
-          setDurationType(snapshot.val().durationType);
-          setSportType(snapshot.val().sportType);
+    const starCountRef = ref(db, "workouts/" + id);
+    onValue(starCountRef, (snapshot) => {
+      if (snapshot.val()) {
+        // workout exist on server
+        setAuthor(snapshot.val().author);
+        setName(snapshot.val().name);
+        setDescription(snapshot.val().description);
+        setBars(snapshot.val().workout || []);
+        setInstructions(snapshot.val().instructions || []);
+        setTags(snapshot.val().tags || []);
+        setDurationType(snapshot.val().durationType);
+        setSportType(snapshot.val().sportType);
 
-          localStorage.setItem("id", id);
+        localStorage.setItem("id", id);
+      } else {
+        // workout doesn't exist on cloud
+        if (id === localStorage.getItem("id")) {
+          // user refreshed the page
         } else {
-          // workout doesn't exist on cloud
-          if (id === localStorage.getItem("id")) {
-            // user refreshed the page
-          } else {
-            // treat this as new workout
-            setBars([]);
-            setInstructions([]);
-            setName("");
-            setDescription("");
-            setAuthor("");
-            setTags([]);
-          }
-
-          localStorage.setItem("id", id);
+          // treat this as new workout
+          setBars([]);
+          setInstructions([]);
+          setName("");
+          setDescription("");
+          setAuthor("");
+          setTags([]);
         }
-        console.log("useEffect firebase");
 
-        //finished loading
-        setMessage({ visible: false });
-      });
+        localStorage.setItem("id", id);
+      }
+      //finished loading
+      setMessage({ visible: false });
+    });
 
-    auth.onAuthStateChanged((user) => {
+    onAuthStateChanged(auth, (user) => {
       if (user) {
         setUser(user);
       }
@@ -250,7 +251,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
 
     ReactGA.initialize("UA-55073449-9");
     ReactGA.pageview(window.location.pathname + window.location.search);
-  }, [id, db]);
+  }, [id, db, auth]);
 
   useEffect(() => {
     localStorage.setItem("currentWorkout", JSON.stringify(bars));
@@ -302,7 +303,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
     setTags([]);
   }
 
-  function handleOnChange(id: string, values: Bar) {
+  function handleOnChange(id: string, values: BarType) {
     const index = bars.findIndex((bar) => bar.id === id);
 
     const updatedArray = [...bars];
@@ -754,15 +755,13 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
   function deleteWorkout() {
     // save to cloud (firebase) if logged in
     if (user) {
-      const itemsRef = firebase.database().ref();
-
       var updates: any = {};
       updates[`users/${user.uid}/workouts/${id}`] = null;
       updates[`workouts/${id}`] = null;
 
       // save to firebase
-      itemsRef
-        .update(updates)
+
+      update(ref(db), updates)
         .then(() => {
           newWorkout();
         })
@@ -804,8 +803,6 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
 
     // save to cloud (firebase) if logged in
     if (user) {
-      const itemsRef = firebase.database().ref();
-
       const item = {
         id: id,
         name: name,
@@ -837,8 +834,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
       updates[`workouts/${id}`] = item;
 
       // save to firebase
-      itemsRef
-        .update(updates)
+      update(ref(db), updates)
         .then(() => {
           //upload to s3
           upload(file, false);
@@ -861,9 +857,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
   }
 
   function logout() {
-    console.log("logout");
-
-    auth.signOut().then(() => setUser(null));
+    signOut(auth).then(() => setUser(null));
   }
 
   function downloadWorkout() {
@@ -892,13 +886,17 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
   }
 
   function upload(file: Blob, parse = false) {
-    fetch(process.env.REACT_APP_UPLOAD_FUNCTION || "https://zwiftworkout.netlify.app/.netlify/functions/upload", {
-      method: "POST",
-      body: JSON.stringify({
-        fileType: "zwo",
-        fileName: `${id}.zwo`,
-      }),
-    })
+    fetch(
+      process.env.REACT_APP_UPLOAD_FUNCTION ||
+        "https://zwiftworkout.netlify.app/.netlify/functions/upload",
+      {
+        method: "POST",
+        body: JSON.stringify({
+          fileType: "zwo",
+          fileName: `${id}.zwo`,
+        }),
+      }
+    )
       .then((res) => res.json())
       .then(function (data) {
         const signedUrl = data.uploadURL;
@@ -1098,7 +1096,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
     }
   }
 
-  const renderBar = (bar: Bar) => (
+  const renderBar = (bar: BarType) => (
     <Bar
       key={bar.id}
       id={bar.id}
@@ -1120,7 +1118,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
     />
   );
 
-  const renderTrapeze = (bar: Bar) => (
+  const renderTrapeze = (bar: BarType) => (
     <Trapeze
       key={bar.id}
       id={bar.id}
@@ -1141,7 +1139,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
     />
   );
 
-  const renderFreeRide = (bar: Bar) => (
+  const renderFreeRide = (bar: BarType) => (
     <FreeRide
       key={bar.id}
       id={bar.id}
@@ -1156,7 +1154,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
     />
   );
 
-  const renderInterval = (bar: Bar) => (
+  const renderInterval = (bar: BarType) => (
     <Interval
       key={bar.id}
       id={bar.id}
@@ -1584,7 +1582,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
         />
       )}
 
-      {savePopupIsVisile && (
+      {savePopupIsVisible && (
         <Popup width="500px" dismiss={() => setSavePopupVisibility(false)}>
           {user ? (
             <SaveForm
@@ -1608,7 +1606,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
           )}
         </Popup>
       )}
-      {sharePopupIsVisile && (
+      {sharePopupIsVisible && (
         <Popup width="500px" dismiss={() => setSharePopupVisibility(false)}>
           <ShareForm id={id} onDismiss={() => setSharePopupVisibility(false)} />
         </Popup>
@@ -1671,7 +1669,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
               onChange={setDurationType}
             />
           )}
-           {sportType === "run" && (
+          {sportType === "run" && (
             <LeftRightToggle<"metric", "imperial">
               label="Pace Unit"
               leftValue="metric"
