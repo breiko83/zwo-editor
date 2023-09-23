@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useLocation } from "react-router";
+import { useLocation } from "react-router-dom";
 import "./Editor.css";
 import { Colors, Zones } from "../Constants";
 import Bar from "../Bar/Bar";

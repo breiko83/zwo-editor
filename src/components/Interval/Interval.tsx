@@ -1,84 +1,100 @@
-import React, { useEffect, useState } from 'react'
-import Bar from '../Bar/Bar'
-import './Interval.css'
+import React, { useEffect, useState } from "react";
+import Bar from "../Bar/Bar";
+import "./Interval.css";
 
-import {Bar as BarInterface} from '../Editor/Editor'
+import { BarType } from "../Editor/Editor";
 
-const Interval = (props: { id: string, repeat: number, onDuration?: number, offDuration?: number, onLength?: number, offLength?: number, onPower: number, offPower: number, cadence: number, restingCadence: number, ftp: number, weight: number, pace: number, speed?: number, sportType: string, durationType: string, handleIntervalChange: Function, handleIntervalClick: Function, selected: boolean }) => {
+const Interval = (props: {
+  id: string;
+  repeat: number;
+  onDuration?: number;
+  offDuration?: number;
+  onLength?: number;
+  offLength?: number;
+  onPower: number;
+  offPower: number;
+  cadence: number;
+  restingCadence: number;
+  ftp: number;
+  weight: number;
+  pace: number;
+  speed?: number;
+  sportType: string;
+  durationType: string;
+  handleIntervalChange: Function;
+  handleIntervalClick: Function;
+  selected: boolean;
+}) => {
+  const { v4: uuidv4 } = require("uuid");
 
-  const { v4: uuidv4 } = require('uuid');
+  const [bars, setBars] = useState<Array<BarType>>([]);
+  const [nIntervals, setNIntervals] = useState(props.repeat);
 
-  const [bars, setBars] = useState<Array<BarInterface>>([])
-  const [nIntervals, setNIntervals] = useState(props.repeat)
+  const [onDuration, setOnDuration] = useState(props.onDuration);
+  const [offDuration, setOffDuration] = useState(props.offDuration);
 
-  const [onDuration, setOnDuration] = useState(props.onDuration)
-  const [offDuration, setOffDuration] = useState(props.offDuration)
-
-  const [onLength, setOnLength] = useState(props.onLength)
-  const [offLength, setOffLength] = useState(props.offLength)
+  const [onLength, setOnLength] = useState(props.onLength);
+  const [offLength, setOffLength] = useState(props.offLength);
 
   useEffect(() => {
-    const bars = []
+    const bars = [];
 
     for (var i = 0; i < nIntervals; i++) {
-      bars.push(
-        {
-          time: onDuration || 0,
-          length: onLength || 0,
-          power: props.onPower,
-          cadence: props.cadence,
-          type: 'bar',
-          pace: props.pace,
-          id: uuidv4()
-        })
+      bars.push({
+        time: onDuration || 0,
+        length: onLength || 0,
+        power: props.onPower,
+        cadence: props.cadence,
+        type: "bar",
+        pace: props.pace,
+        id: uuidv4(),
+      });
 
-      bars.push(
-        {
-          time: offDuration || 0,
-          length: offLength || 0,
-          power: props.offPower,
-          cadence: props.restingCadence,
-          type: 'bar',
-          pace: props.pace,
-          id: uuidv4()
-        })
+      bars.push({
+        time: offDuration || 0,
+        length: offLength || 0,
+        power: props.offPower,
+        cadence: props.restingCadence,
+        type: "bar",
+        pace: props.pace,
+        id: uuidv4(),
+      });
     }
-    setBars(bars)
+    setBars(bars);
 
     // eslint-disable-next-line
-  }, [nIntervals])
+  }, [nIntervals]);
 
-  function handleOnChange(id: string, values: BarInterface) {
+  function handleOnChange(id: string, values: BarType) {
+    const index = bars.findIndex((bar) => bar.id === id);
 
-    const index = bars.findIndex(bar => bar.id === id)
-    
     if (index % 2 === 1) {
-      setOffDuration(values.time)
-      setOffLength(values.length)
-    }else{
-      setOnDuration(values.time)
-      setOnLength(values.length)
+      setOffDuration(values.time);
+      setOffLength(values.length);
+    } else {
+      setOnDuration(values.time);
+      setOnLength(values.length);
     }
 
     for (var i = 0; i < bars.length; i++) {
-      if (index % 2 === i % 2) {       
-        bars[i].time = values.time
-        bars[i].power = values.power
-        bars[i].length = values.length
-        bars[i].cadence = values.cadence        
-      }      
+      if (index % 2 === i % 2) {
+        bars[i].time = values.time;
+        bars[i].power = values.power;
+        bars[i].length = values.length;
+        bars[i].cadence = values.cadence;
+      }
     }
-    var time = 0
-    bars.map((bar) => time += bar.time)
+    var time = 0;
+    bars.map((bar) => (time += bar.time));
 
-    var length = 0
-    bars.map((bar) => length += (bar.length || 0))
+    var length = 0;
+    bars.map((bar) => (length += bar.length || 0));
 
     props.handleIntervalChange(props.id, {
       time: time,
       length: length,
       id: props.id,
-      type: 'interval',
+      type: "interval",
       cadence: bars[0].cadence,
       restingCadence: bars[1].cadence,
       pace: props.pace,
@@ -88,21 +104,22 @@ const Interval = (props: { id: string, repeat: number, onDuration?: number, offD
       onPower: bars[0].power,
       offPower: bars[1].power,
       onLength: bars[0].length,
-      offLength: bars[1].length
-    })
-
+      offLength: bars[1].length,
+    });
   }
 
   function handleAddInterval() {
-    setNIntervals(nIntervals + 1)
-    var time = 0
-    bars.map((bar) => time += bar.time)
+    setNIntervals(nIntervals + 1);
+    var time = 0;
+    bars.map((bar) => (time += bar.time));
 
     props.handleIntervalChange(props.id, {
-      time: ((props.onDuration || 0) + (props.offDuration || 0)) * (nIntervals + 1),
-      length: ((props.onLength || 0) + (props.offLength || 0)) * (nIntervals + 1),
+      time:
+        ((props.onDuration || 0) + (props.offDuration || 0)) * (nIntervals + 1),
+      length:
+        ((props.onLength || 0) + (props.offLength || 0)) * (nIntervals + 1),
       id: props.id,
-      type: 'interval',
+      type: "interval",
       cadence: props.cadence,
       restingCadence: props.restingCadence,
       pace: props.pace,
@@ -112,21 +129,24 @@ const Interval = (props: { id: string, repeat: number, onDuration?: number, offD
       onPower: props.onPower,
       offPower: props.offPower,
       onLength: props.onLength,
-      offLength: props.offLength
-    })
+      offLength: props.offLength,
+    });
   }
 
   function handleRemoveInterval() {
     if (nIntervals > 1) {
-      setNIntervals(nIntervals - 1)
-      var time = 0
-      bars.map((bar) => time += bar.time)
+      setNIntervals(nIntervals - 1);
+      var time = 0;
+      bars.map((bar) => (time += bar.time));
 
       props.handleIntervalChange(props.id, {
-        time: ((props.onDuration || 0) + (props.offDuration || 0)) * (nIntervals - 1),
-        length: ((props.onLength || 0) + (props.offLength || 0)) * (nIntervals - 1),
+        time:
+          ((props.onDuration || 0) + (props.offDuration || 0)) *
+          (nIntervals - 1),
+        length:
+          ((props.onLength || 0) + (props.offLength || 0)) * (nIntervals - 1),
         id: props.id,
-        type: 'interval',
+        type: "interval",
         cadence: props.cadence,
         restingCadence: props.restingCadence,
         pace: props.pace,
@@ -136,12 +156,12 @@ const Interval = (props: { id: string, repeat: number, onDuration?: number, offD
         onPower: props.onPower,
         offPower: props.offPower,
         onLength: props.onLength,
-        offLength: props.offLength
-      })
+        offLength: props.offLength,
+      });
     }
   }
 
-  const renderBar = (bar: BarInterface, withLabel: boolean) => (
+  const renderBar = (bar: BarType, withLabel: boolean) => (
     <Bar
       key={bar.id}
       id={bar.id}
@@ -160,17 +180,21 @@ const Interval = (props: { id: string, repeat: number, onDuration?: number, offD
       selected={props.selected}
       showLabel={withLabel}
     />
-  )
-
+  );
 
   return (
     <div>
-      <div className='buttons'><button onClick={handleAddInterval}>+</button><button onClick={handleRemoveInterval}>-</button></div>
-      <div className='intervals'>
-        {bars.map((bar, index) => renderBar(bar, index === 0 || index === bars.length - 1))}
-      </div>      
+      <div className="buttons">
+        <button onClick={handleAddInterval}>+</button>
+        <button onClick={handleRemoveInterval}>-</button>
+      </div>
+      <div className="intervals">
+        {bars.map((bar, index) =>
+          renderBar(bar, index === 0 || index === bars.length - 1)
+        )}
+      </div>
     </div>
-  )
-}
+  );
+};
 
-export default Interval
+export default Interval;
