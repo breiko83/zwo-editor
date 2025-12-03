@@ -24,7 +24,6 @@
     "moment-duration-format": "^2.3.2",
     "puppeteer-core": "^22.0.0",
     "rc-slider": "^9.3.0",
-    "rc-time-picker": "^3.7.3",
     "re-resizable": "^6.4.0",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",

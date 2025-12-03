@@ -1,7 +1,6 @@
 import React, { useCallback } from 'react';
 import './RunningTimesEditor.css';
-import TimePicker from 'rc-time-picker';
-import 'rc-time-picker/assets/index.css'
+import TimePicker from './TimePicker';
 import helpers from '../helpers';
 import moment from 'moment'
 
@@ -62,7 +61,6 @@ const RunTimeInput: React.FC<{time: string, onChange: (time: string) => void}> =
     <TimePicker
       value={time === '' ? undefined : moment(time, "HH:mm:ss")}
       placeholder="00:00:00"
-      defaultOpenValue={moment("00:00:00")}
       className="timePicker"
       onChange={(value) => onChange(value ? value.format("HH:mm:ss") : '')}
     />
