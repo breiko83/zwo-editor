@@ -1311,6 +1311,27 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
 
     const workoutBlocks = textValue.split("\n");
     workoutBlocks.forEach((workoutBlock) => {
+      // Handle messages first to avoid false positives with keywords
+      if (workoutBlock.includes("message")) {
+        // extract message
+        const doubleQuoteMatch = workoutBlock.match(/"([^"]*)"/);
+        const singleQuoteMatch = workoutBlock.match(/'([^']*)'/);
+        const message = doubleQuoteMatch || singleQuoteMatch;
+        const text = message ? message[1] : "";
+
+        const durationInSeconds = workoutBlock.match(/([0-9]\d*s)/);
+        const durationInMinutes = workoutBlock.match(/([0-9]*:?[0-9][0-9]*m)/);
+
+        let duration = durationInSeconds && parseInt(durationInSeconds[0]);
+        duration = durationInMinutes
+          ? parseInt(durationInMinutes[0].split(":")[0]) * 60 +
+            (parseInt(durationInMinutes[0].split(":")[1]) || 0)
+          : duration;
+
+        addInstruction(text, duration || 0);
+        return; // Skip to next iteration
+      }
+
       if (workoutBlock.includes("steady")) {
         // generate a steady state block
 
@@ -1499,23 +1520,6 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
           rpm,
           restingRpm
         );
-      }
-
-      if (workoutBlock.includes("message")) {
-        // extract message
-        const message = workoutBlock.match(/["'](.*?)["']/);
-        const text = message ? message[0] : "";
-
-        const durationInSeconds = workoutBlock.match(/([0-9]\d*s)/);
-        const durationInMinutes = workoutBlock.match(/([0-9]*:?[0-9][0-9]*m)/);
-
-        let duration = durationInSeconds && parseInt(durationInSeconds[0]);
-        duration = durationInMinutes
-          ? parseInt(durationInMinutes[0].split(":")[0]) * 60 +
-            (parseInt(durationInMinutes[0].split(":")[1]) || 0)
-          : duration;
-
-        addInstruction(text, duration || 0);
       }
     });
   }
