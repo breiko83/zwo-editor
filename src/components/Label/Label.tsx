@@ -21,6 +21,8 @@ const Label = (props: {
   speedStart?: number;
   speedEnd?: number;
   paceUnitType?: PaceUnitType;
+  incline?: number;
+  setIncline?: Function;
 }) => {
   const paces = ["1M", "5K", "10K", "HM", "M"];
 
@@ -120,8 +122,32 @@ const Label = (props: {
         <div>{helpers.speedToPace(props.speedStart, props.paceUnitType)} - {helpers.speedToPace(props.speedEnd, props.paceUnitType)} { props.paceUnitType === "metric" ? "min/km" : "min/mi" }</div>
         </div>
       )}
+      {props.sportType === "run" && (
+        <div className="cadence-row">
+          <label className="cadenceLabel">Incline</label>
+          <input
+            type="number"
+            min="-100"
+            max="100"
+            step="1"
+            name="incline"
+            value={props.incline}
+            onChange={(e) => {
+              if (props.setIncline) {
+                props.setIncline(e.target.value);
+              }
+            }}
+            onClick={(e) => {
+              e.stopPropagation();
+            }}
+            className="textField cadence"
+          />
+          <span>%</span>
+        </div>
+      )}
     </div>
   );
 };
 
 export default Label;
+

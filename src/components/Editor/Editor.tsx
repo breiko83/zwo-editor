@@ -77,6 +77,7 @@ export interface BarType {
   pace?: number;
   onLength?: number;
   offLength?: number;
+  incline?: number;
 }
 
 export interface Instruction {
@@ -364,7 +365,8 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
     duration: number = 300,
     cadence: number = 0,
     pace: number = 0,
-    length: number = 200
+    length: number = 200,
+    incline: number = 0
   ) {
     setBars((bars) => [
       ...bars,
@@ -388,6 +390,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
         type: "bar",
         id: uuidv4(),
         pace: pace,
+        incline: incline,
       },
     ]);
   }
@@ -439,7 +442,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
         length: durationType === "time" ? 0 : length,
         cadence: cadence,
         type: "freeRide",
-        id: uuidv4(),
+        id: uuidv4()
       },
     ]);
   }
@@ -526,7 +529,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
                 ),
                 1
               )
-            : offLength,
+            : offLength
       },
     ]);
   }
@@ -993,6 +996,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
                 OnPower: string;
                 OffPower: string;
                 Pace: string;
+                Incline: string;
               };
               elements: any;
             }) => {
@@ -1003,7 +1007,9 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
                   parseFloat(w.attributes.Power || w.attributes.PowerLow),
                   parseFloat(w.attributes.Duration),
                   parseFloat(w.attributes.Cadence || "0"),
-                  parseInt(w.attributes.Pace || "0")
+                  parseInt(w.attributes.Pace || "0"),
+                  undefined,
+                  parseFloat(w.attributes.Incline || "0") * 100
                 );
 
               if (
@@ -1017,7 +1023,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
                   parseFloat(w.attributes.Duration),
                   parseInt(w.attributes.Pace || "0"),
                   undefined,
-                  parseInt(w.attributes.Cadence)
+                  parseInt(w.attributes.Cadence),
                 );
 
               if (w.name === "IntervalsT") {
@@ -1029,7 +1035,9 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
                   parseFloat(w.attributes.OffPower),
                   parseInt(w.attributes.Cadence || "0"),
                   parseInt(w.attributes.CadenceResting),
-                  parseInt(w.attributes.Pace || "0")
+                  parseInt(w.attributes.Pace || "0"),
+                  undefined,
+                  undefined,
                 );
                 duration =
                   (parseFloat(w.attributes.OnDuration) +
@@ -1040,7 +1048,8 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
               if (w.name === "FreeRide")
                 addFreeRide(
                   parseFloat(w.attributes.Duration),
-                  parseInt(w.attributes.Cadence)
+                  parseInt(w.attributes.Cadence),
+                  undefined,
                 );
 
               // check for instructions
@@ -1115,6 +1124,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
       onClick={(id: string) => handleOnClick(id)}
       selected={bar.id === actionId}
       showLabel={true}
+      incline={bar.incline}
     />
   );
 

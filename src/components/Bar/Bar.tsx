@@ -23,6 +23,7 @@ const Bar = (props: {
   selected: boolean;
   showLabel: boolean;
   paceUnitType?: PaceUnitType;
+  incline?: number;
 }) => {
   const multiplier = 250;
   const timeMultiplier = 3;
@@ -75,6 +76,20 @@ const Bar = (props: {
       type: "bar",
       pace: props.pace,
       id: props.id,
+      incline: props.incline,
+    });
+  };
+
+  const handleInclineChange = (incline: number) => {
+    props.onChange(props.id, {
+      time: props.time,
+      length: props.length,
+      power: props.power,
+      cadence: props.cadence,
+      type: "bar",
+      pace: props.pace,
+      id: props.id,
+      incline: incline,
     });
   };
 
@@ -109,6 +124,7 @@ const Bar = (props: {
       type: "bar",
       pace: props.pace,
       id: props.id,
+      incline: props.incline,
     });
   };
 
@@ -140,6 +156,7 @@ const Bar = (props: {
       type: "bar",
       pace: props.pace,
       id: props.id,
+      incline: props.incline,
     });
   };
 
@@ -186,6 +203,8 @@ const Bar = (props: {
           cadence={props.cadence}
           setCadence={(cadence: number) => handleCadenceChange(cadence)}
           speed={speed}
+          incline={props.incline}
+          setIncline={(incline: number) => handleInclineChange(incline)}
         />
       )}
       <Resizable

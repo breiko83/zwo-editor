@@ -59,6 +59,8 @@ export default function createWorkoutXml({
 
       // add cadence if not zero
       bar.cadence !== 0 && segment.att("Cadence", bar.cadence);
+      // add incline for running workouts if not zero
+      sportType === "run" && bar.incline !== undefined && bar.incline !== 0 && segment.att("Incline", (bar.incline / 100).toFixed(2));
     } else if (bar.type === "trapeze" && bar.startPower && bar.endPower) {
       // index 0 is warmup
       // last index is cooldown
