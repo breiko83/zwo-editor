@@ -7,7 +7,7 @@ import Twitter from './assets/twitter.png'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faBolt, faLaptop, faCloud, faPiggyBank, faRunning, faBiking } from '@fortawesome/free-solid-svg-icons'
 import ReactGA from 'react-ga';
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
 import Footer from './components/Footer/Footer'
 
 export default function Home() {
