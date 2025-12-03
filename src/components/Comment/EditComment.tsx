@@ -23,7 +23,7 @@ const EditComment = (props: {
     props.onChange(props.instruction.id, {
       id: props.instruction.id,
       text: text,
-      lenth: props.instruction.length,
+      length: props.instruction.length,
       time: props.instruction.time,
     });
   }
