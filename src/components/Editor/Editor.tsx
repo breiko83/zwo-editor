@@ -401,8 +401,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
     duration: number = 300,
     pace: number = 0,
     length: number = 1000,
-    cadence: number = 0,
-    incline: number = 0
+    cadence: number = 0
   ) {
     setBars((bars) => [
       ...bars,
@@ -427,7 +426,6 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
         pace: pace,
         type: "trapeze",
         id: uuidv4(),
-        incline: incline,
       },
     ]);
   }
@@ -435,8 +433,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
   function addFreeRide(
     duration: number = 600,
     cadence: number = 0,
-    length: number = 1000,
-    incline: number = 0
+    length: number = 1000
   ) {
     setBars((bars) => [
       ...bars,
@@ -445,8 +442,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
         length: durationType === "time" ? 0 : length,
         cadence: cadence,
         type: "freeRide",
-        id: uuidv4(),
-        incline: incline,
+        id: uuidv4()
       },
     ]);
   }
@@ -461,8 +457,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
     restingCadence: number = 0,
     pace: number = 0,
     onLength: number = 200,
-    offLength: number = 200,
-    incline: number = 0
+    offLength: number = 200
   ) {
     setBars((bars) => [
       ...bars,
@@ -534,8 +529,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
                 ),
                 1
               )
-            : offLength,
-        incline: incline,
+            : offLength
       },
     ]);
   }
@@ -1002,7 +996,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
                 OnPower: string;
                 OffPower: string;
                 Pace: string;
-                incline: string;
+                Incline: string;
               };
               elements: any;
             }) => {
@@ -1015,7 +1009,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
                   parseFloat(w.attributes.Cadence || "0"),
                   parseInt(w.attributes.Pace || "0"),
                   undefined,
-                  parseFloat(w.attributes.incline || "0")
+                  parseFloat(w.attributes.Incline || "0") * 100
                 );
 
               if (
@@ -1030,7 +1024,6 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
                   parseInt(w.attributes.Pace || "0"),
                   undefined,
                   parseInt(w.attributes.Cadence),
-                  parseFloat(w.attributes.incline || "0")
                 );
 
               if (w.name === "IntervalsT") {
@@ -1045,7 +1038,6 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
                   parseInt(w.attributes.Pace || "0"),
                   undefined,
                   undefined,
-                  parseFloat(w.attributes.incline || "0")
                 );
                 duration =
                   (parseFloat(w.attributes.OnDuration) +
@@ -1058,7 +1050,6 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
                   parseFloat(w.attributes.Duration),
                   parseInt(w.attributes.Cadence),
                   undefined,
-                  parseFloat(w.attributes.incline || "0")
                 );
 
               // check for instructions
