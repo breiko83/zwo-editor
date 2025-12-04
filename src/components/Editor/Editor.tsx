@@ -50,7 +50,7 @@ import SignupForm from "../Forms/SignupForm";
 import LoginForm from "../Forms/LoginForm";
 import ForgotPasswordForm from "../Forms/ForgotPasswordForm";
 import UpdatePasswordForm from "../Forms/UpdatePasswordForm";
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
 import { RouteComponentProps } from "react-router-dom";
 import ReactGA from "react-ga";
 import RunningTimesEditor, { RunningTimes } from "./RunningTimesEditor";
