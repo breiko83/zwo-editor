@@ -26,7 +26,7 @@ exports[`Bar renders correctly 1`] = `
       }
     }
   >
-    <span>
+    <div>
       <div
         className=""
         onMouseDown={[Function]}
@@ -51,6 +51,7 @@ exports[`Bar renders correctly 1`] = `
           Object {
             "cursor": "col-resize",
             "height": "100%",
+            "left": undefined,
             "position": "absolute",
             "right": "-5px",
             "top": "0px",
@@ -59,7 +60,7 @@ exports[`Bar renders correctly 1`] = `
           }
         }
       />
-    </span>
+    </div>
   </div>
 </div>
 `;
