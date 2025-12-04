@@ -82,9 +82,7 @@ const helpers = {
     var estimatedTimes = [];
 
     times.forEach((value, i) => {
-      
       if (!value) {
-        console.log(value)
         for (let index = 0; index < times.length; index++) {
           // found a time
           if (times[index]) {
