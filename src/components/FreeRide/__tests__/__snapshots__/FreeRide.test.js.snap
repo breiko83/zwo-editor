@@ -21,11 +21,11 @@ exports[`Freeride renders correctly 1`] = `
         "minWidth": 3,
         "position": "relative",
         "userSelect": "auto",
-        "width": "16.666666666666668px",
+        "width": "0px",
       }
     }
   >
-    <span>
+    <div>
       <div
         className=""
         onMouseDown={[Function]}
@@ -34,6 +34,7 @@ exports[`Freeride renders correctly 1`] = `
           Object {
             "cursor": "col-resize",
             "height": "100%",
+            "left": undefined,
             "position": "absolute",
             "right": "-5px",
             "top": "0px",
@@ -42,7 +43,7 @@ exports[`Freeride renders correctly 1`] = `
           }
         }
       />
-    </span>
+    </div>
   </div>
 </div>
 `;
