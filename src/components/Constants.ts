@@ -6,9 +6,14 @@ export const Colors = {
   ORANGE: '#FF6430',
   RED: '#E90000',
   WHITE: '#FFFFFF'
+} as const;
+
+export interface Zone {
+  min: number;
+  max: number;
 }
 
-export const Zones = {
+export const Zones: Record<string, Zone> = {
   Z1: {
     min: 0.1,
     max: 0.605
@@ -33,13 +38,13 @@ export const Zones = {
     min: 1.194,
     max: 2.0
   }
-}
+};
 
-export const ZonesArray = [
-  [Zones.Z1.min,Zones.Z1.max],
-  [Zones.Z2.min,Zones.Z2.max],
-  [Zones.Z3.min,Zones.Z3.max],
-  [Zones.Z4.min,Zones.Z4.max],
-  [Zones.Z5.min,Zones.Z5.max],
-  [Zones.Z6.min,Zones.Z6.max],
-]
+export const ZonesArray: Array<[number, number]> = [
+  [Zones.Z1.min, Zones.Z1.max],
+  [Zones.Z2.min, Zones.Z2.max],
+  [Zones.Z3.min, Zones.Z3.max],
+  [Zones.Z4.min, Zones.Z4.max],
+  [Zones.Z5.min, Zones.Z5.max],
+  [Zones.Z6.min, Zones.Z6.max],
+];

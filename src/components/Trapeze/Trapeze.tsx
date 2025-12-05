@@ -36,7 +36,7 @@ const Trapeze = (props: {
 
   const avgPower = Math.abs((props.endPower + props.startPower) / 2);
 
-  const durationLabel = helpers.formatDuration(props.time);
+  const durationLabel = helpers.formatDuration(props.time || 0);
 
   const [showLabel, setShowLabel] = useState(false);
 
@@ -103,13 +103,13 @@ const Trapeze = (props: {
       props.durationType === "time"
         ? helpers.round(width * timeMultiplier * 3, 5)
         : helpers.round(
-            (helpers.calculateTime(props.length, props.speed) * 1) / avgPower,
+            (helpers.calculateTime(props.length || 0, props.speed || 0) * 1) / avgPower,
             1
           );
     const length =
       props.durationType === "time"
         ? helpers.round(
-            (helpers.calculateDistance(width * timeMultiplier, props.speed) *
+            (helpers.calculateDistance(width * timeMultiplier, props.speed || 0) *
               1) /
               avgPower,
             1
@@ -132,13 +132,13 @@ const Trapeze = (props: {
       props.durationType === "time"
         ? helpers.round(width * timeMultiplier * 3, 5)
         : helpers.round(
-            (helpers.calculateTime(props.length, props.speed) * 1) / avgPower,
+            (helpers.calculateTime(props.length || 0, props.speed || 0) * 1) / avgPower,
             1
           );
     const length =
       props.durationType === "time"
         ? helpers.round(
-            (helpers.calculateDistance(width * timeMultiplier, props.speed) *
+            (helpers.calculateDistance(width * timeMultiplier, props.speed || 0) *
               1) /
               avgPower,
             1
@@ -162,7 +162,7 @@ const Trapeze = (props: {
     const length =
       props.durationType === "time"
         ? helpers.round(
-            (helpers.calculateDistance(newWidth * timeMultiplier * 3, props.speed) *
+            (helpers.calculateDistance(newWidth * timeMultiplier * 3, props.speed || 0) *
               1) /
               avgPower,
             1
@@ -172,7 +172,7 @@ const Trapeze = (props: {
       props.durationType === "time"
         ? helpers.round(newWidth * timeMultiplier * 3, 5)
         : helpers.round(
-            (helpers.calculateTime(props.length, props.speed) * 1) / avgPower,
+            (helpers.calculateTime(props.length || 0, props.speed || 0) * 1) / avgPower,
             1
           );
 

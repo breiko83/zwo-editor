@@ -32,7 +32,7 @@ const Bar = (props: {
   const powerLabel = Math.round(props.power * props.ftp);
 
   // TIME
-  const duration = helpers.formatDuration(props.time);
+  const duration = helpers.formatDuration(props.time || 0);
 
   // DISTANCE
   const distance = props.length;
@@ -102,7 +102,7 @@ const Bar = (props: {
         ? helpers.round(
             helpers.calculateDistance(
               (width + dWidth) * timeMultiplier * props.power,
-              props.speed
+              props.speed || 0
             ),
             1
           )
@@ -111,7 +111,7 @@ const Bar = (props: {
       props.durationType === "time"
         ? helpers.round((width + dWidth) * timeMultiplier, 5)
         : helpers.round(
-            (helpers.calculateTime(props.length, props.speed) * 1) /
+            (helpers.calculateTime(props.length || 0, props.speed || 0) * 1) /
               props.power,
             1
           );
@@ -134,7 +134,7 @@ const Bar = (props: {
         ? helpers.round(
             helpers.calculateDistance(
               (width + dWidth) * timeMultiplier * props.power,
-              props.speed
+              props.speed || 0
             ),
             1
           )
@@ -143,7 +143,7 @@ const Bar = (props: {
       props.durationType === "time"
         ? helpers.round((width + dWidth) * timeMultiplier, 5)
         : helpers.round(
-            (helpers.calculateTime(props.length, props.speed) * 1) /
+            (helpers.calculateTime(props.length || 0, props.speed || 0) * 1) /
               props.power,
             1
           );

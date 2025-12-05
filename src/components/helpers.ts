@@ -1,12 +1,36 @@
 import moment from "moment";
 import "moment-duration-format";
 
+export interface BarType {
+  id: string;
+  time: number;
+  length?: number;
+  type: string;
+  power?: number;
+  startPower?: number;
+  endPower?: number;
+  cadence: number;
+  restingCadence?: number;
+  onPower?: number;
+  offPower?: number;
+  onDuration?: number;
+  offDuration?: number;
+  repeat?: number;
+  pace?: number;
+  onLength?: number;
+  offLength?: number;
+  incline?: number;
+}
+
+export type DurationType = "time" | "distance";
+export type PaceUnitType = "metric" | "imperial";
+
 const helpers = {
   // calculate total time
-  getWorkoutLength: function (bars, durationType) {
-    var length = 0;
+  getWorkoutLength: function (bars: BarType[], durationType: DurationType): number {
+    let length = 0;
 
-    bars.map((bar) => {
+    bars.forEach((bar) => {
       if (durationType === "time") {
         length += bar.time;
       } else {
@@ -23,50 +47,48 @@ const helpers = {
         }
 
         if (bar.type === "interval") {
-          length += bar.repeat * bar.onDuration;
-          length += bar.repeat * bar.offDuration;
+          length += (bar.repeat || 0) * (bar.onDuration || 0);
+          length += (bar.repeat || 0) * (bar.offDuration || 0);
         }
       }
-      return false;
     });
 
     return length;
   },
 
-  getStressScore: function (bars, ftp) {
+  getStressScore: function (bars: BarType[], ftp: number): string {
     // TSS = [(sec x NP x IF)/(FTP x 3600)] x 100
-    var tss = 0;
+    let tss = 0;
 
-    bars.map((bar) => {
-      if (bar.type === "bar") {
+    bars.forEach((bar) => {
+      if (bar.type === "bar" && bar.power !== undefined) {
         const np = bar.power * ftp;
         const iff = bar.power;
 
         tss += bar.time * np * iff;
       }
-      if (bar.type === "trapeze") {
+      if (bar.type === "trapeze" && bar.startPower !== undefined && bar.endPower !== undefined) {
         const np = ((bar.startPower + bar.endPower) / 2) * ftp;
         const iff = (bar.startPower + bar.endPower) / 2;
 
         tss += bar.time * np * iff;
       }
-      if (bar.type === "interval") {
+      if (bar.type === "interval" && bar.onPower !== undefined && bar.offPower !== undefined) {
         const npOn = bar.onPower * ftp;
         const iffOn = bar.onPower;
 
-        tss += bar.onDuration * bar.repeat * npOn * iffOn;
+        tss += (bar.onDuration || 0) * (bar.repeat || 0) * npOn * iffOn;
 
         const npOff = bar.offPower * ftp;
         const iffOff = bar.offPower;
 
-        tss += bar.offDuration * bar.repeat * npOff * iffOff;
+        tss += (bar.offDuration || 0) * (bar.repeat || 0) * npOff * iffOff;
       }
-      return false;
     });
     return ((tss / (ftp * 3600)) * 100).toFixed(0);
   },
 
-  getWorkoutPace: function (bars, durationType, paceUnitType) {
+  getWorkoutPace: function (bars: BarType[], durationType: DurationType, paceUnitType: PaceUnitType): string {
     const pacedBars = bars.filter(b => b.type !== "freeRide");
     const length = this.getWorkoutLength(pacedBars, durationType);
     const distance = this.getWorkoutDistance(pacedBars);
@@ -78,8 +100,8 @@ const helpers = {
     }
   },
 
-  calculateEstimatedTimes: function (distances, times) {
-    var estimatedTimes = [];
+  calculateEstimatedTimes: function (distances: number[], times: string[]): string[] {
+    const estimatedTimes: string[] = [];
 
     times.forEach((value, i) => {
       if (!value) {
@@ -102,41 +124,46 @@ const helpers = {
     return estimatedTimes;
   },
 
-  getWorkoutDistance: function (bars) {
-    var distance = 0;
-    bars.map((bar) => (distance += bar.length));
+  getWorkoutDistance: function (bars: BarType[]): number {
+    let distance = 0;
+    bars.forEach((bar) => (distance += bar.length || 0));
 
-    return (distance / 1000).toFixed(1);
+    return parseFloat((distance / 1000).toFixed(1));
   },
 
-  getTimeinSeconds: function (time) {
+  getTimeinSeconds: function (time: string): number {
     //convert time 01:00:00 to seconds 3600
     return moment.duration(time).asSeconds();
   },
 
-  formatDuration: function (seconds) {
+  formatDuration: function (seconds: number): string {
     // 1 pixel equals 5 seconds
     return moment.duration(seconds, "seconds").format("mm:ss", { trim: false });
   },
-  calculateTime: function (distance, speed) {
+
+  calculateTime: function (distance: number, speed: number): number {
     return distance / speed;
   },
-  calculateDistance: function (time, speed) {
+
+  calculateDistance: function (time: number, speed: number): number {
     return time * speed;
   },
-  round: function (x, roundTo) {
+
+  round: function (x: number, roundTo: number): number {
     return Math.floor(x / roundTo) * roundTo;
   },
-  calculateSpeed: function (time, distance) {
+
+  calculateSpeed: function (time: number, distance: number): number {
     // in km/h
     return ((time / distance) * 18) / 5;
   },
-  speedToPace: function (speedkph, paceUnitType) {
+
+  speedToPace: function (speedkph: number, paceUnitType: PaceUnitType): string {
     let pace = 0;
     if (paceUnitType === "metric") {
       pace = 3600 / speedkph;
     } else {
-      pace =  1.60934 * 3600 / speedkph;
+      pace = 1.60934 * 3600 / speedkph;
     }
     return moment.duration(pace, "seconds").format("mm:ss", { trim: false });
   }
