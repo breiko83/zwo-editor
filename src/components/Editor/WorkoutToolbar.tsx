@@ -118,9 +118,9 @@ const WorkoutToolbar: React.FC<WorkoutToolbarProps> = ({
           alignItems: 'center',
           gap: '8px'
         }}
-        title="Upload workout file"
+        title="Import workout file"
       >
-        <FontAwesomeIcon icon={faUpload} size="lg" fixedWidth /> Upload
+        <FontAwesomeIcon icon={faUpload} size="lg" fixedWidth /> Import
       </button>
       
       <button 
