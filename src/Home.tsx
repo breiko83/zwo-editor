@@ -2,8 +2,6 @@ import React, { useEffect } from 'react'
 import { Link } from 'react-router-dom';
 import './Home.css'
 import Icon from './assets/icon.png'
-import Facebook from './assets/facebook.png'
-import Twitter from './assets/twitter.png'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faBolt, faLaptop, faCloud, faPiggyBank, faRunning, faBiking } from '@fortawesome/free-solid-svg-icons'
 import ReactGA from 'react-ga';
@@ -68,13 +66,8 @@ export default function Home() {
       <div className="blue">
         <div className="share" id="share">
           <h2>Do you like this?</h2>
-          <p>Please help me out by sharing this page on Social Media</p>
-          <a href="https://twitter.com/intent/tweet?text=Check%20out%20this%20Zwift%20Workout%20%20Editor%20https://www.zwiftworkout.com/">
-            <img src={Twitter} alt="Twitter" width="80" />
-          </a>
-          <a href="#share" onClick={shareOnFacebook}>
-            <img src={Facebook} alt="Facebook" width="80" />
-          </a>
+          <p>Please support the project with a small donation</p>
+          <script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="carloschieh" data-color="#FFDD00" data-emoji=""  data-font="Poppins" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
         </div>
       </div>
       <div className="black">
