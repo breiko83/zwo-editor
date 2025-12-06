@@ -12,7 +12,7 @@ export default function Footer() {
   return (
     <div className="footer">
       <ul>
-        <li>Zwift Workout v1.9 &copy; 2021 Sharpify Ltd All Rights Reserved</li>
+        <li>Zwift Workout v2.0 &copy; 2021 Sharpify Ltd All Rights Reserved</li>
         <li><a href="#terms" onClick={() => setShowTerm(true)}>Terms of Service</a></li>
         <li><a href="#privacy" onClick={() => setShowPrivacy(true)}>Privacy Policy</a></li>
         <li><a href="https://github.com/breiko83/zwo-editor/issues" target="blank">Report an issue</a></li>        
