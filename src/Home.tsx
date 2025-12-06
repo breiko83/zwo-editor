@@ -15,14 +15,6 @@ export default function Home() {
     ReactGA.pageview(window.location.pathname + window.location.search);
   })
 
-  function shareOnFacebook() {
-    window.open(
-      'https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent('https://www.zwiftworkout.com/'),
-      'facebook-share-dialog',
-      'width=626,height=436');
-    return false;
-  }
-
   return (
     <div className="home">
       <Helmet>
