@@ -12,16 +12,7 @@ import Popup from "../Popup/Popup";
 import Footer from "../Footer/Footer";
 import Workouts from "../Workouts/Workouts";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faTrash,
-  faFile,
-  faSave,
-  faUpload,
-  faDownload,
-  faShareAlt,
-  faTimesCircle,
-  faList,
-} from "@fortawesome/free-solid-svg-icons";
+import { faTimesCircle } from "@fortawesome/free-solid-svg-icons";
 import helpers from "../helpers";
 import { User as FirebaseUser } from "firebase/auth";
 import SaveForm from "../Forms/SaveForm";
@@ -36,6 +27,7 @@ import ShareForm from "../Forms/ShareForm";
 import WorkoutMetadata from "./WorkoutMetadata";
 import WorkoutCanvas from "./WorkoutCanvas";
 import WorkoutSettings from "./WorkoutSettings";
+import WorkoutToolbar from "./WorkoutToolbar";
 import { workoutService } from "../../services/workoutService";
 import { xmlService } from "../../services/xmlService";
 import { textParserService } from "../../services/textParserService";
@@ -1131,53 +1123,15 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
         renderComment={renderComment}
       />
       <div className="cta">
-        <button
-          className="btn"
-          onClick={() => {
-            if (
-              window.confirm("Are you sure you want to create a new workout?")
-            )
-              newWorkout();
-          }}
-        >
-          <FontAwesomeIcon icon={faFile} size="lg" fixedWidth /> New
-        </button>
-        <button className="btn" onClick={() => saveWorkout()}>
-          <FontAwesomeIcon icon={faSave} size="lg" fixedWidth /> Save
-        </button>
-        <button
-          className="btn"
-          onClick={() => {
-            if (window.confirm("Are you sure you want to delete this workout?"))
-              deleteWorkout();
-          }}
-        >
-          <FontAwesomeIcon icon={faTrash} size="lg" fixedWidth /> Delete
-        </button>
-        <button className="btn" onClick={() => downloadWorkout()}>
-          <FontAwesomeIcon icon={faDownload} size="lg" fixedWidth /> Download
-        </button>
-        <input
-          accept=".xml,.zwo"
-          id="contained-button-file"
-          type="file"
-          style={{ display: "none" }}
-          onChange={(e) => handleUpload(e.target.files![0])}
+        <WorkoutToolbar
+          onNew={newWorkout}
+          onSave={saveWorkout}
+          onDelete={deleteWorkout}
+          onDownload={downloadWorkout}
+          onUpload={handleUpload}
+          onShare={shareWorkout}
+          onWorkouts={() => setShowWorkouts(true)}
         />
-        <button
-          className="btn"
-          onClick={() =>
-            document.getElementById("contained-button-file")!.click()
-          }
-        >
-          <FontAwesomeIcon icon={faUpload} size="lg" fixedWidth /> Upload
-        </button>
-        <button className="btn" onClick={() => setShowWorkouts(true)}>
-          <FontAwesomeIcon icon={faList} size="lg" fixedWidth /> Workouts
-        </button>
-        <button className="btn" onClick={() => shareWorkout()}>
-          <FontAwesomeIcon icon={faShareAlt} size="lg" fixedWidth /> Share
-        </button>
       </div>
       <Footer />
     </div>
