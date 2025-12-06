@@ -19,7 +19,7 @@ const FreeRide = (props: {
   const timeMultiplier = 3;
   const lengthMultiplier = 10;
 
-  const durationLabel = helpers.formatDuration(props.time);
+  const durationLabel = helpers.formatDuration(props.time || 0);
 
   // RUN WORKOUTS ON DISTANCE - BIKE WORKOUTS ON TIME
   const [width, setWidth] = useState(

@@ -646,7 +646,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
       } else {
         element.time =
           (helpers.calculateTime(
-            element.length,
+            element.length || 0,
             calculateSpeed(element.pace || 0)
           ) *
             1) /
@@ -676,7 +676,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
       } else {
         element.time =
           (helpers.calculateTime(
-            element.length,
+            element.length || 0,
             calculateSpeed(element.pace || 0)
           ) *
             1) /
@@ -1198,7 +1198,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
       durationType={durationType}
       width={
         durationType === "distance"
-          ? parseInt(helpers.getWorkoutDistance(bars)) * 100
+          ? helpers.getWorkoutDistance(bars) * 100
           : helpers.getWorkoutLength(bars, durationType) / 3
       }
       onChange={(id: string, values: Instruction) =>
@@ -1270,7 +1270,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
       } else {
         element.time =
           (helpers.calculateTime(
-            element.length,
+            element.length || 0,
             calculateSpeed(element.pace || 0)
           ) *
             1) /

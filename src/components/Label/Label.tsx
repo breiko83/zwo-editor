@@ -113,7 +113,7 @@ const Label = (props: {
           <div>{helpers.speedToPace(props.speed, props.paceUnitType)} { props.paceUnitType === "metric" ? "min/km" : "min/mi" }</div>
         </div>
       )}
-      {props.sportType === "run" && props.speedStart && props.speedEnd && (
+      {props.sportType === "run" && props.speedStart && props.speedEnd && props.paceUnitType && (
         <div>
         <div>
           {props.speedStart?.toFixed(1)} km/h - {props.speedEnd?.toFixed(1)}{" "}
