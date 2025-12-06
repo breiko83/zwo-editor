@@ -163,7 +163,6 @@ const Interval = (props: {
 
   const renderBar = (bar: BarType, withLabel: boolean) => (
     <Bar
-      key={bar.id}
       id={bar.id}
       time={bar.time}
       length={bar.length}
@@ -189,9 +188,11 @@ const Interval = (props: {
         <button onClick={handleRemoveInterval}>-</button>
       </div>
       <div className="intervals">
-        {bars.map((bar, index) =>
-          renderBar(bar, index === 0 || index === bars.length - 1)
-        )}
+        {bars.map((bar, index) => (
+          <React.Fragment key={bar.id || `interval-bar-${index}`}>
+            {renderBar(bar, index === 0 || index === bars.length - 1)}
+          </React.Fragment>
+        ))}
       </div>
     </div>
   );
