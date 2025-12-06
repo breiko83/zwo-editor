@@ -300,9 +300,11 @@ describe('Editor Integration Tests', () => {
       expect(screen.getByText(/Download/i)).toBeInTheDocument();
     });
 
-    it('should show Upload button', () => {
+    it('should show Import button', async () => {
       renderEditor();
-      expect(screen.getByText(/Upload/i)).toBeInTheDocument();
+      await waitFor(() => {
+        expect(screen.getByText(/Import/i)).toBeInTheDocument();
+      });
     });
 
     it('should show Share button', () => {
