@@ -43,6 +43,7 @@ import { workoutService } from "../../services/workoutService";
 import { xmlService } from "../../services/xmlService";
 import { textParserService } from "../../services/textParserService";
 import { useWorkoutState } from "./hooks/useWorkoutState";
+import { useKeyboardShortcuts } from "./hooks/useKeyboardShortcuts";
 
 export interface BarType {
   id: string;
@@ -244,44 +245,15 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
     }
   }
 
-  function handleKeyPress(event: React.KeyboardEvent<HTMLDivElement>) {
-    if (event.target instanceof HTMLInputElement) {
-      // Ignore key presses coming from input elements
-      return;
-    }
-
-    if (event.target instanceof HTMLTextAreaElement) {
-      // Ignore key presses coming from textarea elements
-      return;
-    }
-
-    switch (event.keyCode) {
-      case 8:
-        removeBar(actionId || "");
-        // Prevent navigation to previous page
-        event.preventDefault();
-        break;
-      case 37:
-        // reduce time
-        removeTimeToBar(actionId || "");
-        break;
-      case 39:
-        // add time
-        addTimeToBar(actionId || "");
-        break;
-      case 38:
-        // add power
-        addPowerToBar(actionId || "");
-        break;
-      case 40:
-        // add power
-        removePowerToBar(actionId || "");
-        break;
-      default:
-        //console.log(event.keyCode);
-        break;
-    }
-  }
+  // Keyboard shortcuts hook
+  useKeyboardShortcuts({
+    actionId,
+    removeBar,
+    addTimeToBar,
+    removeTimeToBar,
+    addPowerToBar,
+    removePowerToBar,
+  });
 
   function addBar(
     zone: number = 1,
@@ -1046,7 +1018,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
 
   return (
     // Adding tabIndex allows div element to receive keyboard events
-    <div className="container" onKeyDown={handleKeyPress} tabIndex={0}>
+    <div className="container" tabIndex={0}>
       <Helmet>
         <title>
           {name
