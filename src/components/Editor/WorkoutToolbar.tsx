@@ -30,18 +30,37 @@ const WorkoutToolbar: React.FC<WorkoutToolbarProps> = ({
   onWorkouts,
 }) => {
   return (
-    <div className="action-buttons">
+    <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', alignItems: 'center', width: '100%' }}>
       <button
         className="btn"
         onClick={() => {
           if (window.confirm('Are you sure you want to create a new workout?'))
             onNew();
         }}
+        style={{
+          backgroundColor: 'white',
+          padding: '10px 15px',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '8px'
+        }}
+        title="Create a new workout"
       >
         <FontAwesomeIcon icon={faFile} size="lg" fixedWidth /> New
       </button>
       
-      <button className="btn" onClick={onSave}>
+      <button 
+        className="btn" 
+        onClick={onSave}
+        style={{
+          backgroundColor: 'white',
+          padding: '10px 15px',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '8px'
+        }}
+        title="Save workout"
+      >
         <FontAwesomeIcon icon={faSave} size="lg" fixedWidth /> Save
       </button>
       
@@ -51,11 +70,30 @@ const WorkoutToolbar: React.FC<WorkoutToolbarProps> = ({
           if (window.confirm('Are you sure you want to delete this workout?'))
             onDelete();
         }}
+        style={{
+          backgroundColor: 'white',
+          padding: '10px 15px',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '8px'
+        }}
+        title="Delete workout"
       >
         <FontAwesomeIcon icon={faTrash} size="lg" fixedWidth /> Delete
       </button>
       
-      <button className="btn" onClick={onDownload}>
+      <button 
+        className="btn" 
+        onClick={onDownload}
+        style={{
+          backgroundColor: 'white',
+          padding: '10px 15px',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '8px'
+        }}
+        title="Download workout file"
+      >
         <FontAwesomeIcon icon={faDownload} size="lg" fixedWidth /> Download
       </button>
       
@@ -73,15 +111,45 @@ const WorkoutToolbar: React.FC<WorkoutToolbarProps> = ({
       <button
         className="btn"
         onClick={() => document.getElementById('contained-button-file')!.click()}
+        style={{
+          backgroundColor: 'white',
+          padding: '10px 15px',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '8px'
+        }}
+        title="Upload workout file"
       >
         <FontAwesomeIcon icon={faUpload} size="lg" fixedWidth /> Upload
       </button>
       
-      <button className="btn" onClick={onWorkouts}>
+      <button 
+        className="btn" 
+        onClick={onWorkouts}
+        style={{
+          backgroundColor: 'white',
+          padding: '10px 15px',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '8px'
+        }}
+        title="View your workouts"
+      >
         <FontAwesomeIcon icon={faList} size="lg" fixedWidth /> Workouts
       </button>
       
-      <button className="btn" onClick={onShare}>
+      <button 
+        className="btn" 
+        onClick={onShare}
+        style={{
+          backgroundColor: 'white',
+          padding: '10px 15px',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '8px'
+        }}
+        title="Share workout"
+      >
         <FontAwesomeIcon icon={faShareAlt} size="lg" fixedWidth /> Share
       </button>
     </div>
