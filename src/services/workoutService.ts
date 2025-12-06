@@ -1,4 +1,4 @@
-import { BarType, SportType, DurationType } from '../components/Editor/Editor';
+import { BarType, DurationType } from '../components/Editor/Editor';
 import helpers from '../components/helpers';
 
 /**
