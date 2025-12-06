@@ -16,16 +16,29 @@ test('Bar renders correctly', () => {
   }
 
   const ftp = 250
+  const handleOnChange = jest.fn()
+  const handleOnClick = jest.fn()
 
   const component = renderer.create(    
       <Bar
         key={bar.id}
         id={bar.id}
         time={bar.time}
+        length={200}
         power={bar.power}
+        cadence={0}
         ftp={ftp}
-        onChange={() => handleOnChange}
-        onClick={() => handleOnClick}
+        weight={75}
+        pace={0}
+        sportType="bike"
+        durationType="time"
+        speed={0}
+        onChange={handleOnChange}
+        onClick={handleOnClick}
+        selected={false}
+        showLabel={true}
+        paceUnitType="metric"
+        incline={0}
       />
   )
 
