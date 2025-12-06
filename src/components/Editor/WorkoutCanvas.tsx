@@ -160,110 +160,172 @@ const WorkoutCanvas: React.FC<WorkoutCanvasProps> = ({
       </div>
       
       <div className="cta">
-        {sportType === 'bike' ? (
-          <div>
-            <ReactTooltip effect="solid" />
+        <ReactTooltip effect="solid" />
+        <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', alignItems: 'center', width: '100%' }}>
+          {sportType === 'bike' && (
+            <>
+              <button
+                className="btn btn-square"
+                onClick={() => toggleTextEditor()}
+                style={{ backgroundColor: 'palevioletred' }}
+                data-tip="New! Workout text editor!"
+                title="Text Editor"
+              >
+                <FontAwesomeIcon icon={faPen} fixedWidth />
+              </button>
+              <div style={{ 
+                display: 'flex', 
+                gap: '5px', 
+                padding: '5px', 
+                backgroundColor: '#f5f5f5', 
+                borderRadius: '8px',
+                border: '1px solid #e0e0e0'
+              }}>
+                <button
+                  className="btn btn-square"
+                  onClick={() => addBar(0.5)}
+                  style={{ backgroundColor: Colors.GRAY, fontWeight: 'bold', fontSize: '14px' }}
+                  title="Zone 1"
+                >
+                  Z1
+                </button>
+                <button
+                  className="btn btn-square"
+                  onClick={() => addBar(Zones.Z2.min)}
+                  style={{ backgroundColor: Colors.BLUE, fontWeight: 'bold', fontSize: '14px' }}
+                  title="Zone 2"
+                >
+                  Z2
+                </button>
+                <button
+                  className="btn btn-square"
+                  onClick={() => addBar(Zones.Z3.min)}
+                  style={{ backgroundColor: Colors.GREEN, fontWeight: 'bold', fontSize: '14px' }}
+                  title="Zone 3"
+                >
+                  Z3
+                </button>
+                <button
+                  className="btn btn-square"
+                  onClick={() => addBar(Zones.Z4.min)}
+                  style={{ backgroundColor: Colors.YELLOW, fontWeight: 'bold', fontSize: '14px' }}
+                  title="Zone 4"
+                >
+                  Z4
+                </button>
+                <button
+                  className="btn btn-square"
+                  onClick={() => addBar(Zones.Z5.min)}
+                  style={{ backgroundColor: Colors.ORANGE, fontWeight: 'bold', fontSize: '14px' }}
+                  title="Zone 5"
+                >
+                  Z5
+                </button>
+                <button
+                  className="btn btn-square"
+                  onClick={() => addBar(Zones.Z6.min)}
+                  style={{ backgroundColor: Colors.RED, fontWeight: 'bold', fontSize: '14px' }}
+                  title="Zone 6"
+                >
+                  Z6
+                </button>
+              </div>
+            </>
+          )}
+          
+          {sportType === 'run' && (
             <button
-              className="btn btn-square"
-              onClick={() => toggleTextEditor()}
-              style={{ backgroundColor: 'palevioletred' }}
-              data-tip="New! Workout text editor!"
+              className="btn"
+              onClick={() => addBar(1, 300, 0, 0, 1000)}
+              style={{ 
+                backgroundColor: Colors.WHITE, 
+                padding: '10px 15px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px'
+              }}
+              title="Steady Pace"
             >
-              <FontAwesomeIcon icon={faPen} fixedWidth />
+              <SteadyLogo className="btn-icon" /> Steady Pace
             </button>
-            <button
-              className="btn btn-square"
-              onClick={() => addBar(0.5)}
-              style={{ backgroundColor: Colors.GRAY }}
-            >
-              Z1
-            </button>
-            <button
-              className="btn btn-square"
-              onClick={() => addBar(Zones.Z2.min)}
-              style={{ backgroundColor: Colors.BLUE }}
-            >
-              Z2
-            </button>
-            <button
-              className="btn btn-square"
-              onClick={() => addBar(Zones.Z3.min)}
-              style={{ backgroundColor: Colors.GREEN }}
-            >
-              Z3
-            </button>
-            <button
-              className="btn btn-square"
-              onClick={() => addBar(Zones.Z4.min)}
-              style={{ backgroundColor: Colors.YELLOW }}
-            >
-              Z4
-            </button>
-            <button
-              className="btn btn-square"
-              onClick={() => addBar(Zones.Z5.min)}
-              style={{ backgroundColor: Colors.ORANGE }}
-            >
-              Z5
-            </button>
-            <button
-              className="btn btn-square"
-              onClick={() => addBar(Zones.Z6.min)}
-              style={{ backgroundColor: Colors.RED }}
-            >
-              Z6
-            </button>
-          </div>
-        ) : (
+          )}
+
           <button
             className="btn"
-            onClick={() => addBar(1, 300, 0, 0, 1000)}
-            style={{ backgroundColor: Colors.WHITE }}
+            onClick={() => addTrapeze(0.25, 0.75)}
+            style={{ 
+              backgroundColor: Colors.WHITE,
+              padding: '10px 15px',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px'
+            }}
+            title="Warm up"
           >
-            <SteadyLogo className="btn-icon" /> Steady Pace
+            <WarmupLogo className="btn-icon" /> Warm up
           </button>
-        )}
-
-        <button
-          className="btn"
-          onClick={() => addTrapeze(0.25, 0.75)}
-          style={{ backgroundColor: Colors.WHITE }}
-        >
-          <WarmupLogo className="btn-icon" /> Warm up
-        </button>
-        <button
-          className="btn"
-          onClick={() => addTrapeze(0.75, 0.25)}
-          style={{ backgroundColor: Colors.WHITE }}
-        >
-          <WarmdownLogo className="btn-icon" /> Cool down
-        </button>
-        <button
-          className="btn"
-          onClick={() => addInterval()}
-          style={{ backgroundColor: Colors.WHITE }}
-        >
-          <IntervalLogo className="btn-icon" /> Interval
-        </button>
-        <button
-          className="btn"
-          onClick={() => addFreeRide()}
-          style={{ backgroundColor: Colors.WHITE }}
-        >
-          <FontAwesomeIcon
-            icon={sportType === 'bike' ? faBicycle : faRunning}
-            size="lg"
-            fixedWidth
-          />{' '}
-          Free {sportType === 'bike' ? 'Ride' : 'Run'}
-        </button>
-        <button
-          className="btn"
-          onClick={() => addInstruction()}
-          style={{ backgroundColor: Colors.WHITE }}
-        >
-          <FontAwesomeIcon icon={faComment} size="lg" fixedWidth /> Text Event
-        </button>
+          <button
+            className="btn"
+            onClick={() => addTrapeze(0.75, 0.25)}
+            style={{ 
+              backgroundColor: Colors.WHITE,
+              padding: '10px 15px',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px'
+            }}
+            title="Cool down"
+          >
+            <WarmdownLogo className="btn-icon" /> Cool down
+          </button>
+          <button
+            className="btn"
+            onClick={() => addInterval()}
+            style={{ 
+              backgroundColor: Colors.WHITE,
+              padding: '10px 15px',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px'
+            }}
+            title="Interval"
+          >
+            <IntervalLogo className="btn-icon" /> Interval
+          </button>
+          <button
+            className="btn"
+            onClick={() => addFreeRide()}
+            style={{ 
+              backgroundColor: Colors.WHITE,
+              padding: '10px 15px',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px'
+            }}
+            title={`Free ${sportType === 'bike' ? 'Ride' : 'Run'}`}
+          >
+            <FontAwesomeIcon
+              icon={sportType === 'bike' ? faBicycle : faRunning}
+              size="lg"
+              fixedWidth
+            />
+            Free {sportType === 'bike' ? 'Ride' : 'Run'}
+          </button>
+          <button
+            className="btn"
+            onClick={() => addInstruction()}
+            style={{ 
+              backgroundColor: Colors.WHITE,
+              padding: '10px 15px',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px'
+            }}
+            title="Text Event"
+          >
+            <FontAwesomeIcon icon={faComment} size="lg" fixedWidth /> Text Event
+          </button>
+        </div>
       </div>
     </>
   );
