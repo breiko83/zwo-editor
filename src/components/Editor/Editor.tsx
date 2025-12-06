@@ -32,10 +32,10 @@ import UpdatePasswordForm from "../Forms/UpdatePasswordForm";
 import { Helmet } from "react-helmet-async";
 import { RouteComponentProps } from "react-router-dom";
 import ReactGA from "react-ga";
-import RunningTimesEditor from "./RunningTimesEditor";
 import ShareForm from "../Forms/ShareForm";
 import WorkoutMetadata from "./WorkoutMetadata";
 import WorkoutCanvas from "./WorkoutCanvas";
+import WorkoutSettings from "./WorkoutSettings";
 import { workoutService } from "../../services/workoutService";
 import { xmlService } from "../../services/xmlService";
 import { textParserService } from "../../services/textParserService";
@@ -1031,9 +1031,15 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
         setPaceUnitType={setPaceUnitType}
         setSportType={switchSportType}
       />
-      {sportType === "run" && (
-        <RunningTimesEditor times={runningTimes} onChange={setRunningTimes} />
-      )}
+      <WorkoutSettings
+        sportType={sportType}
+        ftp={ftp}
+        setFtp={setFtp}
+        weight={weight}
+        setWeight={setWeight}
+        runningTimes={runningTimes}
+        setRunningTimes={setRunningTimes}
+      />
       {textEditorIsVisible && sportType === "bike" && (
         <div className="text-editor">
           <textarea
@@ -1125,32 +1131,6 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
         renderComment={renderComment}
       />
       <div className="cta">
-        {sportType === "bike" && (
-          <div className="form-input">
-            <label htmlFor="ftp">FTP (W)</label>
-            <input
-              className="textInput"
-              type="number"
-              name="ftp"
-              value={ftp}
-              onChange={(e) => setFtp(parseInt(e.target.value))}
-            />
-          </div>
-        )}
-
-        {sportType === "bike" && (
-          <div className="form-input">
-            <label htmlFor="weight">Body Weight (Kg)</label>
-            <input
-              className="textInput"
-              type="number"
-              name="weight"
-              value={weight}
-              onChange={(e) => setWeight(parseInt(e.target.value))}
-            />
-          </div>
-        )}
-
         <button
           className="btn"
           onClick={() => {

@@ -1,17 +1,10 @@
 import React from 'react';
-import { SportType, DurationType, PaceUnitType } from './Editor';
-import { faBiking, faRunning, faClock, faRuler } from '@fortawesome/free-solid-svg-icons';
-import LeftRightToggle from './LeftRightToggle';
+import { SportType } from './Editor';
 import { RunningTimes } from './RunningTimesEditor';
 import RunningTimesEditor from './RunningTimesEditor';
 
 interface WorkoutSettingsProps {
   sportType: SportType;
-  setSportType: (sportType: SportType) => void;
-  durationType: DurationType;
-  setDurationType: (durationType: DurationType) => void;
-  paceUnitType: PaceUnitType;
-  setPaceUnitType: (paceUnitType: PaceUnitType) => void;
   ftp: number;
   setFtp: (ftp: number) => void;
   weight: number;
@@ -22,11 +15,6 @@ interface WorkoutSettingsProps {
 
 const WorkoutSettings: React.FC<WorkoutSettingsProps> = ({
   sportType,
-  setSportType,
-  durationType,
-  setDurationType,
-  paceUnitType,
-  setPaceUnitType,
   ftp,
   setFtp,
   weight,
@@ -36,47 +24,15 @@ const WorkoutSettings: React.FC<WorkoutSettingsProps> = ({
 }) => {
   return (
     <>
-      <LeftRightToggle
-        label="Sport"
-        leftValue="bike"
-        rightValue="run"
-        leftIcon={faBiking}
-        rightIcon={faRunning}
-        selected={sportType}
-        onChange={(value) => setSportType(value as SportType)}
-      />
-
       {sportType === 'run' && (
-        <>
-          <LeftRightToggle
-            label="Duration Type"
-            leftValue="time"
-            rightValue="distance"
-            leftIcon={faClock}
-            rightIcon={faRuler}
-            selected={durationType}
-            onChange={(value) => setDurationType(value as DurationType)}
-          />
-
-          <LeftRightToggle
-            label="Pace"
-            leftValue="metric"
-            rightValue="imperial"
-            leftLabel="min/km"
-            rightLabel="min/mi"
-            selected={paceUnitType}
-            onChange={(value) => setPaceUnitType(value as PaceUnitType)}
-          />
-
-          <RunningTimesEditor
-            times={runningTimes}
-            onChange={setRunningTimes}
-          />
-        </>
+        <RunningTimesEditor
+          times={runningTimes}
+          onChange={setRunningTimes}
+        />
       )}
 
       {sportType === 'bike' && (
-        <>
+        <div className="run-workout">
           <div className="form-input">
             <label htmlFor="ftp">FTP (W)</label>
             <input
@@ -100,7 +56,7 @@ const WorkoutSettings: React.FC<WorkoutSettingsProps> = ({
               onChange={(e) => setWeight(parseInt(e.target.value))}
             />
           </div>
-        </>
+        </div>
       )}
     </>
   );
