@@ -23,10 +23,7 @@ import {
   faList,
 } from "@fortawesome/free-solid-svg-icons";
 import helpers from "../helpers";
-import { firebaseApp } from "../firebase";
 import { User as FirebaseUser } from "firebase/auth";
-import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
-import { getDatabase, onValue, ref, update } from "firebase/database";
 import SaveForm from "../Forms/SaveForm";
 import SignupForm from "../Forms/SignupForm";
 import LoginForm from "../Forms/LoginForm";
@@ -44,6 +41,7 @@ import { xmlService } from "../../services/xmlService";
 import { textParserService } from "../../services/textParserService";
 import { useWorkoutState } from "./hooks/useWorkoutState";
 import { useKeyboardShortcuts } from "./hooks/useKeyboardShortcuts";
+import { useFirebaseSync } from "./hooks/useFirebaseSync";
 
 export interface BarType {
   id: string;
@@ -86,7 +84,6 @@ export type DurationType = "time" | "distance";
 export type PaceUnitType = "metric" | "imperial";
 
 const Editor = ({ match }: RouteComponentProps<TParams>) => {
-  const auth = getAuth(firebaseApp);
   const { v4: uuidv4 } = require("uuid");
 
   const S3_URL = "https://zwift-workout.s3-eu-west-1.amazonaws.com";
@@ -144,8 +141,6 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
   const [showWorkouts, setShowWorkouts] = useState(false);
   const [textEditorIsVisible, setTextEditorIsVisible] = useState(false);
 
-  const db = getDatabase(firebaseApp);
-
   const location = useLocation();
 
   useEffect(() => {
@@ -157,55 +152,25 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
     }
   }, [location]);
 
+  // Firebase sync hook
+  const { saveWorkout: saveToFirebase, deleteWorkout: deleteFromFirebase, logout: logoutFromFirebase } = useFirebaseSync({
+    id,
+    setAuthor,
+    setName,
+    setDescription,
+    setBars,
+    setInstructions,
+    setTags,
+    setDurationType,
+    setSportType,
+    setMessage,
+    setUser,
+  });
+
   useEffect(() => {
-    setMessage({ visible: true, class: "loading", text: "Loading.." });
-
-    const starCountRef = ref(db, "workouts/" + id);
-    onValue(starCountRef, (snapshot) => {
-      if (snapshot.val()) {
-        // workout exist on server
-        setAuthor(snapshot.val().author);
-        setName(snapshot.val().name);
-        setDescription(snapshot.val().description);
-        setBars(snapshot.val().workout || []);
-        setInstructions(snapshot.val().instructions || []);
-        setTags(snapshot.val().tags || []);
-        setDurationType(snapshot.val().durationType);
-        setSportType(snapshot.val().sportType);
-
-        localStorage.setItem("id", id);
-      } else {
-        // workout doesn't exist on cloud
-        if (id === localStorage.getItem("id")) {
-          // user refreshed the page
-        } else {
-          // treat this as new workout
-          setBars([]);
-          setInstructions([]);
-          setName("");
-          setDescription("");
-          setAuthor("");
-          setTags([]);
-        }
-
-        localStorage.setItem("id", id);
-      }
-      //finished loading
-      setMessage({ visible: false });
-    });
-
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        setUser(user);
-      }
-    });
-
-    window.history.replaceState("", "", `/editor/${id}`);
-
     ReactGA.initialize("UA-55073449-9");
     ReactGA.pageview(window.location.pathname + window.location.search);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id, db, auth]);
+  }, []);
 
   // Update segments width when bars change
   useEffect(() => {
@@ -523,26 +488,9 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
   }
 
   function deleteWorkout() {
-    // save to cloud (firebase) if logged in
+    // delete from cloud (firebase) if logged in
     if (user) {
-      var updates: any = {};
-      updates[`users/${user.uid}/workouts/${id}`] = null;
-      updates[`workouts/${id}`] = null;
-
-      // save to firebase
-
-      update(ref(db), updates)
-        .then(() => {
-          newWorkout();
-        })
-        .catch((error) => {
-          console.log(error);
-          setMessage({
-            visible: true,
-            class: "error",
-            text: "Cannot delete workout",
-          });
-        });
+      deleteFromFirebase(user, newWorkout);
     }
   }
 
@@ -555,9 +503,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
     }
   }
 
-  function save() {
-    setMessage({ visible: true, class: "loading", text: "Saving.." });
-
+  async function save() {
     const xml = xmlService.createWorkoutXml({
       author,
       name,
@@ -573,61 +519,26 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
 
     // save to cloud (firebase) if logged in
     if (user) {
-      const item = {
-        id: id,
-        name: name,
-        description: description,
-        author: author,
-        workout: bars,
-        tags: tags,
-        instructions: instructions,
-        userId: user.uid,
-        updatedAt: Date(),
-        sportType: sportType,
-        durationType: durationType,
-      };
-
-      const item2 = {
-        name: name,
-        description: description,
-        updatedAt: Date(),
-        sportType: sportType,
-        durationType: durationType,
-        workoutTime: helpers.formatDuration(
-          helpers.getWorkoutLength(bars, durationType)
-        ),
-        workoutDistance: helpers.getWorkoutDistance(bars),
-      };
-
-      var updates: any = {};
-      updates[`users/${user.uid}/workouts/${id}`] = item2;
-      updates[`workouts/${id}`] = item;
-
-      // save to firebase
-      update(ref(db), updates)
-        .then(() => {
-          //upload to s3
-          upload(file, false);
-          setMessage({ visible: false });
-        })
-        .catch((error) => {
-          console.log(error);
-          setMessage({
-            visible: true,
-            class: "error",
-            text: "Cannot save this",
-          });
-        });
-    } else {
-      // download workout without saving
-      setMessage({ visible: false });
+      await saveToFirebase(
+        user,
+        author,
+        name,
+        description,
+        sportType,
+        durationType,
+        tags,
+        bars,
+        instructions
+      );
+      // upload to S3
+      upload(file, false);
     }
 
     return file;
   }
 
   function logout() {
-    signOut(auth).then(() => setUser(null));
+    logoutFromFirebase();
   }
 
   function downloadWorkout() {

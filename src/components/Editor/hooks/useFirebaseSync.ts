@@ -90,8 +90,12 @@ export const useFirebaseSync = ({
     window.history.replaceState('', '', `/editor/${id}`);
 
     return () => {
-      unsubscribe();
-      authUnsubscribe();
+      if (typeof unsubscribe === 'function') {
+        unsubscribe();
+      }
+      if (typeof authUnsubscribe === 'function') {
+        authUnsubscribe();
+      }
     };
   }, [id, db, auth, setAuthor, setName, setDescription, setBars, setInstructions, setTags, setDurationType, setSportType, setMessage, setUser]);
 
