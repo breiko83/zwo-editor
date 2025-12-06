@@ -1107,7 +1107,6 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
 
   const renderBar = (bar: BarType) => (
     <Bar
-      key={bar.id}
       id={bar.id}
       time={bar.time}
       length={bar.length || 200}
@@ -1130,7 +1129,6 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
 
   const renderTrapeze = (bar: BarType) => (
     <Trapeze
-      key={bar.id}
       id={bar.id}
       time={bar.time}
       length={bar.length || 200}
@@ -1151,7 +1149,6 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
 
   const renderFreeRide = (bar: BarType) => (
     <FreeRide
-      key={bar.id}
       id={bar.id}
       time={bar.time}
       length={bar.length}
@@ -1166,7 +1163,6 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
 
   const renderInterval = (bar: BarType) => (
     <Interval
-      key={bar.id}
       id={bar.id}
       repeat={bar.repeat || 3}
       onDuration={bar.onDuration || 10}
@@ -1193,7 +1189,6 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
 
   const renderComment = (instruction: Instruction, index: number) => (
     <Comment
-      key={instruction.id}
       instruction={instruction}
       durationType={durationType}
       width={
@@ -1809,25 +1804,25 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
             ></div>
           )}
           <div className="segments" ref={segmentsRef}>
-            {bars.map((bar) => {
+            {bars.map((bar, index) => {
+              const key = bar.id || `bar-${index}`;
               if (bar.type === "bar") {
-                return renderBar(bar);
+                return <React.Fragment key={key}>{renderBar(bar)}</React.Fragment>;
               } else if (bar.type === "trapeze") {
-                return renderTrapeze(bar);
+                return <React.Fragment key={key}>{renderTrapeze(bar)}</React.Fragment>;
               } else if (bar.type === "freeRide") {
-                return renderFreeRide(bar);
+                return <React.Fragment key={key}>{renderFreeRide(bar)}</React.Fragment>;
               } else if (bar.type === "interval") {
-                return renderInterval(bar);
-              } else {
-                return false;
+                return <React.Fragment key={key}>{renderInterval(bar)}</React.Fragment>;
               }
+              return null;
             })}
           </div>
 
           <div className="slider">
-            {instructions.map((instruction, index) =>
-              renderComment(instruction, index)
-            )}
+            {instructions.map((instruction, index) => (
+              <React.Fragment key={instruction.id || `instruction-${index}`}>{renderComment(instruction, index)}</React.Fragment>
+            ))}
           </div>
 
           {durationType === "time" ? (
