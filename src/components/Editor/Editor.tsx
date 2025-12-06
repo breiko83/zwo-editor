@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useLocation } from "react-router-dom";
 import "./Editor.css";
-import { Colors, Zones } from "../Constants";
+import { Zones } from "../Constants";
 import Bar from "../Bar/Bar";
 import Trapeze from "../Trapeze/Trapeze";
 import FreeRide from "../FreeRide/FreeRide";
@@ -11,34 +11,17 @@ import EditComment from "../Comment/EditComment";
 import Popup from "../Popup/Popup";
 import Footer from "../Footer/Footer";
 import Workouts from "../Workouts/Workouts";
-import TimeAxis from "./TimeAxis";
-import DistanceAxis from "./DistanceAxis";
-import ZoneAxis from "./ZoneAxis";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faTrash,
-  faArrowRight,
-  faArrowLeft,
   faFile,
   faSave,
   faUpload,
   faDownload,
-  faComment,
-  faBicycle,
-  faCopy,
-  faClock,
   faShareAlt,
   faTimesCircle,
   faList,
-  faBiking,
-  faRunning,
-  faRuler,
-  faPen,
 } from "@fortawesome/free-solid-svg-icons";
-import { ReactComponent as WarmdownLogo } from "../../assets/warmdown.svg";
-import { ReactComponent as WarmupLogo } from "../../assets/warmup.svg";
-import { ReactComponent as IntervalLogo } from "../../assets/interval.svg";
-import { ReactComponent as SteadyLogo } from "../../assets/steady.svg";
 import Converter from "xml-js";
 import helpers from "../helpers";
 import { firebaseApp } from "../firebase";
@@ -54,10 +37,10 @@ import { Helmet } from "react-helmet-async";
 import { RouteComponentProps } from "react-router-dom";
 import ReactGA from "react-ga";
 import RunningTimesEditor, { RunningTimes } from "./RunningTimesEditor";
-import LeftRightToggle from "./LeftRightToggle";
 import createWorkoutXml from "./createWorkoutXml";
 import ShareForm from "../Forms/ShareForm";
-import ReactTooltip from "react-tooltip";
+import WorkoutMetadata from "./WorkoutMetadata";
+import WorkoutCanvas from "./WorkoutCanvas";
 
 export interface BarType {
   id: string;
@@ -361,7 +344,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
   }
 
   function addBar(
-    zone: number,
+    zone: number = 1,
     duration: number = 300,
     cadence: number = 0,
     pace: number = 0,
@@ -1276,13 +1259,14 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
     }
   }
 
-  function getPace(id: string) {
+  function getPace(id: string): number {
     const index = bars.findIndex((bar) => bar.id === id);
 
     if (index !== -1) {
       const element = [...bars][index];
-      return element.pace;
+      return element.pace || 0;
     }
+    return 0;
   }
 
   function switchSportType(newSportType: SportType) {
@@ -1620,86 +1604,19 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
           <ShareForm id={id} onDismiss={() => setSharePopupVisibility(false)} />
         </Popup>
       )}
-      <div className="info">
-        <div className="title">
-          <h1>{name}</h1>
-          <div className="description">{description}</div>
-          <p>{author ? `by ${author}` : ""}</p>
-        </div>
-        <div className="workout">
-          <div className="form-input">
-            <label>Workout Time</label>
-            <input
-              className="textInput"
-              value={helpers.formatDuration(
-                helpers.getWorkoutLength(bars, durationType)
-              )}
-              disabled
-            />
-          </div>
-          {sportType === "run" && (
-            <div className="form-input">
-              <label>Workout Distance</label>
-              <input
-                className="textInput"
-                value={helpers.getWorkoutDistance(bars)}
-                disabled
-              />
-            </div>
-          )}
-          {sportType === "bike" && (
-            <div className="form-input">
-              <label title="Training Load">Training Load</label>
-              <input
-                className="textInput"
-                value={helpers.getStressScore(bars, ftp)}
-                disabled
-              />
-            </div>
-          )}
-          {sportType === "run" && (
-            <div className="form-input">
-              <label>Avg. Workout Pace</label>
-              <input
-                className="textInput"
-                value={helpers.getWorkoutPace(bars, durationType, paceUnitType)}
-                disabled
-              />
-            </div>
-          )}
-          {sportType === "run" && (
-            <LeftRightToggle<"time", "distance">
-              label="Duration Type"
-              leftValue="time"
-              rightValue="distance"
-              leftIcon={faClock}
-              rightIcon={faRuler}
-              selected={durationType}
-              onChange={setDurationType}
-            />
-          )}
-          {sportType === "run" && (
-            <LeftRightToggle<"metric", "imperial">
-              label="Pace Unit"
-              leftValue="metric"
-              rightValue="imperial"
-              leftLabel="min/km"
-              rightLabel="min/mi"
-              selected={paceUnitType}
-              onChange={setPaceUnitType}
-            />
-          )}
-          <LeftRightToggle<"bike", "run">
-            label="Sport Type"
-            leftValue="bike"
-            rightValue="run"
-            leftIcon={faBiking}
-            rightIcon={faRunning}
-            selected={sportType}
-            onChange={switchSportType}
-          />
-        </div>
-      </div>
+      <WorkoutMetadata
+        name={name}
+        description={description}
+        author={author}
+        bars={bars}
+        sportType={sportType}
+        durationType={durationType}
+        paceUnitType={paceUnitType}
+        ftp={ftp}
+        setDurationType={setDurationType}
+        setPaceUnitType={setPaceUnitType}
+        setSportType={switchSportType}
+      />
       {sportType === "run" && (
         <RunningTimesEditor times={runningTimes} onChange={setRunningTimes} />
       )}
@@ -1764,181 +1681,36 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
           </div>
         </div>
       )}
-      <div id="editor" className="editor">
-        {actionId && (
-          <div className="actions">
-            <button onClick={() => moveLeft(actionId)} title="Move Left">
-              <FontAwesomeIcon icon={faArrowLeft} size="lg" fixedWidth />
-            </button>
-            <button onClick={() => moveRight(actionId)} title="Move Right">
-              <FontAwesomeIcon icon={faArrowRight} size="lg" fixedWidth />
-            </button>
-            <button onClick={() => removeBar(actionId)} title="Delete">
-              <FontAwesomeIcon icon={faTrash} size="lg" fixedWidth />
-            </button>
-            <button onClick={() => duplicateBar(actionId)} title="Duplicate">
-              <FontAwesomeIcon icon={faCopy} size="lg" fixedWidth />
-            </button>
-            {sportType === "run" && (
-              <select
-                name="pace"
-                value={getPace(actionId)}
-                onChange={(e) => setPace(e.target?.value, actionId)}
-                className="selectInput"
-              >
-                <option value="0">1 Mile Pace</option>
-                <option value="1">5K Pace</option>
-                <option value="2">10K Pace</option>
-                <option value="3">Half Marathon Pace</option>
-                <option value="4">Marathon Pace</option>
-              </select>
-            )}
-          </div>
-        )}
-        <div className="canvas" ref={canvasRef}>
-          {actionId && (
-            <div
-              className="fader"
-              style={{ width: canvasRef.current?.scrollWidth }}
-              onClick={() => setActionId(undefined)}
-            ></div>
-          )}
-          <div className="segments" ref={segmentsRef}>
-            {bars.map((bar, index) => {
-              const key = bar.id || `bar-${index}`;
-              if (bar.type === "bar") {
-                return <React.Fragment key={key}>{renderBar(bar)}</React.Fragment>;
-              } else if (bar.type === "trapeze") {
-                return <React.Fragment key={key}>{renderTrapeze(bar)}</React.Fragment>;
-              } else if (bar.type === "freeRide") {
-                return <React.Fragment key={key}>{renderFreeRide(bar)}</React.Fragment>;
-              } else if (bar.type === "interval") {
-                return <React.Fragment key={key}>{renderInterval(bar)}</React.Fragment>;
-              }
-              return null;
-            })}
-          </div>
-
-          <div className="slider">
-            {instructions.map((instruction, index) => (
-              <React.Fragment key={instruction.id || `instruction-${index}`}>{renderComment(instruction, index)}</React.Fragment>
-            ))}
-          </div>
-
-          {durationType === "time" ? (
-            <TimeAxis width={segmentsWidth} />
-          ) : (
-            <DistanceAxis width={segmentsWidth} />
-          )}
-        </div>
-
-        <ZoneAxis />
-      </div>
+      <WorkoutCanvas
+        bars={bars}
+        instructions={instructions}
+        actionId={actionId}
+        sportType={sportType}
+        durationType={durationType}
+        segmentsWidth={segmentsWidth}
+        canvasRef={canvasRef}
+        segmentsRef={segmentsRef}
+        textEditorIsVisible={textEditorIsVisible}
+        setActionId={setActionId}
+        moveLeft={moveLeft}
+        moveRight={moveRight}
+        removeBar={removeBar}
+        duplicateBar={duplicateBar}
+        getPace={getPace}
+        setPace={setPace}
+        addBar={addBar}
+        toggleTextEditor={toggleTextEditor}
+        addTrapeze={addTrapeze}
+        addInterval={addInterval}
+        addFreeRide={addFreeRide}
+        addInstruction={addInstruction}
+        renderBar={renderBar}
+        renderTrapeze={renderTrapeze}
+        renderFreeRide={renderFreeRide}
+        renderInterval={renderInterval}
+        renderComment={renderComment}
+      />
       <div className="cta">
-        {sportType === "bike" ? (
-          <div>
-            <ReactTooltip effect="solid" />
-            <button
-              className="btn btn-square"
-              onClick={() => toggleTextEditor()}
-              style={{ backgroundColor: "palevioletred" }}
-              data-tip="New! Workout text editor!"
-            >
-              <FontAwesomeIcon icon={faPen} fixedWidth />
-            </button>
-            <button
-              className="btn btn-square"
-              onClick={() => addBar(0.5)}
-              style={{ backgroundColor: Colors.GRAY }}
-            >
-              Z1
-            </button>
-            <button
-              className="btn btn-square"
-              onClick={() => addBar(Zones.Z2.min)}
-              style={{ backgroundColor: Colors.BLUE }}
-            >
-              Z2
-            </button>
-            <button
-              className="btn btn-square"
-              onClick={() => addBar(Zones.Z3.min)}
-              style={{ backgroundColor: Colors.GREEN }}
-            >
-              Z3
-            </button>
-            <button
-              className="btn btn-square"
-              onClick={() => addBar(Zones.Z4.min)}
-              style={{ backgroundColor: Colors.YELLOW }}
-            >
-              Z4
-            </button>
-            <button
-              className="btn btn-square"
-              onClick={() => addBar(Zones.Z5.min)}
-              style={{ backgroundColor: Colors.ORANGE }}
-            >
-              Z5
-            </button>
-            <button
-              className="btn btn-square"
-              onClick={() => addBar(Zones.Z6.min)}
-              style={{ backgroundColor: Colors.RED }}
-            >
-              Z6
-            </button>
-          </div>
-        ) : (
-          <button
-            className="btn"
-            onClick={() => addBar(1, 300, 0, 0, 1000)}
-            style={{ backgroundColor: Colors.WHITE }}
-          >
-            <SteadyLogo className="btn-icon" /> Steady Pace
-          </button>
-        )}
-
-        <button
-          className="btn"
-          onClick={() => addTrapeze(0.25, 0.75)}
-          style={{ backgroundColor: Colors.WHITE }}
-        >
-          <WarmupLogo className="btn-icon" /> Warm up
-        </button>
-        <button
-          className="btn"
-          onClick={() => addTrapeze(0.75, 0.25)}
-          style={{ backgroundColor: Colors.WHITE }}
-        >
-          <WarmdownLogo className="btn-icon" /> Cool down
-        </button>
-        <button
-          className="btn"
-          onClick={() => addInterval()}
-          style={{ backgroundColor: Colors.WHITE }}
-        >
-          <IntervalLogo className="btn-icon" /> Interval
-        </button>
-        <button
-          className="btn"
-          onClick={() => addFreeRide()}
-          style={{ backgroundColor: Colors.WHITE }}
-        >
-          <FontAwesomeIcon
-            icon={sportType === "bike" ? faBicycle : faRunning}
-            size="lg"
-            fixedWidth
-          />{" "}
-          Free {sportType === "bike" ? "Ride" : "Run"}
-        </button>
-        <button
-          className="btn"
-          onClick={() => addInstruction()}
-          style={{ backgroundColor: Colors.WHITE }}
-        >
-          <FontAwesomeIcon icon={faComment} size="lg" fixedWidth /> Text Event
-        </button>
         {sportType === "bike" && (
           <div className="form-input">
             <label htmlFor="ftp">FTP (W)</label>

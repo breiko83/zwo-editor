@@ -34,7 +34,7 @@ const WorkoutMetadata: React.FC<WorkoutMetadataProps> = ({
 }) => {
   return (
     <div className="info">
-      <div className="name">
+      <div className="title">
         <h1>{name}</h1>
         <div className="description">{description}</div>
         <p>{author ? `by ${author}` : ''}</p>
