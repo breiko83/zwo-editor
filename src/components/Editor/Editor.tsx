@@ -239,7 +239,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
     duration: number = 300,
     pace: number = 0,
     length: number = 1000,
-    cadence: number = 0
+    cadence: number = 0,
   ) {
     const newTrapeze = workoutService.createTrapeze(
       zone1,
@@ -257,12 +257,14 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
   function addFreeRide(
     duration: number = 600,
     cadence: number = 0,
-    length: number = 1000
+    length: number = 1000,
+    incline: number = 0
   ) {
     const newFreeRide = workoutService.createFreeRide(
       duration,
       cadence,
       length,
+      incline,
       durationType,
       uuidv4
     );
@@ -700,6 +702,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
       time={bar.time}
       length={bar.length}
       cadence={bar.cadence}
+      incline={bar.incline || 0}
       durationType={durationType}
       sportType={sportType}
       onChange={(id: string, value: any) => handleOnChange(id, value)} // Change any to Interface Bar?

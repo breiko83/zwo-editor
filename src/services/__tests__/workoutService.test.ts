@@ -82,6 +82,7 @@ describe('workoutService', () => {
         600,
         0,
         1000,
+        0,
         'time',
         mockUuid
       );
@@ -90,6 +91,7 @@ describe('workoutService', () => {
         type: 'freeRide',
         time: 600,
         cadence: 0,
+        incline: 0,
         id: 'test-uuid-123',
       });
     });
@@ -99,6 +101,7 @@ describe('workoutService', () => {
         0,
         85,
         2000,
+        0,
         'distance',
         mockUuid
       );
@@ -107,6 +110,7 @@ describe('workoutService', () => {
         type: 'freeRide',
         length: 2000,
         cadence: 85,
+        incline: 0,
         id: 'test-uuid-123',
       });
     });
@@ -164,6 +168,7 @@ describe('workoutService', () => {
         cadence: 85,
         pace: 0,
         length: 200,
+        incline: 0,
       };
 
       workoutService.duplicateBar(bar, mockCallbacks);
@@ -173,7 +178,8 @@ describe('workoutService', () => {
         300, // time
         85, // cadence
         0, // pace
-        200 // length
+        200, // length,
+        0 // incline
       );
     });
 
@@ -208,11 +214,12 @@ describe('workoutService', () => {
         time: 600,
         cadence: 0,
         length: 2000,
+        incline: 0,
       };
 
       workoutService.duplicateBar(freeRide, mockCallbacks);
 
-      expect(mockCallbacks.addFreeRide).toHaveBeenCalledWith(600, 0, 2000);
+      expect(mockCallbacks.addFreeRide).toHaveBeenCalledWith(600, 0, 2000, 0);
     });
 
     it('should duplicate an interval', () => {

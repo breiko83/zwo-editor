@@ -87,6 +87,7 @@ export const workoutService = {
     duration: number,
     cadence: number,
     length: number,
+    incline: number,
     durationType: DurationType,
     uuidv4: () => string
   ): BarType {
@@ -95,6 +96,7 @@ export const workoutService = {
       length: durationType === 'time' ? 0 : length,
       cadence: cadence,
       type: 'freeRide',
+      incline: incline,
       id: uuidv4(),
     };
   },
@@ -176,8 +178,8 @@ export const workoutService = {
    * Duplicate a bar segment
    */
   duplicateBar(bar: BarType, createFunctions: {
-    addBar: (zone: number, duration: number, cadence: number, pace?: number, length?: number) => void;
-    addFreeRide: (duration: number, cadence: number, length: number) => void;
+    addBar: (zone: number, duration: number, cadence: number, pace?: number, length?: number, incline?: number) => void;
+    addFreeRide: (duration: number, cadence: number, length: number, incline?: number) => void;
     addTrapeze: (zone1: number, zone2: number, duration: number, pace: number, length?: number, cadence?: number) => void;
     addInterval: (
       repeat?: number,
@@ -189,7 +191,7 @@ export const workoutService = {
       restingCadence?: number,
       pace?: number,
       onLength?: number,
-      offLength?: number
+      offLength?: number,
     ) => void;
   }): void {
     if (bar.type === 'bar') {
@@ -198,11 +200,12 @@ export const workoutService = {
         bar.time,
         bar.cadence,
         bar.pace,
-        bar.length
+        bar.length,
+        bar.incline || 0
       );
     }
     if (bar.type === 'freeRide') {
-      createFunctions.addFreeRide(bar.time, bar.cadence, bar.length || 0);
+      createFunctions.addFreeRide(bar.time, bar.cadence, bar.length || 0, bar.incline || 0);
     }
     if (bar.type === 'trapeze') {
       createFunctions.addTrapeze(
@@ -211,7 +214,7 @@ export const workoutService = {
         bar.time,
         bar.pace || 0,
         bar.length,
-        bar.cadence
+        bar.cadence,
       );
     }
     if (bar.type === 'interval') {
@@ -225,7 +228,7 @@ export const workoutService = {
         bar.restingCadence,
         bar.pace,
         bar.onLength,
-        bar.offLength
+        bar.offLength,
       );
     }
   },

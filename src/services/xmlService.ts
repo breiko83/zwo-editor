@@ -122,6 +122,7 @@ export const xmlService = {
           .att('Duration', durationType === 'time' ? bar.time : bar.length)
           .att('FlatRoad', 0);
         bar.cadence !== 0 && segment.att('Cadence', bar.cadence);
+        bar.incline !== undefined && segment.att('Incline', (bar.incline / 100).toFixed(2));
       }
 
       if (durationType === 'time') {

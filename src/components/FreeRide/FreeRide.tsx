@@ -10,6 +10,7 @@ const FreeRide = (props: {
   time?: number;
   length?: number;
   cadence: number;
+  incline: number;
   sportType: string;
   durationType: string;
   onChange: Function;
@@ -36,8 +37,21 @@ const FreeRide = (props: {
   const handleCadenceChange = (cadence: number) => {
     props.onChange(props.id, {
       time: props.time,
+      length: props.length,
       type: "freeRide",
       cadence: cadence,
+      incline: props.incline,
+      id: props.id,
+    });
+  };
+
+  const handleInclineChange = (incline: number) => {
+    props.onChange(props.id, {
+      time: props.time,
+      length: props.length,
+      type: "freeRide",
+      cadence: props.cadence,
+      incline: incline,
       id: props.id,
     });
   };
@@ -62,6 +76,7 @@ const FreeRide = (props: {
       length: length,
       type: "freeRide",
       cadence: props.cadence,
+      incline: props.incline,
       id: props.id,
     });
   };
@@ -81,6 +96,7 @@ const FreeRide = (props: {
       length: length,
       type: "freeRide",
       cadence: props.cadence,
+      incline: props.incline,
       id: props.id,
     });
   };
@@ -99,7 +115,9 @@ const FreeRide = (props: {
           duration={durationLabel}
           distance={distance}
           cadence={props.cadence}
+          incline={props.incline}
           setCadence={(cadence: number) => handleCadenceChange(cadence)}
+          setIncline={(incline: number) => handleInclineChange(incline)}
         />
       )}
       <Resizable
