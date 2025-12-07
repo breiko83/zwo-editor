@@ -1,5 +1,6 @@
 .segment {
   position: relative;
+  cursor: pointer;
 }
 .bar {    
   border-radius: 10px;

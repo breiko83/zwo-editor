@@ -15,4 +15,5 @@
 }
 .react-draggable {
   position: absolute;
+  cursor: move;
 }

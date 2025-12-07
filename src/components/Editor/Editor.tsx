@@ -11,8 +11,7 @@ import EditComment from "../Comment/EditComment";
 import Popup from "../Popup/Popup";
 import Footer from "../Footer/Footer";
 import Workouts from "../Workouts/Workouts";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTimesCircle } from "@fortawesome/free-solid-svg-icons";
+import ToastMessage from "../ToastMessage/ToastMessage";
 import helpers from "../helpers";
 import { User as FirebaseUser } from "firebase/auth";
 import SaveForm from "../Forms/SaveForm";
@@ -300,15 +299,18 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
   }
 
   function addInstruction(text = "", time = 0, length = 0) {
+    const id = uuidv4();
     setInstructions((instructions) => [
       ...instructions,
       {
         text: text,
         time: time,
         length: length,
-        id: uuidv4(),
+        id: id,
       },
     ]);
+    // open instruction editor
+    setSelectedInstruction({ text: text, time: time, length: length, id: id });
   }
 
   function changeInstruction(id: string, values: Instruction) {
@@ -949,17 +951,10 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
         />
       </Helmet>
 
-      {message?.visible && (
-        <div className={`message ${message.class}`}>
-          {message.text}
-          <button
-            className="close"
-            onClick={() => setMessage({ visible: false })}
-          >
-            <FontAwesomeIcon icon={faTimesCircle} size="lg" fixedWidth />
-          </button>
-        </div>
-      )}
+      <ToastMessage
+        message={message}
+        onDismiss={() => setMessage({ visible: false })}
+      />
 
       {showWorkouts && (
         <Popup width="500px" dismiss={() => setShowWorkouts(false)}>

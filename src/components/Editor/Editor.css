@@ -90,6 +90,7 @@ a {
   font-size: 13px;
   border-radius: 5px;
   min-width: 50px;
+  cursor: pointer;
 }
 
 .btn > svg {
@@ -172,6 +173,7 @@ label {
   color: white;
   border: 0;
   border-radius: 50%;
+  cursor: pointer;
 }
 
 .slider {
@@ -186,45 +188,6 @@ label {
 
 .alert {
   color: "red";
-}
-
-.message {
-  position: absolute;
-  top: 50px;
-  left: 0;
-  right: 0;
-  margin: 0 auto;
-  width: 400px;
-  text-align: center;
-  padding: 20px;
-  border-radius: 10px;
-  z-index: 1000;
-}
-
-.message > .close {
-  color: white;
-}
-
-.loading {
-  color: white;
-  background-color: rgba(0, 0, 0, 0.7);
-}
-
-.error {
-  color: white;
-  background-color: rgba(196, 13, 13, 0.7);
-}
-
-.completed {
-  color: white;
-  background-color: rgba(0, 196, 13, 0.7);
-}
-
-.close {
-  background-color: rgba(0, 0, 0, 0);
-  border: 0;
-  float: right;
-  color: white;
 }
 
 .info {

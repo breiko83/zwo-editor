@@ -8,3 +8,7 @@
   position: absolute;
   margin-top: -30px;
 }
+
+.buttons > button {
+  cursor: pointer;
+}
