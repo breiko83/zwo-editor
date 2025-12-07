@@ -148,17 +148,18 @@ export const useFirebaseSync = ({
 
     try {
       await update(ref(db), updates);
-      setMessage({ visible: false });
+      setMessage({
+        visible: true,
+        class: 'success',
+        text: 'Workout saved!',
+      });
     } catch (error) {
       console.error(error);
       setMessage({
         visible: true,
         class: 'error',
-        text: 'Cannot save this',
+        text: 'Cannot save workout',
       });
-      throw error;
-    } finally {
-      setMessage({ visible: true, class: 'completed', text: 'Workout saved' });
     }
   };
 
@@ -181,8 +182,6 @@ export const useFirebaseSync = ({
         class: 'error',
         text: 'Cannot delete workout',
       });
-    } finally {
-      setMessage({ visible: true, class: 'completed', text: 'Workout deleted' });
     }
   };
 
