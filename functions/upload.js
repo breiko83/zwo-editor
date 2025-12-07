@@ -7,16 +7,33 @@ const s3 = new AWS.S3({
   region: 'eu-west-1',
 })
 
-exports.handler = function (event, context, callback) {
+exports.handler = function (event, context, callback) {  
+  // Allow both localhost and production origins
+  const origin = event.headers.origin || event.headers.Origin || 'http://localhost:8888'
+  const allowedOrigins = [
+    'http://localhost:8888',
+    'http://localhost:3000',
+    'https://www.zwiftworkout.com',
+    'https://zwiftworkout.netlify.app'
+  ]
+  const corsUrl = allowedOrigins.includes(origin) ? origin : 'https://www.zwiftworkout.com'
 
-  console.log(event);
-  
+  // Handle preflight OPTIONS request
+  if (event.httpMethod === 'OPTIONS') {
+    return callback(null, {
+      statusCode: 200,
+      headers: {
+        'Access-Control-Allow-Origin': corsUrl,
+        'Access-Control-Allow-Headers': 'Content-Type',
+        'Access-Control-Allow-Methods': 'POST, OPTIONS',
+        'Access-Control-Allow-Credentials': true
+      },
+      body: ''
+    })
+  }
 
   const body = JSON.parse(event.body)
   const { fileName, fileType } = body
-
-  //const corsUrl = "https://localhost:8888"
-  const corsUrl = "https://www.zwiftworkout.com"
 
   if (!fileName && !fileType) {
     return {

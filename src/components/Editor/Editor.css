@@ -215,6 +215,11 @@ label {
   background-color: rgba(196, 13, 13, 0.7);
 }
 
+.completed {
+  color: white;
+  background-color: rgba(0, 196, 13, 0.7);
+}
+
 .close {
   background-color: rgba(0, 0, 0, 0);
   border: 0;

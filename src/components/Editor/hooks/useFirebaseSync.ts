@@ -3,7 +3,7 @@ import { getDatabase, onValue, ref, update } from 'firebase/database';
 import { getAuth, onAuthStateChanged, signOut, User as FirebaseUser } from 'firebase/auth';
 import { firebaseApp } from '../../firebase';
 import { BarType, Instruction, SportType, DurationType } from '../Editor';
-import { xmlService } from '../../../services/xmlService';
+import helpers from '../../helpers';
 
 interface Message {
   visible: boolean;
@@ -116,48 +116,49 @@ export const useFirebaseSync = ({
 
     setMessage({ visible: true, class: 'loading', text: 'Saving..' });
 
-    const xml = xmlService.createWorkoutXml({
-      author,
-      name,
-      description,
-      sportType,
-      durationType,
-      tags,
-      bars,
-      instructions,
-    });
+    const item = {
+      id: id,
+      name: name,
+      description: description,
+      author: author,
+      workout: bars,
+      tags: tags,
+      instructions: instructions,
+      userId: user.uid,
+      updatedAt: Date(),
+      sportType: sportType,
+      durationType: durationType,
+    };
+
+    const item2 = {
+      name: name,
+      description: description,
+      updatedAt: Date(),
+      sportType: sportType,
+      durationType: durationType,
+      workoutTime: helpers.formatDuration(
+        helpers.getWorkoutLength(bars, durationType)
+      ),
+      workoutDistance: helpers.getWorkoutDistance(bars),
+    };
 
     const updates: any = {};
-    updates[`users/${user.uid}/workouts/${id}`] = {
-      name,
-      id,
-    };
-    updates[`workouts/${id}`] = {
-      author,
-      name,
-      description,
-      workout: bars,
-      instructions,
-      xml,
-      tags,
-      sportType,
-      durationType,
-    };
+    updates[`users/${user.uid}/workouts/${id}`] = item2;
+    updates[`workouts/${id}`] = item;
 
     try {
       await update(ref(db), updates);
-      setMessage({
-        visible: true,
-        class: 'success',
-        text: 'Workout saved!',
-      });
+      setMessage({ visible: false });
     } catch (error) {
       console.error(error);
       setMessage({
         visible: true,
         class: 'error',
-        text: 'Cannot save workout',
+        text: 'Cannot save this',
       });
+      throw error;
+    } finally {
+      setMessage({ visible: true, class: 'completed', text: 'Workout saved' });
     }
   };
 
@@ -180,6 +181,8 @@ export const useFirebaseSync = ({
         class: 'error',
         text: 'Cannot delete workout',
       });
+    } finally {
+      setMessage({ visible: true, class: 'completed', text: 'Workout deleted' });
     }
   };
 
