@@ -1,0 +1,47 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Workouts renders correctly with no workouts 1`] = `
+<div
+  className="workouts"
+>
+  <div
+    className="workoutsHeader"
+  >
+    <h2>
+      Your workouts
+    </h2>
+  </div>
+  <div
+    className="workoutsList"
+  >
+    <p
+      className="noWorkouts"
+    >
+      No saved workouts yet
+    </p>
+  </div>
+</div>
+`;
+
+exports[`Workouts renders correctly with workouts 1`] = `
+<div
+  className="workouts"
+>
+  <div
+    className="workoutsHeader"
+  >
+    <h2>
+      Your workouts
+    </h2>
+  </div>
+  <div
+    className="workoutsList"
+  >
+    <p
+      className="noWorkouts"
+    >
+      No saved workouts yet
+    </p>
+  </div>
+</div>
+`;

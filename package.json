@@ -68,6 +68,7 @@
     "@babel/preset-env": "^7.10.3",
     "@babel/preset-react": "^7.10.1",
     "@testing-library/react-hooks": "^8.0.1",
+    "@types/react-test-renderer": "^19.1.0",
     "puppeteer": "^22.0.0",
     "react-scripts": "5.0.1",
     "react-test-renderer": "^16.13.1",
