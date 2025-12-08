@@ -9,17 +9,7 @@ import {
   ref,
   query,
 } from "firebase/database";
-
-interface Workout {
-  id: string;
-  name: string;
-  description: string;
-  updatedAt: Date;
-  durationType: string;
-  sportType: string;
-  workoutTime: string;
-  workoutDistance: string;
-}
+import { Workout } from "../../types";
 
 const Workouts = (props: { userId: string }) => {
   const db = getDatabase(firebaseApp);

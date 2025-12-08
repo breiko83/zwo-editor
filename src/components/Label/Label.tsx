@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBolt, faClock, faRuler } from "@fortawesome/free-solid-svg-icons";
 import "./Label.css";
 import helpers from "../helpers";
-import { PaceUnitType } from "../Editor/Editor";
+import { PaceUnitType } from "../../types/workout";
 
 const Label = (props: {
   sportType: string;
@@ -27,7 +27,7 @@ const Label = (props: {
   const paces = ["1M", "5K", "10K", "HM", "M"];
 
   return (
-    <div className="label">
+    <div className={`label ${props.sportType === "bike" ? "label-bike" : "label-run"}`}>
       {props.duration && props.duration !== "00:00" && (
         <div>
           <FontAwesomeIcon icon={faClock} fixedWidth /> {props.duration}

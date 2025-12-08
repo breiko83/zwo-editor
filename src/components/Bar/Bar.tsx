@@ -4,7 +4,7 @@ import { Colors, Zones } from "../Constants";
 import { Resizable } from "re-resizable";
 import Label from "../Label/Label";
 import helpers from "../helpers";
-import { PaceUnitType } from "../Editor/Editor";
+import { PaceUnitType } from "../../types/workout";
 
 const Bar = (props: {
   id: string;

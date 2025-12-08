@@ -1,6 +1,6 @@
 import React from 'react';
 import helpers from '../helpers';
-import { BarType, SportType, DurationType, PaceUnitType } from './Editor';
+import { BarType, SportType, DurationType, PaceUnitType } from '../../types/workout';
 import LeftRightToggle from './LeftRightToggle';
 import { faClock, faRuler, faBiking, faRunning } from '@fortawesome/free-solid-svg-icons';
 import './Editor.css';

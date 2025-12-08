@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import Bar from "../Bar/Bar";
 import "./Interval.css";
 
-import { BarType } from "../Editor/Editor";
+import { BarType } from "../../types/workout";
 
 const Interval = (props: {
   id: string;

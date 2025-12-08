@@ -16,7 +16,7 @@ import { ReactComponent as SteadyLogo } from '../../assets/steady.svg';
 import { ReactComponent as WarmupLogo } from '../../assets/warmup.svg';
 import { ReactComponent as WarmdownLogo } from '../../assets/warmdown.svg';
 import { ReactComponent as IntervalLogo } from '../../assets/interval.svg';
-import { BarType, Instruction, SportType, DurationType } from './Editor';
+import { BarType, Instruction, SportType, DurationType } from '../../types/workout';
 import TimeAxis from './TimeAxis';
 import DistanceAxis from './DistanceAxis';
 import ZoneAxis from './ZoneAxis';

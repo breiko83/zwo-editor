@@ -2,12 +2,7 @@ import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimesCircle } from "@fortawesome/free-solid-svg-icons";
 import styles from "./ToastMessage.module.css";
-
-interface Message {
-  visible: boolean;
-  class?: string;
-  text?: string;
-}
+import { Message } from "../../types/ui";
 
 interface ToastMessageProps {
   message?: Message;

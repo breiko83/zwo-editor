@@ -34,46 +34,11 @@ import { textParserService } from "../../services/textParserService";
 import { useWorkoutState } from "./hooks/useWorkoutState";
 import { useKeyboardShortcuts } from "./hooks/useKeyboardShortcuts";
 import { useFirebaseSync } from "./hooks/useFirebaseSync";
-
-export interface BarType {
-  id: string;
-  time: number;
-  length?: number;
-  type: string;
-  power?: number;
-  startPower?: number;
-  endPower?: number;
-  cadence: number;
-  restingCadence?: number;
-  onPower?: number;
-  offPower?: number;
-  onDuration?: number;
-  offDuration?: number;
-  repeat?: number;
-  pace?: number;
-  onLength?: number;
-  offLength?: number;
-  incline?: number;
-}
-
-export interface Instruction {
-  id: string;
-  text: string;
-  time: number;
-  length: number;
-}
-
-interface Message {
-  visible: boolean;
-  class?: string;
-  text?: string;
-}
+import { BarType, Instruction, SportType } from "../../types/workout";
+import { Message } from "../../types/ui";
+import Bugsnag from "@bugsnag/js";
 
 type TParams = { id: string };
-
-export type SportType = "bike" | "run";
-export type DurationType = "time" | "distance";
-export type PaceUnitType = "metric" | "imperial";
 
 const Editor = ({ match }: RouteComponentProps<TParams>) => {
   const { v4: uuidv4 } = require("uuid");
@@ -591,13 +556,11 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
         })
           .then((response) => response.text())
           .then((data) => {
-            console.log("File uploaded");
-
             // can parse now
-
             if (parse) fetchAndParse(id);
           })
           .catch((error) => {
+            Bugsnag.notify(error);
             console.error(error);
           });
       });
@@ -631,6 +594,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
         setInstructions(parsedWorkout.instructions);
       })
       .catch((error) => {
+        Bugsnag.notify(error);
         console.error(error);
       });
   }
@@ -668,7 +632,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
       paceUnitType={paceUnitType}
       pace={bar.pace || 0}
       speed={calculateSpeed(bar.pace || 0)}
-      onChange={(id: string, value: any) => handleOnChange(id, value)} // Change any to Interface Bar?
+      onChange={(id: string, value: BarType) => handleOnChange(id, value)}
       onClick={(id: string) => handleOnClick(id)}
       selected={bar.id === actionId}
       showLabel={true}
@@ -690,7 +654,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
       paceUnitType={paceUnitType}
       pace={bar.pace || 0}
       speed={calculateSpeed(bar.pace || 0)}
-      onChange={(id: string, value: any) => handleOnChange(id, value)} // Change any to Interface Bar?
+      onChange={(id: string, value: BarType) => handleOnChange(id, value)}
       onClick={(id: string) => handleOnClick(id)}
       selected={bar.id === actionId}
     />
@@ -705,7 +669,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
       incline={bar.incline || 0}
       durationType={durationType}
       sportType={sportType}
-      onChange={(id: string, value: any) => handleOnChange(id, value)} // Change any to Interface Bar?
+      onChange={(id: string, value: BarType) => handleOnChange(id, value)}
       onClick={(id: string) => handleOnClick(id)}
       selected={bar.id === actionId}
     />
@@ -729,7 +693,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
       durationType={durationType}
       pace={bar.pace || 0}
       speed={calculateSpeed(bar.pace || 0)}
-      handleIntervalChange={(id: string, value: any) =>
+      handleIntervalChange={(id: string, value: BarType) =>
         handleOnChange(id, value)
       }
       handleIntervalClick={(id: string) => handleOnClick(id)}
