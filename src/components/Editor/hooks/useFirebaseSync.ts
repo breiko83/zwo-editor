@@ -2,14 +2,11 @@ import { useEffect } from 'react';
 import { getDatabase, onValue, ref, update } from 'firebase/database';
 import { getAuth, onAuthStateChanged, signOut, User as FirebaseUser } from 'firebase/auth';
 import { firebaseApp } from '../../firebase';
-import { BarType, Instruction, SportType, DurationType } from '../Editor';
+import { BarType, Instruction, SportType, DurationType } from '../../../types/workout';
+import { Message } from '../../../types/ui';
 import helpers from '../../helpers';
-
-interface Message {
-  visible: boolean;
-  class?: string;
-  text?: string;
-}
+import Bugsnag from "@bugsnag/js";
+import { sanitizeWorkoutData } from '../../../utils/sanitize';
 
 interface FirebaseSyncProps {
   id: string;
@@ -143,8 +140,8 @@ export const useFirebaseSync = ({
     };
 
     const updates: any = {};
-    updates[`users/${user.uid}/workouts/${id}`] = item2;
-    updates[`workouts/${id}`] = item;
+    updates[`users/${user.uid}/workouts/${id}`] = sanitizeWorkoutData(item2);
+    updates[`workouts/${id}`] = sanitizeWorkoutData(item);
 
     try {
       await update(ref(db), updates);
@@ -154,7 +151,10 @@ export const useFirebaseSync = ({
         text: 'Workout saved!',
       });
     } catch (error) {
-      console.error(error);
+      console.error(error, updates);
+      Bugsnag.notify(error as Error, (event) => {
+        event.addMetadata('workout', updates);
+      });
       setMessage({
         visible: true,
         class: 'error',
@@ -177,6 +177,7 @@ export const useFirebaseSync = ({
       onSuccess();
     } catch (error) {
       console.error(error);
+      Bugsnag.notify(error as Error);
       setMessage({
         visible: true,
         class: 'error',
@@ -191,6 +192,7 @@ export const useFirebaseSync = ({
       setUser(null);
     } catch (error) {
       console.error(error);
+      Bugsnag.notify(error as Error);
     }
   };
 

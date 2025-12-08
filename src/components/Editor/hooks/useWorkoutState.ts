@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { BarType, Instruction, SportType, DurationType, PaceUnitType } from '../Editor';
+import { BarType, Instruction, SportType, DurationType, PaceUnitType } from '../../../types/workout';
 import { RunningTimes } from '../RunningTimesEditor';
 
 const loadRunningTimes = (): RunningTimes => {

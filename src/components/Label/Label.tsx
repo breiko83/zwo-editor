@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBolt, faClock, faRuler } from "@fortawesome/free-solid-svg-icons";
 import "./Label.css";
 import helpers from "../helpers";
-import { PaceUnitType } from "../Editor/Editor";
+import { PaceUnitType } from "../../types/workout";
 
 const Label = (props: {
   sportType: string;

@@ -1,16 +1,5 @@
 import Builder from "xmlbuilder";
-import { BarType, Instruction, SportType, DurationType } from "./Editor";
-
-interface Workout {
-  author: string;
-  name: string;
-  description: string;
-  sportType: SportType;
-  durationType: DurationType;
-  tags: string[];
-  bars: Array<BarType>;
-  instructions: Array<Instruction>;
-}
+import { WorkoutData } from "../../types";
 
 export default function createWorkoutXml({
   author,
@@ -21,7 +10,7 @@ export default function createWorkoutXml({
   tags,
   bars,
   instructions,
-}: Workout): string {
+}: WorkoutData) {
   var totalTime = 0;
   var totalLength = 0;
 

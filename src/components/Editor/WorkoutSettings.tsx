@@ -1,5 +1,5 @@
 import React from 'react';
-import { SportType } from './Editor';
+import { SportType } from '../../types/workout';
 import { RunningTimes } from './RunningTimesEditor';
 import RunningTimesEditor from './RunningTimesEditor';
 

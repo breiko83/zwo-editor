@@ -1,4 +1,4 @@
-import { BarType, DurationType } from '../components/Editor/Editor';
+import { BarType, DurationType } from '../types/workout';
 import helpers from '../components/helpers';
 
 /**

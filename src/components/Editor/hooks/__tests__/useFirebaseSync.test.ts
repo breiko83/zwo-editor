@@ -1,6 +1,11 @@
 import { renderHook, act } from '@testing-library/react-hooks';
 import { useFirebaseSync } from '../useFirebaseSync';
-import { BarType, Instruction } from '../../Editor';
+import { BarType, Instruction } from '../../../../types/workout';
+
+// Mock Bugsnag
+jest.mock('../../../../bugsnag', () => ({
+  notify: jest.fn(),
+}));
 
 // Mock Firebase
 jest.mock('../../../firebase', () => ({

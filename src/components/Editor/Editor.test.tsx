@@ -5,6 +5,11 @@ import { HelmetProvider } from 'react-helmet-async';
 import Editor from './Editor';
 import '@testing-library/jest-dom';
 
+// Mock Bugsnag
+jest.mock('../../bugsnag', () => ({
+  notify: jest.fn(),
+}));
+
 // Mock Firebase
 jest.mock('../firebase', () => ({
   firebaseApp: {},

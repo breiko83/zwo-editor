@@ -1,17 +1,7 @@
 import Builder from 'xmlbuilder';
 import Converter from 'xml-js';
-import { BarType, Instruction, SportType, DurationType } from '../components/Editor/Editor';
-
-interface Workout {
-  author: string;
-  name: string;
-  description: string;
-  sportType: SportType;
-  durationType: DurationType;
-  tags: string[];
-  bars: Array<BarType>;
-  instructions: Array<Instruction>;
-}
+import { BarType, Instruction, SportType, DurationType } from '../types/workout';
+import { WorkoutData } from '../types';
 
 interface ParsedWorkout {
   name: string;
@@ -40,7 +30,7 @@ export const xmlService = {
     tags,
     bars,
     instructions,
-  }: Workout): string {
+  }: WorkoutData): string {
     let totalTime = 0;
     let totalLength = 0;
 
