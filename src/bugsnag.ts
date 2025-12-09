@@ -9,6 +9,7 @@ Bugsnag.start({
   plugins: [new BugsnagPluginReact()],
   enabledReleaseStages: ['production', 'staging'],
   releaseStage: process.env.NODE_ENV || 'development',
+  appVersion: process.env.DEPLOY_ID,
 });
 BugsnagPerformance.start({ apiKey: process.env.REACT_APP_BUGSNAG_API_KEY || 'YOUR_BUGSNAG_API_KEY' })
 
