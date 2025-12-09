@@ -22,6 +22,7 @@
     "@types/xml2js": "^0.4.5",
     "aws-sdk": "^2.692.0",
     "firebase": "^10.4.0",
+    "firebase-admin": "^13.6.0",
     "immutability-helper": "^3.0.2",
     "moment": "^2.26.0",
     "moment-duration-format": "^2.3.2",
