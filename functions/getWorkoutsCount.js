@@ -50,15 +50,15 @@ exports.handler = async function (event, context) {
 
   try {
     const db = admin.database();
-    console.log('Getting users count');
+    console.log('Getting workouts count');
     
     // Use shallow query to get only keys, not full data
-    const usersSnapshot = await db.ref('users').once('value', null, { shallow: true });
+    const workoutsSnapshot = await db.ref('workouts').once('value', null, { shallow: true });
     
     // Count the keys
-    const count = usersSnapshot.exists() ? Object.keys(usersSnapshot.val() || {}).length : 0;
+    const count = workoutsSnapshot.exists() ? Object.keys(workoutsSnapshot.val() || {}).length : 0;
     
-    console.log('Users count:', count);
+    console.log('Workouts count:', count);
 
     return {
       statusCode: 200,
@@ -70,14 +70,14 @@ exports.handler = async function (event, context) {
       body: JSON.stringify({ count })
     };
   } catch (error) {
-    console.error('Error getting users count:', error);
+    console.error('Error getting workouts count:', error);
     return {
       statusCode: 500,
       headers: {
         'Access-Control-Allow-Origin': corsUrl,
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ error: 'Failed to get users count' })
+      body: JSON.stringify({ error: 'Failed to get workouts count' })
     };
   }
 };
