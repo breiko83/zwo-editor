@@ -596,6 +596,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
       .catch((error) => {
         Bugsnag.notify(error);
         console.error(error);
+        setMessage({ visible: true, class: 'error', text: 'Invalid workout file format' });
       });
   }
 

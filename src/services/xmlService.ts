@@ -168,6 +168,10 @@ export const xmlService = {
 
           const workout_file = result.workout_file;
 
+          if (!workout_file) {
+            throw new Error('Invalid workout file format: missing workout_file element');
+          }
+
           const name = workout_file.name?._text || '';
           const description = workout_file.description?._text || '';
           const author = workout_file.author?._text || '';
