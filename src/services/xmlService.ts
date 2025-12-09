@@ -2,6 +2,7 @@ import Builder from 'xmlbuilder';
 import Converter from 'xml-js';
 import { BarType, Instruction, SportType, DurationType } from '../types/workout';
 import { WorkoutData } from '../types';
+import Bugsnag from '@bugsnag/js';
 
 interface ParsedWorkout {
   name: string;
@@ -329,6 +330,9 @@ export const xmlService = {
             instructions,
           });
         } catch (error) {
+          Bugsnag.notify(error as Error, (event) => {
+            event.addMetadata('file', { name: file.name });
+          });
           reject(error);
         }
       };
