@@ -1,4 +1,4 @@
-import helpers, { BarType, DurationType, PaceUnitType } from './helpers';
+import helpers, { BarType } from './helpers';
 
 describe('helpers', () => {
   describe('getWorkoutLength', () => {
@@ -284,7 +284,7 @@ describe('helpers', () => {
     });
 
     it('should handle zero speed gracefully', () => {
-      expect(helpers.calculateTime(1000, 0)).toBe(Infinity);
+      expect(helpers.calculateTime(1000, 0)).toBe(0);
     });
   });
 

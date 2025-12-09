@@ -3,8 +3,8 @@ import "moment-duration-format";
 
 export interface BarType {
   id: string;
-  time: number;
-  length?: number;
+  time: number; // time in seconds
+  length?: number; // distance in meters
   type: string;
   power?: number;
   startPower?: number;
@@ -31,25 +31,11 @@ const helpers = {
     let length = 0;
 
     bars.forEach((bar) => {
-      if (durationType === "time") {
+      if (bar.type === "interval") {
+        length += (bar.repeat || 0) * (bar.onDuration || 0);
+        length += (bar.repeat || 0) * (bar.offDuration || 0);
+      }else{
         length += bar.time;
-      } else {
-        if (bar.type === "bar") {
-          length += bar.time;
-        }
-
-        if (bar.type === "trapeze") {
-          length += bar.time;
-        }
-
-        if (bar.type === "freeRide") {
-          length += bar.time;
-        }
-
-        if (bar.type === "interval") {
-          length += (bar.repeat || 0) * (bar.onDuration || 0);
-          length += (bar.repeat || 0) * (bar.offDuration || 0);
-        }
       }
     });
 
@@ -142,10 +128,14 @@ const helpers = {
   },
 
   calculateTime: function (distance: number, speed: number): number {
+    if (speed === 0) return 0;
+
     return distance / speed;
   },
 
   calculateDistance: function (time: number, speed: number): number {
+    if (speed === 0) return 0;
+
     return time * speed;
   },
 
@@ -154,6 +144,7 @@ const helpers = {
   },
 
   calculateSpeed: function (time: number, distance: number): number {
+    if (distance === 0) return 0;
     // in km/h
     return ((time / distance) * 18) / 5;
   },
