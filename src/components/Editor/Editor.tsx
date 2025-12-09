@@ -85,6 +85,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
 
   const [savePopupIsVisible, setSavePopupVisibility] = useState(false);
   const [sharePopupIsVisible, setSharePopupVisibility] = useState(false);
+  const [donationPopupIsVisible, setDonationPopupVisibility] = useState(false);
 
   const [user, setUser] = useState<FirebaseUser | null>(null);
   const [visibleForm, setVisibleForm] = useState("login"); // default form is login
@@ -516,6 +517,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
     });
 
     xmlService.downloadWorkout(xml, id);
+    setDonationPopupVisibility(true);
   }
 
   function handleUpload(file: Blob) {
@@ -972,6 +974,22 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
       {sharePopupIsVisible && (
         <Popup width="500px" dismiss={() => setSharePopupVisibility(false)}>
           <ShareForm id={id} onDismiss={() => setSharePopupVisibility(false)} />
+        </Popup>
+      )}
+      {donationPopupIsVisible && (
+        <Popup width="500px" dismiss={() => setDonationPopupVisibility(false)}>
+          <div style={{ padding: '20px', textAlign: 'center' }}>
+            <h2>Hey! Do you like this?</h2>
+            <p>Please support the project with a small donation if you can. It will help me maintain it and keep it free to use. 🙏</p>
+            <a href="https://www.buymeacoffee.com/carloschieh" target="_blank" rel="noreferrer">
+              <img 
+                src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" 
+                alt="Buy Me A Coffee" 
+                style={{height: '60px', width: '217px'}} 
+              />
+            </a>
+            <p>Having issues or want to suggest an improvement? Please open an issue on <a href="https://github.com/breiko83/zwo-editor/issues" target="_blank" rel="noreferrer">GitHub</a>.</p>
+          </div>
         </Popup>
       )}
       <WorkoutMetadata
