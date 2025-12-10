@@ -266,7 +266,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
     setBars((bars) => [...bars, newInterval]);
   }
 
-  function addInstruction(text = "", time = 0, length = 0) {
+  function addInstruction(text = "", time = 0, length = 0, openEditor = true) {
     const id = uuidv4();
     setInstructions((instructions) => [
       ...instructions,
@@ -278,7 +278,8 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
       },
     ]);
     // open instruction editor
-    setSelectedInstruction({ text: text, time: time, length: length, id: id });
+    if (openEditor)
+      setSelectedInstruction({ text: text, time: time, length: length, id: id });
   }
 
   function changeInstruction(id: string, values: Instruction) {
@@ -838,7 +839,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
       switch (block.type) {
         case 'message':
           if (block.text !== undefined && block.duration !== undefined) {
-            addInstruction(block.text, block.duration);
+            addInstruction(block.text, block.duration, 0, false);
           }
           break;
         case 'steady':
