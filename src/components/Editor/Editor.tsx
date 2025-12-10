@@ -1015,8 +1015,8 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
         runningTimes={runningTimes}
         setRunningTimes={setRunningTimes}
       />
-      {textEditorIsVisible && sportType === "bike" && (
-        <WorkoutTextEditor onChange={transformTextToWorkout} />
+      {textEditorIsVisible && (
+        <WorkoutTextEditor onChange={transformTextToWorkout} sportType={sportType} durationType={durationType} />
       )}
       <WorkoutCanvas
         bars={bars}
