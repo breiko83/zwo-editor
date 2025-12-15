@@ -1,5 +1,5 @@
 import { workoutService } from '../workoutService';
-import { BarType } from '../../components/Editor/Editor';
+import { BarType } from '../../types/workout';
 
 describe('workoutService', () => {
   const mockUuid = () => 'test-uuid-123';

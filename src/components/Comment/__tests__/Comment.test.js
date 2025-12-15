@@ -6,12 +6,13 @@ import { v4 as uuidv4 } from 'uuid'
 import '@testing-library/jest-dom/extend-expect'
 
 
-test('Comment renders correctly', () => {
+test('Comment renders correctly with time durationType', () => {
 
 
   const instruction = {
     text: 'This is a comment',
     time: 300,
+    length: 0,
     id: uuidv4()
   }
 
@@ -20,7 +21,36 @@ test('Comment renders correctly', () => {
         key={instruction.id} 
         instruction={instruction} 
         onChange={(id, values) => changeInstruction(id, values)} 
-        onDelete={(id) => deleteInstruction(id)} 
+        onClick={(id) => {}} 
+        durationType="time"
+        width={1000}
+        index={0}
+      />,
+  )
+
+  let tree = component.toJSON();
+  expect(tree).toMatchSnapshot();
+})
+
+test('Comment renders correctly with distance durationType', () => {
+
+
+  const instruction = {
+    text: 'This is a comment',
+    time: 0,
+    length: 1100,
+    id: uuidv4()
+  }
+
+  const component = renderer.create(
+      <Comment
+        key={instruction.id} 
+        instruction={instruction} 
+        onChange={(id, values) => changeInstruction(id, values)} 
+        onClick={(id) => {}} 
+        durationType="distance"
+        width={1000}
+        index={0}
       />,
   )
 

@@ -162,17 +162,17 @@ const WorkoutCanvas: React.FC<WorkoutCanvasProps> = ({
       <div className="cta">
         <ReactTooltip effect="solid" />
         <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', alignItems: 'center', width: '100%' }}>
+          <button
+            className="btn btn-square"
+            onClick={() => toggleTextEditor()}
+            style={{ backgroundColor: 'palevioletred' }}
+            data-tip="New! Workout text editor!"
+            title="Text Editor"
+          >
+            <FontAwesomeIcon icon={faPen} fixedWidth />
+          </button>
           {sportType === 'bike' && (
             <>
-              <button
-                className="btn btn-square"
-                onClick={() => toggleTextEditor()}
-                style={{ backgroundColor: 'palevioletred' }}
-                data-tip="New! Workout text editor!"
-                title="Text Editor"
-              >
-                <FontAwesomeIcon icon={faPen} fixedWidth />
-              </button>
               <div style={{ 
                 display: 'flex', 
                 gap: '5px', 

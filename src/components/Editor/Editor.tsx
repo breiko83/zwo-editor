@@ -31,6 +31,7 @@ import WorkoutTextEditor from "./WorkoutTextEditor";
 import { workoutService } from "../../services/workoutService";
 import { xmlService } from "../../services/xmlService";
 import { textParserService } from "../../services/textParserService";
+import { runningTextParserService } from "../../services/runningTextParserService";
 import { useWorkoutState } from "./hooks/useWorkoutState";
 import { useKeyboardShortcuts } from "./hooks/useKeyboardShortcuts";
 import { useFirebaseSync } from "./hooks/useFirebaseSync";
@@ -140,8 +141,6 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
   }
 
   function newWorkout() {
-    console.log("New workout");
-
     setId(generateId());
     setBars([]);
     setInstructions([]);
@@ -827,70 +826,151 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
     setBars([]);
     setInstructions([]);
 
-    // Use textParserService to parse workout text
-    const parsedBlocks = textParserService.parseWorkoutText(
-      textValue,
-      ftp,
-      weight
-    );
+    if (sportType === 'bike') {
+      // Use textParserService for bike workouts
+      const parsedBlocks = textParserService.parseWorkoutText(
+        textValue,
+        ftp,
+        weight
+      );
 
-    // Process parsed blocks and add them to workout
-    parsedBlocks.forEach((block) => {
-      switch (block.type) {
-        case 'message':
-          if (block.text !== undefined && block.duration !== undefined) {
-            addInstruction(block.text, block.duration, 0, false);
-          }
-          break;
-        case 'steady':
-          if (block.power !== undefined && block.duration !== undefined) {
-            addBar(block.power, block.duration, block.cadence);
-          }
-          break;
-        case 'ramp':
-        case 'warmup':
-        case 'cooldown':
-          if (
-            block.startPower !== undefined &&
-            block.endPower !== undefined &&
-            block.duration !== undefined
-          ) {
-            addTrapeze(
-              block.startPower,
-              block.endPower,
-              block.duration,
-              undefined,
-              undefined,
-              block.cadence
-            );
-          }
-          break;
-        case 'freeride':
-          if (block.duration !== undefined) {
-            addFreeRide(block.duration, block.cadence);
-          }
-          break;
-        case 'interval':
-          if (
-            block.repeat !== undefined &&
-            block.duration !== undefined &&
-            block.offDuration !== undefined &&
-            block.startPower !== undefined &&
-            block.endPower !== undefined
-          ) {
-            addInterval(
-              block.repeat,
-              block.duration,
-              block.offDuration,
-              block.startPower,
-              block.endPower,
-              block.cadence,
-              block.restingCadence
-            );
-          }
-          break;
-      }
-    });
+      // Process parsed blocks and add them to workout
+      parsedBlocks.forEach((block) => {
+        switch (block.type) {
+          case 'message':
+            if (block.text !== undefined && block.duration !== undefined) {
+              addInstruction(block.text, block.duration, 0, false);
+            }
+            break;
+          case 'steady':
+            if (block.power !== undefined && block.duration !== undefined) {
+              addBar(block.power, block.duration, block.cadence);
+            }
+            break;
+          case 'ramp':
+          case 'warmup':
+          case 'cooldown':
+            if (
+              block.startPower !== undefined &&
+              block.endPower !== undefined &&
+              block.duration !== undefined
+            ) {
+              addTrapeze(
+                block.startPower,
+                block.endPower,
+                block.duration,
+                undefined,
+                undefined,
+                block.cadence
+              );
+            }
+            break;
+          case 'freeride':
+            if (block.duration !== undefined) {
+              addFreeRide(block.duration, block.cadence);
+            }
+            break;
+          case 'interval':
+            if (
+              block.repeat !== undefined &&
+              block.duration !== undefined &&
+              block.offDuration !== undefined &&
+              block.power !== undefined &&
+              block.endPower !== undefined
+            ) {
+              addInterval(
+                block.repeat,
+                block.duration,
+                block.offDuration,
+                block.power,
+                block.endPower,
+                block.cadence,
+                block.restingCadence
+              );
+            }
+            break;
+        }
+      });
+    } else {
+      // Use runningTextParserService for run workouts
+      const parsedBlocks = runningTextParserService.parseWorkoutText(
+        textValue,
+        durationType
+      );
+
+      // Process parsed blocks and add them to workout
+      parsedBlocks.forEach((block) => {
+        switch (block.type) {
+          case 'message':
+            if (block.text !== undefined) {
+              if (durationType === 'time' && block.duration !== undefined) {
+                addInstruction(block.text, block.duration, 0, false);
+              } else if (durationType === 'distance' && block.length !== undefined) {
+                addInstruction(block.text, 0, block.length, false);
+              }
+            }
+            break;
+          case 'steady':
+            if (block.pace !== undefined) {
+              if (durationType === 'time' && block.duration !== undefined) {
+                addBar(block.power, block.duration, 0, block.pace, 0, block.incline || 0);
+              } else if (durationType === 'distance' && block.length !== undefined) {
+                addBar(block.power, 0, 0, block.pace, block.length, block.incline || 0);
+              }
+            }
+            break;
+          case 'ramp':
+          case 'warmup':
+          case 'cooldown':
+            if (block.startPower !== undefined && block.endPower !== undefined && block.pace !== undefined) {
+              if (durationType === 'time' && block.duration !== undefined) {
+                addTrapeze(block.startPower, block.endPower, block.duration, block.pace, 0, block.incline || 0);
+              } else if (durationType === 'distance' && block.length !== undefined) {
+                addTrapeze(block.startPower, block.endPower, 0, block.pace, block.length, block.incline || 0);
+              }
+            }
+            break;
+          case 'freerun':
+            if (durationType === 'time' && block.duration !== undefined) {
+              addFreeRide(block.duration, 0, 0, block.incline || 0);
+            } else if (durationType === 'distance' && block.length !== undefined) {
+              addFreeRide(0, 0, block.length, block.incline || 0);
+            }
+            break;
+          case 'interval':
+            if (block.repeat !== undefined && block.power !== undefined && block.endPower !== undefined && block.pace !== undefined) {
+              if (durationType === 'time' && block.duration !== undefined && block.offDuration !== undefined) {
+                addInterval(
+                  block.repeat,
+                  block.duration,
+                  block.offDuration,
+                  block.power,
+                  block.endPower,
+                  block.incline || 0,
+                  block.restingIncline || 0,
+                  block.pace,
+                  0,
+                  0
+                );
+              } else if (durationType === 'distance' && block.length !== undefined && block.offLength !== undefined) {
+                addInterval(
+                  block.repeat,
+                  0,
+                  0,
+                  block.power,
+                  block.endPower,
+                  block.incline || 0,
+                  block.restingIncline || 0,
+                  block.pace,
+                  block.length,
+                  block.offLength
+                );
+              }
+            }
+            break;
+        }
+      });
+    }
   }
 
   return (
@@ -1015,8 +1095,8 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
         runningTimes={runningTimes}
         setRunningTimes={setRunningTimes}
       />
-      {textEditorIsVisible && sportType === "bike" && (
-        <WorkoutTextEditor onChange={transformTextToWorkout} />
+      {textEditorIsVisible && (
+        <WorkoutTextEditor onChange={transformTextToWorkout} sportType={sportType} durationType={durationType} />
       )}
       <WorkoutCanvas
         bars={bars}
