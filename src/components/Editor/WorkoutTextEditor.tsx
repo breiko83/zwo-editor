@@ -101,13 +101,13 @@ const WorkoutTextEditor: React.FC<WorkoutTextEditorProps> = ({ onChange, sportTy
             </p>
             <h3>Warmup / Cooldown / Ramp block</h3>
             <p>
-              <code>warmup 40%HM-50%HM 10m</code>
-              <code>cooldown 70%HM-50%HM 5m</code>
+              <code>warmup 40%-50%HM 10m</code>
+              <code>cooldown 70%-50%HM 5m</code>
             </p>
             <h3>Intervals</h3>
             <p>
-              <code>interval 10x 30s-30s 100%HM-80%HM</code>
-              <code>interval 3x 1:00m-5:00m 80%HM-60%HM</code>
+              <code>interval 10x 30s-30s 100%-80%HM</code>
+              <code>interval 3x 1:00m-5:00m 80%-60%HM</code>
             </p>
             <h3>Free Run</h3>
             <p>
@@ -141,17 +141,17 @@ const WorkoutTextEditor: React.FC<WorkoutTextEditorProps> = ({ onChange, sportTy
             </p>
             <h3>Warmup / Cooldown / Ramp block</h3>
             <p>
-              <code>warmup 40%HM-50%HM 2km</code>
-              <code>cooldown 70%HM-50%HM 2km</code>
+              <code>warmup 40%-50%HM 2km</code>
+              <code>cooldown 70%-50%HM 2km</code>
             </p>
             <h3>Intervals</h3>
             <p>
-              <code>interval 10x 300m:300m 100%HM-80%HM</code>
-              <code>interval 3x 1km-3km 80%HM-60%HM</code>
+              <code>interval 10x 300m-300m 100%-80%HM</code>
+              <code>interval 3x 1km-3km 80%-60%HM</code>
             </p>
             <h3>Free Run</h3>
             <p>
-              <code>freerun 100%HM 2km</code>
+              <code>freerun 2km</code>
             </p>
             <h3>Text Event</h3>
             <p>

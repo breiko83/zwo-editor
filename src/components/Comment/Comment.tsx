@@ -59,7 +59,7 @@ const Comment = (props: {
       nodeRef={nodeRef}
       axis="x"
       handle=".handle"
-      defaultPosition={{ x: time, y: (props.index % 5) * 20 }}
+      defaultPosition={{ x: props.durationType === "time" ? time : length, y: (props.index % 5) * 20 }}
       bounds={{ left: 0, right: props.width }}
       scale={1}
       onStop={(e, data) => handleTouch(data.x)}
