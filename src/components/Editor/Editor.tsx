@@ -875,14 +875,14 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
               block.repeat !== undefined &&
               block.duration !== undefined &&
               block.offDuration !== undefined &&
-              block.startPower !== undefined &&
+              block.power !== undefined &&
               block.endPower !== undefined
             ) {
               addInterval(
                 block.repeat,
                 block.duration,
                 block.offDuration,
-                block.startPower,
+                block.power,
                 block.endPower,
                 block.cadence,
                 block.restingCadence
