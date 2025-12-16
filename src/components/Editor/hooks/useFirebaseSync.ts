@@ -134,7 +134,7 @@ export const useFirebaseSync = ({
       sportType: sportType,
       durationType: durationType,
       workoutTime: helpers.formatDuration(
-        helpers.getWorkoutLength(bars, durationType)
+        helpers.getWorkoutLength(bars)
       ),
       workoutDistance: helpers.getWorkoutDistance(bars),
     };

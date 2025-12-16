@@ -711,7 +711,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
       width={
         durationType === "distance"
           ? helpers.getWorkoutDistance(bars) * 100
-          : helpers.getWorkoutLength(bars, durationType) / 3
+          : helpers.getWorkoutLength(bars) / 3
       }
       onChange={(id: string, values: Instruction) =>
         changeInstruction(id, values)

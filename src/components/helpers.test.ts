@@ -8,7 +8,7 @@ describe('helpers', () => {
         { id: '1', type: 'bar', time: 300, cadence: 0, power: 0.7 },
         { id: '2', type: 'bar', time: 600, cadence: 0, power: 0.8 },
       ];
-      expect(helpers.getWorkoutLength(bars, 'time')).toBe(900);
+      expect(helpers.getWorkoutLength(bars)).toBe(900);
     });
 
     it('should calculate total time for distance-based workouts with bars', () => {
@@ -16,21 +16,21 @@ describe('helpers', () => {
         { id: '1', type: 'bar', time: 300, cadence: 0, power: 0.7 },
         { id: '2', type: 'bar', time: 600, cadence: 0, power: 0.8 },
       ];
-      expect(helpers.getWorkoutLength(bars, 'distance')).toBe(900);
+      expect(helpers.getWorkoutLength(bars)).toBe(900);
     });
 
     it('should handle trapeze segments', () => {
       const bars: BarType[] = [
         { id: '1', type: 'trapeze', time: 300, cadence: 0, startPower: 0.5, endPower: 0.8 },
       ];
-      expect(helpers.getWorkoutLength(bars, 'distance')).toBe(300);
+      expect(helpers.getWorkoutLength(bars)).toBe(300);
     });
 
     it('should handle freeRide segments', () => {
       const bars: BarType[] = [
         { id: '1', type: 'freeRide', time: 600, cadence: 0 },
       ];
-      expect(helpers.getWorkoutLength(bars, 'distance')).toBe(600);
+      expect(helpers.getWorkoutLength(bars)).toBe(600);
     });
 
     it('should handle interval segments correctly', () => {
@@ -47,7 +47,7 @@ describe('helpers', () => {
           offPower: 0.5,
         },
       ];
-      expect(helpers.getWorkoutLength(bars, 'distance')).toBe(450);
+      expect(helpers.getWorkoutLength(bars)).toBe(450);
     });
 
     it('should handle mixed workout types', () => {
@@ -67,12 +67,12 @@ describe('helpers', () => {
         },
         { id: '4', type: 'freeRide', time: 600, cadence: 0 },
       ];
-      expect(helpers.getWorkoutLength(bars, 'distance')).toBe(1650);
+      expect(helpers.getWorkoutLength(bars)).toBe(1650);
     });
 
     it('should handle empty bars array', () => {
       const bars: BarType[] = [];
-      expect(helpers.getWorkoutLength(bars, 'time')).toBe(0);
+      expect(helpers.getWorkoutLength(bars)).toBe(0);
     });
 
     it('should handle intervals with missing values', () => {
@@ -84,7 +84,7 @@ describe('helpers', () => {
           cadence: 0,
         },
       ];
-      expect(helpers.getWorkoutLength(bars, 'distance')).toBe(0);
+      expect(helpers.getWorkoutLength(bars)).toBe(0);
     });
   });
 
@@ -193,7 +193,7 @@ describe('helpers', () => {
       const bars: BarType[] = [
         { id: '1', type: 'bar', time: 3600, cadence: 0, length: 10000 },
       ];
-      const result = helpers.getWorkoutPace(bars, 'time', 'metric');
+      const result = helpers.getWorkoutPace(bars, 'metric');
       expect(result).toMatch(/\d{2}:\d{2}/);
     });
 
@@ -201,7 +201,7 @@ describe('helpers', () => {
       const bars: BarType[] = [
         { id: '1', type: 'bar', time: 3600, cadence: 0, length: 10000 },
       ];
-      const result = helpers.getWorkoutPace(bars, 'time', 'imperial');
+      const result = helpers.getWorkoutPace(bars, 'imperial');
       expect(result).toMatch(/\d{2}:\d{2}/);
     });
 
@@ -210,7 +210,7 @@ describe('helpers', () => {
         { id: '1', type: 'bar', time: 3600, cadence: 0, length: 10000 },
         { id: '2', type: 'freeRide', time: 600, cadence: 0, length: 2000 },
       ];
-      const result = helpers.getWorkoutPace(bars, 'time', 'metric');
+      const result = helpers.getWorkoutPace(bars, 'metric');
       expect(result).toMatch(/\d{2}:\d{2}/);
     });
 
@@ -218,7 +218,7 @@ describe('helpers', () => {
       const bars: BarType[] = [
         { id: '1', type: 'bar', time: 3600, cadence: 0 },
       ];
-      expect(helpers.getWorkoutPace(bars, 'time', 'metric')).toBe('');
+      expect(helpers.getWorkoutPace(bars, 'metric')).toBe('');
     });
   });
 

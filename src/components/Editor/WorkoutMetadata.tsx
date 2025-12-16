@@ -46,7 +46,7 @@ const WorkoutMetadata: React.FC<WorkoutMetadataProps> = ({
             className="textInput"
             title="Workout Time"
             value={helpers.formatDuration(
-              helpers.getWorkoutLength(bars, durationType)
+              helpers.getWorkoutLength(bars)
             )}
             disabled
           />
@@ -79,7 +79,7 @@ const WorkoutMetadata: React.FC<WorkoutMetadataProps> = ({
             <label>Avg. Workout Pace</label>
             <input
               className="textInput"
-              value={helpers.getWorkoutPace(bars, durationType, paceUnitType)}
+              value={helpers.getWorkoutPace(bars, paceUnitType)}
               disabled
             />
           </div>

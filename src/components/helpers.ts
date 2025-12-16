@@ -1,10 +1,11 @@
 import moment from "moment";
 import "moment-duration-format";
-import { BarType, DurationType, PaceUnitType } from '../types/workout';
+
+import { BarType, PaceUnitType } from '../types/workout';
 
 const helpers = {
   // calculate total time
-  getWorkoutLength: function (bars: BarType[], durationType: DurationType): number {
+  getWorkoutLength: function (bars: BarType[]): number {
     let length = 0;
 
     bars.forEach((bar) => {
@@ -51,9 +52,9 @@ const helpers = {
     return ((tss / (ftp * 3600)) * 100).toFixed(0);
   },
 
-  getWorkoutPace: function (bars: BarType[], durationType: DurationType, paceUnitType: PaceUnitType): string {
+  getWorkoutPace: function (bars: BarType[], paceUnitType: PaceUnitType): string {
     const pacedBars = bars.filter(b => b.type !== "freeRide");
-    const length = this.getWorkoutLength(pacedBars, durationType);
+    const length = this.getWorkoutLength(pacedBars);
     const distance = this.getWorkoutDistance(pacedBars);
     if (distance > 0) {
       const kph = +distance / (length / 3600);
