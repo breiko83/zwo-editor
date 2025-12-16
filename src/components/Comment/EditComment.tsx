@@ -2,13 +2,7 @@ import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrashAlt } from "@fortawesome/free-solid-svg-icons";
 import styles from "./EditComment.module.css";
-
-interface Instruction {
-  id: string;
-  text: string;
-  time: number;
-  length: number;
-}
+import { Instruction } from "../../types/workout";
 
 const EditComment = (props: {
   instruction: Instruction;

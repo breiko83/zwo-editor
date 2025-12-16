@@ -1,29 +1,6 @@
 import moment from "moment";
 import "moment-duration-format";
-
-export interface BarType {
-  id: string;
-  time: number; // time in seconds
-  length?: number; // distance in meters
-  type: string;
-  power?: number;
-  startPower?: number;
-  endPower?: number;
-  cadence: number;
-  restingCadence?: number;
-  onPower?: number;
-  offPower?: number;
-  onDuration?: number;
-  offDuration?: number;
-  repeat?: number;
-  pace?: number;
-  onLength?: number;
-  offLength?: number;
-  incline?: number;
-}
-
-export type DurationType = "time" | "distance";
-export type PaceUnitType = "metric" | "imperial";
+import { BarType, DurationType, PaceUnitType } from '../types/workout';
 
 const helpers = {
   // calculate total time

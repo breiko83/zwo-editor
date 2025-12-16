@@ -1,4 +1,5 @@
-import helpers, { BarType } from './helpers';
+import helpers from './helpers';
+import { BarType } from '../types/workout';
 
 describe('helpers', () => {
   describe('getWorkoutLength', () => {

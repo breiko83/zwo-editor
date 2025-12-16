@@ -4,13 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faComment,faCommentDots } from "@fortawesome/free-solid-svg-icons";
 import "./Comment.css";
 import helpers from "../helpers";
-
-interface Instruction {
-  id: string;
-  text: string;
-  time: number;
-  length: number;
-}
+import { Instruction } from "../../types/workout";
 
 const Comment = (props: {
   instruction: Instruction;
