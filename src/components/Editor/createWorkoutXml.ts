@@ -69,11 +69,11 @@ export default function createWorkoutXml({
         // add cadence if not zero
         bar.cadence !== 0 && segment.att("Cadence", bar.cadence);
       } else {
-        // cooldown (power decreases from startPower to endPower)
+        // cooldown
         segment = Builder.create(ramp)
           .att("Duration", durationType === "time" ? bar.time : bar.length)
-          .att("PowerLow", bar.endPower)
-          .att("PowerHigh", bar.startPower)
+          .att("PowerLow", bar.startPower) // these 2 values are inverted
+          .att("PowerHigh", bar.endPower) // looks like a bug on zwift editor
           .att("pace", bar.pace);
         // add cadence if not zero
         bar.cadence !== 0 && segment.att("Cadence", bar.cadence);
