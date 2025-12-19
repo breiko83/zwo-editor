@@ -329,5 +329,43 @@ describe('xmlService', () => {
         cadence: 0,
       });
     });
+
+
+    it('shoudld parse elements in the correct order', async () => {
+      const xmlContent = `
+      <workout_file>
+        <author></author>
+        <name></name>
+        <description>test from zwift 222</description>
+        <sportType>bike</sportType>
+        <tags/>
+        <workout>
+            <Warmup Duration="600" PowerLow="0.25075471" PowerHigh="0.74886793" pace="0"/>
+            <SteadyState Duration="300" Power="0.49981132" pace="0"/>
+            <SteadyState Duration="300" Power="0.65075469" pace="0"/>
+            <SteadyState Duration="300" Power="0.80924529" pace="0"/>
+            <Ramp Duration="600" PowerLow="0.25075471" PowerHigh="0.74886793" pace="0"/>
+            <Ramp Duration="600" PowerLow="0.74886793" PowerHigh="0.25075471" pace="0"/>
+            <SteadyState Duration="300" Power="0.94886792" pace="0"/>
+            <SteadyState Duration="300" Power="1.0998113" pace="0"/>
+            <SteadyState Duration="300" Power="1.2507547" pace="0"/>
+            <Cooldown Duration="600" PowerLow="0.74886793" PowerHigh="0.25075471" pace="0"/>
+        </workout>
+    </workout_file>`;
+      const file = new File([xmlContent], 'test.zwo', { type: 'text/xml' });
+      const result = await xmlService.parseWorkoutXml(file, mockUuid);
+
+      expect(result.bars).toHaveLength(10);
+      expect(result.bars[0].type).toBe('trapeze'); // Warmup
+      expect(result.bars[1].type).toBe('bar'); // SteadyState
+      expect(result.bars[2].type).toBe('bar'); // SteadyState
+      expect(result.bars[3].type).toBe('bar'); // SteadyState
+      expect(result.bars[4].type).toBe('trapeze'); // Ramp
+      expect(result.bars[5].type).toBe('trapeze'); // Ramp
+      expect(result.bars[6].type).toBe('bar'); // SteadyState
+      expect(result.bars[7].type).toBe('bar'); // SteadyState
+      expect(result.bars[8].type).toBe('bar'); // SteadyState
+      expect(result.bars[9].type).toBe('trapeze'); // Cooldown
+    });
   });
 });

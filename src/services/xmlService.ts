@@ -76,21 +76,12 @@ export const xmlService = {
         if (index === 0) ramp = 'Warmup';
         if (index === bars.length - 1) ramp = 'Cooldown';
 
-        if (bar.startPower < bar.endPower) {
-          segment = Builder.create(ramp)
-            .att('Duration', durationType === 'time' ? bar.time : bar.length)
-            .att('PowerLow', bar.startPower)
-            .att('PowerHigh', bar.endPower)
-            .att('pace', bar.pace);
-          bar.cadence !== 0 && segment.att('Cadence', bar.cadence);
-        } else {
-          segment = Builder.create(ramp)
-            .att('Duration', durationType === 'time' ? bar.time : bar.length)
-            .att('PowerLow', bar.endPower)
-            .att('PowerHigh', bar.startPower)
-            .att('pace', bar.pace);
-          bar.cadence !== 0 && segment.att('Cadence', bar.cadence);
-        }
+        segment = Builder.create(ramp)
+          .att('Duration', durationType === 'time' ? bar.time : bar.length)
+          .att('PowerLow', bar.startPower)
+          .att('PowerHigh', bar.endPower)
+          .att('pace', bar.pace);
+        bar.cadence !== 0 && segment.att('Cadence', bar.cadence);
       } else if (bar.type === 'interval') {
         segment = Builder.create('IntervalsT')
           .att('Repeat', bar.repeat)
@@ -163,31 +154,37 @@ export const xmlService = {
         try {
           const content = event.target?.result as string;
           const result = JSON.parse(
-            Converter.xml2json(content, { compact: true, spaces: 4 })
+            Converter.xml2json(content, { compact: false, spaces: 4 })
           );
 
-          const workout_file = result.workout_file;
-
-          if (!workout_file) {
+          const workoutFileElement = result.elements?.[0];
+          if (!workoutFileElement || workoutFileElement.name !== 'workout_file') {
             throw new Error('Invalid workout file format: missing workout_file element');
           }
 
-          const name = workout_file.name?._text || '';
-          const description = workout_file.description?._text || '';
-          const author = workout_file.author?._text || '';
-          const sportType =
-            (workout_file.sportType?._text as SportType) || 'bike';
-          const durationType =
-            (workout_file.durationType?._text as DurationType) || 'time';
+          // Helper to extract text from elements
+          const getElementText = (elements: any[], elementName: string): string => {
+            const element = elements?.find((e: any) => e.name === elementName);
+            return element?.elements?.[0]?.text || '';
+          };
+
+          // Helper to get elements by name
+          const getElementsByName = (elements: any[], elementName: string) => {
+            return elements?.filter((e: any) => e.name === elementName) || [];
+          };
+
+          const name = getElementText(workoutFileElement.elements, 'name');
+          const description = getElementText(workoutFileElement.elements, 'description');
+          const author = getElementText(workoutFileElement.elements, 'author');
+          const sportType = (getElementText(workoutFileElement.elements, 'sportType') || 'bike') as SportType;
+          const durationType = (getElementText(workoutFileElement.elements, 'durationType') || 'time') as DurationType;
 
           const tags: string[] = [];
-          if (workout_file.tags?.tag) {
-            const tagsArray = Array.isArray(workout_file.tags.tag)
-              ? workout_file.tags.tag
-              : [workout_file.tags.tag];
-            tagsArray.forEach((tag: any) => {
-              if (tag._attributes?.name) {
-                tags.push(tag._attributes.name);
+          const tagsElement = workoutFileElement.elements?.find((e: any) => e.name === 'tags');
+          if (tagsElement?.elements) {
+            tagsElement.elements.forEach((tagElement: any) => {
+              if (tagElement.name === 'tag' && tagElement.attributes?.name) {
+                tags.push(tagElement.attributes.name);
               }
             });
           }
@@ -198,129 +195,128 @@ export const xmlService = {
           let totalTime = 0;
           let totalLength = 0;
 
-          const workout = workout_file.workout;
-          const workoutElements = Object.keys(workout).filter(
-            (key) => !key.startsWith('_')
-          );
+          const workoutElement = workoutFileElement.elements?.find((e: any) => e.name === 'workout');
+          if (!workoutElement?.elements) {
+            resolve({
+              name,
+              description,
+              author,
+              sportType,
+              durationType,
+              tags,
+              bars,
+              instructions,
+            });
+            return;
+          }
 
-          workoutElements.forEach((elementType) => {
-            const elements = Array.isArray(workout[elementType])
-              ? workout[elementType]
-              : [workout[elementType]];
+          // Process elements in the order they appear in the XML
+          workoutElement.elements.forEach((element: any) => {
+            const attr = element.attributes;
 
-            elements.forEach((element: any) => {
-              const attr = element._attributes;
+            if (!attr) return;
 
-              if (!attr) return;
+            const duration = parseFloat(attr.Duration) || 0;
+            const pace = parseFloat(attr.pace) || 0;
 
-              const duration =
-                durationType === 'time'
-                  ? parseFloat(attr.Duration)
-                  : parseFloat(attr.Duration);
-              const pace = parseFloat(attr.pace) || 0;
-
-              // Handle text events
-              if (element.textevent) {
-                const textEvents = Array.isArray(element.textevent)
-                  ? element.textevent
-                  : [element.textevent];
-
-                textEvents.forEach((textEvent: any) => {
-                  const textAttr = textEvent._attributes;
-                  instructions.push({
-                    id: uuidv4(),
-                    text: textAttr.message || '',
-                    time:
-                      durationType === 'time'
-                        ? totalTime + parseFloat(textAttr.timeoffset || 0)
-                        : 0,
-                    length:
-                      durationType === 'distance'
-                        ? totalLength + parseFloat(textAttr.distoffset || 0)
-                        : 0,
-                  });
-                });
-              }
-
-              // Create bar based on element type
-              if (elementType === 'SteadyState') {
-                bars.push({
+            // Handle text events
+            if (element.elements) {
+              const textEvents = element.elements.filter((e: any) => e.name === 'textevent');
+              textEvents.forEach((textEvent: any) => {
+                const textAttr = textEvent.attributes;
+                instructions.push({
                   id: uuidv4(),
-                  type: 'bar',
-                  time: durationType === 'time' ? duration : 0,
-                  length: durationType === 'distance' ? duration : 0,
-                  power: parseFloat(attr.Power),
-                  cadence: parseFloat(attr.Cadence) || 0,
-                  pace: pace,
-                  incline: attr.Incline ? parseFloat(attr.Incline) * 100 : 0,
-                });
-              } else if (
-                elementType === 'Warmup' ||
-                elementType === 'Cooldown' ||
-                elementType === 'Ramp'
-              ) {
-                bars.push({
-                  id: uuidv4(),
-                  type: 'trapeze',
-                  time: durationType === 'time' ? duration : 0,
-                  length: durationType === 'distance' ? duration : 0,
-                  startPower: parseFloat(attr.PowerLow),
-                  endPower: parseFloat(attr.PowerHigh),
-                  cadence: parseFloat(attr.Cadence) || 0,
-                  pace: pace,
-                });
-              } else if (elementType === 'IntervalsT') {
-                bars.push({
-                  id: uuidv4(),
-                  type: 'interval',
+                  text: textAttr?.message || '',
                   time:
                     durationType === 'time'
-                      ? (parseFloat(attr.OnDuration) +
-                          parseFloat(attr.OffDuration)) *
-                        parseInt(attr.Repeat)
+                      ? totalTime + parseFloat(textAttr?.timeoffset || 0)
                       : 0,
                   length:
                     durationType === 'distance'
-                      ? (parseFloat(attr.OnDuration) +
-                          parseFloat(attr.OffDuration)) *
-                        parseInt(attr.Repeat)
+                      ? totalLength + parseFloat(textAttr?.distoffset || 0)
                       : 0,
-                  repeat: parseInt(attr.Repeat),
-                  onDuration:
-                    durationType === 'time'
-                      ? parseFloat(attr.OnDuration)
-                      : undefined,
-                  offDuration:
-                    durationType === 'time'
-                      ? parseFloat(attr.OffDuration)
-                      : undefined,
-                  onLength:
-                    durationType === 'distance'
-                      ? parseFloat(attr.OnDuration)
-                      : undefined,
-                  offLength:
-                    durationType === 'distance'
-                      ? parseFloat(attr.OffDuration)
-                      : undefined,
-                  onPower: parseFloat(attr.OnPower),
-                  offPower: parseFloat(attr.OffPower),
-                  cadence: parseFloat(attr.Cadence) || 0,
-                  restingCadence: parseFloat(attr.CadenceResting) || 0,
-                  pace: pace,
                 });
-              } else if (elementType === 'FreeRide') {
-                bars.push({
-                  id: uuidv4(),
-                  type: 'freeRide',
-                  time: durationType === 'time' ? duration : 0,
-                  length: durationType === 'distance' ? duration : 0,
-                  cadence: parseFloat(attr.Cadence) || 0,
-                });
-              }
+              });
+            }
 
-              totalTime += duration;
-              totalLength += duration;
-            });
+            // Create bar based on element type
+            if (element.name === 'SteadyState') {
+              bars.push({
+                id: uuidv4(),
+                type: 'bar',
+                time: durationType === 'time' ? duration : 0,
+                length: durationType === 'distance' ? duration : 0,
+                power: parseFloat(attr.Power),
+                cadence: parseFloat(attr.Cadence) || 0,
+                pace: pace,
+                incline: attr.Incline ? parseFloat(attr.Incline) * 100 : 0,
+              });
+            } else if (
+              element.name === 'Warmup' ||
+              element.name === 'Cooldown' ||
+              element.name === 'Ramp'
+            ) {
+              bars.push({
+                id: uuidv4(),
+                type: 'trapeze',
+                time: durationType === 'time' ? duration : 0,
+                length: durationType === 'distance' ? duration : 0,
+                startPower: parseFloat(attr.PowerLow),
+                endPower: parseFloat(attr.PowerHigh),
+                cadence: parseFloat(attr.Cadence) || 0,
+                pace: pace,
+              });
+            } else if (element.name === 'IntervalsT') {
+              bars.push({
+                id: uuidv4(),
+                type: 'interval',
+                time:
+                  durationType === 'time'
+                    ? (parseFloat(attr.OnDuration) +
+                        parseFloat(attr.OffDuration)) *
+                      parseInt(attr.Repeat)
+                    : 0,
+                length:
+                  durationType === 'distance'
+                    ? (parseFloat(attr.OnDuration) +
+                        parseFloat(attr.OffDuration)) *
+                      parseInt(attr.Repeat)
+                    : 0,
+                repeat: parseInt(attr.Repeat),
+                onDuration:
+                  durationType === 'time'
+                    ? parseFloat(attr.OnDuration)
+                    : undefined,
+                offDuration:
+                  durationType === 'time'
+                    ? parseFloat(attr.OffDuration)
+                    : undefined,
+                onLength:
+                  durationType === 'distance'
+                    ? parseFloat(attr.OnDuration)
+                    : undefined,
+                offLength:
+                  durationType === 'distance'
+                    ? parseFloat(attr.OffDuration)
+                    : undefined,
+                onPower: parseFloat(attr.OnPower),
+                offPower: parseFloat(attr.OffPower),
+                cadence: parseFloat(attr.Cadence) || 0,
+                restingCadence: parseFloat(attr.CadenceResting) || 0,
+                pace: pace,
+              });
+            } else if (element.name === 'FreeRide') {
+              bars.push({
+                id: uuidv4(),
+                type: 'freeRide',
+                time: durationType === 'time' ? duration : 0,
+                length: durationType === 'distance' ? duration : 0,
+                cadence: parseFloat(attr.Cadence) || 0,
+              });
+            }
+
+            totalTime += duration;
+            totalLength += duration;
           });
 
           resolve({
