@@ -9,6 +9,7 @@ import {
   faComment,
   faBicycle,
   faRunning,
+  faUndo,
 } from '@fortawesome/free-solid-svg-icons';
 import ReactTooltip from 'react-tooltip';
 import { Colors, Zones } from '../Constants';
@@ -54,6 +55,8 @@ interface WorkoutCanvasProps {
   renderFreeRide: (bar: BarType) => JSX.Element | false;
   renderInterval: (bar: BarType) => JSX.Element | false;
   renderComment: (instruction: Instruction, index: number) => JSX.Element | false;
+  onUndo?: () => void;
+  canUndo?: boolean;
 }
 
 const WorkoutCanvas: React.FC<WorkoutCanvasProps> = ({
@@ -83,6 +86,8 @@ const WorkoutCanvas: React.FC<WorkoutCanvasProps> = ({
   renderFreeRide,
   renderInterval,
   renderComment,
+  onUndo,
+  canUndo,
 }) => {
   return (
     <>
@@ -171,6 +176,18 @@ const WorkoutCanvas: React.FC<WorkoutCanvasProps> = ({
           >
             <FontAwesomeIcon icon={faPen} fixedWidth />
           </button>
+          {onUndo && (
+          <button
+            className="btn btn-square"
+            onClick={onUndo}
+            title="Undo"
+            style={{ marginRight: 8, backgroundColor: 'cornflowerblue' }}
+            disabled={!canUndo}
+            data-tip="Undo"
+          >
+            <FontAwesomeIcon icon={faUndo} size="lg" fixedWidth />
+          </button>
+          )}
           {sportType === 'bike' && (
             <>
               <div style={{ 
