@@ -181,6 +181,35 @@ describe('Editor Integration Tests', () => {
         expect(container).toBeInTheDocument();
       }
     });
+  });
+
+  describe('Undo Functionality', () => {
+    it('should undo the last added segment', async () => {
+      const { container } = renderEditor();
+      // Add a segment (e.g., Z2)
+      const buttons = Array.from(container.querySelectorAll('button'));
+      const z2Button = buttons.find(btn => btn.textContent === 'Z2');
+      expect(z2Button).toBeTruthy();
+      if (z2Button) {
+        fireEvent.click(z2Button);
+        await waitFor(() => {
+          const segments = container.querySelector('.segments');
+          expect(segments?.children.length).toBeGreaterThan(0);
+        });
+      }
+
+      // Click the Undo button
+      const undoButton = buttons.find(btn => btn.title === 'Undo');
+      expect(undoButton).toBeTruthy();
+      if (undoButton) {
+        fireEvent.click(undoButton);
+        await waitFor(() => {
+          const segments = container.querySelector('.segments');
+          // After undo, segments should be empty
+          expect(segments?.children.length).toBe(0);
+        });
+      }
+    });
 
     it('should add a warmup segment when warmup button is clicked', async () => {
       const { container } = renderEditor();
