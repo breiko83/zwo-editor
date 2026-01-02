@@ -84,6 +84,21 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
     setSelectedInstruction,
   } = useWorkoutState(generateIdValue);
 
+  const [undoStack, setUndoStack] = useState<Array<{bars: BarType[], instructions: Instruction[] }>>([]);
+
+  function pushUndo() {
+    setUndoStack((stack) => [...stack, { bars: [...bars], instructions: [...instructions] }]);
+  }
+
+  function handleUndo() {
+    if (undoStack.length > 0) {
+      const last = undoStack[undoStack.length - 1];
+      setBars(last.bars);
+      setInstructions(last.instructions);
+      setUndoStack((stack) => stack.slice(0, -1));
+    }
+  }
+
   const [savePopupIsVisible, setSavePopupVisibility] = useState(false);
   const [sharePopupIsVisible, setSharePopupVisibility] = useState(false);
   const [donationPopupIsVisible, setDonationPopupVisibility] = useState(false);
@@ -185,6 +200,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
     length: number = 200,
     incline: number = 0
   ) {
+    pushUndo();
     const newBar = workoutService.createBar(
       zone,
       duration,
@@ -206,6 +222,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
     length: number = 1000,
     cadence: number = 0,
   ) {
+    pushUndo();
     const newTrapeze = workoutService.createTrapeze(
       zone1,
       zone2,
@@ -225,6 +242,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
     length: number = 1000,
     incline: number = 0
   ) {
+    pushUndo();
     const newFreeRide = workoutService.createFreeRide(
       duration,
       cadence,
@@ -248,6 +266,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
     onLength: number = 200,
     offLength: number = 200
   ) {
+    pushUndo();
     const newInterval = workoutService.createInterval(
       repeat,
       onDuration,
@@ -266,6 +285,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
   }
 
   function addInstruction(text = "", time = 0, length = 0, openEditor = true) {
+    pushUndo();
     const id = uuidv4();
     setInstructions((instructions) => [
       ...instructions,
@@ -282,6 +302,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
   }
 
   function changeInstruction(id: string, values: Instruction) {
+    pushUndo();
     const index = instructions.findIndex(
       (instructions) => instructions.id === id
     );
@@ -292,11 +313,13 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
   }
 
   function deleteInstruction(id: string) {
+    pushUndo();
     const updatedArray = [...instructions];
     setInstructions(updatedArray.filter((item) => item.id !== id));
   }
 
   function removeBar(id: string) {
+    pushUndo();
     const updatedArray = [...bars];
     setBars(updatedArray.filter((item) => item.id !== id));
     setActionId(undefined);
@@ -423,6 +446,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
   }
 
   function duplicateBar(id: string) {
+    pushUndo();
     const index = bars.findIndex((bar) => bar.id === id);
     const element = [...bars][index];
 
@@ -438,12 +462,18 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
 
   function moveLeft(id: string) {
     const updatedBars = workoutService.moveLeft(bars, id);
-    setBars(updatedBars);
+    if (updatedBars !== bars) {
+      pushUndo();
+      setBars(updatedBars);
+    }
   }
 
   function moveRight(id: string) {
     const updatedBars = workoutService.moveRight(bars, id);
-    setBars(updatedBars);
+    if (updatedBars !== bars) {
+      pushUndo();
+      setBars(updatedBars);
+    }
   }
 
   function saveWorkout() {
@@ -1126,6 +1156,8 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
         renderFreeRide={renderFreeRide}
         renderInterval={renderInterval}
         renderComment={renderComment}
+        onUndo={handleUndo}
+        canUndo={undoStack.length > 0}
       />
       <div className="cta">
         <WorkoutToolbar
