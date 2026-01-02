@@ -168,11 +168,6 @@ export const xmlService = {
             return element?.elements?.[0]?.text || '';
           };
 
-          // Helper to get elements by name
-          const getElementsByName = (elements: any[], elementName: string) => {
-            return elements?.filter((e: any) => e.name === elementName) || [];
-          };
-
           const name = getElementText(workoutFileElement.elements, 'name');
           const description = getElementText(workoutFileElement.elements, 'description');
           const author = getElementText(workoutFileElement.elements, 'author');
