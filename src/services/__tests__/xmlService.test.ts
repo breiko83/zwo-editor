@@ -51,7 +51,37 @@ describe('xmlService', () => {
       expect(xml).toContain('message="Warm up!"');
     });
 
-    it('should create XML with trapeze (warmup/cooldown)', () => {
+    it('should create XML with trapeze cooldown', () => {
+      const bars: BarType[] = [
+        {
+          id: '1',
+          type: 'trapeze',
+          time: 600,
+          startPower: 1.0,
+          endPower: 0.5,
+          cadence: 90,
+        },
+      ];
+
+      const xml = xmlService.createWorkoutXml({
+        author: 'Test',
+        name: 'Cooldown Test',
+        description: '',
+        sportType: 'bike',
+        durationType: 'time',
+        tags: [],
+        bars,
+        instructions: [],
+      });
+
+      expect(xml).toContain('<Cooldown');
+      expect(xml).toContain('Duration="600"');
+      expect(xml).toContain('PowerLow="1');
+      expect(xml).toContain('PowerHigh="0.5');
+      expect(xml).toContain('Cadence="90"');
+    });
+
+    it('should create XML with trapeze warmup', () => {
       const bars: BarType[] = [
         {
           id: '1',
@@ -74,7 +104,43 @@ describe('xmlService', () => {
         instructions: [],
       });
 
-      expect(xml).toContain('<Cooldown');
+      expect(xml).toContain('<Warmup');
+      expect(xml).toContain('Duration="600"');
+      expect(xml).toContain('PowerLow="0.5');
+      expect(xml).toContain('PowerHigh="1"');
+      expect(xml).toContain('Cadence="90"');
+    });
+
+    it('should create XML with ramp when last segment is increasing power', () => {
+      const bars: BarType[] = [
+        {
+          id: '1',
+          type: 'freeRide',
+          time: 600,
+          cadence: 0,
+        },
+        {
+          id: '2',
+          type: 'trapeze',
+          time: 600,
+          startPower: 0.5,
+          endPower: 1.0,
+          cadence: 90,
+        },
+      ];
+
+      const xml = xmlService.createWorkoutXml({
+        author: 'Test',
+        name: 'Warmup Test',
+        description: '',
+        sportType: 'bike',
+        durationType: 'time',
+        tags: [],
+        bars,
+        instructions: [],
+      });
+
+      expect(xml).toContain('<Ramp');
       expect(xml).toContain('Duration="600"');
       expect(xml).toContain('PowerLow="0.5');
       expect(xml).toContain('PowerHigh="1');

@@ -74,7 +74,7 @@ export const xmlService = {
       } else if (bar.type === 'trapeze' && bar.startPower && bar.endPower) {
         ramp = 'Ramp';
         if (index === 0) ramp = 'Warmup';
-        if (index === bars.length - 1) ramp = 'Cooldown';
+        if (index === bars.length - 1 && bar.startPower > bar.endPower) ramp = 'Cooldown';
 
         segment = Builder.create(ramp)
           .att('Duration', durationType === 'time' ? bar.time : bar.length)
