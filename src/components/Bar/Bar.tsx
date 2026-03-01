@@ -5,6 +5,7 @@ import { Resizable } from "re-resizable";
 import Label from "../Label/Label";
 import helpers from "../helpers";
 import { PaceUnitType } from "../../types/workout";
+import { multiplier, timeMultiplier, lengthMultiplier, minTime, minDistance } from "../../constants/segmentScaling";
 
 const Bar = (props: {
   id: string;
@@ -25,10 +26,6 @@ const Bar = (props: {
   paceUnitType?: PaceUnitType;
   incline?: number;
 }) => {
-  const multiplier = 250;
-  const timeMultiplier = 3;
-  const lengthMultiplier = 10;
-
   const powerLabel = Math.round(props.power * props.ftp);
 
   // TIME
@@ -106,10 +103,10 @@ const Bar = (props: {
             ),
             1
           )
-        : helpers.round((width + dWidth) * lengthMultiplier, 200);
+        : helpers.round((width + dWidth) * lengthMultiplier, minDistance);
     const time =
       props.durationType === "time"
-        ? helpers.round((width + dWidth) * timeMultiplier, 5)
+        ? helpers.round((width + dWidth) * timeMultiplier, minTime)
         : helpers.round(
             (helpers.calculateTime(props.length || 0, props.speed || 0) * 1) /
               props.power,
@@ -138,10 +135,10 @@ const Bar = (props: {
             ),
             1
           )
-        : helpers.round((width + dWidth) * lengthMultiplier, 200);
+        : helpers.round((width + dWidth) * lengthMultiplier, minDistance);
     const time =
       props.durationType === "time"
-        ? helpers.round((width + dWidth) * timeMultiplier, 5)
+        ? helpers.round((width + dWidth) * timeMultiplier, minTime)
         : helpers.round(
             (helpers.calculateTime(props.length || 0, props.speed || 0) * 1) /
               props.power,
