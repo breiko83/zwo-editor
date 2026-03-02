@@ -37,7 +37,7 @@ const Interval = (props: {
   const [offLength, setOffLength] = useState(props.offLength);
 
   useEffect(() => {
-    const bars = [];
+    const bars: BarType[] = [];
 
     for (var i = 0; i < nIntervals; i++) {
       bars.push({
