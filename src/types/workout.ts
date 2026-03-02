@@ -3,7 +3,7 @@ export interface BarType {
   id: string;
   time: number;
   length?: number;
-  type: string;
+  type: 'bar' | 'trapeze' | 'interval' | 'freeRide';
   power?: number;
   startPower?: number;
   endPower?: number;

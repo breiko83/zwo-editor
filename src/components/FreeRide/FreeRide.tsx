@@ -4,6 +4,7 @@ import { Resizable } from "re-resizable";
 import "moment-duration-format";
 import Label from "../Label/Label";
 import helpers from "../helpers";
+import { timeMultiplier, lengthMultiplier, minTime, minDistance } from "../../constants/segmentScaling";
 
 const FreeRide = (props: {
   id: string;
@@ -17,9 +18,6 @@ const FreeRide = (props: {
   onClick: Function;
   selected: boolean;
 }) => {
-  const timeMultiplier = 3;
-  const lengthMultiplier = 10;
-
   const durationLabel = helpers.formatDuration(props.time || 0);
 
   // RUN WORKOUTS ON DISTANCE - BIKE WORKOUTS ON TIME
@@ -65,10 +63,10 @@ const FreeRide = (props: {
     const length =
       props.durationType === "time"
         ? 0
-        : helpers.round((width + dWidth) * lengthMultiplier, 200);
+        : helpers.round((width + dWidth) * lengthMultiplier, minDistance);
     const time =
       props.durationType === "time"
-        ? helpers.round((width + dWidth) * timeMultiplier, 5)
+        ? helpers.round((width + dWidth) * timeMultiplier, minTime)
         : 0;
 
     props.onChange(props.id, {
@@ -85,10 +83,10 @@ const FreeRide = (props: {
     const length =
       props.durationType === "time"
         ? 0
-        : helpers.round((width + dWidth) * lengthMultiplier, 200);
+        : helpers.round((width + dWidth) * lengthMultiplier, minDistance);
     const time =
       props.durationType === "time"
-        ? helpers.round((width + dWidth) * timeMultiplier, 5)
+        ? helpers.round((width + dWidth) * timeMultiplier, minTime)
         : 0;
 
     props.onChange(props.id, {

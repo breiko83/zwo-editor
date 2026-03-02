@@ -5,6 +5,7 @@ import { Resizable } from "re-resizable";
 import Label from "../Label/Label";
 import helpers from "../helpers";
 import { PaceUnitType } from "../../types/workout";
+import { multiplier, timeMultiplier, lengthMultiplier, minTime, minDistance } from "../../constants/segmentScaling";
 
 interface IDictionary {
   [index: string]: number;
@@ -27,10 +28,6 @@ const Trapeze = (props: {
   selected: boolean;
   paceUnitType?: PaceUnitType;
 }) => {
-  const multiplier = 250;
-  const timeMultiplier = 3;
-  const lengthMultiplier = 10;
-
   const powerLabelStart = Math.round(props.startPower * props.ftp);
   const powerLabelEnd = Math.round(props.endPower * props.ftp);
 
@@ -101,7 +98,7 @@ const Trapeze = (props: {
   const handleResize1 = (dHeight: number) => {
     const time =
       props.durationType === "time"
-        ? helpers.round(width * timeMultiplier * 3, 5)
+        ? helpers.round(width * timeMultiplier * 3, minTime)
         : helpers.round(
             (helpers.calculateTime(props.length || 0, props.speed || 0) * 1) / avgPower,
             1
@@ -114,7 +111,7 @@ const Trapeze = (props: {
               avgPower,
             1
           )
-        : helpers.round(width * lengthMultiplier * 3, 200);
+        : helpers.round(width * lengthMultiplier * 3, minDistance);
 
     props.onChange(props.id, {
       time: time,
@@ -130,7 +127,7 @@ const Trapeze = (props: {
   const handleResize2 = (dHeight: number) => {
     const time =
       props.durationType === "time"
-        ? helpers.round(width * timeMultiplier * 3, 5)
+        ? helpers.round(width * timeMultiplier * 3, minTime)
         : helpers.round(
             (helpers.calculateTime(props.length || 0, props.speed || 0) * 1) / avgPower,
             1
@@ -143,7 +140,7 @@ const Trapeze = (props: {
               avgPower,
             1
           )
-        : helpers.round(width * lengthMultiplier * 3, 200);
+        : helpers.round(width * lengthMultiplier * 3, minDistance);
 
     props.onChange(props.id, {
       time: time,
@@ -167,10 +164,10 @@ const Trapeze = (props: {
               avgPower,
             1
           )
-        : helpers.round(newWidth * lengthMultiplier * 3, 200);
+        : helpers.round(newWidth * lengthMultiplier * 3, minDistance);
     const time =
       props.durationType === "time"
-        ? helpers.round(newWidth * timeMultiplier * 3, 5)
+        ? helpers.round(newWidth * timeMultiplier * 3, minTime)
         : helpers.round(
             (helpers.calculateTime(props.length || 0, props.speed || 0) * 1) / avgPower,
             1
