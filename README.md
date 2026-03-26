@@ -1,90 +1,43 @@
 # Zwift Workout Editor
 
-Zwift Workout editor is a web based tool to edit ZWO files (Zwift workouts). It's developed in React.
+A browser-based tool to create, edit, and export `.zwo` workout files for Zwift — no Zwift installation required. Supports both bike and run workouts with a visual drag-and-drop editor and a text-based editor.
 
-[Website](https://www.zwiftworkout.com/)
+**Live at [zwiftworkout.com](https://www.zwiftworkout.com/)**
 
 [![Netlify Status](https://api.netlify.com/api/v1/badges/0379dca2-6a91-4d51-af55-ea3fa0489520/deploy-status)](https://app.netlify.com/sites/zwiftworkout/deploys)
 
-## Changelog
+## Features
 
-### V2.0 (06/12/2025)
+- Visual drag-and-drop workout builder
+- Text-based workout editor
+- Bike and run workout support (time or distance based)
+- Segment types: steady state, ramp (warmup/cooldown), intervals, free ride
+- Power zones, cadence, and incline controls
+- Text events / instructions on segments
+- Export to `.zwo` file
 
-- [feature] Added incline to running workout
-- [feature] Fixed an issue with using apostrophe, percenteges and words like "steady" in messages
-- [feature] Improved general layout and syle
-- [feature] Added "buy me a coffee" button
-- [chore] Refactor code with help of Claude
-- [chore] Updated dependencies
+## Getting Started
 
-### V1.9 (16/02/2021)
+```bash
+npm install
+npm start       # Dev server at http://localhost:3000
+npm run build   # Production build → /build
+npm test        # Run tests
+```
 
-- [feature] Added speed label for running workouts
-- [feature] New text instruction editor
+## Tech Stack
 
-### V1.8 (31/12/2020)
-
-- [feature] New workout text editor! For everyone who love typing!
-
-### V1.7 (28/12/2020)
-
-- [bugfix] Added missing cadence values to intervals and free ride
-- [bugfix] Moved cadence input field next to segment
-- [bugfix] Minor fixes and refactoring
-
-### V1.6 (14/11/2020)
-
-- [feature] You can now create workouts as long as 43 Km / 6 hours
-- [bugfix] Fixed an issue with duplicating length based segments
-
-### V1.5 (12/11/2020)
-
-- [bugfix] Replaced time picker for browser and multiple locale compatibility
-- [bugfix] Fixed layout issue with Text Events
-
-### V1.4 (28/10/2020)
-
-- [feature] Added Workout Duration Type for Running Workouts (specify a workout in time or distance)
-- [bugfix] Fixed issue with total workout distance / total workout time
-
-### V1.3 (28/10/2020)
-
-- [feature] Added Run Workout creator
-
-### V1.2 (6/10/2020)
-
-- [feature] Added intervals (beta)
-
-### V1.1 (5/10/2020)
-
-- [feature] Add tags to your workout
-- [feature] Delete a segment via keyboard backspace
-- [feature] Resize a segment via keyboard arrows (◀️ reduce time, ▶️ add time, 🔼 add power, ⬇️ reduce power)
-- [feature] Showing %ftp range on warmup / cooldown
-- [feature] Moved total workout time and TSS to top right screen
-- [bugfix] Duplicating segments also copy cadance value
-- [bugfix] Warmup / Cooldown default values set to 25%-75% FTP
-
-### V1.0 (1/10/2020)
-
-Initial Release
-
-## Support
-
-Click [Issues](https://github.com/breiko83/zwo-editor/issues) to open a support ticket
-
-## Installation
-
-    $ npm i
-
-## Usage
-
-    $ npm start
+- React 16 + TypeScript
+- React Router DOM 5
 
 ## Contributing
 
-1. Fork it
-2. Create your feature branch (`git checkout -b my-new-feature`)
+1. Fork the repo
+2. Create a feature branch (`git checkout -b my-new-feature`)
 3. Commit your changes (`git commit -am 'Add some feature'`)
-4. Push to the branch (`git push origin my-new-feature`)
-5. Create new Pull Request
+4. Push the branch (`git push origin my-new-feature`)
+5. Open a Pull Request
+
+## Support
+
+Open a ticket via [GitHub Issues](https://github.com/breiko83/zwo-editor/issues).
