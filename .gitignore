@@ -29,3 +29,5 @@ yarn-error.log*
 graphics
 
 .env
+
+CLAUDE.md
