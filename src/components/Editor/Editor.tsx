@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useLocation } from "react-router-dom";
 import "./Editor.css";
 import { Zones } from "../Constants";
 import Bar from "../Bar/Bar";
@@ -8,20 +7,10 @@ import FreeRide from "../FreeRide/FreeRide";
 import Interval from "../Interval/Interval";
 import Comment from "../Comment/Comment";
 import EditComment from "../Comment/EditComment";
-import Popup from "../Popup/Popup";
 import Footer from "../Footer/Footer";
-import Workouts from "../Workouts/Workouts";
-import ToastMessage from "../ToastMessage/ToastMessage";
 import helpers from "../helpers";
-import { User as FirebaseUser } from "firebase/auth";
-import SaveForm from "../Forms/SaveForm";
-import SignupForm from "../Forms/SignupForm";
-import LoginForm from "../Forms/LoginForm";
-import ForgotPasswordForm from "../Forms/ForgotPasswordForm";
-import UpdatePasswordForm from "../Forms/UpdatePasswordForm";
 import { Helmet } from "react-helmet-async";
 import { RouteComponentProps } from "react-router-dom";
-import ShareForm from "../Forms/ShareForm";
 import WorkoutMetadata from "./WorkoutMetadata";
 import WorkoutCanvas from "./WorkoutCanvas";
 import WorkoutSettings from "./WorkoutSettings";
@@ -33,17 +22,12 @@ import { textParserService } from "../../services/textParserService";
 import { runningTextParserService } from "../../services/runningTextParserService";
 import { useWorkoutState } from "./hooks/useWorkoutState";
 import { useKeyboardShortcuts } from "./hooks/useKeyboardShortcuts";
-import { useFirebaseSync } from "./hooks/useFirebaseSync";
 import { BarType, Instruction, SportType } from "../../types/workout";
-import { Message } from "../../types/ui";
-import Bugsnag from "@bugsnag/js";
 
 type TParams = { id: string };
 
 const Editor = ({ match }: RouteComponentProps<TParams>) => {
   const { v4: uuidv4 } = require("uuid");
-
-  const S3_URL = "https://zwift-workout.s3-eu-west-1.amazonaws.com";
 
   const generateIdValue = match.params.id === "new"
     ? localStorage.getItem("id") || generateId()
@@ -83,46 +67,11 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
     setSelectedInstruction,
   } = useWorkoutState(generateIdValue);
 
-  const [savePopupIsVisible, setSavePopupVisibility] = useState(false);
-  const [sharePopupIsVisible, setSharePopupVisibility] = useState(false);
-
-  const [user, setUser] = useState<FirebaseUser | null>(null);
-  const [visibleForm, setVisibleForm] = useState("login"); // default form is login
-
   const canvasRef = useRef<HTMLInputElement>(null);
   const segmentsRef = useRef<HTMLInputElement>(null);
   const [segmentsWidth, setSegmentsWidth] = useState(1320);
 
-  const [message, setMessage] = useState<Message>();
-
-  const [showWorkouts, setShowWorkouts] = useState(false);
   const [textEditorIsVisible, setTextEditorIsVisible] = useState(false);
-
-  const location = useLocation();
-
-  useEffect(() => {
-    const params = new URLSearchParams(location.search);
-    const mode = params.get("mode");
-    if (mode === "resetPassword") {
-      setVisibleForm("updatePassword");
-      setSavePopupVisibility(true);
-    }
-  }, [location]);
-
-  // Firebase sync hook
-  const { saveWorkout: saveToFirebase, deleteWorkout: deleteFromFirebase, logout: logoutFromFirebase } = useFirebaseSync({
-    id,
-    setAuthor,
-    setName,
-    setDescription,
-    setBars,
-    setInstructions,
-    setTags,
-    setDurationType,
-    setSportType,
-    setMessage,
-    setUser,
-  });
 
   // Update segments width when bars change
   useEffect(() => {
@@ -439,64 +388,6 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
     setBars(updatedBars);
   }
 
-  function saveWorkout() {
-    setSavePopupVisibility(true);
-  }
-
-  function deleteWorkout() {
-    // delete from cloud (firebase) if logged in
-    if (user) {
-      deleteFromFirebase(user, newWorkout);
-    }
-  }
-
-  function shareWorkout() {
-    if (user) {
-      save();
-      setSharePopupVisibility(true);
-    } else {
-      saveWorkout();
-    }
-  }
-
-  async function save() {
-    const xml = xmlService.createWorkoutXml({
-      author,
-      name,
-      description,
-      sportType,
-      durationType,
-      tags,
-      bars,
-      instructions,
-    });
-
-    const file = new Blob([xml], { type: "application/xml" });
-
-    // save to cloud (firebase) if logged in
-    if (user) {
-      await saveToFirebase(
-        user,
-        author,
-        name,
-        description,
-        sportType,
-        durationType,
-        tags,
-        bars,
-        instructions
-      );
-      // upload to S3
-      upload(file, false);
-    }
-
-    return file;
-  }
-
-  function logout() {
-    logoutFromFirebase();
-  }
-
   function downloadWorkout() {
     const xml = xmlService.createWorkoutXml({
       author,
@@ -513,85 +404,24 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
   }
 
   function handleUpload(file: Blob) {
-    // ask user if they want to overwrite current workout first
     if (bars.length > 0) {
       if (!window.confirm("Are you sure you want to create a new workout?")) {
         return false;
       }
     }
 
-    newWorkout();
-    upload(file, true);
-  }
-
-  function upload(file: Blob, parse = false) {
-    fetch(
-      process.env.REACT_APP_UPLOAD_FUNCTION ||
-        "https://zwiftworkout.netlify.app/.netlify/functions/upload",
-      {
-        method: "POST",
-        body: JSON.stringify({
-          fileType: "zwo",
-          fileName: `${id}.zwo`,
-        }),
-      }
-    )
-      .then((res) => res.json())
-      .then(function (data) {
-        const signedUrl = data.uploadURL;
-
-        // upload to S3
-        fetch(signedUrl, {
-          method: "PUT",
-          headers: {
-            "Content-Type": "zwo",
-          },
-          body: file,
-        })
-          .then((response) => response.text())
-          .then((data) => {
-            // can parse now
-            if (parse) fetchAndParse(id);
-          })
-          .catch((error) => {
-            Bugsnag.notify(error);
-            console.error(error);
-          });
-      });
-  }
-
-  function fetchAndParse(id: string) {
-    // remove previous workout
-    setBars([]);
-    setInstructions([]);
-
-    fetch(`${S3_URL}/${id}.zwo`)
-      .then((response) => response.text())
-      .then((data) => {
-        // Create a File object from the text data
-        const file = new File([data], `${id}.zwo`, { type: 'text/xml' });
-
-        // Use xmlService to parse the workout
-        return xmlService.parseWorkoutXml(file, uuidv4);
-      })
-      .then((parsedWorkout) => {
-        // Set workout metadata
-        setName(parsedWorkout.name);
-        setDescription(parsedWorkout.description);
-        setAuthor(parsedWorkout.author);
-        setSportType(parsedWorkout.sportType);
-        setDurationType(parsedWorkout.durationType);
-        setTags(parsedWorkout.tags);
-
-        // Set workout bars and instructions
-        setBars(parsedWorkout.bars);
-        setInstructions(parsedWorkout.instructions);
-      })
-      .catch((error) => {
-        Bugsnag.notify(error);
-        console.error(error);
-        setMessage({ visible: true, class: 'error', text: 'Invalid workout file format' });
-      });
+    xmlService.parseWorkoutXml(file as File, uuidv4).then((parsedWorkout) => {
+      setName(parsedWorkout.name);
+      setDescription(parsedWorkout.description);
+      setAuthor(parsedWorkout.author);
+      setSportType(parsedWorkout.sportType);
+      setDurationType(parsedWorkout.durationType);
+      setTags(parsedWorkout.tags);
+      setBars(parsedWorkout.bars);
+      setInstructions(parsedWorkout.instructions);
+    }).catch((error) => {
+      console.error('Invalid workout file format', error);
+    });
   }
 
   function calculateSpeed(pace: number = 0) {
@@ -714,46 +544,6 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
       index={index}
     />
   );
-
-  const renderRegistrationForm = () => {
-    switch (visibleForm) {
-      case "login":
-        return (
-          <LoginForm
-            login={setUser}
-            showSignup={() => setVisibleForm("signup")}
-            dismiss={() => setSavePopupVisibility(false)}
-            showForgotPassword={() => setVisibleForm("forgotPassword")}
-          />
-        );
-      case "signup":
-        return (
-          <SignupForm
-            signUp={setUser}
-            showLogin={() => setVisibleForm("login")}
-            dismiss={() => setSavePopupVisibility(false)}
-          />
-        );
-      case "forgotPassword":
-        return (
-          <ForgotPasswordForm
-            dismiss={() => setSavePopupVisibility(false)}
-            workoutId={id}
-          />
-        );
-      case "updatePassword":
-        return (
-          <UpdatePasswordForm
-            dismiss={() => {
-              setVisibleForm("login");
-              setSavePopupVisibility(true);
-            }}
-          />
-        );
-      default:
-        break;
-    }
-  };
 
   function setPace(value: string, id: string) {
     const index = bars.findIndex((bar) => bar.id === id);
@@ -975,35 +765,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
             : "My Workout - Zwift Workout Editor"}
         </title>
         <meta name="description" content={description} />
-        <meta
-          property="og:title"
-          content={
-            name
-              ? `${name} - Zwift Workout Editor`
-              : "My Workout - Zwift Workout Editor"
-          }
-        />
-        <meta property="og:description" content={description} />
-        <link
-          rel="canonical"
-          href={`https://www.zwiftworkout.com/editor/${id}`}
-        />
-        <meta
-          property="og:url"
-          content={`https://www.zwiftworkout.com/editor/${id}`}
-        />
       </Helmet>
-
-      <ToastMessage
-        message={message}
-        onDismiss={() => setMessage({ visible: false })}
-      />
-
-      {showWorkouts && (
-        <Popup width="500px" dismiss={() => setShowWorkouts(false)}>
-          {user ? <Workouts userId={user.uid} /> : renderRegistrationForm()}
-        </Popup>
-      )}
 
       {selectedInstruction && (
         <EditComment
@@ -1020,35 +782,6 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
         />
       )}
 
-      {savePopupIsVisible && (
-        <Popup width="500px" dismiss={() => setSavePopupVisibility(false)}>
-          {user ? (
-            <SaveForm
-              name={name}
-              description={description}
-              author={author}
-              tags={tags}
-              onNameChange={setName}
-              onDescriptionChange={setDescription}
-              onAuthorChange={setAuthor}
-              onTagsChange={setTags}
-              onSave={() => {
-                save();
-                setSavePopupVisibility(false);
-              }}
-              onDismiss={() => setSavePopupVisibility(false)}
-              onLogout={logout}
-            />
-          ) : (
-            renderRegistrationForm()
-          )}
-        </Popup>
-      )}
-      {sharePopupIsVisible && (
-        <Popup width="500px" dismiss={() => setSharePopupVisibility(false)}>
-          <ShareForm id={id} onDismiss={() => setSharePopupVisibility(false)} />
-        </Popup>
-      )}
       <WorkoutMetadata
         name={name}
         description={description}
@@ -1106,12 +839,8 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
       <div className="cta">
         <WorkoutToolbar
           onNew={newWorkout}
-          onSave={saveWorkout}
-          onDelete={deleteWorkout}
           onDownload={downloadWorkout}
           onUpload={handleUpload}
-          onShare={shareWorkout}
-          onWorkouts={() => setShowWorkouts(true)}
         />
       </div>
       <Footer />
