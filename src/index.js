@@ -4,15 +4,12 @@ import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 import { HelmetProvider } from 'react-helmet-async';
-import { ErrorBoundary } from './bugsnag';  
 
 ReactDOM.render(
   <React.StrictMode>
-    <ErrorBoundary>
-      <HelmetProvider>
-        <App />
-      </HelmetProvider>
-    </ErrorBoundary>
+    <HelmetProvider>
+      <App />
+    </HelmetProvider>
   </React.StrictMode>,
   document.getElementById('root')
 );
