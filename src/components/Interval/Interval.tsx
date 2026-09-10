@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import Bar from "../Bar/Bar";
 import "./Interval.css";
 
-import { BarType } from "../../types/workout";
+import { BarType, PaceUnitType } from "../../types/workout";
 
 const Interval = (props: {
   id: string;
@@ -21,6 +21,7 @@ const Interval = (props: {
   speed?: number;
   sportType: string;
   durationType: string;
+  paceUnitType?: PaceUnitType;
   handleIntervalChange: Function;
   handleIntervalClick: Function;
   selected: boolean;
@@ -172,6 +173,7 @@ const Interval = (props: {
       weight={props.weight}
       sportType={props.sportType}
       durationType={props.durationType}
+      paceUnitType={props.paceUnitType}
       pace={props.pace}
       speed={props.speed}
       onChange={(id: string, value: any) => handleOnChange(id, value)} // Change any to Interface Bar?

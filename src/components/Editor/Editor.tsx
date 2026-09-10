@@ -516,6 +516,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
       weight={weight}
       sportType={sportType}
       durationType={durationType}
+      paceUnitType={paceUnitType}
       pace={bar.pace || 0}
       speed={calculateSpeed(bar.pace || 0)}
       handleIntervalChange={(id: string, value: BarType) =>
