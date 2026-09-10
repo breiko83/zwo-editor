@@ -331,6 +331,16 @@ describe('helpers', () => {
     });
   });
 
+  describe('kphToMph', () => {
+    it('should convert kph to mph', () => {
+      expect(helpers.kphToMph(16.0934)).toBeCloseTo(10, 4);
+    });
+
+    it('should handle zero', () => {
+      expect(helpers.kphToMph(0)).toBe(0);
+    });
+  });
+
   describe('speedToPace', () => {
     it('should convert speed to metric pace (min/km)', () => {
       const pace = helpers.speedToPace(10, 'metric');

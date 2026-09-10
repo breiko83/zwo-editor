@@ -127,6 +127,10 @@ const helpers = {
     return ((time / distance) * 18) / 5;
   },
 
+  kphToMph: function (speedkph: number): number {
+    return speedkph / 1.60934;
+  },
+
   speedToPace: function (speedkph: number, paceUnitType: PaceUnitType): string {
     let pace = 0;
     if (paceUnitType === "metric") {
