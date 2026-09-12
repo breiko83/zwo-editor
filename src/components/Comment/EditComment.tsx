@@ -1,6 +1,4 @@
 import React, { useState } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTrashAlt } from "@fortawesome/free-solid-svg-icons";
 import styles from "./EditComment.module.css";
 import { Instruction } from "../../types/workout";
 
@@ -11,7 +9,6 @@ const EditComment = (props: {
   dismiss: Function;
 }) => {
   const [text, setText] = useState(props.instruction.text);
-  const [showInput, setShowInput] = useState(false);
 
   function save() {
     props.onChange(props.instruction.id, {
@@ -21,42 +18,54 @@ const EditComment = (props: {
       time: props.instruction.time,
     });
   }
+
   return (
-    <div className={styles.container}>
-      <div className={styles.box}>
-        <textarea
-          name="comment"
-          value={text}
-          placeholder="Enter message"
-          className={styles.textArea}
-          onChange={(e) => setText(e.target.value)}
-          onBlur={() => setShowInput(!showInput)}
-        />
-        <div className={styles.cta}>
-          <button
-            className={styles.btnPrimary}
-            type="button"
-            onClick={() => save()}
-          >
-            Save
-          </button>
-          <button
-            className={styles.btnSecondary}            
-            type="button"
-            onClick={() => props.dismiss()}
-          >
-            Dismiss
-          </button>
-          <button            
-            className={styles.btnIcon}
-            type="button"
+    <div className={styles.overlay}>
+      <div className={styles.modal}>
+        <div className={styles.header}>
+          <span className={styles.title}>Edit text event</span>
+          <span className={styles.close} onClick={() => props.dismiss()}>
+            ×
+          </span>
+        </div>
+
+        <div className={styles.body}>
+          <label className={styles.field}>
+            <span className={styles.label}>Message</span>
+            <textarea
+              name="comment"
+              value={text}
+              placeholder="Enter message"
+              className={styles.textArea}
+              onChange={(e) => setText(e.target.value)}
+              autoFocus
+            />
+          </label>
+        </div>
+
+        <div className={styles.footer}>
+          <span
+            className={styles.delete}
             onClick={() => props.onDelete(props.instruction.id)}
           >
-            <FontAwesomeIcon
-              icon={faTrashAlt}
-              className="delete"
-            />
-          </button>
+            Delete
+          </span>
+          <div className={styles.actions}>
+            <button
+              className={styles.btnSecondary}
+              type="button"
+              onClick={() => props.dismiss()}
+            >
+              Cancel
+            </button>
+            <button
+              className={styles.btnPrimary}
+              type="button"
+              onClick={() => save()}
+            >
+              Save
+            </button>
+          </div>
         </div>
       </div>
     </div>
