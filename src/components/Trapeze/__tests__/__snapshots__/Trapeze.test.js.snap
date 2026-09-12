@@ -46,23 +46,6 @@ exports[`Trapeze renders correctly 1`] = `
             }
           }
         />
-        <div
-          className=""
-          onMouseDown={[Function]}
-          onTouchStart={[Function]}
-          style={
-            Object {
-              "cursor": "col-resize",
-              "height": "100%",
-              "left": undefined,
-              "position": "absolute",
-              "right": "-5px",
-              "top": "0px",
-              "userSelect": "none",
-              "width": "10px",
-            }
-          }
-        />
       </div>
     </div>
     <div
@@ -118,6 +101,44 @@ exports[`Trapeze renders correctly 1`] = `
         }
       }
     >
+      <div
+        style={
+          Object {
+            "boxSizing": "border-box",
+            "flexShrink": 0,
+            "height": "225.25px",
+            "left": 0,
+            "maxHeight": undefined,
+            "maxWidth": undefined,
+            "minHeight": undefined,
+            "minWidth": 3,
+            "position": "absolute",
+            "top": 0,
+            "userSelect": "auto",
+            "width": "0px",
+          }
+        }
+      >
+        <div>
+          <div
+            className=""
+            onMouseDown={[Function]}
+            onTouchStart={[Function]}
+            style={
+              Object {
+                "cursor": "col-resize",
+                "height": "100%",
+                "left": undefined,
+                "position": "absolute",
+                "right": "-5px",
+                "top": "0px",
+                "userSelect": "none",
+                "width": "10px",
+              }
+            }
+          />
+        </div>
+      </div>
       <div>
         <div
           className=""
@@ -132,23 +153,6 @@ exports[`Trapeze renders correctly 1`] = `
               "top": "-5px",
               "userSelect": "none",
               "width": "100%",
-            }
-          }
-        />
-        <div
-          className=""
-          onMouseDown={[Function]}
-          onTouchStart={[Function]}
-          style={
-            Object {
-              "cursor": "col-resize",
-              "height": "100%",
-              "left": undefined,
-              "position": "absolute",
-              "right": "-5px",
-              "top": "0px",
-              "userSelect": "none",
-              "width": "10px",
             }
           }
         />
