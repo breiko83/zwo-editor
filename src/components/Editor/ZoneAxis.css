@@ -2,13 +2,21 @@
   position: absolute;
   bottom: 50px;
   left: 2px;
-  color: gray;
+  color: oklch(0.55 0.01 250);
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 11px;
 }
 .zone-axis > div {
   position: absolute;
   bottom: 0;
   left: 0;
+  display: flex;
+  align-items: center;
+  gap: 5px;
 }
-.zone-axis > div:not(:first-child) {
-  border-top: 1px solid gray;
+.zone-axis-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 2px;
+  display: inline-block;
 }

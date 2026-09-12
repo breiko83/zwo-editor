@@ -54,6 +54,8 @@ interface WorkoutCanvasProps {
   renderFreeRide: (bar: BarType) => JSX.Element | false;
   renderInterval: (bar: BarType) => JSX.Element | false;
   renderComment: (instruction: Instruction, index: number) => JSX.Element | false;
+
+  toolbar?: React.ReactNode;
 }
 
 const WorkoutCanvas: React.FC<WorkoutCanvasProps> = ({
@@ -83,6 +85,7 @@ const WorkoutCanvas: React.FC<WorkoutCanvasProps> = ({
   renderFreeRide,
   renderInterval,
   renderComment,
+  toolbar,
 }) => {
   return (
     <>
@@ -161,7 +164,7 @@ const WorkoutCanvas: React.FC<WorkoutCanvasProps> = ({
       
       <div className="cta">
         <ReactTooltip effect="solid" />
-        <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', alignItems: 'center', width: '100%' }}>
+        <div className="cta-group">
           <button
             className="btn btn-square"
             onClick={() => toggleTextEditor()}
@@ -172,78 +175,62 @@ const WorkoutCanvas: React.FC<WorkoutCanvasProps> = ({
             <FontAwesomeIcon icon={faPen} fixedWidth />
           </button>
           {sportType === 'bike' && (
-            <>
-              <div style={{ 
-                display: 'flex', 
-                gap: '5px', 
-                padding: '5px', 
-                backgroundColor: '#f5f5f5', 
-                borderRadius: '8px',
-                border: '1px solid #e0e0e0'
-              }}>
-                <button
-                  className="btn btn-square"
-                  onClick={() => addBar(0.5)}
-                  style={{ backgroundColor: Colors.GRAY, fontWeight: 'bold', fontSize: '14px' }}
-                  title="Zone 1"
-                >
-                  Z1
-                </button>
-                <button
-                  className="btn btn-square"
-                  onClick={() => addBar(Zones.Z2.min)}
-                  style={{ backgroundColor: Colors.BLUE, fontWeight: 'bold', fontSize: '14px' }}
-                  title="Zone 2"
-                >
-                  Z2
-                </button>
-                <button
-                  className="btn btn-square"
-                  onClick={() => addBar(Zones.Z3.min)}
-                  style={{ backgroundColor: Colors.GREEN, fontWeight: 'bold', fontSize: '14px' }}
-                  title="Zone 3"
-                >
-                  Z3
-                </button>
-                <button
-                  className="btn btn-square"
-                  onClick={() => addBar(Zones.Z4.min)}
-                  style={{ backgroundColor: Colors.YELLOW, fontWeight: 'bold', fontSize: '14px' }}
-                  title="Zone 4"
-                >
-                  Z4
-                </button>
-                <button
-                  className="btn btn-square"
-                  onClick={() => addBar(Zones.Z5.min)}
-                  style={{ backgroundColor: Colors.ORANGE, fontWeight: 'bold', fontSize: '14px' }}
-                  title="Zone 5"
-                >
-                  Z5
-                </button>
-                <button
-                  className="btn btn-square"
-                  onClick={() => addBar(Zones.Z6.min)}
-                  style={{ backgroundColor: Colors.RED, fontWeight: 'bold', fontSize: '14px' }}
-                  title="Zone 6"
-                >
-                  Z6
-                </button>
-              </div>
-            </>
+            <div className="cta-group">
+              <button
+                className="btn btn-square"
+                onClick={() => addBar(0.5)}
+                style={{ backgroundColor: Colors.GRAY, fontWeight: 'bold', fontSize: '13px' }}
+                title="Zone 1"
+              >
+                Z1
+              </button>
+              <button
+                className="btn btn-square"
+                onClick={() => addBar(Zones.Z2.min)}
+                style={{ backgroundColor: Colors.BLUE, fontWeight: 'bold', fontSize: '13px' }}
+                title="Zone 2"
+              >
+                Z2
+              </button>
+              <button
+                className="btn btn-square"
+                onClick={() => addBar(Zones.Z3.min)}
+                style={{ backgroundColor: Colors.GREEN, fontWeight: 'bold', fontSize: '13px' }}
+                title="Zone 3"
+              >
+                Z3
+              </button>
+              <button
+                className="btn btn-square"
+                onClick={() => addBar(Zones.Z4.min)}
+                style={{ backgroundColor: Colors.YELLOW, fontWeight: 'bold', fontSize: '13px' }}
+                title="Zone 4"
+              >
+                Z4
+              </button>
+              <button
+                className="btn btn-square"
+                onClick={() => addBar(Zones.Z5.min)}
+                style={{ backgroundColor: Colors.ORANGE, fontWeight: 'bold', fontSize: '13px' }}
+                title="Zone 5"
+              >
+                Z5
+              </button>
+              <button
+                className="btn btn-square"
+                onClick={() => addBar(Zones.Z6.min)}
+                style={{ backgroundColor: Colors.RED, fontWeight: 'bold', fontSize: '13px' }}
+                title="Zone 6"
+              >
+                Z6
+              </button>
+            </div>
           )}
-          
+
           {sportType === 'run' && (
             <button
               className="btn"
               onClick={() => addBar(1, 300, 0, 0, 1000)}
-              style={{ 
-                backgroundColor: Colors.WHITE, 
-                padding: '10px 15px',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '8px'
-              }}
               title="Steady Pace"
             >
               <SteadyLogo className="btn-icon" /> Steady Pace
@@ -253,13 +240,6 @@ const WorkoutCanvas: React.FC<WorkoutCanvasProps> = ({
           <button
             className="btn"
             onClick={() => addTrapeze(0.25, 0.75)}
-            style={{ 
-              backgroundColor: Colors.WHITE,
-              padding: '10px 15px',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '8px'
-            }}
             title="Warm up"
           >
             <WarmupLogo className="btn-icon" /> Warm up
@@ -267,13 +247,6 @@ const WorkoutCanvas: React.FC<WorkoutCanvasProps> = ({
           <button
             className="btn"
             onClick={() => addTrapeze(0.75, 0.25)}
-            style={{ 
-              backgroundColor: Colors.WHITE,
-              padding: '10px 15px',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '8px'
-            }}
             title="Cool down"
           >
             <WarmdownLogo className="btn-icon" /> Cool down
@@ -281,13 +254,6 @@ const WorkoutCanvas: React.FC<WorkoutCanvasProps> = ({
           <button
             className="btn"
             onClick={() => addInterval()}
-            style={{ 
-              backgroundColor: Colors.WHITE,
-              padding: '10px 15px',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '8px'
-            }}
             title="Interval"
           >
             <IntervalLogo className="btn-icon" /> Interval
@@ -295,18 +261,10 @@ const WorkoutCanvas: React.FC<WorkoutCanvasProps> = ({
           <button
             className="btn"
             onClick={() => addFreeRide()}
-            style={{ 
-              backgroundColor: Colors.WHITE,
-              padding: '10px 15px',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '8px'
-            }}
             title={`Free ${sportType === 'bike' ? 'Ride' : 'Run'}`}
           >
             <FontAwesomeIcon
               icon={sportType === 'bike' ? faBicycle : faRunning}
-              size="lg"
               fixedWidth
             />
             Free {sportType === 'bike' ? 'Ride' : 'Run'}
@@ -314,18 +272,13 @@ const WorkoutCanvas: React.FC<WorkoutCanvasProps> = ({
           <button
             className="btn"
             onClick={() => addInstruction()}
-            style={{ 
-              backgroundColor: Colors.WHITE,
-              padding: '10px 15px',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '8px'
-            }}
             title="Text Event"
           >
-            <FontAwesomeIcon icon={faComment} size="lg" fixedWidth /> Text Event
+            <FontAwesomeIcon icon={faComment} fixedWidth /> Text Event
           </button>
         </div>
+
+        {toolbar && <div className="cta-group">{toolbar}</div>}
       </div>
     </>
   );

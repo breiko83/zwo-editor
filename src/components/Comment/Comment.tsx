@@ -60,13 +60,13 @@ const Comment = (props: {
       onDrag={(e, data) => handleDragging(data.x)}      
     >
       <div ref={nodeRef}>
-        <FontAwesomeIcon
-          style={{ display: "block", opacity: 0.7 }}
-          icon={props.instruction.text !== "" ? faCommentDots : faComment}
-          size="lg"
-          fixedWidth
-          className="handle"
-        />
+        <span className="handle comment-pill">
+          <FontAwesomeIcon
+            icon={props.instruction.text !== "" ? faCommentDots : faComment}
+            fixedWidth
+          />
+          Text event
+        </span>
         {isDragging && (
           <div className="edit">
             {props.durationType === "time" ? (

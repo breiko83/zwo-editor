@@ -1,33 +1,45 @@
 .run-workout {
-  display: flex;  
-  margin: 0 auto;
-  flex-direction: row;  
+  display: flex;
+  margin: 10px auto 0;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: flex-end;
   width: 100%;
   max-width: 1360px;
-  
+  box-sizing: border-box;
+  gap: 10px;
+
+  background-color: var(--ed-surface);
+  border: 1px solid var(--ed-border);
+  border-radius: var(--ed-radius);
+  padding: 14px 18px;
 }
 
 .run-workout > .form-input {
-  padding-right: 10px;
+  padding-right: 0;
   align-self: flex-end;
 }
 
-.timePicker {
-  width: 120px;  
+.run-workout label abbr {
+  text-decoration: none;
 }
 
-.timePicker .time-picker-input{
-  font-size: 18px;  
-  font-family: monospace;
-  color: black;
+.timePicker {
+  width: 120px;
+}
+
+.timePicker .time-picker-input {
+  font-size: 15px;
+  font-family: var(--ed-font-mono);
+  color: var(--ed-text);
 }
 
 .time-picker-panel-input {
-  font-size: 18px;  
-  font-family: monospace;
+  font-size: 18px;
+  font-family: var(--ed-font-mono);
 }
 
 .time-picker-panel-select > ul > li {
-  font-size: 16px;  
-  font-family: monospace;
+  font-size: 16px;
+  font-family: var(--ed-font-mono);
 }
