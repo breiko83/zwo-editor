@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, memo } from "react";
 import { flushSync } from "react-dom";
 import "./Trapeze.css";
 import { Colors, Zones, ZonesArray } from "../Constants";
@@ -443,4 +443,4 @@ const Trapeze = (props: {
   );
 };
 
-export default Trapeze;
+export default memo(Trapeze);

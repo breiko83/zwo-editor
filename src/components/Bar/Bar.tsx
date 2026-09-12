@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, memo } from "react";
 import "./Bar.css";
 import { Colors, Zones } from "../Constants";
 import { Resizable } from "re-resizable";
@@ -228,4 +228,4 @@ const Bar = (props: {
   );
 };
 
-export default Bar;
+export default memo(Bar);
