@@ -4,7 +4,23 @@
   min-height: 100%;
   margin: 0px;
 
-  background-color: #eaeaea;
+  --ed-page: oklch(0.975 0.004 250);
+  --ed-surface: #fff;
+  --ed-border: oklch(0.91 0.004 250);
+  --ed-border-soft: oklch(0.945 0.004 250);
+  --ed-text: oklch(0.28 0.01 250);
+  --ed-text-muted: oklch(0.58 0.01 250);
+  --ed-text-soft: oklch(0.65 0.01 250);
+  --ed-chip-bg: oklch(0.955 0.004 250);
+  --ed-accent: oklch(0.55 0.1 240);
+  --ed-accent-hover: oklch(0.49 0.1 240);
+  --ed-radius: 10px;
+  --ed-font-sans: "IBM Plex Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --ed-font-mono: "IBM Plex Mono", monospace;
+
+  background-color: var(--ed-page);
+  color: var(--ed-text);
+  font-family: var(--ed-font-sans);
 
   overflow-x: hidden;
 }
@@ -13,17 +29,15 @@
   flex: 1;
   position: relative;
   white-space: nowrap;
-  background-color: white;
+  background-color: var(--ed-surface);
 
   padding: 0px 40px 0px 50px;
   margin: 10px auto;
   overflow-x: hidden;
   width: 100%;
   max-width: 1280px;
-  -webkit-box-shadow: 0px 0px 27px -9px rgba(0, 0, 0, 0.35);
-  -moz-box-shadow: 0px 0px 27px -9px rgba(0, 0, 0, 0.35);
-  box-shadow: 0px 0px 27px -9px rgba(0, 0, 0, 0.35);
-  border-radius: 5px;
+  border: 1px solid var(--ed-border);
+  border-radius: var(--ed-radius);
 }
 
 .container > .footer {
@@ -75,7 +89,25 @@ a {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
   margin: 10px auto;
+  width: 100%;
+  max-width: 1360px;
+  background-color: var(--ed-surface);
+  border: 1px solid var(--ed-border);
+  border-radius: var(--ed-radius);
+  padding: 10px 18px;
+  box-sizing: border-box;
+}
+
+.cta > .cta-group {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
 }
 
 .cta > .form-input {
@@ -83,14 +115,25 @@ a {
 }
 
 .btn {
-  display: inline-block;
-  background-color: white;
-  border: 1px solid lightgray;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background-color: var(--ed-surface);
+  border: 1px solid var(--ed-border);
   text-align: center;
   font-size: 13px;
-  border-radius: 5px;
+  font-family: var(--ed-font-sans);
+  color: var(--ed-text);
+  border-radius: 7px;
   min-width: 50px;
+  padding: 7px 13px;
   cursor: pointer;
+  transition: border-color 0.15s, background-color 0.15s;
+}
+
+.btn:hover {
+  border-color: oklch(0.78 0.01 250);
+  background-color: oklch(0.98 0.002 250);
 }
 
 .btn > svg {
@@ -99,18 +142,24 @@ a {
 }
 
 .btn-icon {
-  width: 30px;
+  width: 16px;
+  height: 16px;
   margin: 0 auto;
+  flex: none;
+  border-radius: 3px;
 }
 
 .btn-primary {
-  background-color: #00c46a;
+  background-color: var(--ed-accent);
+  border-color: var(--ed-accent);
   color: white;
-  padding: 5px 20px;
+  font-weight: 500;
+  padding: 8px 16px;
 }
 
 .btn-primary:hover {
-  background-color: #27ae60;
+  background-color: var(--ed-accent-hover);
+  border-color: var(--ed-accent-hover);
 }
 
 .btn-secondary {
@@ -125,8 +174,11 @@ a {
 
 .btn-square {
   color: white;
-  width: 50px;
-  height: 50px;
+  width: 40px;
+  height: 40px;
+  min-width: 40px;
+  padding: 0;
+  justify-content: center;
 }
 
 .form-input {
@@ -136,21 +188,30 @@ a {
 
 .textInput {
   max-width: 90px;
-  font-size: 20px;
-  border: 1px solid lightgray;
+  font-size: 18px;
+  font-family: var(--ed-font-mono);
+  border: 1px solid var(--ed-border);
+  border-radius: 6px;
+  background-color: oklch(0.985 0.002 250);
+  color: var(--ed-text);
   text-align: center;
 }
 
 .selectInput {
-  font-size: 16px;
-  background-color: rgba(0, 0, 0, 0.7);
+  font-size: 14px;
+  font-family: var(--ed-font-sans);
+  background-color: var(--ed-text);
   color: white;
-  padding: 10px;
-  border-radius: 5px;
+  padding: 8px 10px;
+  border-radius: 7px;
+  border: none;
 }
 
 label {
-  font-size: 10px;
+  font-size: 11px;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--ed-text-muted);
   text-align: center;
   padding: 5px;
 }
@@ -191,48 +252,114 @@ label {
 }
 
 .info {
-  margin: 0 auto;
+  margin: 10px auto 0;
   text-align: left;
   max-width: 1360px;
   width: 100%;
+  box-sizing: border-box;
 
   display: flex;
+  flex-wrap: wrap;
   flex-direction: row;
+  align-items: stretch;
+  justify-content: space-between;
+  gap: 16px;
+
+  background-color: var(--ed-surface);
+  border: 1px solid var(--ed-border);
+  border-radius: var(--ed-radius);
+  padding: 14px 18px;
 }
 
-.info > .title {
-  flex: 1;
+.info > .stats {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 28px;
 }
 
-.info > .title > h1 {
-  padding: 10px 0;
+.info > .stats > .title {
+  flex: none;
+}
+
+.info > .stats > .title > h1 {
+  padding: 0;
   margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
 }
 
-.info > .title > p {
-  font-style: italic;
-  margin: 10px 0 0 0;
+.info > .stats > .title > p {
+  font-style: normal;
+  color: var(--ed-text-muted);
+  margin: 4px 0 0 0;
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.stat > label {
+  padding: 0;
+  text-align: left;
+}
+
+.stat-value {
+  font-family: var(--ed-font-mono);
+  font-size: 22px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+}
+
+.stat-unit {
+  font-size: 13px;
+  color: var(--ed-text-muted);
+}
+
+.stat-divider {
+  align-self: stretch;
+  width: 1px;
+  background-color: var(--ed-border-soft);
 }
 
 .info > .workout {
-  padding: 10px 0 10px 10px;
+  padding: 0;
   display: flex;
   flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
 }
 .info > .workout > .form-input {
    padding: 0 6px;
 }
+.info > .workout > .form-input > label {
+  text-align: left;
+  padding: 0 0 5px 0;
+}
 
 .run-workout {
   display: flex;
-  margin: 0 auto;
+  margin: 10px auto 0;
   flex-direction: row;
+  flex-wrap: wrap;
+  align-items: flex-end;
   width: 100%;
   max-width: 1360px;
+  box-sizing: border-box;
+  gap: 10px;
+
+  background-color: var(--ed-surface);
+  border: 1px solid var(--ed-border);
+  border-radius: var(--ed-radius);
+  padding: 14px 18px;
 }
 
 .run-workout > .form-input {
-  padding-right: 10px;
+  padding-right: 0;
   align-self: flex-end;
 }
 
@@ -241,19 +368,19 @@ label {
 }
 
 .timePicker > input {
-  font-size: 18px;
-  font-family: monospace;
-  color: black;
+  font-size: 15px;
+  font-family: var(--ed-font-mono);
+  color: var(--ed-text);
 }
 
 .time-picker-panel-input {
   font-size: 18px;
-  font-family: monospace;
+  font-family: var(--ed-font-mono);
 }
 
 .time-picker-panel-select > ul > li {
   font-size: 16px;
-  font-family: monospace;
+  font-family: var(--ed-font-mono);
 }
 
 .text-editor {

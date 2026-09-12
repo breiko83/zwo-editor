@@ -1,11 +1,26 @@
 .left-right-toggle {
   display: flex;
   flex-direction: row;
-  color: lightgray;
+  background-color: var(--ed-chip-bg, oklch(0.955 0.004 250));
+  border: 1px solid var(--ed-border, oklch(0.91 0.004 250));
+  border-radius: 7px;
+  padding: 2px;
+  gap: 2px;
 }
-.left-right-toggle > .icon {
-  padding: 5px;
+.left-right-toggle > .segment {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border-radius: 5px;
+  font-size: 13px;
+  color: var(--ed-text-muted, oklch(0.5 0.01 250));
+  cursor: pointer;
+  white-space: nowrap;
 }
-.left-right-toggle > .icon.active {
-  color: #00C46A;  
+.left-right-toggle > .segment.active {
+  font-weight: 500;
+  background-color: #fff;
+  color: var(--ed-text, oklch(0.28 0.01 250));
+  box-shadow: 0 1px 2px oklch(0.5 0.01 250 / 0.14);
 }

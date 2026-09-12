@@ -30,11 +30,11 @@
 }
 
 .color:first-child{
-  border-bottom-left-radius: 5px;
+  border-bottom-left-radius: 4px;
 }
 
 .color:last-child{
-  border-bottom-right-radius: 5px;
+  border-bottom-right-radius: 4px;
 }
 
 .trapeze-svg-container {

@@ -2,9 +2,12 @@
   position: absolute;
   bottom: 0px;
 
-  border-top: 1px solid gray;
+  border-top: 1px solid oklch(0.88 0.004 250);
   overflow: hidden;
   min-width: 1320px;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 11px;
+  color: oklch(0.6 0.01 250);
 }
 
 .x-axis > span {
@@ -28,5 +31,5 @@
   height: 10px;
   top: -20px;
   left: 0;
-  background-color: gray;
+  background-color: oklch(0.7 0.01 250);
 }

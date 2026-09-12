@@ -766,6 +766,12 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
             : "My Workout - Zwift Workout Editor"}
         </title>
         <meta name="description" content={description} />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
+        <link
+          href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap"
+          rel="stylesheet"
+        />
       </Helmet>
 
       {selectedInstruction && (
@@ -836,14 +842,14 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
         renderFreeRide={renderFreeRide}
         renderInterval={renderInterval}
         renderComment={renderComment}
+        toolbar={
+          <WorkoutToolbar
+            onNew={newWorkout}
+            onDownload={downloadWorkout}
+            onUpload={handleUpload}
+          />
+        }
       />
-      <div className="cta">
-        <WorkoutToolbar
-          onNew={newWorkout}
-          onDownload={downloadWorkout}
-          onUpload={handleUpload}
-        />
-      </div>
       <Footer />
     </div>
   );

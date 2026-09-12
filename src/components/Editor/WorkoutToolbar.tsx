@@ -18,38 +18,24 @@ const WorkoutToolbar: React.FC<WorkoutToolbarProps> = ({
   onUpload,
 }) => {
   return (
-    <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', alignItems: 'center', width: '100%' }}>
+    <>
       <button
         className="btn"
         onClick={() => {
           if (window.confirm('Are you sure you want to create a new workout?'))
             onNew();
         }}
-        style={{
-          backgroundColor: 'white',
-          padding: '10px 15px',
-          display: 'flex',
-          alignItems: 'center',
-          gap: '8px'
-        }}
         title="Create a new workout"
       >
-        <FontAwesomeIcon icon={faFile} size="lg" fixedWidth /> New
+        <FontAwesomeIcon icon={faFile} fixedWidth /> New
       </button>
 
       <button
         className="btn"
         onClick={onDownload}
-        style={{
-          backgroundColor: 'white',
-          padding: '10px 15px',
-          display: 'flex',
-          alignItems: 'center',
-          gap: '8px'
-        }}
         title="Download workout file"
       >
-        <FontAwesomeIcon icon={faDownload} size="lg" fixedWidth /> Download
+        <FontAwesomeIcon icon={faDownload} fixedWidth /> Download
       </button>
 
       <input
@@ -66,18 +52,11 @@ const WorkoutToolbar: React.FC<WorkoutToolbarProps> = ({
       <button
         className="btn"
         onClick={() => document.getElementById('contained-button-file')!.click()}
-        style={{
-          backgroundColor: 'white',
-          padding: '10px 15px',
-          display: 'flex',
-          alignItems: 'center',
-          gap: '8px'
-        }}
         title="Import workout file"
       >
-        <FontAwesomeIcon icon={faUpload} size="lg" fixedWidth /> Import
+        <FontAwesomeIcon icon={faUpload} fixedWidth /> Import
       </button>
-    </div>
+    </>
   );
 };
 

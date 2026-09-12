@@ -2,8 +2,8 @@
   position: relative;
   cursor: pointer;
 }
-.bar {    
-  border-radius: 10px;
+.bar {
+  border-radius: 4px 4px 0 0;
   border: 1px solid white;
 }
 

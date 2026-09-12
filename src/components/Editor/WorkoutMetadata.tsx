@@ -2,7 +2,6 @@ import React from 'react';
 import helpers from '../helpers';
 import { BarType, SportType, DurationType, PaceUnitType } from '../../types/workout';
 import LeftRightToggle from './LeftRightToggle';
-import { faClock, faRuler, faBiking, faRunning } from '@fortawesome/free-solid-svg-icons';
 import './Editor.css';
 
 interface WorkoutMetadataProps {
@@ -34,72 +33,70 @@ const WorkoutMetadata: React.FC<WorkoutMetadataProps> = ({
 }) => {
   return (
     <div className="info">
-      <div className="title">
-        <h1>{name}</h1>
-        <div className="description">{description}</div>
-        <p>{author ? `by ${author}` : ''}</p>
-      </div>
-      <div className="workout">
-        <div className="form-input">
-          <label>Workout Time</label>
-          <input
-            className="textInput"
-            title="Workout Time"
-            value={helpers.formatDuration(
-              helpers.getWorkoutLength(bars)
-            )}
-            disabled
-          />
+      <div className="stats">
+        <div className="title">
+          <h1>{name}</h1>
+          <div className="description">{description}</div>
+          <p>{author ? `by ${author}` : ''}</p>
         </div>
-        
+
+        <div className="stat">
+          <label>Workout time</label>
+          <span className="stat-value">
+            {helpers.formatDuration(helpers.getWorkoutLength(bars))}
+          </span>
+        </div>
+
         {sportType === 'run' && (
-          <div className="form-input">
-            <label>Workout Distance</label>
-            <input
-              className="textInput"
-              value={helpers.getWorkoutDistance(bars)}
-              disabled
-            />
-          </div>
+          <>
+            <div className="stat-divider" />
+            <div className="stat">
+              <label>Distance</label>
+              <span className="stat-value">
+                {helpers.getWorkoutDistance(bars)}{' '}
+                <span className="stat-unit">km</span>
+              </span>
+            </div>
+            <div className="stat-divider" />
+            <div className="stat">
+              <label>Avg. pace</label>
+              <span className="stat-value">
+                {helpers.getWorkoutPace(bars, paceUnitType)}{' '}
+                <span className="stat-unit">
+                  {paceUnitType === 'metric' ? '/km' : '/mi'}
+                </span>
+              </span>
+            </div>
+          </>
         )}
-        
+
         {sportType === 'bike' && (
-          <div className="form-input">
-            <label title="Training Load">Training Load</label>
-            <input
-              className="textInput"
-              value={helpers.getStressScore(bars, ftp)}
-              disabled
-            />
-          </div>
+          <>
+            <div className="stat-divider" />
+            <div className="stat">
+              <label title="Training Load">Training load</label>
+              <span className="stat-value">{helpers.getStressScore(bars, ftp)}</span>
+            </div>
+          </>
         )}
-        
-        {sportType === 'run' && (
-          <div className="form-input">
-            <label>Avg. Workout Pace</label>
-            <input
-              className="textInput"
-              value={helpers.getWorkoutPace(bars, paceUnitType)}
-              disabled
-            />
-          </div>
-        )}
-        
+      </div>
+
+      <div className="workout">
         {sportType === 'run' && (
           <LeftRightToggle<'time', 'distance'>
-            label="Duration Type"
+            label="Duration"
             leftValue="time"
             rightValue="distance"
-            leftIcon={faClock}
-            rightIcon={faRuler}
+            leftLabel="Time"
+            rightLabel="Distance"
             selected={durationType}
             onChange={setDurationType}
           />
         )}
-        
+
         {sportType === 'run' && (
           <LeftRightToggle<'metric', 'imperial'>
-            label="Pace Unit"
+            label="Pace unit"
             leftValue="metric"
             rightValue="imperial"
             leftLabel="min/km"
@@ -108,13 +105,13 @@ const WorkoutMetadata: React.FC<WorkoutMetadataProps> = ({
             onChange={setPaceUnitType}
           />
         )}
-        
+
         <LeftRightToggle<'bike', 'run'>
-          label="Sport Type"
+          label="Sport"
           leftValue="bike"
           rightValue="run"
-          leftIcon={faBiking}
-          rightIcon={faRunning}
+          leftLabel="Bike"
+          rightLabel="Run"
           selected={sportType}
           onChange={setSportType}
         />
