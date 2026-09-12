@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
+import { flushSync } from "react-dom";
 import "./Trapeze.css";
 import { Colors, Zones, ZonesArray } from "../Constants";
 import { Resizable } from "re-resizable";
@@ -80,22 +81,20 @@ const Trapeze = (props: {
       : calculateColors(props.endPower, props.startPower);
   const flexDirection = height3 > height1 ? "row" : "row-reverse";
 
-  const handleResizeStop1 = (dHeight: number) => {
-    setHeight1(height1 + dHeight);
-    setHeight2((height3 + dHeight + height1) / 2);
-  };
-  const handleResizeStop2 = (dHeight: number) => {
-    setHeight2(height2 + dHeight);
-    setHeight1(height1 + dHeight);
-    setHeight3(height3 + dHeight);
-  };
-  const handleResizeStop3 = (dWidth: number, dHeight: number) => {
-    setWidth(width + dWidth / 3);
-    setHeight3(height3 + dHeight);
-    setHeight2((height3 + dHeight + height1) / 2);
+  const dragStartRef = useRef({ width, height1, height2, height3 });
+
+  const captureDragStart = () => {
+    dragStartRef.current = { width, height1, height2, height3 };
   };
 
   const handleResize1 = (dHeight: number) => {
+    const { height3: startHeight3, height1: startHeight1 } = dragStartRef.current;
+    const newHeight1 = startHeight1 + dHeight;
+    flushSync(() => {
+      setHeight1(newHeight1);
+      setHeight2((startHeight3 + newHeight1) / 2);
+    });
+
     const time =
       props.durationType === "time"
         ? helpers.round(width * timeMultiplier * 3, minTime)
@@ -116,8 +115,8 @@ const Trapeze = (props: {
     props.onChange(props.id, {
       time: time,
       length: length,
-      startPower: (height1 + dHeight) / multiplier,
-      endPower: height3 / multiplier,
+      startPower: newHeight1 / multiplier,
+      endPower: startHeight3 / multiplier,
       cadence: props.cadence,
       type: "trapeze",
       pace: props.pace,
@@ -125,6 +124,15 @@ const Trapeze = (props: {
     });
   };
   const handleResize2 = (dHeight: number) => {
+    const { height1: startHeight1, height3: startHeight3 } = dragStartRef.current;
+    const newHeight1 = startHeight1 + dHeight;
+    const newHeight3 = startHeight3 + dHeight;
+    flushSync(() => {
+      setHeight1(newHeight1);
+      setHeight2((newHeight1 + newHeight3) / 2);
+      setHeight3(newHeight3);
+    });
+
     const time =
       props.durationType === "time"
         ? helpers.round(width * timeMultiplier * 3, minTime)
@@ -145,16 +153,57 @@ const Trapeze = (props: {
     props.onChange(props.id, {
       time: time,
       length: length,
-      startPower: (height1 + dHeight) / multiplier,
-      endPower: (height3 + dHeight) / multiplier,
+      startPower: newHeight1 / multiplier,
+      endPower: newHeight3 / multiplier,
       cadence: props.cadence,
       type: "trapeze",
       pace: props.pace,
       id: props.id,
     });
   };
-  const handleResize3 = (dWidth: number, dHeight: number) => {
-    const newWidth = width + dWidth / 3;
+  const handleResize3 = (dHeight: number) => {
+    const { height1: startHeight1, height3: startHeight3 } = dragStartRef.current;
+    const newHeight3 = startHeight3 + dHeight;
+    flushSync(() => {
+      setHeight3(newHeight3);
+      setHeight2((startHeight1 + newHeight3) / 2);
+    });
+
+    const time =
+      props.durationType === "time"
+        ? helpers.round(width * timeMultiplier * 3, minTime)
+        : helpers.round(
+            (helpers.calculateTime(props.length || 0, props.speed || 0) * 1) / avgPower,
+            1
+          );
+    const length =
+      props.durationType === "time"
+        ? helpers.round(
+            (helpers.calculateDistance(width * timeMultiplier, props.speed || 0) *
+              1) /
+              avgPower,
+            1
+          )
+        : helpers.round(width * lengthMultiplier * 3, minDistance);
+
+    props.onChange(props.id, {
+      time: time,
+      length: length,
+      startPower: startHeight1 / multiplier,
+      endPower: newHeight3 / multiplier,
+      cadence: props.cadence,
+      type: "trapeze",
+      pace: props.pace,
+      id: props.id,
+    });
+  };
+
+  const handleResizeWidth = (dWidth: number) => {
+    const { width: startWidth, height1: startHeight1, height3: startHeight3 } = dragStartRef.current;
+    const newWidth = startWidth + dWidth;
+    flushSync(() => {
+      setWidth(newWidth);
+    });
 
     const length =
       props.durationType === "time"
@@ -176,8 +225,8 @@ const Trapeze = (props: {
     props.onChange(props.id, {
       time: time,
       length: length,
-      startPower: height1 / multiplier,
-      endPower: (height3 + dHeight) / multiplier,
+      startPower: startHeight1 / multiplier,
+      endPower: startHeight3 / multiplier,
       cadence: props.cadence,
       type: "trapeze",
       pace: props.pace,
@@ -258,10 +307,11 @@ const Trapeze = (props: {
           minWidth={3}
           minHeight={multiplier * Zones.Z1.min}
           maxHeight={multiplier * Zones.Z6.max}
-          enable={{ top: true, right: true }}
+          enable={{ top: true }}
           grid={[1, 1]}
-          onResizeStop={(e, direction, ref, d) => handleResizeStop1(d.height)}
+          onResizeStart={captureDragStart}
           onResize={(e, direction, ref, d) => handleResize1(d.height)}
+          onResizeStop={(e, direction, ref, d) => handleResize1(d.height)}
         ></Resizable>
         <Resizable
           className="trapeze-component"
@@ -274,8 +324,9 @@ const Trapeze = (props: {
           maxHeight={multiplier * Zones.Z6.max}
           enable={{ top: true }}
           grid={[1, 1]}
-          onResizeStop={(e, direction, ref, d) => handleResizeStop2(d.height)}
+          onResizeStart={captureDragStart}
           onResize={(e, direction, ref, d) => handleResize2(d.height)}
+          onResizeStop={(e, direction, ref, d) => handleResize2(d.height)}
         ></Resizable>
         <Resizable
           className="trapeze-component"
@@ -286,13 +337,27 @@ const Trapeze = (props: {
           minWidth={3}
           minHeight={multiplier * Zones.Z1.min}
           maxHeight={multiplier * Zones.Z6.max}
-          enable={{ top: true, right: true }}
+          enable={{ top: true }}
           grid={[1, 1]}
-          onResizeStop={(e, direction, ref, d) =>
-            handleResizeStop3(d.width, d.height)
-          }
-          onResize={(e, direction, ref, d) => handleResize3(d.width, d.height)}
-        ></Resizable>
+          onResizeStart={captureDragStart}
+          onResize={(e, direction, ref, d) => handleResize3(d.height)}
+          onResizeStop={(e, direction, ref, d) => handleResize3(d.height)}
+        >
+          <Resizable
+            size={{
+              width: width,
+              height: height3,
+            }}
+            style={{ position: "absolute", top: 0, left: 0 }}
+            minWidth={3}
+            resizeRatio={1 / 3}
+            enable={{ right: true }}
+            grid={[1, 1]}
+            onResizeStart={captureDragStart}
+            onResize={(e, direction, ref, d) => handleResizeWidth(d.width)}
+            onResizeStop={(e, direction, ref, d) => handleResizeWidth(d.width)}
+          ></Resizable>
+        </Resizable>
       </div>
       <div
         className="trapeze-colors"
