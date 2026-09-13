@@ -312,6 +312,54 @@ describe('workoutService', () => {
     });
   });
 
+  describe('reorder', () => {
+    it('should move a bar forward next to another bar', () => {
+      const bars: BarType[] = [
+        { id: '1', type: 'bar', time: 100, cadence: 0 },
+        { id: '2', type: 'bar', time: 200, cadence: 0 },
+        { id: '3', type: 'bar', time: 300, cadence: 0 },
+      ];
+
+      const result = workoutService.reorder(bars, '1', '3');
+
+      expect(result.map((bar) => bar.id)).toEqual(['2', '3', '1']);
+    });
+
+    it('should move a bar backward next to another bar', () => {
+      const bars: BarType[] = [
+        { id: '1', type: 'bar', time: 100, cadence: 0 },
+        { id: '2', type: 'bar', time: 200, cadence: 0 },
+        { id: '3', type: 'bar', time: 300, cadence: 0 },
+      ];
+
+      const result = workoutService.reorder(bars, '3', '1');
+
+      expect(result.map((bar) => bar.id)).toEqual(['3', '1', '2']);
+    });
+
+    it('should return the same array if the ids are the same', () => {
+      const bars: BarType[] = [
+        { id: '1', type: 'bar', time: 100, cadence: 0 },
+        { id: '2', type: 'bar', time: 200, cadence: 0 },
+      ];
+
+      const result = workoutService.reorder(bars, '1', '1');
+
+      expect(result).toBe(bars);
+    });
+
+    it('should return the same array if an id is not found', () => {
+      const bars: BarType[] = [
+        { id: '1', type: 'bar', time: 100, cadence: 0 },
+        { id: '2', type: 'bar', time: 200, cadence: 0 },
+      ];
+
+      const result = workoutService.reorder(bars, '1', 'missing');
+
+      expect(result).toBe(bars);
+    });
+  });
+
   describe('adjustTime', () => {
     it('should increase time by 5 seconds', () => {
       const bars: BarType[] = [

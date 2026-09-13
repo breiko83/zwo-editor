@@ -237,6 +237,23 @@ label {
   cursor: pointer;
 }
 
+.sortable-segment {
+  display: inline-block;
+  cursor: grab;
+  touch-action: none;
+}
+
+.sortable-segment:active {
+  cursor: grabbing;
+}
+
+.sortable-segment input,
+.sortable-segment textarea,
+.sortable-segment select,
+.sortable-segment button {
+  cursor: auto;
+}
+
 .slider {
   position: absolute;
   top: 10px;

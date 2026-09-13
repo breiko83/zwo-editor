@@ -11,6 +11,15 @@ import {
   faRunning,
 } from '@fortawesome/free-solid-svg-icons';
 import ReactTooltip from 'react-tooltip';
+import {
+  DndContext,
+  DragEndEvent,
+  PointerSensor,
+  closestCenter,
+  useSensor,
+  useSensors,
+} from '@dnd-kit/core';
+import { SortableContext, horizontalListSortingStrategy } from '@dnd-kit/sortable';
 import { Colors, Zones } from '../Constants';
 import { ReactComponent as SteadyLogo } from '../../assets/steady.svg';
 import { ReactComponent as WarmupLogo } from '../../assets/warmup.svg';
@@ -20,6 +29,7 @@ import { BarType, Instruction, SportType, DurationType } from '../../types/worko
 import TimeAxis from './TimeAxis';
 import DistanceAxis from './DistanceAxis';
 import ZoneAxis from './ZoneAxis';
+import SortableSegment from './SortableSegment';
 import './Editor.css';
 
 interface WorkoutCanvasProps {
@@ -37,6 +47,7 @@ interface WorkoutCanvasProps {
   setActionId: (id: string | undefined) => void;
   moveLeft: (id: string) => void;
   moveRight: (id: string) => void;
+  reorderBars: (activeId: string, overId: string) => void;
   removeBar: (id: string) => void;
   duplicateBar: (id: string) => void;
   getPace: (id: string) => number;
@@ -70,6 +81,7 @@ const WorkoutCanvas: React.FC<WorkoutCanvasProps> = ({
   setActionId,
   moveLeft,
   moveRight,
+  reorderBars,
   removeBar,
   duplicateBar,
   getPace,
@@ -87,6 +99,17 @@ const WorkoutCanvas: React.FC<WorkoutCanvasProps> = ({
   renderComment,
   toolbar,
 }) => {
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 8 } })
+  );
+
+  function handleDragEnd(event: DragEndEvent) {
+    const { active, over } = event;
+    if (over && active.id !== over.id) {
+      reorderBars(String(active.id), String(over.id));
+    }
+  }
+
   return (
     <>
       <div id="editor" className="editor">
@@ -130,21 +153,25 @@ const WorkoutCanvas: React.FC<WorkoutCanvasProps> = ({
             ></div>
           )}
           
-          <div className="segments" ref={segmentsRef}>
-            {bars.map((bar, index) => {
-              const key = bar.id || `bar-${index}`;
-              if (bar.type === 'bar') {
-                return <React.Fragment key={key}>{renderBar(bar)}</React.Fragment>;
-              } else if (bar.type === 'trapeze') {
-                return <React.Fragment key={key}>{renderTrapeze(bar)}</React.Fragment>;
-              } else if (bar.type === 'freeRide') {
-                return <React.Fragment key={key}>{renderFreeRide(bar)}</React.Fragment>;
-              } else if (bar.type === 'interval') {
-                return <React.Fragment key={key}>{renderInterval(bar)}</React.Fragment>;
-              }
-              return null;
-            })}
-          </div>
+          <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+            <SortableContext items={bars.map((bar) => bar.id)} strategy={horizontalListSortingStrategy}>
+              <div className="segments" ref={segmentsRef}>
+                {bars.map((bar, index) => {
+                  const key = bar.id || `bar-${index}`;
+                  if (bar.type === 'bar') {
+                    return <SortableSegment key={key} id={key}>{renderBar(bar)}</SortableSegment>;
+                  } else if (bar.type === 'trapeze') {
+                    return <SortableSegment key={key} id={key}>{renderTrapeze(bar)}</SortableSegment>;
+                  } else if (bar.type === 'freeRide') {
+                    return <SortableSegment key={key} id={key}>{renderFreeRide(bar)}</SortableSegment>;
+                  } else if (bar.type === 'interval') {
+                    return <SortableSegment key={key} id={key}>{renderInterval(bar)}</SortableSegment>;
+                  }
+                  return null;
+                })}
+              </div>
+            </SortableContext>
+          </DndContext>
 
           <div className="slider">
             {instructions.map((instruction, index) => (

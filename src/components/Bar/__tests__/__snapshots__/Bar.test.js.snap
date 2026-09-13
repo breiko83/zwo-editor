@@ -28,7 +28,7 @@ exports[`Bar renders correctly 1`] = `
   >
     <div>
       <div
-        className=""
+        className="resize-handle"
         onMouseDown={[Function]}
         onTouchStart={[Function]}
         style={
@@ -44,7 +44,7 @@ exports[`Bar renders correctly 1`] = `
         }
       />
       <div
-        className=""
+        className="resize-handle"
         onMouseDown={[Function]}
         onTouchStart={[Function]}
         style={

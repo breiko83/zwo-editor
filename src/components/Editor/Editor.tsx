@@ -388,6 +388,11 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
     setBars(updatedBars);
   }
 
+  function reorderBars(activeId: string, overId: string) {
+    const updatedBars = workoutService.reorder(bars, activeId, overId);
+    setBars(updatedBars);
+  }
+
   function downloadWorkout() {
     const xml = xmlService.createWorkoutXml({
       author,
@@ -827,6 +832,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
         setActionId={setActionId}
         moveLeft={moveLeft}
         moveRight={moveRight}
+        reorderBars={reorderBars}
         removeBar={removeBar}
         duplicateBar={duplicateBar}
         getPace={getPace}

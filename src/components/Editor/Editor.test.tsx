@@ -253,7 +253,7 @@ describe('Editor Integration Tests', () => {
   describe('Workout Actions', () => {
     it('should show New button', () => {
       renderEditor();
-      expect(screen.getByText(/New/i)).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: /New/i })).toBeInTheDocument();
     });
 
     it('should show Download button', () => {
