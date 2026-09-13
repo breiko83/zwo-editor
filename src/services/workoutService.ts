@@ -264,6 +264,21 @@ export const workoutService = {
   },
 
   /**
+   * Move a bar to sit right before another bar (drag and drop reorder)
+   */
+  reorder(bars: BarType[], activeId: string, overId: string): BarType[] {
+    const fromIndex = bars.findIndex((bar) => bar.id === activeId);
+    const toIndex = bars.findIndex((bar) => bar.id === overId);
+    if (fromIndex === -1 || toIndex === -1 || fromIndex === toIndex) {
+      return bars;
+    }
+    const updatedArray = [...bars];
+    const [element] = updatedArray.splice(fromIndex, 1);
+    updatedArray.splice(toIndex, 0, element);
+    return updatedArray;
+  },
+
+  /**
    * Adjust time for a bar
    */
   adjustTime(

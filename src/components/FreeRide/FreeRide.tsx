@@ -131,6 +131,7 @@ const FreeRide = (props: {
         minHeight={height}
         maxHeight={height}
         enable={{ right: true }}
+        handleClasses={{ right: "resize-handle" }}
         grid={[1, 1]}
         onResizeStop={(e, direction, ref, d) => handleResizeStop(d.width)}
         onResize={(e, direction, ref, d) => handleResize(d.width)}

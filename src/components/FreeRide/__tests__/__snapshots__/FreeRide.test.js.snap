@@ -27,7 +27,7 @@ exports[`Freeride renders correctly 1`] = `
   >
     <div>
       <div
-        className=""
+        className="resize-handle"
         onMouseDown={[Function]}
         onTouchStart={[Function]}
         style={

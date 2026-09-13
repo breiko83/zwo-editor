@@ -217,6 +217,7 @@ const Bar = (props: {
         minHeight={multiplier * Zones.Z1.min}
         maxHeight={multiplier * Zones.Z6.max}
         enable={{ top: true, right: true }}
+        handleClasses={{ top: "resize-handle", right: "resize-handle" }}
         grid={[1, 1]}
         onResizeStop={(e, direction, ref, d) =>
           handleResizeStop(d.width, d.height)

@@ -308,6 +308,7 @@ const Trapeze = (props: {
           minHeight={multiplier * Zones.Z1.min}
           maxHeight={multiplier * Zones.Z6.max}
           enable={{ top: true }}
+          handleClasses={{ top: "resize-handle" }}
           grid={[1, 1]}
           onResizeStart={captureDragStart}
           onResize={(e, direction, ref, d) => handleResize1(d.height)}
@@ -323,6 +324,7 @@ const Trapeze = (props: {
           minHeight={multiplier * Zones.Z1.min}
           maxHeight={multiplier * Zones.Z6.max}
           enable={{ top: true }}
+          handleClasses={{ top: "resize-handle" }}
           grid={[1, 1]}
           onResizeStart={captureDragStart}
           onResize={(e, direction, ref, d) => handleResize2(d.height)}
@@ -338,6 +340,7 @@ const Trapeze = (props: {
           minHeight={multiplier * Zones.Z1.min}
           maxHeight={multiplier * Zones.Z6.max}
           enable={{ top: true }}
+          handleClasses={{ top: "resize-handle" }}
           grid={[1, 1]}
           onResizeStart={captureDragStart}
           onResize={(e, direction, ref, d) => handleResize3(d.height)}
@@ -352,6 +355,7 @@ const Trapeze = (props: {
             minWidth={3}
             resizeRatio={1 / 3}
             enable={{ right: true }}
+            handleClasses={{ right: "resize-handle" }}
             grid={[1, 1]}
             onResizeStart={captureDragStart}
             onResize={(e, direction, ref, d) => handleResizeWidth(d.width)}
