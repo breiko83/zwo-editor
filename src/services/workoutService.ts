@@ -25,18 +25,19 @@ export const workoutService = {
     length: number,
     incline: number,
     durationType: DurationType,
-    uuidv4: () => string
+    uuidv4: () => string,
+    speed?: number
   ): BarType {
-    const speed = this.calculateSpeed(pace);
-    
+    const resolvedSpeed = speed !== undefined ? speed : this.calculateSpeed(pace);
+
     return {
       time:
         durationType === 'time'
           ? duration
-          : helpers.round(helpers.calculateTime(length, speed), 1),
+          : helpers.round(helpers.calculateTime(length, resolvedSpeed), 1),
       length:
         durationType === 'time'
-          ? helpers.round(helpers.calculateDistance(duration, speed), 1)
+          ? helpers.round(helpers.calculateDistance(duration, resolvedSpeed), 1)
           : length,
       power: zone,
       cadence: cadence,
@@ -58,18 +59,19 @@ export const workoutService = {
     length: number,
     cadence: number,
     durationType: DurationType,
-    uuidv4: () => string
+    uuidv4: () => string,
+    speed?: number
   ): BarType {
-    const speed = this.calculateSpeed(pace);
-    
+    const resolvedSpeed = speed !== undefined ? speed : this.calculateSpeed(pace);
+
     return {
       time:
         durationType === 'time'
           ? duration
-          : helpers.round(helpers.calculateTime(length, speed), 1),
+          : helpers.round(helpers.calculateTime(length, resolvedSpeed), 1),
       length:
         durationType === 'time'
-          ? helpers.round(helpers.calculateDistance(duration, speed), 1)
+          ? helpers.round(helpers.calculateDistance(duration, resolvedSpeed), 1)
           : length,
       startPower: zone1,
       endPower: zone2,
@@ -116,22 +118,23 @@ export const workoutService = {
     onLength: number,
     offLength: number,
     durationType: DurationType,
-    uuidv4: () => string
+    uuidv4: () => string,
+    speed?: number
   ): BarType {
-    const speed = this.calculateSpeed(pace);
-    
+    const resolvedSpeed = speed !== undefined ? speed : this.calculateSpeed(pace);
+
     return {
       time:
         durationType === 'time'
           ? (onDuration + offDuration) * repeat
           : helpers.round(
-              helpers.calculateTime((onLength + offLength) * repeat, speed),
+              helpers.calculateTime((onLength + offLength) * repeat, resolvedSpeed),
               1
             ),
       length:
         durationType === 'time'
           ? helpers.round(
-              helpers.calculateDistance((onDuration + offDuration) * repeat, speed),
+              helpers.calculateDistance((onDuration + offDuration) * repeat, resolvedSpeed),
               1
             )
           : (onLength + offLength) * repeat,
@@ -144,14 +147,14 @@ export const workoutService = {
         durationType === 'time'
           ? onDuration
           : helpers.round(
-              helpers.calculateTime((onLength * 1) / onPower, speed),
+              helpers.calculateTime((onLength * 1) / onPower, resolvedSpeed),
               1
             ),
       offDuration:
         durationType === 'time'
           ? offDuration
           : helpers.round(
-              helpers.calculateTime((offLength * 1) / offPower, speed),
+              helpers.calculateTime((offLength * 1) / offPower, resolvedSpeed),
               1
             ),
       onPower: onPower,
@@ -160,14 +163,14 @@ export const workoutService = {
       onLength:
         durationType === 'time'
           ? helpers.round(
-              helpers.calculateDistance((onDuration * 1) / onPower, speed),
+              helpers.calculateDistance((onDuration * 1) / onPower, resolvedSpeed),
               1
             )
           : onLength,
       offLength:
         durationType === 'time'
           ? helpers.round(
-              helpers.calculateDistance((offDuration * 1) / offPower, speed),
+              helpers.calculateDistance((offDuration * 1) / offPower, resolvedSpeed),
               1
             )
           : offLength,

@@ -135,7 +135,8 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
       length,
       incline,
       durationType,
-      uuidv4
+      uuidv4,
+      calculateSpeed(pace)
     );
     setBars((bars) => [...bars, newBar]);
   }
@@ -156,7 +157,8 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
       length,
       cadence,
       durationType,
-      uuidv4
+      uuidv4,
+      calculateSpeed(pace)
     );
     setBars((bars) => [...bars, newTrapeze]);
   }
@@ -202,7 +204,8 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
       onLength,
       offLength,
       durationType,
-      uuidv4
+      uuidv4,
+      calculateSpeed(pace)
     );
     setBars((bars) => [...bars, newInterval]);
   }
