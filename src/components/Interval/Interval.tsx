@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState, memo } from "react";
 import Bar from "../Bar/Bar";
 import "./Interval.css";
 
@@ -30,6 +30,9 @@ const Interval = (props: {
 
   const [bars, setBars] = useState<Array<BarType>>([]);
   const [nIntervals, setNIntervals] = useState(props.repeat);
+
+  const barsRef = useRef(bars);
+  barsRef.current = bars;
 
   const [onDuration, setOnDuration] = useState(props.onDuration);
   const [offDuration, setOffDuration] = useState(props.offDuration);
@@ -66,48 +69,58 @@ const Interval = (props: {
     // eslint-disable-next-line
   }, [nIntervals]);
 
-  function handleOnChange(id: string, values: BarType) {
-    const index = bars.findIndex((bar) => bar.id === id);
+  const { handleIntervalChange, handleIntervalClick, id: intervalId, pace } = props;
 
-    if (index % 2 === 1) {
-      setOffDuration(values.time);
-      setOffLength(values.length);
-    } else {
-      setOnDuration(values.time);
-      setOnLength(values.length);
-    }
+  const handleOnChange = useCallback(
+    (id: string, values: BarType) => {
+      const bars = barsRef.current;
+      const index = bars.findIndex((bar) => bar.id === id);
 
-    for (var i = 0; i < bars.length; i++) {
-      if (index % 2 === i % 2) {
-        bars[i].time = values.time;
-        bars[i].power = values.power;
-        bars[i].length = values.length;
-        bars[i].cadence = values.cadence;
+      if (index % 2 === 1) {
+        setOffDuration(values.time);
+        setOffLength(values.length);
+      } else {
+        setOnDuration(values.time);
+        setOnLength(values.length);
       }
-    }
-    var time = 0;
-    bars.map((bar) => (time += bar.time));
 
-    var length = 0;
-    bars.map((bar) => (length += bar.length || 0));
+      for (var i = 0; i < bars.length; i++) {
+        if (index % 2 === i % 2) {
+          bars[i].time = values.time;
+          bars[i].power = values.power;
+          bars[i].length = values.length;
+          bars[i].cadence = values.cadence;
+        }
+      }
+      var time = 0;
+      bars.map((bar) => (time += bar.time));
 
-    props.handleIntervalChange(props.id, {
-      time: time,
-      length: length,
-      id: props.id,
-      type: "interval",
-      cadence: bars[0].cadence,
-      restingCadence: bars[1].cadence,
-      pace: props.pace,
-      repeat: nIntervals,
-      onDuration: bars[0].time,
-      offDuration: bars[1].time,
-      onPower: bars[0].power,
-      offPower: bars[1].power,
-      onLength: bars[0].length,
-      offLength: bars[1].length,
-    });
-  }
+      var length = 0;
+      bars.map((bar) => (length += bar.length || 0));
+
+      handleIntervalChange(intervalId, {
+        time: time,
+        length: length,
+        id: intervalId,
+        type: "interval",
+        cadence: bars[0].cadence,
+        restingCadence: bars[1].cadence,
+        pace: pace,
+        repeat: nIntervals,
+        onDuration: bars[0].time,
+        offDuration: bars[1].time,
+        onPower: bars[0].power,
+        offPower: bars[1].power,
+        onLength: bars[0].length,
+        offLength: bars[1].length,
+      });
+    },
+    [handleIntervalChange, intervalId, pace, nIntervals]
+  );
+
+  const handleBarClick = useCallback(() => {
+    handleIntervalClick(intervalId);
+  }, [handleIntervalClick, intervalId]);
 
   function handleAddInterval() {
     setNIntervals(nIntervals + 1);
@@ -176,8 +189,8 @@ const Interval = (props: {
       paceUnitType={props.paceUnitType}
       pace={props.pace}
       speed={props.speed}
-      onChange={(id: string, value: any) => handleOnChange(id, value)} // Change any to Interface Bar?
-      onClick={() => props.handleIntervalClick(props.id)}
+      onChange={handleOnChange}
+      onClick={handleBarClick}
       selected={props.selected}
       showLabel={withLabel}
     />
@@ -200,4 +213,4 @@ const Interval = (props: {
   );
 };
 
-export default Interval;
+export default memo(Interval);

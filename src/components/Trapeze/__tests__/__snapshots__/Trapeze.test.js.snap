@@ -10,7 +10,6 @@ exports[`Trapeze renders correctly 1`] = `
 >
   <div
     className="trapeze"
-    onClick={[Function]}
   >
     <div
       className="trapeze-component"

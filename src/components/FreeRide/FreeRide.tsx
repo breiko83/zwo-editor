@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, memo } from "react";
 import "./FreeRide.css";
 import { Resizable } from "re-resizable";
 import "moment-duration-format";
@@ -140,4 +140,4 @@ const FreeRide = (props: {
   );
 };
 
-export default FreeRide;
+export default memo(FreeRide);

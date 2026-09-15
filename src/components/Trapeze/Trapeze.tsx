@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, memo } from "react";
 import { flushSync } from "react-dom";
 import "./Trapeze.css";
 import { Colors, Zones, ZonesArray } from "../Constants";
@@ -297,7 +297,7 @@ const Trapeze = (props: {
           paceUnitType={props.paceUnitType}
           />
       )}
-      <div className="trapeze" onClick={() => props.onClick(props.id)}>
+      <div className="trapeze">
         <Resizable
           className="trapeze-component"
           size={{
@@ -447,4 +447,4 @@ const Trapeze = (props: {
   );
 };
 
-export default Trapeze;
+export default memo(Trapeze);

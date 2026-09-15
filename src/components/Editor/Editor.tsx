@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import "./Editor.css";
 import { Zones } from "../Constants";
 import Bar from "../Bar/Bar";
@@ -92,22 +92,18 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
     setTags([]);
   }
 
-  function handleOnChange(id: string, values: BarType) {
-    const index = bars.findIndex((bar) => bar.id === id);
+  const handleOnChange = useCallback((id: string, values: BarType) => {
+    setBars((bars) => {
+      const index = bars.findIndex((bar) => bar.id === id);
+      const updatedArray = [...bars];
+      updatedArray[index] = values;
+      return updatedArray;
+    });
+  }, [setBars]);
 
-    const updatedArray = [...bars];
-    updatedArray[index] = values;
-
-    setBars(updatedArray);
-  }
-
-  function handleOnClick(id: string) {
-    if (id === actionId) {
-      setActionId(undefined);
-    } else {
-      setActionId(id);
-    }
-  }
+  const handleOnClick = useCallback((id: string) => {
+    setActionId((actionId) => (id === actionId ? undefined : id));
+  }, [setActionId]);
 
   // Keyboard shortcuts hook
   useKeyboardShortcuts({
@@ -462,8 +458,8 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
       paceUnitType={paceUnitType}
       pace={bar.pace || 0}
       speed={calculateSpeed(bar.pace || 0)}
-      onChange={(id: string, value: BarType) => handleOnChange(id, value)}
-      onClick={(id: string) => handleOnClick(id)}
+      onChange={handleOnChange}
+      onClick={handleOnClick}
       selected={bar.id === actionId}
       showLabel={true}
       incline={bar.incline}
@@ -484,8 +480,8 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
       paceUnitType={paceUnitType}
       pace={bar.pace || 0}
       speed={calculateSpeed(bar.pace || 0)}
-      onChange={(id: string, value: BarType) => handleOnChange(id, value)}
-      onClick={(id: string) => handleOnClick(id)}
+      onChange={handleOnChange}
+      onClick={handleOnClick}
       selected={bar.id === actionId}
     />
   );
@@ -499,8 +495,8 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
       incline={bar.incline || 0}
       durationType={durationType}
       sportType={sportType}
-      onChange={(id: string, value: BarType) => handleOnChange(id, value)}
-      onClick={(id: string) => handleOnClick(id)}
+      onChange={handleOnChange}
+      onClick={handleOnClick}
       selected={bar.id === actionId}
     />
   );
@@ -524,10 +520,8 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
       paceUnitType={paceUnitType}
       pace={bar.pace || 0}
       speed={calculateSpeed(bar.pace || 0)}
-      handleIntervalChange={(id: string, value: BarType) =>
-        handleOnChange(id, value)
-      }
-      handleIntervalClick={(id: string) => handleOnClick(id)}
+      handleIntervalChange={handleOnChange}
+      handleIntervalClick={handleOnClick}
       selected={bar.id === actionId}
     />
   );
