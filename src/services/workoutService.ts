@@ -34,7 +34,7 @@ export const workoutService = {
       time:
         durationType === 'time'
           ? duration
-          : helpers.round(helpers.calculateTime(length, resolvedSpeed), 1),
+          : helpers.round(helpers.calculateTime(length, resolvedSpeed) / (zone || 1), 1),
       length:
         durationType === 'time'
           ? helpers.round(helpers.calculateDistance(duration, resolvedSpeed), 1)
@@ -63,12 +63,13 @@ export const workoutService = {
     speed?: number
   ): BarType {
     const resolvedSpeed = speed !== undefined ? speed : this.calculateSpeed(pace);
+    const avgZone = Math.abs((zone1 + zone2) / 2) || 1;
 
     return {
       time:
         durationType === 'time'
           ? duration
-          : helpers.round(helpers.calculateTime(length, resolvedSpeed), 1),
+          : helpers.round(helpers.calculateTime(length, resolvedSpeed) / avgZone, 1),
       length:
         durationType === 'time'
           ? helpers.round(helpers.calculateDistance(duration, resolvedSpeed), 1)
