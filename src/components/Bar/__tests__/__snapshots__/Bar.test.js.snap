@@ -28,7 +28,7 @@ exports[`Bar renders correctly 1`] = `
   >
     <div>
       <div
-        className="resize-handle"
+        className="resize-handle resize-handle-top"
         onMouseDown={[Function]}
         onTouchStart={[Function]}
         style={

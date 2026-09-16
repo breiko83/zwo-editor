@@ -31,7 +31,7 @@ exports[`Trapeze renders correctly 1`] = `
     >
       <div>
         <div
-          className="resize-handle"
+          className="resize-handle resize-handle-top"
           onMouseDown={[Function]}
           onTouchStart={[Function]}
           style={
@@ -67,7 +67,7 @@ exports[`Trapeze renders correctly 1`] = `
     >
       <div>
         <div
-          className="resize-handle"
+          className="resize-handle resize-handle-top"
           onMouseDown={[Function]}
           onTouchStart={[Function]}
           style={
@@ -141,7 +141,7 @@ exports[`Trapeze renders correctly 1`] = `
       </div>
       <div>
         <div
-          className="resize-handle"
+          className="resize-handle resize-handle-top"
           onMouseDown={[Function]}
           onTouchStart={[Function]}
           style={
