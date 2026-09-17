@@ -14,7 +14,7 @@ import ReactTooltip from 'react-tooltip';
 import {
   DndContext,
   DragEndEvent,
-  PointerSensor,
+  MouseSensor,
   closestCenter,
   useSensor,
   useSensors,
@@ -99,8 +99,11 @@ const WorkoutCanvas: React.FC<WorkoutCanvasProps> = ({
   renderComment,
   toolbar,
 }) => {
+  // Mouse-only: on touch devices, drag-to-reorder competed with dragging a resize
+  // handle to resize a segment, since fingers are far less precise than a pointer.
+  // Reordering on mobile still works via the move left/right actions.
   const sensors = useSensors(
-    useSensor(PointerSensor, { activationConstraint: { distance: 8 } })
+    useSensor(MouseSensor, { activationConstraint: { distance: 8 } })
   );
 
   function handleDragEnd(event: DragEndEvent) {

@@ -39,3 +39,12 @@
   min-width: 1px;
   flex: 1;
 }
+
+.power-range-row {
+  align-items: center;
+  gap: 4px;
+}
+
+.power-range-row > span {
+  white-space: nowrap;
+}

@@ -36,6 +36,8 @@
   overflow-x: hidden;
   width: 100%;
   max-width: 1280px;
+  min-height: 480px;
+  box-sizing: border-box;
   border: 1px solid var(--ed-border);
   border-radius: var(--ed-radius);
 }
@@ -55,7 +57,8 @@ a {
   max-width: 1320px;
   height: 100%;
   overflow-y: hidden;
-  overflow-x: visible;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
 
   bottom: 10px;
 }
@@ -240,7 +243,26 @@ label {
 .sortable-segment {
   display: inline-block;
   cursor: grab;
+  /* Drag-to-reorder only activates for mice (see MouseSensor in WorkoutCanvas), so
+     touch input here is left free to pan the horizontally-scrollable canvas instead
+     of being captured for reordering. Resize handles opt back into touch-action: none
+     so dragging one doesn't scroll the canvas out from under a resize gesture. */
+  touch-action: pan-x;
+}
+
+.resize-handle {
   touch-action: none;
+}
+
+/* Enlarge the top (power) resize handle on touchscreens, where the default 10px hit
+   area is too small to grab reliably. The right (duration) handle is left alone:
+   segments are packed edge-to-edge and are often narrower than a touch target, so
+   widening it would swallow taps meant to select the segment or its neighbor. */
+@media (pointer: coarse) {
+  .resize-handle-top {
+    height: 24px !important;
+    top: -12px !important;
+  }
 }
 
 .sortable-segment:active {
@@ -461,4 +483,41 @@ label {
   -moz-box-shadow: 0px 0px 27px -9px rgba(0, 0, 0, 0.35);
   box-shadow: 0px 0px 27px -9px rgba(0, 0, 0, 0.35);
   border-radius: 5px;
+}
+
+@media (max-width: 640px) {
+  .editor {
+    padding: 0 16px 0 34px;
+    margin: 10px 8px;
+  }
+
+  .cta,
+  .info,
+  .run-workout {
+    margin: 10px 8px;
+  }
+
+  .actions {
+    width: auto;
+    left: 8px;
+    right: 8px;
+  }
+
+  .actions > button {
+    padding: 12px;
+  }
+
+  .text-editor {
+    flex-direction: column;
+    height: auto;
+    margin: 10px 8px;
+    width: auto;
+  }
+
+  .text-editor-instructions,
+  .text-editor-textarea {
+    width: 100%;
+    box-sizing: border-box;
+    margin: 0;
+  }
 }

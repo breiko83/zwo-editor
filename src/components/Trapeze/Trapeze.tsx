@@ -51,6 +51,46 @@ const Trapeze = (props: {
     });
   };
 
+  const handleStartPowerChange = (powerWatts: number) => {
+    if (!powerWatts || !props.ftp) return;
+
+    const newStartPower = powerWatts / props.ftp;
+    const newHeight1 = newStartPower * multiplier;
+    setHeight1(newHeight1);
+    setHeight2((height3 + newHeight1) / 2);
+
+    props.onChange(props.id, {
+      time: props.time,
+      length: props.length,
+      startPower: newStartPower,
+      endPower: props.endPower,
+      cadence: props.cadence,
+      type: "trapeze",
+      pace: props.pace,
+      id: props.id,
+    });
+  };
+
+  const handleEndPowerChange = (powerWatts: number) => {
+    if (!powerWatts || !props.ftp) return;
+
+    const newEndPower = powerWatts / props.ftp;
+    const newHeight3 = newEndPower * multiplier;
+    setHeight3(newHeight3);
+    setHeight2((height1 + newHeight3) / 2);
+
+    props.onChange(props.id, {
+      time: props.time,
+      length: props.length,
+      startPower: props.startPower,
+      endPower: newEndPower,
+      cadence: props.cadence,
+      type: "trapeze",
+      pace: props.pace,
+      id: props.id,
+    });
+  };
+
   // RUN WORKOUTS ON DISTANCE - BIKE WORKOUTS ON TIME
   const [width, setWidth] = useState(
     props.durationType === "time"
@@ -292,6 +332,16 @@ const Trapeze = (props: {
           distance={props.length}
           cadence={props.cadence}
           setCadence={(cadence: number) => handleCadenceChange(cadence)}
+          setPowerStart={
+            props.sportType === "bike"
+              ? (power: number) => handleStartPowerChange(power)
+              : undefined
+          }
+          setPowerEnd={
+            props.sportType === "bike"
+              ? (power: number) => handleEndPowerChange(power)
+              : undefined
+          }
           speedStart={speedStart}
           speedEnd={speedEnd}
           paceUnitType={props.paceUnitType}
@@ -308,7 +358,7 @@ const Trapeze = (props: {
           minHeight={multiplier * Zones.Z1.min}
           maxHeight={multiplier * Zones.Z6.max}
           enable={{ top: true }}
-          handleClasses={{ top: "resize-handle" }}
+          handleClasses={{ top: "resize-handle resize-handle-top" }}
           grid={[1, 1]}
           onResizeStart={captureDragStart}
           onResize={(e, direction, ref, d) => handleResize1(d.height)}
@@ -324,7 +374,7 @@ const Trapeze = (props: {
           minHeight={multiplier * Zones.Z1.min}
           maxHeight={multiplier * Zones.Z6.max}
           enable={{ top: true }}
-          handleClasses={{ top: "resize-handle" }}
+          handleClasses={{ top: "resize-handle resize-handle-top" }}
           grid={[1, 1]}
           onResizeStart={captureDragStart}
           onResize={(e, direction, ref, d) => handleResize2(d.height)}
@@ -340,7 +390,7 @@ const Trapeze = (props: {
           minHeight={multiplier * Zones.Z1.min}
           maxHeight={multiplier * Zones.Z6.max}
           enable={{ top: true }}
-          handleClasses={{ top: "resize-handle" }}
+          handleClasses={{ top: "resize-handle resize-handle-top" }}
           grid={[1, 1]}
           onResizeStart={captureDragStart}
           onResize={(e, direction, ref, d) => handleResize3(d.height)}

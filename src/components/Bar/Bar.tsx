@@ -77,6 +77,21 @@ const Bar = (props: {
     });
   };
 
+  const handlePowerChange = (powerWatts: number) => {
+    if (!powerWatts || !props.ftp) return;
+
+    props.onChange(props.id, {
+      time: props.time,
+      length: props.length,
+      power: powerWatts / props.ftp,
+      cadence: props.cadence,
+      type: "bar",
+      pace: props.pace,
+      id: props.id,
+      incline: props.incline,
+    });
+  };
+
   const handleInclineChange = (incline: number) => {
     props.onChange(props.id, {
       time: props.time,
@@ -199,6 +214,11 @@ const Bar = (props: {
           distance={distance}
           cadence={props.cadence}
           setCadence={(cadence: number) => handleCadenceChange(cadence)}
+          setPower={
+            props.sportType === "bike"
+              ? (power: number) => handlePowerChange(power)
+              : undefined
+          }
           speed={speed}
           incline={props.incline}
           setIncline={(incline: number) => handleInclineChange(incline)}
@@ -217,7 +237,10 @@ const Bar = (props: {
         minHeight={multiplier * Zones.Z1.min}
         maxHeight={multiplier * Zones.Z6.max}
         enable={{ top: true, right: true }}
-        handleClasses={{ top: "resize-handle", right: "resize-handle" }}
+        handleClasses={{
+          top: "resize-handle resize-handle-top",
+          right: "resize-handle",
+        }}
         grid={[1, 1]}
         onResizeStop={(e, direction, ref, d) =>
           handleResizeStop(d.width, d.height)

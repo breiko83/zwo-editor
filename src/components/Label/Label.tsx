@@ -17,6 +17,9 @@ const Label = (props: {
   pace?: number;
   cadence?: number;
   setCadence?: Function;
+  setPower?: Function;
+  setPowerStart?: Function;
+  setPowerEnd?: Function;
   speed?: number;
   speedStart?: number;
   speedEnd?: number;
@@ -34,15 +37,74 @@ const Label = (props: {
         </div>
       )}
       {props.power && props.sportType === "bike" && (
-        <div>
-          <FontAwesomeIcon icon={faBolt} fixedWidth /> {props.power}W
-        </div>
+        props.setPower ? (
+          <div className="cadence-row">
+            <label className="cadenceLabel">
+              <FontAwesomeIcon icon={faBolt} fixedWidth /> Power
+            </label>
+            <input
+              type="number"
+              min="0"
+              step="1"
+              name="power"
+              value={props.power}
+              onChange={(e) => {
+                if (props.setPower) props.setPower(parseInt(e.target.value));
+              }}
+              onClick={(e) => {
+                e.stopPropagation();
+              }}
+              className="textField cadence"
+            />
+            <span>W</span>
+          </div>
+        ) : (
+          <div>
+            <FontAwesomeIcon icon={faBolt} fixedWidth /> {props.power}W
+          </div>
+        )
       )}
       {props.powerStart && props.powerEnd && props.sportType === "bike" && (
-        <div>
-          <FontAwesomeIcon icon={faBolt} fixedWidth /> {props.powerStart}W -{" "}
-          {props.powerEnd}W
-        </div>
+        props.setPowerStart && props.setPowerEnd ? (
+          <div className="cadence-row power-range-row">
+            <FontAwesomeIcon icon={faBolt} fixedWidth />
+            <input
+              type="number"
+              min="0"
+              step="1"
+              name="powerStart"
+              value={props.powerStart}
+              onChange={(e) => {
+                if (props.setPowerStart) props.setPowerStart(parseInt(e.target.value));
+              }}
+              onClick={(e) => {
+                e.stopPropagation();
+              }}
+              className="textField cadence"
+            />
+            <span>W -</span>
+            <input
+              type="number"
+              min="0"
+              step="1"
+              name="powerEnd"
+              value={props.powerEnd}
+              onChange={(e) => {
+                if (props.setPowerEnd) props.setPowerEnd(parseInt(e.target.value));
+              }}
+              onClick={(e) => {
+                e.stopPropagation();
+              }}
+              className="textField cadence"
+            />
+            <span>W</span>
+          </div>
+        ) : (
+          <div>
+            <FontAwesomeIcon icon={faBolt} fixedWidth /> {props.powerStart}W -{" "}
+            {props.powerEnd}W
+          </div>
+        )
       )}
       {props.weight && props.power && props.ftp && props.sportType === "bike" && (
         <div>

@@ -30,9 +30,9 @@ const SortableSegment: React.FC<SortableSegmentProps> = ({ id, children }) => {
       className="sortable-segment"
       {...attributes}
       {...listeners}
-      onPointerDown={(event) => {
+      onMouseDown={(event) => {
         if (isNonDraggableTarget(event.target)) return;
-        listeners?.onPointerDown?.(event);
+        listeners?.onMouseDown?.(event);
       }}
     >
       {children}
