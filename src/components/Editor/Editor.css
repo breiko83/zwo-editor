@@ -243,7 +243,11 @@ label {
 .sortable-segment {
   display: inline-block;
   cursor: grab;
-  touch-action: none;
+  /* Drag-to-reorder only activates for mice (see MouseSensor in WorkoutCanvas), so
+     touch input here is left free to pan the horizontally-scrollable canvas instead
+     of being captured for reordering. Resize handles opt back into touch-action: none
+     so dragging one doesn't scroll the canvas out from under a resize gesture. */
+  touch-action: pan-x;
 }
 
 .resize-handle {
