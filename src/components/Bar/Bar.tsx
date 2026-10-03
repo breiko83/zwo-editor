@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import "./Bar.css";
 import { Colors, Zones } from "../Constants";
 import { Resizable } from "re-resizable";
@@ -43,13 +43,18 @@ const Bar = (props: {
   const style = zwiftStyle(props.power);
 
   // RUN WORKOUTS ON DISTANCE - BIKE WORKOUTS ON TIME
-  const [width, setWidth] = useState(
+  const width =
     props.durationType === "time"
       ? (props.time || 0) / timeMultiplier
-      : (props.length || 0) / lengthMultiplier
-  );
+      : (props.length || 0) / lengthMultiplier;
 
-  const [height, setHeight] = useState(props.power * multiplier);
+  const height = props.power * multiplier;
+
+  const dragStartRef = useRef({ width, height });
+
+  const captureDragStart = () => {
+    dragStartRef.current = { width, height };
+  };
 
   const [showLabel, setShowLabel] = useState(false);
 
@@ -105,55 +110,23 @@ const Bar = (props: {
     });
   };
 
-  const handleResizeStop = (dWidth: number, dHeight: number) => {
-    setWidth(width + dWidth);
-    setHeight(height + dHeight);
-
-    const length =
-      props.durationType === "time"
-        ? helpers.round(
-            helpers.calculateDistance(
-              (width + dWidth) * timeMultiplier * props.power,
-              props.speed || 0
-            ),
-            1
-          )
-        : helpers.round((width + dWidth) * lengthMultiplier, minDistance);
-    const time =
-      props.durationType === "time"
-        ? helpers.round((width + dWidth) * timeMultiplier, minTime)
-        : helpers.round(
-            (helpers.calculateTime(props.length || 0, props.speed || 0) * 1) /
-              props.power,
-            1
-          );
-
-    props.onChange(props.id, {
-      time: time,
-      length: length,
-      power: (height + dHeight) / multiplier,
-      cadence: props.cadence,
-      type: "bar",
-      pace: props.pace,
-      id: props.id,
-      incline: props.incline,
-    });
-  };
-
   const handleResize = (dWidth: number, dHeight: number) => {
+    const newWidth = dragStartRef.current.width + dWidth;
+    const newHeight = dragStartRef.current.height + dHeight;
+
     const length =
       props.durationType === "time"
         ? helpers.round(
             helpers.calculateDistance(
-              (width + dWidth) * timeMultiplier * props.power,
+              newWidth * timeMultiplier * props.power,
               props.speed || 0
             ),
             1
           )
-        : helpers.round((width + dWidth) * lengthMultiplier, minDistance);
+        : helpers.round(newWidth * lengthMultiplier, minDistance);
     const time =
       props.durationType === "time"
-        ? helpers.round((width + dWidth) * timeMultiplier, minTime)
+        ? helpers.round(newWidth * timeMultiplier, minTime)
         : helpers.round(
             (helpers.calculateTime(props.length || 0, props.speed || 0) * 1) /
               props.power,
@@ -163,7 +136,7 @@ const Bar = (props: {
     props.onChange(props.id, {
       time: time,
       length: length,
-      power: (height + dHeight) / multiplier,
+      power: newHeight / multiplier,
       cadence: props.cadence,
       type: "bar",
       pace: props.pace,
@@ -226,13 +199,7 @@ const Bar = (props: {
       )}
       <Resizable
         className="bar"
-        size={{
-          width:
-            props.durationType === "time"
-              ? (props.time || 0) / timeMultiplier
-              : (props.length || 0) / lengthMultiplier,
-          height: props.power * multiplier,
-        }}
+        size={{ width, height }}
         minWidth={3}
         minHeight={multiplier * Zones.Z1.min}
         maxHeight={multiplier * Zones.Z6.max}
@@ -242,10 +209,9 @@ const Bar = (props: {
           right: "resize-handle",
         }}
         grid={[1, 1]}
-        onResizeStop={(e, direction, ref, d) =>
-          handleResizeStop(d.width, d.height)
-        }
+        onResizeStart={captureDragStart}
         onResize={(e, direction, ref, d) => handleResize(d.width, d.height)}
+        onResizeStop={(e, direction, ref, d) => handleResize(d.width, d.height)}
         style={style}
       ></Resizable>
     </div>
