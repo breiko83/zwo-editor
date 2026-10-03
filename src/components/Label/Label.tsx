@@ -5,6 +5,37 @@ import "./Label.css";
 import helpers from "../helpers";
 import { PaceUnitType } from "../../types/workout";
 
+const PowerInput = (props: { name: string; value: number; onCommit: Function }) => {
+  const [draft, setDraft] = useState<string | null>(null);
+
+  const commit = () => {
+    if (draft === null) return;
+    const watts = parseInt(draft);
+    if (watts > 0) props.onCommit(watts);
+    setDraft(null);
+  };
+
+  return (
+    <input
+      type="number"
+      min="0"
+      step="1"
+      name={props.name}
+      value={draft !== null ? draft : props.value}
+      onChange={(e) => setDraft(e.target.value)}
+      onBlur={commit}
+      onKeyDown={(e) => {
+        if (e.key === "Enter") commit();
+        if (e.key === "Escape") setDraft(null);
+      }}
+      onClick={(e) => {
+        e.stopPropagation();
+      }}
+      className="textField cadence"
+    />
+  );
+};
+
 const Label = (props: {
   sportType: string;
   duration: string;
@@ -64,20 +95,7 @@ const Label = (props: {
             <label className="cadenceLabel">
               <FontAwesomeIcon icon={faBolt} fixedWidth /> Power
             </label>
-            <input
-              type="number"
-              min="0"
-              step="1"
-              name="power"
-              value={props.power}
-              onChange={(e) => {
-                if (props.setPower) props.setPower(parseInt(e.target.value));
-              }}
-              onClick={(e) => {
-                e.stopPropagation();
-              }}
-              className="textField cadence"
-            />
+            <PowerInput name="power" value={props.power} onCommit={props.setPower} />
             <span>W</span>
           </div>
         ) : (
@@ -90,35 +108,9 @@ const Label = (props: {
         props.setPowerStart && props.setPowerEnd ? (
           <div className="cadence-row power-range-row">
             <FontAwesomeIcon icon={faBolt} fixedWidth />
-            <input
-              type="number"
-              min="0"
-              step="1"
-              name="powerStart"
-              value={props.powerStart}
-              onChange={(e) => {
-                if (props.setPowerStart) props.setPowerStart(parseInt(e.target.value));
-              }}
-              onClick={(e) => {
-                e.stopPropagation();
-              }}
-              className="textField cadence"
-            />
+            <PowerInput name="powerStart" value={props.powerStart} onCommit={props.setPowerStart} />
             <span>W -</span>
-            <input
-              type="number"
-              min="0"
-              step="1"
-              name="powerEnd"
-              value={props.powerEnd}
-              onChange={(e) => {
-                if (props.setPowerEnd) props.setPowerEnd(parseInt(e.target.value));
-              }}
-              onClick={(e) => {
-                e.stopPropagation();
-              }}
-              className="textField cadence"
-            />
+            <PowerInput name="powerEnd" value={props.powerEnd} onCommit={props.setPowerEnd} />
             <span>W</span>
           </div>
         ) : (

@@ -57,6 +57,7 @@ const Bar = (props: {
   };
 
   const [showLabel, setShowLabel] = useState(false);
+  const [editing, setEditing] = useState(false);
 
   const [selected, setSelected] = useState(props.selected);
 
@@ -172,10 +173,14 @@ const Bar = (props: {
       className="segment"
       onMouseEnter={() => setShowLabel(true)}
       onMouseLeave={() => setShowLabel(false)}
+      onFocus={() => setEditing(true)}
+      onBlur={(e) => {
+        if (!e.currentTarget.contains(e.relatedTarget as Node)) setEditing(false);
+      }}
       onClick={() => props.onClick(props.id)}
       style={props.selected ? { zIndex: 10 } : {}}
     >
-      {(selected || showLabel) && props.showLabel && (
+      {(selected || showLabel || editing) && props.showLabel && (
         <Label
           sportType={props.sportType}
           duration={duration}
