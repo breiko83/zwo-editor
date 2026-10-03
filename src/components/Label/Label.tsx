@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useLayoutEffect, useRef, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBolt, faClock, faRuler } from "@fortawesome/free-solid-svg-icons";
 import "./Label.css";
@@ -29,8 +29,25 @@ const Label = (props: {
 }) => {
   const paces = ["1M", "5K", "10K", "HM", "M"];
 
+  // Labels sit above their segment, so on tall segments they get clipped by the
+  // canvas (overflow hidden). In that case, drop the label inside the segment.
+  const ref = useRef<HTMLDivElement>(null);
+  const [inside, setInside] = useState(false);
+
+  useLayoutEffect(() => {
+    const label = ref.current;
+    const canvas = label?.closest(".canvas");
+    if (!label || !canvas || inside) return;
+    if (label.getBoundingClientRect().top < canvas.getBoundingClientRect().top) {
+      setInside(true);
+    }
+  }, [inside, props.power, props.powerStart, props.powerEnd]);
+
   return (
-    <div className={`label ${props.sportType === "bike" ? "label-bike" : "label-run"}`}>
+    <div
+      ref={ref}
+      className={`label ${props.sportType === "bike" ? "label-bike" : "label-run"}${inside ? " label-inside" : ""}`}
+    >
       {props.duration && props.duration !== "00:00" && (
         <div>
           <FontAwesomeIcon icon={faClock} fixedWidth /> {props.duration}

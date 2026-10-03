@@ -20,6 +20,11 @@
   top: -140px;
 }
 
+/* Clear of the top resize handle so power can still be dragged */
+.label-inside {
+  top: 12px;
+}
+
 .textField {
   background-color: rgba(255, 255, 255, 0.1);
   color: white;
