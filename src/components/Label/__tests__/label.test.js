@@ -29,7 +29,9 @@ describe('Label placement', () => {
     });
     const { container } = render(
       <div className="canvas">
-        <Label sportType="bike" duration="05:00" power={250} />
+        <div className="segment">
+          <Label sportType="bike" duration="05:00" power={250} />
+        </div>
       </div>
     );
     spy.mockRestore();

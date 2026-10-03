@@ -30,14 +30,20 @@ const Label = (props: {
   const paces = ["1M", "5K", "10K", "HM", "M"];
 
   const ref = useRef<HTMLDivElement>(null);
-  const [inside, setInside] = useState(false);
+  const [insideTop, setInsideTop] = useState<number | null>(null);
+  const inside = insideTop !== null;
 
   useLayoutEffect(() => {
     const label = ref.current;
     const canvas = label?.closest(".canvas");
-    if (!label || !canvas || inside) return;
+    const segment = label?.closest(".segment");
+    if (!label || !canvas || !segment || inside) return;
     if (label.getBoundingClientRect().top < canvas.getBoundingClientRect().top) {
-      setInside(true);
+      const segmentTop = segment.getBoundingClientRect().top;
+      const handleBottoms = Array.from(segment.querySelectorAll(".resize-handle-top")).map(
+        (handle) => handle.getBoundingClientRect().bottom - segmentTop
+      );
+      setInsideTop(Math.max(7, ...handleBottoms) + 2);
     }
   }, [inside, props.power, props.powerStart, props.powerEnd]);
 
@@ -45,6 +51,7 @@ const Label = (props: {
     <div
       ref={ref}
       className={`label ${props.sportType === "bike" ? "label-bike" : "label-run"}${inside ? " label-inside" : ""}`}
+      style={inside ? { top: insideTop as number } : undefined}
     >
       {props.duration && props.duration !== "00:00" && (
         <div>
