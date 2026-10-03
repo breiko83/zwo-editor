@@ -26,46 +26,30 @@ export const textParserService = {
     weight: number
   ): ParsedBlock[] {
     const workoutBlocks = text
-      .toLowerCase()
       .split('\n')
       .filter((line) => line.trim() !== '');
 
     const parsedBlocks: ParsedBlock[] = [];
+    let blockStart = 0;
+    let blockEnd = 0;
 
-    workoutBlocks.forEach((workoutBlock) => {
+    workoutBlocks.forEach((line) => {
+      const workoutBlock = line.toLowerCase();
+
       // Handle messages first to avoid false positives with keywords
       if (workoutBlock.includes('message')) {
-        const parsed = this.parseMessage(workoutBlock);
+        const parsed = this.parseMessage(line, blockStart, blockEnd);
         if (parsed) parsedBlocks.push(parsed);
         return;
       }
 
-      if (workoutBlock.includes('steady')) {
-        const parsed = this.parseSteady(workoutBlock, ftp, weight);
-        if (parsed) parsedBlocks.push(parsed);
-        return;
-      }
-
-      if (
-        workoutBlock.includes('ramp') ||
-        workoutBlock.includes('warmup') ||
-        workoutBlock.includes('cooldown')
-      ) {
-        const parsed = this.parseRamp(workoutBlock, ftp, weight);
-        if (parsed) parsedBlocks.push(parsed);
-        return;
-      }
-
-      if (workoutBlock.includes('freeride')) {
-        const parsed = this.parseFreeRide(workoutBlock);
-        if (parsed) parsedBlocks.push(parsed);
-        return;
-      }
-
-      if (workoutBlock.includes('interval')) {
-        const parsed = this.parseInterval(workoutBlock, ftp, weight);
-        if (parsed) parsedBlocks.push(parsed);
-        return;
+      const parsed = this.parseSegment(workoutBlock, ftp, weight);
+      if (parsed) {
+        parsedBlocks.push(parsed);
+        blockStart = blockEnd;
+        blockEnd += parsed.repeat
+          ? parsed.repeat * ((parsed.duration || 0) + (parsed.offDuration || 0))
+          : parsed.duration || 0;
       }
     });
 
@@ -73,21 +57,56 @@ export const textParserService = {
   },
 
   /**
+   * Parse a single non-message workout block
+   */
+  parseSegment(workoutBlock: string, ftp: number, weight: number): ParsedBlock | null {
+
+    if (workoutBlock.includes('steady')) {
+      return this.parseSteady(workoutBlock, ftp, weight);
+    }
+
+    if (
+      workoutBlock.includes('ramp') ||
+      workoutBlock.includes('warmup') ||
+      workoutBlock.includes('cooldown')
+    ) {
+      return this.parseRamp(workoutBlock, ftp, weight);
+    }
+
+    if (workoutBlock.includes('freeride')) {
+      return this.parseFreeRide(workoutBlock);
+    }
+
+    if (workoutBlock.includes('interval')) {
+      return this.parseInterval(workoutBlock, ftp, weight);
+    }
+
+    return null;
+  },
+
+  /**
    * Parse message block
    * Format: message "text" 30s or message 'text' 5m
+   * A leading + or - makes the time relative to the block above:
+   * message "text" +30s (from its start), message "text" -10s (from its end)
    */
-  parseMessage(block: string): ParsedBlock | null {
+  parseMessage(block: string, blockStart = 0, blockEnd = 0): ParsedBlock | null {
     const doubleQuoteMatch = block.match(/"([^"]*)"/);
     const singleQuoteMatch = block.match(/'([^']*)'/);
     const message = doubleQuoteMatch || singleQuoteMatch;
     const text = message ? message[1] : '';
 
-    const duration = this.parseDuration(block);
+    const rest = (message ? block.replace(message[0], ' ') : block).toLowerCase();
+    const offset = this.parseDuration(rest) || 0;
+    const sign = rest.match(/(?:^|\s)([+-])\s*\d/);
+
+    let duration = offset;
+    if (sign) duration = sign[1] === '+' ? blockStart + offset : blockEnd - offset;
 
     return {
       type: 'message',
       text,
-      duration: duration || 0,
+      duration: Math.max(0, duration),
     };
   },
 

@@ -212,6 +212,18 @@ warmup 60%-100%HM 10m`;
         expect(result).toHaveLength(2);
       });
 
+      it('should place relative messages within the block above', () => {
+        const text = `steady 100%HM 5m
+interval 2x 1m-1m 120%-80%5K
+message "Go!" +10s
+message "Last rep" -1:00m`;
+        const messages = runningTextParserService
+          .parseWorkoutText(text, durationType)
+          .filter((b) => b.type === 'message');
+
+        expect(messages.map((m) => m.duration)).toEqual([310, 480]);
+      });
+
       it('should handle time format hh:mm', () => {
         const text = 'steady 100%HM 1:30m';
         const result = runningTextParserService.parseWorkoutText(text, durationType);
@@ -379,6 +391,18 @@ cooldown 100%-70%HM 1km`;
         expect(result[1].type).toBe('steady');
         expect(result[2].type).toBe('interval');
         expect(result[3].type).toBe('cooldown');
+      });
+
+      it('should place relative messages within the block above', () => {
+        const text = `steady 100%HM 2km
+steady 120%5K 1km
+message "Halfway" +500m
+message "Push!" -0.2km`;
+        const messages = runningTextParserService
+          .parseWorkoutText(text, durationType)
+          .filter((b) => b.type === 'message');
+
+        expect(messages.map((m) => m.length)).toEqual([2500, 2800]);
       });
 
       it('should handle decimal distances', () => {

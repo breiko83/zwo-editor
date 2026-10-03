@@ -152,7 +152,7 @@ describe('textParserService', () => {
 
       expect(result).toHaveLength(1);
       expect(result[0].type).toBe('message');
-      expect(result[0].text).toBe('get ready!'); // Text is lowercased
+      expect(result[0].text).toBe('Get ready!');
       expect(result[0].duration).toBe(30);
     });
 
@@ -162,8 +162,54 @@ describe('textParserService', () => {
 
       expect(result).toHaveLength(1);
       expect(result[0].type).toBe('message');
-      expect(result[0].text).toBe('last one!'); // Text is lowercased
+      expect(result[0].text).toBe('Last one!');
       expect(result[0].duration).toBe(1200);
+    });
+
+    it('should place a +offset message relative to the start of the block above', () => {
+      const text = `warmup 100w-200w 10m
+steady 200w 5m
+message "Spin up!" +30s
+message "Settle in" +1:30m`;
+      const messages = textParserService
+        .parseWorkoutText(text, ftp, weight)
+        .filter((b) => b.type === 'message');
+
+      expect(messages.map((m) => m.duration)).toEqual([630, 690]);
+    });
+
+    it('should place a -offset message relative to the end of the block above', () => {
+      const text = `steady 200w 5m
+interval 3x 1m-2m 300w-150w
+message "Last one!" -3m`;
+      const messages = textParserService
+        .parseWorkoutText(text, ftp, weight)
+        .filter((b) => b.type === 'message');
+
+      expect(messages[0].duration).toBe(300 + 3 * 180 - 180);
+    });
+
+    it('should keep unsigned message offsets absolute', () => {
+      const text = `steady 200w 5m
+message "Absolute" 30s`;
+      const result = textParserService.parseWorkoutText(text, ftp, weight);
+
+      expect(result[1].duration).toBe(30);
+    });
+
+    it('should not go below zero for relative messages before any block', () => {
+      const result = textParserService.parseWorkoutText('message "Early" -30s', ftp, weight);
+
+      expect(result[0].duration).toBe(0);
+    });
+
+    it('should ignore times and signs inside the message text', () => {
+      const text = `steady 200w 10m
+message "Hold +5m effort" -30s`;
+      const result = textParserService.parseWorkoutText(text, ftp, weight);
+
+      expect(result[1].text).toBe('Hold +5m effort');
+      expect(result[1].duration).toBe(570);
     });
 
     it('should parse multiple blocks', () => {

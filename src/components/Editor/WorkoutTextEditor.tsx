@@ -77,6 +77,12 @@ const WorkoutTextEditor: React.FC<WorkoutTextEditorProps> = ({ onChange, sportTy
             <p>
               <code>message "Get ready to your first set!" 30s</code>
               <code>message "Last one!" 20:00m</code>
+              <code>message "Spin up!" +30s</code>
+              <code>message "Hold on!" -10s</code>
+            </p>
+            <p>
+              Use <span>+</span> to count from the start of the block above, or{" "}
+              <span>-</span> to count back from its end.
             </p>
           </>
         ) : isTime ? (
@@ -117,6 +123,12 @@ const WorkoutTextEditor: React.FC<WorkoutTextEditorProps> = ({ onChange, sportTy
             <p>
               <code>message "Get ready to your first set!" 30s</code>
               <code>message "Last one!" 20:00m</code>
+              <code>message "Spin up!" +30s</code>
+              <code>message "Hold on!" -10s</code>
+            </p>
+            <p>
+              Use <span>+</span> to count from the start of the block above, or{" "}
+              <span>-</span> to count back from its end.
             </p>
           </>
         ) : (
@@ -157,6 +169,12 @@ const WorkoutTextEditor: React.FC<WorkoutTextEditorProps> = ({ onChange, sportTy
             <p>
               <code>message "Get ready to your first set!" 1km</code>
               <code>message "Last one!" 10km</code>
+              <code>message "Halfway!" +500m</code>
+              <code>message "Push!" -200m</code>
+            </p>
+            <p>
+              Use <span>+</span> to count from the start of the block above, or{" "}
+              <span>-</span> to count back from its end.
             </p>
           </>
         )}
