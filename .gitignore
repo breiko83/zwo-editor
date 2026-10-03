@@ -29,5 +29,5 @@ yarn-error.log*
 graphics
 
 .env
-
+.playwright-mcp/
 CLAUDE.md
