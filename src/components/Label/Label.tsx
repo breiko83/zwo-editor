@@ -29,8 +29,6 @@ const Label = (props: {
 }) => {
   const paces = ["1M", "5K", "10K", "HM", "M"];
 
-  // Labels sit above their segment, so on tall segments they get clipped by the
-  // canvas (overflow hidden). In that case, drop the label inside the segment.
   const ref = useRef<HTMLDivElement>(null);
   const [inside, setInside] = useState(false);
 

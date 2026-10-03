@@ -36,7 +36,6 @@
   overflow-x: hidden;
   width: 100%;
   max-width: 1280px;
-  /* tallest segment (Z6 max, 200% = 500px) + axis + resize handle */
   min-height: 570px;
   box-sizing: border-box;
   border: 1px solid var(--ed-border);
