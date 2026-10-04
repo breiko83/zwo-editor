@@ -178,7 +178,7 @@ const Bar = (props: {
         if (!e.currentTarget.contains(e.relatedTarget as Node)) setEditing(false);
       }}
       onClick={() => props.onClick(props.id)}
-      style={props.selected ? { zIndex: 10 } : {}}
+      style={editing ? { zIndex: 101 } : props.selected ? { zIndex: 10 } : {}}
     >
       {(selected || showLabel || editing) && props.showLabel && (
         <Label

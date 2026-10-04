@@ -323,7 +323,7 @@ const Trapeze = (props: {
       onBlur={(e) => {
         if (!e.currentTarget.contains(e.relatedTarget as Node)) setEditing(false);
       }}
-      style={props.selected ? { zIndex: 1 } : {}}
+      style={editing ? { zIndex: 101 } : props.selected ? { zIndex: 1 } : {}}
       onClick={() => props.onClick(props.id)}
     >
       {(props.selected || showLabel || editing) && (
