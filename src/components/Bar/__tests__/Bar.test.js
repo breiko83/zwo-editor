@@ -2,7 +2,7 @@ import React from 'react';
 import Bar from '../../Bar/Bar';
 import { Zones } from '../../Constants'
 import renderer from 'react-test-renderer';
-import { v4 as uuidv4 } from 'uuid'
+import { uuidv4 } from '../../../utils/uuid'
 import '@testing-library/jest-dom/extend-expect'
 
 

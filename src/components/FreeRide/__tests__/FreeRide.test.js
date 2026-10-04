@@ -2,7 +2,7 @@ import React from 'react';
 import FreeRide from '../../FreeRide/FreeRide';
 import renderer from 'react-test-renderer';
 import '@testing-library/jest-dom/extend-expect'
-import { v4 as uuidv4 } from 'uuid'
+import { uuidv4 } from '../../../utils/uuid'
 import { Zones } from '../../Constants'
 
 test('Freeride renders correctly', () => {

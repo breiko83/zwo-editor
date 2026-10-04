@@ -6,8 +6,8 @@ import Editor from './Editor';
 import '@testing-library/jest-dom';
 
 // Mock uuid
-jest.mock('uuid', () => ({
-  v4: jest.fn(() => 'test-uuid-123'),
+jest.mock('../../utils/uuid', () => ({
+  uuidv4: jest.fn(() => 'test-uuid-123'),
 }));
 
 // Mock react-tooltip
