@@ -5,7 +5,7 @@ import { Resizable } from "re-resizable";
 import Label from "../Label/Label";
 import helpers from "../helpers";
 import { PaceUnitType } from "../../types/workout";
-import { multiplier, timeMultiplier, lengthMultiplier, minTime, minDistance } from "../../constants/segmentScaling";
+import { multiplier, timeMultiplier, lengthMultiplier, minTime, minDistance, maxHeight, powerToHeight, heightToPower } from "../../constants/segmentScaling";
 
 const Bar = (props: {
   id: string;
@@ -48,7 +48,7 @@ const Bar = (props: {
       ? (props.time || 0) / timeMultiplier
       : (props.length || 0) / lengthMultiplier;
 
-  const height = props.power * multiplier;
+  const height = powerToHeight(props.power, props.ftp);
 
   const dragStartRef = useRef({ width, height });
 
@@ -137,7 +137,7 @@ const Bar = (props: {
     props.onChange(props.id, {
       time: time,
       length: length,
-      power: newHeight / multiplier,
+      power: heightToPower(newHeight, props.ftp),
       cadence: props.cadence,
       type: "bar",
       pace: props.pace,
@@ -207,7 +207,7 @@ const Bar = (props: {
         size={{ width, height }}
         minWidth={3}
         minHeight={multiplier * Zones.Z1.min}
-        maxHeight={multiplier * Zones.Z6.max}
+        maxHeight={maxHeight}
         enable={{ top: true, right: true }}
         handleClasses={{
           top: "resize-handle resize-handle-top",

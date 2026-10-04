@@ -4,7 +4,7 @@
   left: 0;
   color: white;
   background-color: rgba(0, 0, 0, 0.7);
-  width: 150px;
+  width: 160px;
   border-radius: 5px;
   margin: 5px 0;
   text-align: center;
@@ -43,6 +43,10 @@
 .power-range-row {
   align-items: center;
   gap: 4px;
+}
+
+.power-range-row > .textField {
+  min-width: 6ch;
 }
 
 .power-range-row > span {
