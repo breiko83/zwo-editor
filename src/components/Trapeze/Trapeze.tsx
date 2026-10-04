@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { flushSync } from "react-dom";
 import "./Trapeze.css";
 import { Colors, Zones, ZonesArray } from "../Constants";
@@ -6,7 +6,7 @@ import { Resizable } from "re-resizable";
 import Label from "../Label/Label";
 import helpers from "../helpers";
 import { PaceUnitType } from "../../types/workout";
-import { multiplier, timeMultiplier, lengthMultiplier, minTime, minDistance } from "../../constants/segmentScaling";
+import { multiplier, timeMultiplier, lengthMultiplier, minTime, minDistance, maxHeight, maxPower, powerToHeight, heightToPower } from "../../constants/segmentScaling";
 
 interface IDictionary {
   [index: string]: number;
@@ -56,7 +56,7 @@ const Trapeze = (props: {
     if (!powerWatts || !props.ftp) return;
 
     const newStartPower = powerWatts / props.ftp;
-    const newHeight1 = newStartPower * multiplier;
+    const newHeight1 = powerToHeight(newStartPower, props.ftp);
     setHeight1(newHeight1);
     setHeight2((height3 + newHeight1) / 2);
 
@@ -76,7 +76,7 @@ const Trapeze = (props: {
     if (!powerWatts || !props.ftp) return;
 
     const newEndPower = powerWatts / props.ftp;
-    const newHeight3 = newEndPower * multiplier;
+    const newHeight3 = powerToHeight(newEndPower, props.ftp);
     setHeight3(newHeight3);
     setHeight2((height1 + newHeight3) / 2);
 
@@ -103,11 +103,21 @@ const Trapeze = (props: {
 
   const speedEnd = props.endPower * (props.speed || 0) * 3.6;
 
-  const [height1, setHeight1] = useState(props.startPower * multiplier);
+  const [height1, setHeight1] = useState(powerToHeight(props.startPower, props.ftp));
   const [height2, setHeight2] = useState(
-    ((props.endPower + props.startPower) * multiplier) / 2
+    (powerToHeight(props.startPower, props.ftp) + powerToHeight(props.endPower, props.ftp)) / 2
   );
-  const [height3, setHeight3] = useState(props.endPower * multiplier);
+  const [height3, setHeight3] = useState(powerToHeight(props.endPower, props.ftp));
+
+  // The Z6 scale depends on FTP, so re-derive heights when it changes
+  useEffect(() => {
+    const h1 = powerToHeight(props.startPower, props.ftp);
+    const h3 = powerToHeight(props.endPower, props.ftp);
+    setHeight1(h1);
+    setHeight2((h1 + h3) / 2);
+    setHeight3(h3);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [props.ftp]);
 
   const trapezeHeight = height3 > height1 ? height3 : height1;
   const trapezeTop = height3 > height1 ? height3 - height1 : height1 - height3;
@@ -156,8 +166,8 @@ const Trapeze = (props: {
     props.onChange(props.id, {
       time: time,
       length: length,
-      startPower: newHeight1 / multiplier,
-      endPower: startHeight3 / multiplier,
+      startPower: heightToPower(newHeight1, props.ftp),
+      endPower: heightToPower(startHeight3, props.ftp),
       cadence: props.cadence,
       type: "trapeze",
       pace: props.pace,
@@ -194,8 +204,8 @@ const Trapeze = (props: {
     props.onChange(props.id, {
       time: time,
       length: length,
-      startPower: newHeight1 / multiplier,
-      endPower: newHeight3 / multiplier,
+      startPower: heightToPower(newHeight1, props.ftp),
+      endPower: heightToPower(newHeight3, props.ftp),
       cadence: props.cadence,
       type: "trapeze",
       pace: props.pace,
@@ -230,8 +240,8 @@ const Trapeze = (props: {
     props.onChange(props.id, {
       time: time,
       length: length,
-      startPower: startHeight1 / multiplier,
-      endPower: newHeight3 / multiplier,
+      startPower: heightToPower(startHeight1, props.ftp),
+      endPower: heightToPower(newHeight3, props.ftp),
       cadence: props.cadence,
       type: "trapeze",
       pace: props.pace,
@@ -266,8 +276,8 @@ const Trapeze = (props: {
     props.onChange(props.id, {
       time: time,
       length: length,
-      startPower: startHeight1 / multiplier,
-      endPower: startHeight3 / multiplier,
+      startPower: heightToPower(startHeight1, props.ftp),
+      endPower: heightToPower(startHeight3, props.ftp),
       cadence: props.cadence,
       type: "trapeze",
       pace: props.pace,
@@ -279,15 +289,9 @@ const Trapeze = (props: {
     const bars = {} as IDictionary;
 
     ZonesArray.forEach((zone, index) => {
-      if (start >= zone[0] && start < zone[1]) {
-        bars["Z" + (index + 1)] = zone[1] - start;
-      } else if (end >= zone[0] && end < zone[1]) {
-        bars["Z" + (index + 1)] = end - zone[0];
-      } else if (end >= zone[1] && start < zone[0]) {
-        bars["Z" + (index + 1)] = zone[1] - zone[0];
-      } else {
-        bars["Z" + (index + 1)] = 0;
-      }
+      // Z6 runs up to maxPower so ramps above Z6.max are still coloured red
+      const hi = index === ZonesArray.length - 1 ? maxPower(props.ftp) : zone[1];
+      bars["Z" + (index + 1)] = Math.max(0, Math.min(end, hi) - Math.max(start, zone[0]));
     });
     return bars;
   }
@@ -361,7 +365,7 @@ const Trapeze = (props: {
           }}
           minWidth={3}
           minHeight={multiplier * Zones.Z1.min}
-          maxHeight={multiplier * Zones.Z6.max}
+          maxHeight={maxHeight}
           enable={{ top: true }}
           handleClasses={{ top: "resize-handle resize-handle-top" }}
           grid={[1, 1]}
@@ -377,7 +381,7 @@ const Trapeze = (props: {
           }}
           minWidth={3}
           minHeight={multiplier * Zones.Z1.min}
-          maxHeight={multiplier * Zones.Z6.max}
+          maxHeight={maxHeight}
           enable={{ top: true }}
           handleClasses={{ top: "resize-handle resize-handle-top" }}
           grid={[1, 1]}
@@ -393,7 +397,7 @@ const Trapeze = (props: {
           }}
           minWidth={3}
           minHeight={multiplier * Zones.Z1.min}
-          maxHeight={multiplier * Zones.Z6.max}
+          maxHeight={maxHeight}
           enable={{ top: true }}
           handleClasses={{ top: "resize-handle resize-handle-top" }}
           grid={[1, 1]}
