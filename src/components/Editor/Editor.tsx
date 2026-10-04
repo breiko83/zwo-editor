@@ -23,12 +23,11 @@ import { runningTextParserService } from "../../services/runningTextParserServic
 import { useWorkoutState } from "./hooks/useWorkoutState";
 import { useKeyboardShortcuts } from "./hooks/useKeyboardShortcuts";
 import { BarType, Instruction, SportType } from "../../types/workout";
+import { uuidv4 } from "../../utils/uuid";
 
 type TParams = { id: string };
 
 const Editor = ({ match }: RouteComponentProps<TParams>) => {
-  const { v4: uuidv4 } = require("uuid");
-
   const generateIdValue = match.params.id === "new"
     ? localStorage.getItem("id") || generateId()
     : match.params.id;

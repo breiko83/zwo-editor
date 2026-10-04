@@ -2,7 +2,7 @@ import React from 'react';
 import Comment from '../../Comment/Comment';
 import renderer from 'react-test-renderer';
 import {cleanup, fireEvent, render} from '@testing-library/react';
-import { v4 as uuidv4 } from 'uuid'
+import { uuidv4 } from '../../../utils/uuid'
 import '@testing-library/jest-dom/extend-expect'
 
 

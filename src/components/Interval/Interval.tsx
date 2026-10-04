@@ -3,6 +3,7 @@ import Bar from "../Bar/Bar";
 import "./Interval.css";
 
 import { BarType, PaceUnitType } from "../../types/workout";
+import { uuidv4 } from "../../utils/uuid";
 
 const Interval = (props: {
   id: string;
@@ -26,8 +27,6 @@ const Interval = (props: {
   handleIntervalClick: Function;
   selected: boolean;
 }) => {
-  const { v4: uuidv4 } = require("uuid");
-
   const [bars, setBars] = useState<Array<BarType>>([]);
   const [nIntervals, setNIntervals] = useState(props.repeat);
 
