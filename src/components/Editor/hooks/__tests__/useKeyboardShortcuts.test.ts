@@ -252,3 +252,68 @@ describe('useKeyboardShortcuts', () => {
     expect(removeTimeToBar).not.toHaveBeenCalled();
   });
 });
+
+describe('useKeyboardShortcuts undo / redo', () => {
+  const noop = () => {};
+  let undo: jest.Mock;
+  let redo: jest.Mock;
+
+  const render = () =>
+    renderHook(() =>
+      useKeyboardShortcuts({
+        actionId: undefined,
+        removeBar: noop,
+        addTimeToBar: noop,
+        removeTimeToBar: noop,
+        addPowerToBar: noop,
+        removePowerToBar: noop,
+        undo,
+        redo,
+      })
+    );
+
+  beforeEach(() => {
+    undo = jest.fn();
+    redo = jest.fn();
+  });
+
+  it('calls undo on Ctrl+Z even without a selected segment', () => {
+    render();
+    window.dispatchEvent(new KeyboardEvent('keydown', { key: 'z', ctrlKey: true }));
+    expect(undo).toHaveBeenCalledTimes(1);
+    expect(redo).not.toHaveBeenCalled();
+  });
+
+  it('calls undo on Cmd+Z', () => {
+    render();
+    window.dispatchEvent(new KeyboardEvent('keydown', { key: 'z', metaKey: true }));
+    expect(undo).toHaveBeenCalledTimes(1);
+  });
+
+  it('calls redo on Ctrl+Shift+Z and Ctrl+Y', () => {
+    render();
+    window.dispatchEvent(
+      new KeyboardEvent('keydown', { key: 'Z', ctrlKey: true, shiftKey: true })
+    );
+    window.dispatchEvent(new KeyboardEvent('keydown', { key: 'y', ctrlKey: true }));
+    expect(redo).toHaveBeenCalledTimes(2);
+    expect(undo).not.toHaveBeenCalled();
+  });
+
+  it('ignores Ctrl+Z typed in a text field', () => {
+    render();
+    const textarea = document.createElement('textarea');
+    document.body.appendChild(textarea);
+    textarea.dispatchEvent(
+      new KeyboardEvent('keydown', { key: 'z', ctrlKey: true, bubbles: true })
+    );
+    document.body.removeChild(textarea);
+    expect(undo).not.toHaveBeenCalled();
+  });
+
+  it('ignores plain z without modifier', () => {
+    render();
+    window.dispatchEvent(new KeyboardEvent('keydown', { key: 'z' }));
+    expect(undo).not.toHaveBeenCalled();
+  });
+});

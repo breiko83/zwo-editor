@@ -1,6 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { BarType, Instruction, SportType, DurationType, PaceUnitType } from '../../../types/workout';
 import { RunningTimes } from '../RunningTimesEditor';
+import { useWorkoutHistory, WorkoutSnapshot } from './useWorkoutHistory';
 
 const loadRunningTimes = (): RunningTimes => {
   const missingRunningTimes: RunningTimes = {
@@ -89,6 +90,27 @@ export const useWorkoutState = (initialId: string) => {
     runningTimes,
   ]);
 
+  const restoreSnapshot = useCallback((snapshot: WorkoutSnapshot) => {
+    setBars(snapshot.bars);
+    setInstructions(snapshot.instructions);
+    setName(snapshot.name);
+    setDescription(snapshot.description);
+    setAuthor(snapshot.author);
+    setTags(snapshot.tags);
+    setActionId(undefined);
+    setSelectedInstruction(undefined);
+  }, []);
+
+  const history = useWorkoutHistory({
+    bars,
+    instructions,
+    name,
+    description,
+    author,
+    tags,
+    restore: restoreSnapshot,
+  });
+
   const resetWorkout = () => {
     setBars([]);
     setInstructions([]);
@@ -130,5 +152,10 @@ export const useWorkoutState = (initialId: string) => {
     selectedInstruction,
     setSelectedInstruction,
     resetWorkout,
+    undo: history.undo,
+    redo: history.redo,
+    canUndo: history.canUndo,
+    canRedo: history.canRedo,
+    historyRevision: history.revision,
   };
 };

@@ -4,21 +4,55 @@ import {
   faFile,
   faDownload,
   faUpload,
+  faUndo,
+  faRedo,
 } from '@fortawesome/free-solid-svg-icons';
 
 interface WorkoutToolbarProps {
   onNew: () => void;
   onDownload: () => void;
   onUpload: (file: File) => void;
+  onUndo?: () => void;
+  onRedo?: () => void;
+  canUndo?: boolean;
+  canRedo?: boolean;
 }
 
 const WorkoutToolbar: React.FC<WorkoutToolbarProps> = ({
   onNew,
   onDownload,
   onUpload,
+  onUndo,
+  onRedo,
+  canUndo = false,
+  canRedo = false,
 }) => {
+  const isMac =
+    typeof navigator !== 'undefined' && /Mac|iPhone|iPad/.test(navigator.platform);
+  const modifier = isMac ? '⌘' : 'Ctrl+';
+
   return (
     <>
+      {onUndo && (
+        <button
+          className="btn"
+          onClick={onUndo}
+          disabled={!canUndo}
+          title={`Undo (${modifier}Z)`}
+        >
+          <FontAwesomeIcon icon={faUndo} fixedWidth /> Undo
+        </button>
+      )}
+      {onRedo && (
+        <button
+          className="btn"
+          onClick={onRedo}
+          disabled={!canRedo}
+          title={`Redo (${isMac ? '⌘⇧Z' : 'Ctrl+Y'})`}
+        >
+          <FontAwesomeIcon icon={faRedo} fixedWidth /> Redo
+        </button>
+      )}
       <button
         className="btn"
         onClick={() => {
