@@ -35,43 +35,26 @@ export const runningTextParserService = {
       .filter((line) => line.trim() !== '');
 
     const parsedBlocks: ParsedRunningBlock[] = [];
+    let blockStart = 0;
+    let blockEnd = 0;
 
     workoutBlocks.forEach((workoutBlock) => {
       const lowerBlock = workoutBlock.toLowerCase();
       
       // Handle messages first to avoid false positives with keywords
       if (lowerBlock.includes('message')) {
-        const parsed = this.parseMessage(workoutBlock, durationType);
+        const parsed = this.parseMessage(workoutBlock, durationType, blockStart, blockEnd);
         if (parsed) parsedBlocks.push(parsed);
         return;
       }
 
-      if (lowerBlock.includes('steady')) {
-        const parsed = this.parseSteady(workoutBlock, durationType);
-        if (parsed) parsedBlocks.push(parsed);
-        return;
-      }
-
-      if (
-        lowerBlock.includes('ramp') ||
-        lowerBlock.includes('warmup') ||
-        lowerBlock.includes('cooldown')
-      ) {
-        const parsed = this.parseRamp(workoutBlock, durationType);
-        if (parsed) parsedBlocks.push(parsed);
-        return;
-      }
-
-      if (lowerBlock.includes('freerun')) {
-        const parsed = this.parseFreeRun(workoutBlock, durationType);
-        if (parsed) parsedBlocks.push(parsed);
-        return;
-      }
-
-      if (lowerBlock.includes('interval')) {
-        const parsed = this.parseInterval(workoutBlock, durationType);
-        if (parsed) parsedBlocks.push(parsed);
-        return;
+      const parsed = this.parseSegment(workoutBlock, lowerBlock, durationType);
+      if (parsed) {
+        parsedBlocks.push(parsed);
+        const on = (durationType === 'time' ? parsed.duration : parsed.length) || 0;
+        const off = (durationType === 'time' ? parsed.offDuration : parsed.offLength) || 0;
+        blockStart = blockEnd;
+        blockEnd += parsed.repeat ? parsed.repeat * (on + off) : on;
       }
     });
 
@@ -79,30 +62,65 @@ export const runningTextParserService = {
   },
 
   /**
+   * Parse a single non-message workout block
+   */
+  parseSegment(
+    workoutBlock: string,
+    lowerBlock: string,
+    durationType: DurationType
+  ): ParsedRunningBlock | null {
+    if (lowerBlock.includes('steady')) {
+      return this.parseSteady(workoutBlock, durationType);
+    }
+
+    if (
+      lowerBlock.includes('ramp') ||
+      lowerBlock.includes('warmup') ||
+      lowerBlock.includes('cooldown')
+    ) {
+      return this.parseRamp(workoutBlock, durationType);
+    }
+
+    if (lowerBlock.includes('freerun')) {
+      return this.parseFreeRun(workoutBlock, durationType);
+    }
+
+    if (lowerBlock.includes('interval')) {
+      return this.parseInterval(workoutBlock, durationType);
+    }
+
+    return null;
+  },
+
+  /**
    * Parse message block
    * Format: message "text" 30s or message "text" 2km
+   * A leading + or - makes the offset relative to the block above:
+   * message "text" +30s (from its start), message "text" -200m (from its end)
    */
-  parseMessage(block: string, durationType: DurationType): ParsedRunningBlock | null {
+  parseMessage(
+    block: string,
+    durationType: DurationType,
+    blockStart = 0,
+    blockEnd = 0
+  ): ParsedRunningBlock | null {
     const doubleQuoteMatch = block.match(/"([^"]*)"/);
     const singleQuoteMatch = block.match(/'([^']*)'/);
     const message = doubleQuoteMatch || singleQuoteMatch;
     const text = message ? message[1] : '';
 
-    if (durationType === 'time') {
-      const duration = this.parseDuration(block);
-      return {
-        type: 'message',
-        text,
-        duration: duration || 0,
-      };
-    } else {
-      const length = this.parseDistance(block);
-      return {
-        type: 'message',
-        text,
-        length: length || 0,
-      };
-    }
+    const rest = message ? block.replace(message[0], ' ') : block;
+    const offset =
+      (durationType === 'time' ? this.parseDuration(rest) : this.parseDistance(rest)) || 0;
+    const sign = rest.match(/(?:^|\s)([+-])\s*\d/);
+
+    let position = offset;
+    if (sign) position = sign[1] === '+' ? blockStart + offset : blockEnd - offset;
+    position = Math.max(0, position);
+
+    return durationType === 'time'
+      ? { type: 'message', text, duration: position }
+      : { type: 'message', text, length: position };
   },
 
   /**
