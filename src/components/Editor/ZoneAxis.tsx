@@ -1,5 +1,6 @@
 import React from "react";
 import { Colors, Zones } from "../Constants";
+import { multiplier } from "../../constants/segmentScaling";
 import "./ZoneAxis.css";
 
 const ZONE_COLORS: Record<string, string> = {
@@ -14,7 +15,7 @@ const ZONE_COLORS: Record<string, string> = {
 const ZoneAxis = () => (
   <div className='zone-axis'>
     {Object.entries(Zones).reverse().map(([name, zone]) => (
-      <div key={name} style={{ height: 250 * zone.max }}>
+      <div key={name} style={{ bottom: (multiplier * (zone.min + zone.max)) / 2 }}>
         {name}
         <span className="zone-axis-dot" style={{ backgroundColor: ZONE_COLORS[name] }} />
       </div>

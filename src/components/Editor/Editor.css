@@ -36,7 +36,7 @@
   overflow-x: hidden;
   width: 100%;
   max-width: 1280px;
-  min-height: 480px;
+  min-height: 570px;
   box-sizing: border-box;
   border: 1px solid var(--ed-border);
   border-radius: var(--ed-radius);

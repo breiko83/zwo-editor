@@ -37,6 +37,7 @@ const Trapeze = (props: {
   const durationLabel = helpers.formatDuration(props.time || 0);
 
   const [showLabel, setShowLabel] = useState(false);
+  const [editing, setEditing] = useState(false);
 
   const handleCadenceChange = (cadence: number) => {
     props.onChange(props.id, {
@@ -318,10 +319,14 @@ const Trapeze = (props: {
       className="segment"
       onMouseEnter={() => setShowLabel(true)}
       onMouseLeave={() => setShowLabel(false)}
-      style={props.selected ? { zIndex: 1 } : {}}
+      onFocus={() => setEditing(true)}
+      onBlur={(e) => {
+        if (!e.currentTarget.contains(e.relatedTarget as Node)) setEditing(false);
+      }}
+      style={editing ? { zIndex: 101 } : props.selected ? { zIndex: 1 } : {}}
       onClick={() => props.onClick(props.id)}
     >
-      {(props.selected || showLabel) && (
+      {(props.selected || showLabel || editing) && (
         <Label
           duration={durationLabel}
           powerStart={powerLabelStart}

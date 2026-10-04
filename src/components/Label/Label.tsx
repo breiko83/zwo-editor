@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useLayoutEffect, useRef, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBolt, faClock, faRuler } from "@fortawesome/free-solid-svg-icons";
 import "./Label.css";
@@ -29,8 +29,30 @@ const Label = (props: {
 }) => {
   const paces = ["1M", "5K", "10K", "HM", "M"];
 
+  const ref = useRef<HTMLDivElement>(null);
+  const [insideTop, setInsideTop] = useState<number | null>(null);
+  const inside = insideTop !== null;
+
+  useLayoutEffect(() => {
+    const label = ref.current;
+    const canvas = label?.closest(".canvas");
+    const segment = label?.closest(".segment");
+    if (!label || !canvas || !segment || inside) return;
+    if (label.getBoundingClientRect().top < canvas.getBoundingClientRect().top) {
+      const segmentTop = segment.getBoundingClientRect().top;
+      const handleBottoms = Array.from(segment.querySelectorAll(".resize-handle-top")).map(
+        (handle) => handle.getBoundingClientRect().bottom - segmentTop
+      );
+      setInsideTop(Math.max(7, ...handleBottoms) + 2);
+    }
+  }, [inside, props.power, props.powerStart, props.powerEnd]);
+
   return (
-    <div className={`label ${props.sportType === "bike" ? "label-bike" : "label-run"}`}>
+    <div
+      ref={ref}
+      className={`label ${props.sportType === "bike" ? "label-bike" : "label-run"}${inside ? " label-inside" : ""}`}
+      style={inside ? { top: insideTop as number } : undefined}
+    >
       {props.duration && props.duration !== "00:00" && (
         <div>
           <FontAwesomeIcon icon={faClock} fixedWidth /> {props.duration}
