@@ -5,9 +5,15 @@ updates:
     schedule:
       interval: "weekly"
     open-pull-requests-limit: 5
+    # Major bumps (React, Router, Babel 8, TypeScript, ...) need manual
+    # migration work and break `npm install` when batched together.
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
     groups:
       npm-dependencies:
         applies-to: version-updates
+        update-types: ["minor", "patch"]
         patterns:
           - "*"
       npm-security:
