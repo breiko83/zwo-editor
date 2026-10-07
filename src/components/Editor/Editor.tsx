@@ -64,6 +64,11 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
     setRunningTimes,
     selectedInstruction,
     setSelectedInstruction,
+    undo,
+    redo,
+    canUndo,
+    canRedo,
+    historyRevision,
   } = useWorkoutState(generateIdValue);
 
   const canvasRef = useRef<HTMLInputElement>(null);
@@ -116,6 +121,8 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
     removeTimeToBar,
     addPowerToBar,
     removePowerToBar,
+    undo,
+    redo,
   });
 
   function addBar(
@@ -250,7 +257,9 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
     const updatedArray = [...bars];
 
     const index = updatedArray.findIndex((bar) => bar.id === id);
-    const element = updatedArray[index];
+    // copy the segment so previous states (undo history) are not mutated
+    const element = index !== -1 ? { ...updatedArray[index] } : undefined;
+    if (element) updatedArray[index] = element;
     if (element && durationType === "time") {
       element.time = element.time + 5;
       element.length =
@@ -280,7 +289,9 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
     const updatedArray = [...bars];
 
     const index = updatedArray.findIndex((bar) => bar.id === id);
-    const element = updatedArray[index];
+    // copy the segment so previous states (undo history) are not mutated
+    const element = index !== -1 ? { ...updatedArray[index] } : undefined;
+    if (element) updatedArray[index] = element;
     if (element && element.time > 5 && durationType === "time") {
       element.time = element.time - 5;
       element.length =
@@ -310,7 +321,9 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
     const updatedArray = [...bars];
 
     const index = updatedArray.findIndex((bar) => bar.id === id);
-    const element = updatedArray[index];
+    // copy the segment so previous states (undo history) are not mutated
+    const element = index !== -1 ? { ...updatedArray[index] } : undefined;
+    if (element) updatedArray[index] = element;
     if (element && element.power) {
       element.power = parseFloat((element.power + 1 / ftp).toFixed(3));
 
@@ -340,7 +353,9 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
     const updatedArray = [...bars];
 
     const index = updatedArray.findIndex((bar) => bar.id === id);
-    const element = updatedArray[index];
+    // copy the segment so previous states (undo history) are not mutated
+    const element = index !== -1 ? { ...updatedArray[index] } : undefined;
+    if (element) updatedArray[index] = element;
     if (element && element.power && element.power >= Zones.Z1.min) {
       element.power = parseFloat((element.power - 1 / ftp).toFixed(3));
 
@@ -452,6 +467,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
 
   const renderBar = (bar: BarType) => (
     <Bar
+      key={`${bar.id}-${historyRevision}`}
       id={bar.id}
       time={bar.time}
       length={bar.length || 200}
@@ -474,6 +490,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
 
   const renderTrapeze = (bar: BarType) => (
     <Trapeze
+      key={`${bar.id}-${historyRevision}`}
       id={bar.id}
       time={bar.time}
       length={bar.length || 200}
@@ -494,6 +511,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
 
   const renderFreeRide = (bar: BarType) => (
     <FreeRide
+      key={`${bar.id}-${historyRevision}`}
       id={bar.id}
       time={bar.time}
       length={bar.length}
@@ -509,6 +527,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
 
   const renderInterval = (bar: BarType) => (
     <Interval
+      key={`${bar.id}-${historyRevision}`}
       id={bar.id}
       repeat={bar.repeat || 3}
       onDuration={bar.onDuration || 10}
@@ -536,6 +555,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
 
   const renderComment = (instruction: Instruction, index: number) => (
     <Comment
+      key={`${instruction.id}-${historyRevision}`}
       instruction={instruction}
       durationType={durationType}
       width={
@@ -558,7 +578,8 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
 
     if (index !== -1) {
       const updatedArray = [...bars];
-      const element = [...updatedArray][index];
+      const element = { ...updatedArray[index] };
+      updatedArray[index] = element;
       element.pace = parseInt(value);
 
       if (durationType === "time") {
@@ -855,6 +876,10 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
             onNew={newWorkout}
             onDownload={downloadWorkout}
             onUpload={handleUpload}
+            onUndo={undo}
+            onRedo={redo}
+            canUndo={canUndo}
+            canRedo={canRedo}
           />
         }
       />

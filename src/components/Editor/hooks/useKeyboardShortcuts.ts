@@ -7,6 +7,8 @@ interface KeyboardShortcutsProps {
   removeTimeToBar: (id: string) => void;
   addPowerToBar: (id: string) => void;
   removePowerToBar: (id: string) => void;
+  undo?: () => void;
+  redo?: () => void;
 }
 
 /**
@@ -19,6 +21,8 @@ export const useKeyboardShortcuts = ({
   removeTimeToBar,
   addPowerToBar,
   removePowerToBar,
+  undo,
+  redo,
 }: KeyboardShortcutsProps) => {
   useEffect(() => {
     const handleKeyPress = (event: KeyboardEvent) => {
@@ -28,6 +32,21 @@ export const useKeyboardShortcuts = ({
         event.target instanceof HTMLTextAreaElement
       ) {
         return;
+      }
+
+      // Undo: Ctrl/Cmd+Z - Redo: Ctrl/Cmd+Shift+Z or Ctrl/Cmd+Y
+      if ((event.ctrlKey || event.metaKey) && !event.altKey) {
+        const key = (event.key || '').toLowerCase();
+        if (key === 'z' && !event.shiftKey && undo) {
+          undo();
+          event.preventDefault();
+          return;
+        }
+        if (((key === 'z' && event.shiftKey) || key === 'y') && redo) {
+          redo();
+          event.preventDefault();
+          return;
+        }
       }
 
       if (!actionId) return;
@@ -59,5 +78,5 @@ export const useKeyboardShortcuts = ({
     return () => {
       window.removeEventListener('keydown', handleKeyPress);
     };
-  }, [actionId, removeBar, addTimeToBar, removeTimeToBar, addPowerToBar, removePowerToBar]);
+  }, [actionId, removeBar, addTimeToBar, removeTimeToBar, addPowerToBar, removePowerToBar, undo, redo]);
 };

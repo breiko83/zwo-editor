@@ -139,6 +139,14 @@ a {
   background-color: oklch(0.98 0.002 250);
 }
 
+.btn:disabled,
+.btn:disabled:hover {
+  border-color: var(--ed-border);
+  background-color: var(--ed-surface);
+  opacity: 0.45;
+  cursor: default;
+}
+
 .btn > svg {
   display: block;
   margin: 0 auto;
