@@ -267,7 +267,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
           element.time,
           calculateSpeed(element.pace || 0)
         ) *
-          1) /
+          1) *
         (element.power || 1);
       setBars(updatedArray);
     }
@@ -299,7 +299,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
           element.time,
           calculateSpeed(element.pace || 0)
         ) *
-          1) /
+          1) *
         (element.power || 1);
       setBars(updatedArray);
     }
@@ -333,7 +333,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
             element.time,
             calculateSpeed(element.pace || 0)
           ) *
-            1) /
+            1) *
           element.power;
       } else {
         element.time =
@@ -365,7 +365,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
             element.time,
             calculateSpeed(element.pace || 0)
           ) *
-            1) /
+            1) *
           element.power;
       } else {
         element.time =
@@ -588,7 +588,7 @@ const Editor = ({ match }: RouteComponentProps<TParams>) => {
             element.time,
             calculateSpeed(element.pace || 0)
           ) *
-            1) /
+            1) *
           (element.power || 1);
       } else {
         element.time =

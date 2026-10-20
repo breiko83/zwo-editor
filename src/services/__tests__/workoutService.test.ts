@@ -147,6 +147,39 @@ describe('workoutService', () => {
     });
   });
 
+  describe('run segments scale distance by intensity', () => {
+    // 4 m/s = 4:10 min/km anchor pace
+    const speed = 4;
+
+    it('createBar derives time-based distance from intensity', () => {
+      const bar = workoutService.createBar(0.75, 400, 0, 1, 0, 0, 'time', mockUuid, speed);
+      expect(bar.length).toBe(1200);
+    });
+
+    it('createTrapeze derives time-based distance from average intensity', () => {
+      const trapeze = workoutService.createTrapeze(0.6, 0.8, 600, 1, 0, 0, 'time', mockUuid, speed);
+      expect(trapeze.length).toBe(1680);
+    });
+
+    it('createInterval slows the off segment instead of speeding it up', () => {
+      const interval = workoutService.createInterval(
+        4, 300, 400, 1, 0.75, 0, 0, 1, 0, 0, 'time', mockUuid, speed
+      );
+      expect(interval.onLength).toBe(1200);
+      expect(interval.offLength).toBe(1200);
+      expect(interval.length).toBe(9600);
+    });
+
+    it('createInterval total time includes intensity on distance workouts', () => {
+      const interval = workoutService.createInterval(
+        2, 0, 0, 1, 0.8, 0, 0, 1, 1000, 1000, 'distance', mockUuid, speed
+      );
+      expect(interval.onDuration).toBe(250);
+      expect(interval.offDuration).toBe(312);
+      expect(interval.time).toBe(1125);
+    });
+  });
+
   describe('duplicateBar', () => {
     const mockCallbacks = {
       addBar: jest.fn(),

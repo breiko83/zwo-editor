@@ -156,8 +156,7 @@ const Trapeze = (props: {
     const length =
       props.durationType === "time"
         ? helpers.round(
-            (helpers.calculateDistance(width * timeMultiplier, props.speed || 0) *
-              1) /
+            helpers.calculateDistance(width * timeMultiplier * 3, props.speed || 0) *
               avgPower,
             1
           )
@@ -194,8 +193,7 @@ const Trapeze = (props: {
     const length =
       props.durationType === "time"
         ? helpers.round(
-            (helpers.calculateDistance(width * timeMultiplier, props.speed || 0) *
-              1) /
+            helpers.calculateDistance(width * timeMultiplier * 3, props.speed || 0) *
               avgPower,
             1
           )
@@ -230,8 +228,7 @@ const Trapeze = (props: {
     const length =
       props.durationType === "time"
         ? helpers.round(
-            (helpers.calculateDistance(width * timeMultiplier, props.speed || 0) *
-              1) /
+            helpers.calculateDistance(width * timeMultiplier * 3, props.speed || 0) *
               avgPower,
             1
           )
@@ -259,8 +256,7 @@ const Trapeze = (props: {
     const length =
       props.durationType === "time"
         ? helpers.round(
-            (helpers.calculateDistance(newWidth * timeMultiplier * 3, props.speed || 0) *
-              1) /
+            helpers.calculateDistance(newWidth * timeMultiplier * 3, props.speed || 0) *
               avgPower,
             1
           )

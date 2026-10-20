@@ -37,7 +37,7 @@ export const workoutService = {
           : helpers.round(helpers.calculateTime(length, resolvedSpeed) / (zone || 1), 1),
       length:
         durationType === 'time'
-          ? helpers.round(helpers.calculateDistance(duration, resolvedSpeed), 1)
+          ? helpers.round(helpers.calculateDistance(duration * (zone || 1), resolvedSpeed), 1)
           : length,
       power: zone,
       cadence: cadence,
@@ -72,7 +72,7 @@ export const workoutService = {
           : helpers.round(helpers.calculateTime(length, resolvedSpeed) / avgZone, 1),
       length:
         durationType === 'time'
-          ? helpers.round(helpers.calculateDistance(duration, resolvedSpeed), 1)
+          ? helpers.round(helpers.calculateDistance(duration * avgZone, resolvedSpeed), 1)
           : length,
       startPower: zone1,
       endPower: zone2,
@@ -129,13 +129,19 @@ export const workoutService = {
         durationType === 'time'
           ? (onDuration + offDuration) * repeat
           : helpers.round(
-              helpers.calculateTime((onLength + offLength) * repeat, resolvedSpeed),
+              helpers.calculateTime(
+                (onLength / onPower + offLength / offPower) * repeat,
+                resolvedSpeed
+              ),
               1
             ),
       length:
         durationType === 'time'
           ? helpers.round(
-              helpers.calculateDistance((onDuration + offDuration) * repeat, resolvedSpeed),
+              helpers.calculateDistance(
+                (onDuration * onPower + offDuration * offPower) * repeat,
+                resolvedSpeed
+              ),
               1
             )
           : (onLength + offLength) * repeat,
@@ -164,14 +170,14 @@ export const workoutService = {
       onLength:
         durationType === 'time'
           ? helpers.round(
-              helpers.calculateDistance((onDuration * 1) / onPower, resolvedSpeed),
+              helpers.calculateDistance(onDuration * onPower, resolvedSpeed),
               1
             )
           : onLength,
       offLength:
         durationType === 'time'
           ? helpers.round(
-              helpers.calculateDistance((offDuration * 1) / offPower, resolvedSpeed),
+              helpers.calculateDistance(offDuration * offPower, resolvedSpeed),
               1
             )
           : offLength,
@@ -307,7 +313,7 @@ export const workoutService = {
             element.time,
             this.calculateSpeed(element.pace || 0)
           ) *
-            1) /
+            1) *
           (element.power || 1);
       }
     } else {
@@ -357,7 +363,7 @@ export const workoutService = {
           element.time,
           this.calculateSpeed(element.pace || 0)
         ) *
-          1) /
+          1) *
         element.power;
     } else {
       element.time =
