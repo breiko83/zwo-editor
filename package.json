@@ -25,7 +25,7 @@
     "moment": "^2.31.0",
     "moment-duration-format": "^2.3.2",
     "puppeteer-core": "^22.0.0",
-    "qs": "^6.16.1",
+    "qs": "^6.17.1",
     "rc-slider": "^9.3.0",
     "re-resizable": "^6.11.2",
     "react": "^16.13.1",
@@ -63,7 +63,7 @@
   },
   "devDependencies": {
     "@babel/plugin-proposal-private-property-in-object": "^7.21.0",
-    "@babel/preset-env": "^7.29.7",
+    "@babel/preset-env": "^7.29.14",
     "@babel/preset-react": "^7.29.7",
     "@testing-library/react-hooks": "^8.0.1",
     "@types/react-test-renderer": "^19.1.0",
